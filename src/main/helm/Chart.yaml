@@ -1,0 +1,17 @@
+apiVersion: v1
+name: onecx-workspace-svc
+version: 0.0.0
+appVersion: 0.0.0
+description: Onecx workspace service
+keywords:
+  - tenant
+sources:
+  - https://github.com/onecx/onecx-workspace-svc
+maintainers:
+  - name: Tkit Developer
+    email: tkit_dev@1000kit.org
+dependencies:
+  - name: helm-quarkus-app
+    alias: app
+    version: ^0
+    repository: oci://ghcr.io/onecx/charts

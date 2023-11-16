@@ -1,0 +1,183 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+        <changeSet author="dev (generated)" id="1699550634274-1">
+            <createTable tableName="ptl_menu_item">
+                <column name="item_disabled" type="BOOLEAN"/>
+                <column name="item_pos" type="INTEGER"/>
+                <column name="optlock" type="INTEGER">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="portal_exit" type="BOOLEAN"/>
+                <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="application_id" type="VARCHAR(255)"/>
+                <column name="guid" type="VARCHAR(255)">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="ptl_menu_item_pkey"/>
+                </column>
+                <column name="item_badge" type="VARCHAR(255)"/>
+                <column name="item_description" type="VARCHAR(255)"/>
+                <column name="item_key" type="VARCHAR(255)"/>
+                <column name="item_name" type="VARCHAR(255)"/>
+                <column name="item_parent" type="VARCHAR(255)"/>
+                <column name="item_permission_object" type="VARCHAR(255)"/>
+                <column name="item_portal" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="item_portal_name" type="VARCHAR(255)"/>
+                <column name="item_scope" type="VARCHAR(255)"/>
+                <column name="item_url" type="VARCHAR(255)"/>
+                <column name="roles" type="TEXT"/>
+                <column name="creationuser" type="VARCHAR(255)"/>
+                <column name="modificationuser" type="VARCHAR(255)"/>
+            </createTable>
+
+            <createTable tableName="ptl_portal_mfe">
+                <column name="optlock" type="INTEGER">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="base_url" type="VARCHAR(255)"/>
+                <column name="guid" type="VARCHAR(255)">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="ptl_portal_mfe_pkey"/>
+                </column>
+                <column name="mfe_id" type="VARCHAR(255)"/>
+                <column name="portal_id" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="creationuser" type="VARCHAR(255)"/>
+                <column name="modificationuser" type="VARCHAR(255)"/>
+            </createTable>
+
+            <createTable tableName="theme">
+                <column name="optlock" type="INTEGER">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="assets_update_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="assets_url" type="VARCHAR(255)"/>
+                <column name="css_file" type="VARCHAR(255)"/>
+                <column name="description" type="VARCHAR(255)"/>
+                <column name="favicon_url" type="VARCHAR(255)"/>
+                <column name="guid" type="VARCHAR(255)">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="theme_pkey"/>
+                </column>
+                <column name="logo_url" type="VARCHAR(255)"/>
+                <column name="name" type="VARCHAR(255)"/>
+                <column name="preview_image_url" type="VARCHAR(255)"/>
+                <column name="properties" type="TEXT"/>
+                <column name="creationuser" type="VARCHAR(255)"/>
+                <column name="modificationuser" type="VARCHAR(255)"/>
+            </createTable>
+            <createTable tableName="ptl_microfrontend">
+                <column name="optlock" type="INTEGER">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="app_id" type="VARCHAR(255)"/>
+                <column name="app_version" type="VARCHAR(255)"/>
+                <column name="contact" type="TEXT"/>
+                <column name="display_name" type="VARCHAR(255)"/>
+                <column name="exposed_module" type="VARCHAR(255)"/>
+                <column name="guid" type="VARCHAR(255)">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="ptl_microfrontend_pkey"/>
+                </column>
+                <column name="i18n_path" type="VARCHAR(255)"/>
+                <column name="module_type" type="VARCHAR(255)"/>
+                <column name="note" type="TEXT"/>
+                <column name="remote_base_url" type="VARCHAR(255)"/>
+                <column name="remote_entry" type="VARCHAR(255)"/>
+                <column name="remote_name" type="VARCHAR(255)"/>
+                <column name="wc_tag_name" type="VARCHAR(255)"/>
+                <column name="creationuser" type="VARCHAR(255)"/>
+                <column name="modificationuser" type="VARCHAR(255)"/>
+            </createTable>
+            <createTable tableName="portal">
+                <column name="optlock" type="INTEGER">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+                <column name="base_url" type="VARCHAR(255)"/>
+                <column name="company_name" type="VARCHAR(255)"/>
+                <column name="description" type="VARCHAR(255)"/>
+                <column name="footer_label" type="VARCHAR(255)"/>
+                <column name="guid" type="VARCHAR(255)">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="portal_pkey"/>
+                </column>
+                <column name="home_page" type="VARCHAR(255)"/>
+                <column name="logo_url" type="VARCHAR(255)"/>
+                <column name="phone_number" type="VARCHAR(255)"/>
+                <column name="portal_name" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="portal_roles" type="TEXT"/>
+                <column name="portal_theme" type="VARCHAR(255)"/>
+                <column name="rss_feed_url" type="VARCHAR(255)"/>
+                <column name="tenant_id" type="VARCHAR(255)"/>
+                <column name="city" type="VARCHAR(255)"/>
+                <column name="country" type="VARCHAR(255)"/>
+                <column name="creationuser" type="VARCHAR(255)"/>
+                <column name="modificationuser" type="VARCHAR(255)"/>
+                <column name="postalcode" type="VARCHAR(255)"/>
+                <column name="street" type="VARCHAR(255)"/>
+                <column name="streetno" type="VARCHAR(255)"/>
+            </createTable>
+            <createIndex indexName="ptl_menu_item_item_portal_idx" tableName="ptl_menu_item">
+                <column name="item_portal"/>
+            </createIndex>
+            <createIndex indexName="ptl_menu_item_item_parent_idx" tableName="ptl_menu_item">
+                <column name="item_parent"/>
+            </createIndex>
+            <addUniqueConstraint columnNames="item_key, item_portal" constraintName="ptl_menu_item_item_key_portal" tableName="ptl_menu_item"/>
+            <createIndex indexName="ptl_portal_mfe_portal_id_idx" tableName="ptl_portal_mfe">
+                <column name="portal_id"/>
+            </createIndex>
+            <addUniqueConstraint columnNames="mfe_id, base_url" constraintName="ptl_portal_mfe_id_base_url" tableName="ptl_portal_mfe"/>
+            <createIndex indexName="theme_definition_name_idx" tableName="theme">
+                <column name="name"/>
+            </createIndex>
+            <addUniqueConstraint columnNames="name" constraintName="theme_name_key" tableName="theme"/>
+            <addUniqueConstraint columnNames="remote_entry, remote_base_url, exposed_module" constraintName="ptl_microfrontend_unique" tableName="ptl_microfrontend"/>
+            <addUniqueConstraint columnNames="base_url" constraintName="portal_base_url_key" tableName="portal"/>
+            <addUniqueConstraint columnNames="portal_name, tenant_id" constraintName="portal_name_tenant_id" tableName="portal"/>
+            <createTable tableName="ptl_item_image_urls">
+                <column name="image_url" type="VARCHAR(255)"/>
+                <column name="portal_guid" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+            <createTable tableName="ptl_item_subject_links">
+                <column name="portal_guid" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="link_label" type="VARCHAR(255)"/>
+                <column name="link_url" type="VARCHAR(255)"/>
+            </createTable>
+            <createTable tableName="ptl_menu_item_i18n">
+                <column name="language" type="VARCHAR(255)">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="ptl_menu_item_i18n_pkey"/>
+                </column>
+                <column name="menuitem_guid" type="VARCHAR(255)">
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="ptl_menu_item_i18n_pkey"/>
+                </column>
+                <column name="i18n" type="VARCHAR(255)"/>
+            </createTable>
+            <addForeignKeyConstraint baseColumnNames="item_parent" baseTableName="ptl_menu_item" constraintName="fkadqoa8o5nilp0rkg4w9o8e2pf" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="ptl_menu_item" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="portal_guid" baseTableName="ptl_item_subject_links" constraintName="fkb63141w6urnisyk7qbrpe9dhh" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="portal" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="portal_id" baseTableName="ptl_portal_mfe" constraintName="fkgpnn20l78wep7yovllnkmjter" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="portal" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="menuitem_guid" baseTableName="ptl_menu_item_i18n" constraintName="fkjt241cgkw0ty82ljqduac0ryo" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="ptl_menu_item" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="portal_guid" baseTableName="ptl_item_image_urls" constraintName="fknhgy4xlfao6vyfh66rfqdwgsu" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="portal" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="item_portal" baseTableName="ptl_menu_item" constraintName="fkoi1h3n6tr3wtg53jfb6pp84ti" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="portal" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="portal_theme" baseTableName="portal" constraintName="fkqb64vc7yis0k7is99u3jfarp8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="theme" validate="true"/>
+        </changeSet>
+    </databaseChangeLog>
+

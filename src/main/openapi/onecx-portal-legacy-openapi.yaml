@@ -1,0 +1,158 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-portal legacy service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-portal:8080"
+tags:
+  - name: portalLegacy
+paths:
+  /legacy/menustructure/{portalId}/{applicationId}:
+    get:
+      tags:
+        - portalLegacy
+      description: Fetch the menuItems of the portal and application pair in the tree
+        structure
+      operationId: getMenuStructureForPortalIdAndApplicationId
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: portalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItemStructure'
+        "401":
+          description: Not authorized
+        "404":
+          description: Not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestException'
+      deprecated: true
+  /legacy/menustructure/{portalName}:
+    get:
+      tags:
+        - portalLegacy
+      description: Fetch the menuItems of the portal in the tree structure
+      operationId: getMenuStructureForPortalName
+      parameters:
+        - name: portalName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItemStructure'
+        "401":
+          description: Not authorized
+        "404":
+          description: Not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestException'
+      deprecated: true
+components:
+  schemas:
+    RestException:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        message:
+          type: string
+        parameters:
+          type: array
+          items:
+            type: object
+        namedParameters:
+          type: object
+          additionalProperties:
+            type: object
+    MenuItemStructure:
+      type: object
+      properties:
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        portalId:
+          type: string
+        applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        badge:
+          type: string
+        portalExit:
+          type: boolean
+        parentItemId:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItemStructure'
+        parentKey:
+          type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+    Scope:
+      enum:
+        - WORKSPACE
+        - APP
+        - PAGE
+      type: string

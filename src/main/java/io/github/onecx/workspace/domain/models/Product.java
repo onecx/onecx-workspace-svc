@@ -1,0 +1,33 @@
+package io.github.onecx.workspace.domain.models;
+
+import static jakarta.persistence.FetchType.EAGER;
+
+import java.util.List;
+
+import jakarta.persistence.*;
+
+import org.tkit.quarkus.jpa.models.TraceableEntity;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "PRODUCT", uniqueConstraints = {
+        @UniqueConstraint(name = "PRODUCT_NAME_WORKSPACE_GUID", columnNames = { "PRODUCT_NAME", "WORKSPACE_GUID" })
+})
+@SuppressWarnings("squid:S2160")
+public class Product extends TraceableEntity {
+
+    @Column(name = "PRODUCT_NAME")
+    private String productName;
+
+    @Column(name = "BASE_URL", unique = true)
+    private String baseUrl;
+
+    @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "PRODUCT_GUID")
+    private List<Microfrontend> microfrontends;
+
+}
