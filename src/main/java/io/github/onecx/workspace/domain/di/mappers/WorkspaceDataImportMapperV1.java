@@ -25,7 +25,7 @@ public abstract class WorkspaceDataImportMapperV1 {
     ObjectMapper mapper;
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "theme", ignore = true)
+    @Mapping(target = "theme", source = "themeName")
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)

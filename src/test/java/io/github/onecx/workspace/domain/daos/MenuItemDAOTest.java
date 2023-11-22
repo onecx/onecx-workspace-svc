@@ -28,13 +28,13 @@ class MenuItemDAOTest {
 
     @Test
     void methodExceptionTests() {
-        methodExceptionTests(() -> dao.deleteAllMenuItemsByPortalId(null),
-                MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_PORTAL_ID);
+        methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceId(null),
+                MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID);
         methodExceptionTests(() -> dao.updateMenuItems(null, null, null), MenuItemDAO.ErrorKeys.ERROR_UPDATE_MENU_ITEMS);
-        methodExceptionTests(() -> dao.loadAllMenuItemsByPortalName(null),
-                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_PORTAL_NAME);
-        methodExceptionTests(() -> dao.loadAllMenuItemsByPortalId(null),
-                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_PORTAL_ID);
+        methodExceptionTests(() -> dao.loadAllMenuItemsByWorkspaceName(null),
+                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME);
+        methodExceptionTests(() -> dao.loadAllMenuItemsByWorkspaceId(null),
+                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

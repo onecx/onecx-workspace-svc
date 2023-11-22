@@ -11,6 +11,8 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.Predicate;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
+import org.tkit.quarkus.jpa.daos.Page;
+import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
@@ -67,6 +69,34 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
+    /**
+     * This method fetches the whole workspace with all his lazy load objects
+     * workspaceName provided as a param and
+     * tenantId provided as a param
+     *
+     * @return Workspace entity if exists otherwise null
+     */
+    public Workspace loadByWorkspaceName(String workspaceName) {
+
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Workspace.class);
+            var root = cq.from(Workspace.class);
+
+            cq.where(cb.equal(root.get(WORKSPACE_NAME), workspaceName));
+
+            var workspaceQuery = this.getEntityManager().createQuery(cq);
+            workspaceQuery.setHint(HINT_LOAD_GRAPH,
+                    this.getEntityManager().getEntityGraph(Workspace.WORKSPACE_FULL));
+
+            return this.getEntityManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_WORKSPACE_NAME, ex);
+        }
+    }
+
     public Workspace findByBaseUrl(String baseUrl) {
 
         try {
@@ -87,7 +117,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
-    public List<Workspace> findBySearchCriteria(WorkspaceSearchCriteria criteria) {
+    public PageResult<Workspace> findBySearchCriteria(WorkspaceSearchCriteria criteria) {
         try {
             var cb = getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Workspace.class);
@@ -111,7 +141,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
             cq.orderBy(cb.asc(workspaceTable.get(WORKSPACE_NAME)));
 
-            return this.getEntityManager().createQuery(cq).getResultList();
+            return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_BY_CRITERIA, ex);
         }

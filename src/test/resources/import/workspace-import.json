@@ -381,8 +381,8 @@
         "description": "Portal zur Administration von Portalen",
         "footerLabel": "Admin Portal",
         "homePage": "/admin",
-        "portalName": "ADMIN",
-        "portalRoles": [
+        "workspaceName": "ADMIN",
+        "workspaceRoles": [
           "onecx-portal-user",
           "onecx-portal-admin",
           "onecx-portal-super-admin"

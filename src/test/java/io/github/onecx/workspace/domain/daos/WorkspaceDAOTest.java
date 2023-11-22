@@ -14,9 +14,9 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-class PortalDAOTest {
+class WorkspaceDAOTest {
     @Inject
-    PortalDAO dao;
+    WorkspaceDAO dao;
 
     @InjectMock
     EntityManager em;
@@ -28,17 +28,18 @@ class PortalDAOTest {
 
     @Test
     void methodExceptionTests() {
-        methodExceptionTests(() -> dao.countPortalsForRegMfeId(null),
-                PortalDAO.ErrorKeys.ERROR_COUNT_PORTALS_FOR_MFE_ID);
-        methodExceptionTests(() -> dao.findByPortalName(null), PortalDAO.ErrorKeys.ERROR_FIND_PORTAL_NAME);
+        //        methodExceptionTests(() -> dao.countPortalsForRegMfeId(null),
+        //                WorkspaceDAO.ErrorKeys.ERROR_COUNT_PORTALS_FOR_MFE_ID);
+        methodExceptionTests(() -> dao.findByWorkspaceName(null), WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
         methodExceptionTests(() -> dao.findByBaseUrl(null),
-                PortalDAO.ErrorKeys.ERROR_FIND_BY_BASE_URL);
+                WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_BASE_URL);
         methodExceptionTests(() -> dao.findBySearchCriteria(null),
-                PortalDAO.ErrorKeys.ERROR_FIND_BY_CRITERIA);
+                WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_CRITERIA);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {
         var exc = Assertions.assertThrows(DAOException.class, fn);
         Assertions.assertEquals(key, exc.key);
     }
+
 }

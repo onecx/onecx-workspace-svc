@@ -1,0 +1,687 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-workspace internal service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-workspace:8080"
+tags:
+  - name: workspaceInternal
+  - name: menuInternal
+paths:
+  /internal/workspaces:
+    get:
+      tags:
+        - workspaceInternal
+      description: Find all workspaces
+      operationId: getWorkspaces
+      parameters:
+        - $ref: '#/components/parameters/pageNumber'
+        - $ref: '#/components/parameters/pageSize'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspacePageResult'
+    post:
+      tags:
+        - workspaceInternal
+      description: Create new workspace
+      operationId: createWorkspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkspaceRequest'
+      responses:
+        "201":
+          description: New workspace created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspaces/search:
+    post:
+      tags:
+        - workspaceInternal
+      description: Search for workspaces by search criteria
+      operationId: searchWorkspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSearchCriteria'
+      responses:
+        "200":
+          description: Corresponding workspaces
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspacePageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspaces/{id}:
+    get:
+      tags:
+        - workspaceInternal
+      description: Return workspace by id
+      operationId: getWorkspace
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        "404":
+          description: Not found
+    put:
+      tags:
+        - workspaceInternal
+      description: Update workspace by ID
+      operationId: updateWorkspace
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWorkspaceRequest'
+      responses:
+        "204":
+          description: Workspaces updated
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Workspace not found
+    delete:
+      tags:
+        - workspaceInternal
+      description: Delete workspace by ID
+      operationId: deleteWorkspace
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspaces/{id}/menuItems:
+    get:
+      tags:
+        - menuInternal
+      description: Find all menu items belonging to a workspace
+      operationId: getMenuItems
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItem'
+    patch:
+      tags:
+        - menuInternal
+      description: Bulk update menu Items
+      operationId: patchMenuItems
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              minItems: 1
+              items:
+                $ref: '#/components/schemas/MenuItem'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItem'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Menu items not found
+    post:
+      tags:
+        - menuInternal
+      description: Add a new menu item to workspace menu
+      operationId: addMenuItemForWorkspace
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuItem'
+      responses:
+        "201":
+          description: OK
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    delete:
+      tags:
+        - menuInternal
+      description: Delete all menu items in workspace
+      operationId: deleteAllMenuItemsForWorkspace
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "204":
+          description: No content
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspaces/{id}/menuItems/tree:
+    get:
+      tags:
+        - menuInternal
+      description: Fetch the menuItems of the workspace in the tree structure
+      operationId: getMenuStructureForPortalId
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspaceMenuItem'
+        "404":
+          description: Not found
+  /internal/workspaces/{id}/menuItems/{menuItemId}:
+    get:
+      tags:
+        - menuInternal
+      description: Retrieve menu item detail info
+      operationId: getMenuItemById
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/menuItemId'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+        "404":
+          description: Not found
+    delete:
+      tags:
+        - menuInternal
+      description: Delete a menuItem by the workspace id and the menuItemId
+      operationId: deleteMenuItemById
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/menuItemId'
+      responses:
+        "204":
+          description: OK
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    put:
+      tags:
+        - menuInternal
+      description: Update an existing menu item
+      operationId: updateMenuItem
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/menuItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuItem'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Menu item not found
+components:
+  schemas:
+    WorkspaceSearchCriteria:
+      type: object
+      properties:
+        workspaceName:
+          type: string
+        themeName:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          type: integer
+    WorkspacePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workspace'
+    CreateWorkspaceRequest:
+      required:
+        - workspaceName
+      type: object
+      properties:
+        workspaceName:
+          type: string
+        description:
+          type: string
+        theme:
+          type: string
+        homePage:
+          type: string
+        baseUrl:
+          type: string
+        companyName:
+          type: string
+        phoneNumber:
+          type: string
+        rssFeedUrl:
+          type: string
+        footerLabel:
+          type: string
+        workspaceRoles:
+          type: string
+        logoUrl:
+          type: string
+        address:
+          $ref: '#/components/schemas/WorkspaceAddress'
+        subjectLinks:
+          uniqueItems: true
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectLink'
+        imageUrls:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+    UpdateWorkspaceRequest:
+      required:
+        - workspaceName
+      type: object
+      properties:
+        workspaceName:
+          type: string
+        description:
+          type: string
+        theme:
+          type: string
+        homePage:
+          type: string
+        baseUrl:
+          type: string
+        companyName:
+          type: string
+        phoneNumber:
+          type: string
+        rssFeedUrl:
+          type: string
+        footerLabel:
+          type: string
+        workspaceRoles:
+          type: string
+        logoUrl:
+          type: string
+        address:
+          $ref: '#/components/schemas/WorkspaceAddress'
+        subjectLinks:
+          uniqueItems: true
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectLink'
+        imageUrls:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+    Workspace:
+      required:
+        - workspaceName
+      type: object
+      properties:
+        id:
+          type: string
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        workspaceName:
+          type: string
+        description:
+          type: string
+        theme:
+          type: string
+        homePage:
+          type: string
+        baseUrl:
+          type: string
+        companyName:
+          type: string
+        phoneNumber:
+          type: string
+        rssFeedUrl:
+          type: string
+        footerLabel:
+          type: string
+        workspaceRoles:
+          type: string
+        logoUrl:
+          type: string
+        address:
+          $ref: '#/components/schemas/WorkspaceAddress'
+        subjectLinks:
+          uniqueItems: true
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectLink'
+        imageUrls:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+    WorkspaceAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        streetNo:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+    SubjectLink:
+      type: object
+      properties:
+        label:
+          type: string
+        url:
+          type: string
+    WorkspaceMenuItem:
+      type: object
+      properties:
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        workspaceName:
+          type: string
+        applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        permission:
+          type: string
+        badge:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        workspaceExit:
+          type: boolean
+        parentItemId:
+          type: string
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        roles:
+          type: array
+          items:
+            type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceMenuItem'
+    MenuItem:
+      type: object
+      properties:
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        workspaceName:
+          type: string
+        applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        permission:
+          type: string
+        badge:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        workspaceExit:
+          type: boolean
+        parentItemId:
+          type: string
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        roles:
+          type: array
+          items:
+            type: string
+    Scope:
+      enum:
+        - WORKSPACE
+        - APP
+        - PAGE
+      type: string
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+
+  parameters:
+    pageNumber:
+      in: query
+      name: pageNumber
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 0
+    pageSize:
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 100
+    id:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+    menuItemId:
+      in: path
+      name: menuItemId
+      required: true
+      schema:
+        type: string

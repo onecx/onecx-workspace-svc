@@ -1,13 +1,16 @@
 package io.github.onecx.workspace.domain.di;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 import jakarta.inject.Inject;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.github.onecx.workspace.domain.daos.PortalDAO;
+import io.github.onecx.workspace.domain.daos.WorkspaceDAO;
+import io.github.onecx.workspace.domain.models.Workspace;
 import io.github.onecx.workspace.test.AbstractTest;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.QuarkusTestProfile;
@@ -19,11 +22,13 @@ import io.quarkus.test.junit.TestProfile;
 class WorkspaceDataImportServiceFileTest extends AbstractTest {
 
     @Inject
-    PortalDAO portalDAO;
+    WorkspaceDAO workspaceDAO;
 
     @Test
     @DisplayName("Import portal data from file")
     void importDataFromFileTest() {
+        Stream<Workspace> result = workspaceDAO.findAll();
+        Assertions.assertEquals(1, result.count());
 
     }
 
@@ -38,10 +43,10 @@ class WorkspaceDataImportServiceFileTest extends AbstractTest {
         public Map<String, String> getConfigOverrides() {
             return Map.of(
                     "tkit.dataimport.enabled", "true",
-                    "tkit.dataimport.configurations.portal.enabled", "true",
-                    "tkit.dataimport.configurations.portal.file", "./src/test/resources/import/portal-import.json",
-                    "tkit.dataimport.configurations.portal.metadata.operation", "CLEAN_INSERT",
-                    "tkit.dataimport.configurations.portal.stop-at-error", "true");
+                    "tkit.dataimport.configurations.workspace.enabled", "true",
+                    "tkit.dataimport.configurations.workspace.file", "./src/test/resources/import/workspace-import.json",
+                    "tkit.dataimport.configurations.workspace.metadata.operation", "CLEAN_INSERT",
+                    "tkit.dataimport.configurations.workspace.stop-at-error", "true");
         }
     }
 

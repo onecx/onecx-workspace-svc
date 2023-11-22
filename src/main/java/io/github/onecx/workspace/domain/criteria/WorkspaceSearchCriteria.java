@@ -10,4 +10,8 @@ public class WorkspaceSearchCriteria {
     private String workspaceName;
 
     private String themeName;
+
+    private Integer pageNumber;
+
+    private Integer pageSize;
 }

@@ -23,10 +23,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "WS_MENU_ITEM", indexes = {
-        @Index(columnList = "ITEM_WORKSPACE", name = "PTL_MENU_ITEM_ITEM_WORKSPACE_IDX"),
-        @Index(columnList = "ITEM_PARENT", name = "PTL_MENU_ITEM_ITEM_PARENT_IDX"),
+        @Index(columnList = "ITEM_WORKSPACE", name = "WS_MENU_ITEM_ITEM_WORKSPACE_IDX"),
+        @Index(columnList = "ITEM_PARENT", name = "WS_MENU_ITEM_ITEM_PARENT_IDX"),
 }, uniqueConstraints = {
-        @UniqueConstraint(name = "PTL_MENU_ITEM_ITEM_KEY_WORKSPACE", columnNames = { "ITEM_KEY", "ITEM_WORKSPACE" })
+        @UniqueConstraint(name = "WS_MENU_ITEM_ITEM_KEY_WORKSPACE", columnNames = { "ITEM_KEY", "ITEM_WORKSPACE" })
 })
 @NamedEntityGraph(name = MenuItem.MENU_ITEM_WORKSPACE_AND_TRANSLATIONS, attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("workspace") })
@@ -90,7 +90,7 @@ public class MenuItem extends TraceableEntity {
 
     @ElementCollection(fetch = LAZY)
     @MapKeyColumn(name = "LANGUAGE")
-    @CollectionTable(name = "PTL_MENU_ITEM_I18N")
+    @CollectionTable(name = "WS_MENU_ITEM_I18N")
     private Map<String, String> i18n = new HashMap<>();
 
     @Column(name = "ROLES", columnDefinition = "TEXT")

@@ -20,8 +20,12 @@ import lombok.Setter;
         @UniqueConstraint(name = "WORKSPACE_NAME_TENANT_ID", columnNames = { "WORKSPACE_NAME", "TENANT_ID" }),
         @UniqueConstraint(name = "WORKSPACE_BASE_URL", columnNames = { "BASE_URL" })
 })
+@NamedEntityGraph(name = Workspace.WORKSPACE_FULL, attributeNodes = { @NamedAttributeNode("subjectLinks"),
+        @NamedAttributeNode("imageUrls"), @NamedAttributeNode(value = "products") })
 @SuppressWarnings("squid:S2160")
 public class Workspace extends TraceableEntity {
+
+    public static final String WORKSPACE_FULL = "Workspace.full";
 
     @Column(name = "TENANT_ID")
     private String tenantId;
@@ -57,13 +61,13 @@ public class Workspace extends TraceableEntity {
     private String footerLabel;
 
     @ElementCollection(fetch = LAZY)
-    @CollectionTable(name = "PTL_ITEM_SUBJECT_LINKS")
+    @CollectionTable(name = "WS_ITEM_SUBJECT_LINKS")
     @AttributeOverride(name = "label", column = @Column(name = "link_label"))
     @AttributeOverride(name = "url", column = @Column(name = "link_url"))
     private Set<SubjectLink> subjectLinks = new HashSet<>();
 
     @ElementCollection(fetch = LAZY)
-    @CollectionTable(name = "PTL_ITEM_IMAGE_URLS")
+    @CollectionTable(name = "WS_ITEM_IMAGE_URLS")
     @Column(name = "IMAGE_URL")
     private Set<String> imageUrls = new HashSet<>();
 
