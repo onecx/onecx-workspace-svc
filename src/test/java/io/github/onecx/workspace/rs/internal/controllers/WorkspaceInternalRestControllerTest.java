@@ -1,18 +1,20 @@
 package io.github.onecx.workspace.rs.internal.controllers;
 
-import com.arjuna.ats.arjuna.coordinator.ActionStatus;
-import gen.io.github.onecx.workspace.rs.internal.model.*;
-import io.github.onecx.workspace.test.AbstractTest;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Test;
-import org.tkit.quarkus.test.WithDBData;
-
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.tkit.quarkus.test.WithDBData;
+
+import gen.io.github.onecx.workspace.rs.internal.model.*;
+import io.github.onecx.workspace.test.AbstractTest;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceInternalRestController.class)
@@ -156,12 +158,77 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .as(WorkspacePageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(3);
-        assertThat(data.getStream()).isNotNull().hasSize(3);
+        assertThat(data.getTotalElements()).isEqualTo(0);
+        assertThat(data.getStream()).isNotNull().hasSize(0);
     }
 
     @Test
     void updateWorkspaceTest() {
+        var response = given().when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-222")
+                .get("{id}")
+                .then().statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTO.class);
+        // update none existing workspace
+        given().when()
+                .contentType(APPLICATION_JSON)
+                .body(response)
+                .pathParam("id", "none-exists")
+                .put("{id}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
 
+        // update workspace with already existing baseUrl for other workspace
+        response.setBaseUrl("/company3");
+        var error = given().when()
+                .contentType(APPLICATION_JSON)
+                .body(response)
+                .pathParam("id", "11-222")
+                .put("{id}")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo("MERGE_ENTITY_FAILED");
+        assertThat(error.getDetail()).isEqualTo(
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_key'  Detail: Key (base_url)=(/company3) already exists.]");
+
+        // normal update
+        response.setBaseUrl("/company2/updated");
+        response.setCompanyName("Company 2 updated");
+        given().when()
+                .contentType(APPLICATION_JSON)
+                .body(response)
+                .pathParam("id", "11-222")
+                .put("{id}")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        var updatedResponse = given().when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-222")
+                .get("{id}")
+                .then().statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTO.class);
+
+        assertThat(updatedResponse).isNotNull();
+        assertThat(updatedResponse.getAddress()).isNotNull();
+        assertThat(updatedResponse.getAddress().getStreetNo()).isEqualTo(response.getAddress().getStreetNo());
+        assertThat(updatedResponse.getAddress().getStreet()).isEqualTo(response.getAddress().getStreet());
+        assertThat(updatedResponse.getWorkspaceRoles()).isEqualTo(response.getWorkspaceRoles());
+        assertThat(updatedResponse.getCompanyName()).isEqualTo(response.getCompanyName());
+        assertThat(updatedResponse.getBaseUrl()).isEqualTo(response.getBaseUrl());
+    }
+
+    private UpdateWorkspaceRequestDTO createUpdateWorkspaceDTO() {
+        UpdateWorkspaceRequestDTO dto = new UpdateWorkspaceRequestDTO();
+
+        dto.setWorkspaceName("test-workspace-1");
+        dto.setDescription("update workspace description");
+        dto.setWorkspaceRoles(List.of("TestRole1", "TestRole2").toString());
+
+        return dto;
     }
 }

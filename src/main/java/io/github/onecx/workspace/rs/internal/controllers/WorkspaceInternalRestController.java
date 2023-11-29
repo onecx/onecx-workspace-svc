@@ -1,5 +1,19 @@
 package io.github.onecx.workspace.rs.internal.controllers;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.quarkus.jpa.exceptions.ConstraintException;
+import org.tkit.quarkus.log.cdi.LogService;
+
 import gen.io.github.onecx.workspace.rs.internal.WorkspaceInternalApi;
 import gen.io.github.onecx.workspace.rs.internal.model.CreateWorkspaceRequestDTO;
 import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
@@ -10,18 +24,6 @@ import io.github.onecx.workspace.domain.daos.WorkspaceDAO;
 import io.github.onecx.workspace.domain.models.Workspace;
 import io.github.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import io.github.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
-import org.jboss.resteasy.reactive.RestResponse;
-import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.tkit.quarkus.jpa.exceptions.ConstraintException;
-import org.tkit.quarkus.log.cdi.LogService;
 
 @Path("/internal/workspaces")
 @LogService
@@ -70,12 +72,6 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(workspaceMapper.map(item)).build();
-    }
-
-    @Override
-    public Response getWorkspaces(Integer pageNumber, Integer pageSize) {
-
-        return null;
     }
 
     @Override

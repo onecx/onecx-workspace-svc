@@ -43,6 +43,7 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "workspace", ignore = true)
     public abstract Product createWorkspace(ProductDTOV1 productDTO);
 
     @Mapping(target = "id", ignore = true)

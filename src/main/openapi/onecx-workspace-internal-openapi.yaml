@@ -10,21 +10,6 @@ tags:
   - name: menuInternal
 paths:
   /internal/workspaces:
-    get:
-      tags:
-        - workspaceInternal
-      description: Find all workspaces
-      operationId: getWorkspaces
-      parameters:
-        - $ref: '#/components/parameters/pageNumber'
-        - $ref: '#/components/parameters/pageSize'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WorkspacePageResult'
     post:
       tags:
         - workspaceInternal
@@ -142,7 +127,7 @@ paths:
       tags:
         - menuInternal
       description: Find all menu items belonging to a workspace
-      operationId: getMenuItems
+      operationId: getMenuItemsForWorkspaceId
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
@@ -191,7 +176,7 @@ paths:
       tags:
         - menuInternal
       description: Add a new menu item to workspace menu
-      operationId: addMenuItemForWorkspace
+      operationId: createMenuItemForWorkspace
       parameters:
         - $ref: '#/components/parameters/id'
       requestBody:
@@ -199,7 +184,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MenuItem'
+              $ref: '#/components/schemas/CreateMenuItem'
       responses:
         "201":
           description: OK
@@ -240,7 +225,7 @@ paths:
       tags:
         - menuInternal
       description: Fetch the menuItems of the workspace in the tree structure
-      operationId: getMenuStructureForPortalId
+      operationId: getMenuStructureForWorkspaceId
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
@@ -249,11 +234,32 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/WorkspaceMenuItem'
+                $ref: '#/components/schemas/WorkspaceMenuItemStructrue'
         "404":
           description: Not found
+  /internal/workspaces/{id}/menuItems/tree/upload:
+    post:
+      tags:
+        - menuInternal
+      description: Upload the menu structure for workspace
+      operationId: uploadMenuStructureForWorkspaceId
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceMenuItemStructrue'
+      responses:
+        "201":
+          description: New workspace created
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/workspaces/{id}/menuItems/{menuItemId}:
     get:
       tags:
@@ -510,6 +516,13 @@ components:
           type: string
         url:
           type: string
+    WorkspaceMenuItemStructrue:
+      type: object
+      properties:
+        menuItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceMenuItem'
     WorkspaceMenuItem:
       type: object
       properties:
@@ -592,6 +605,40 @@ components:
         workspaceName:
           type: string
         applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        permission:
+          type: string
+        badge:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        workspaceExit:
+          type: boolean
+        parentItemId:
+          type: string
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        roles:
+          type: array
+          items:
+            type: string
+    CreateMenuItem:
+      type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
           type: string
         disabled:
           type: boolean

@@ -24,28 +24,6 @@ import io.github.onecx.workspace.domain.models.Workspace_;
 public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
     /**
-     * Methods count number of portal registered for the micro-frontend.
-     *
-     * @param id micro-frontend id
-     * @return the number of portal registered for the micro-frontend.
-     */
-    // public long countPortalsForRegMfeId(String id) {
-    //     try {
-    //         var cb = this.getEntityManager().getCriteriaBuilder();
-    //         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-    //         var root = cq.from(Workspace.class);
-    //         cq.select(cb.count(root));
-    //         cq.where(cb.equal(root.get(W.MICROFRONTEND_REGISTRATIONS).get(MicrofrontendRegistration_.MFE_ID), id));
-    //         return this.getEntityManager().createQuery(cq).getSingleResult();
-
-    //     } catch (NoResultException nre) {
-    //         return 0;
-    //     } catch (Exception ex) {
-    //         throw new DAOException(ErrorKeys.ERROR_COUNT_PORTALS_FOR_MFE_ID, ex);
-    //     }
-    // }
-
-    /**
      * This method fetches a portal with
      * portalName provided as a param and
      * tenantId provided as a param
@@ -153,7 +131,6 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
         ERROR_FIND_BY_CRITERIA,
         ERROR_FIND_WORKSPACE_NAME,
-        ERROR_COUNT_PORTALS_FOR_MFE_ID,
     }
 
 }

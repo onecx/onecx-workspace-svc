@@ -171,6 +171,18 @@
                             <modelNameSuffix>DTO</modelNameSuffix>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>legacy</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-portal-legacy-openapi.yaml</inputSpec>
+                            <apiPackage>gen.io.github.onecx.portal.rs.legacy</apiPackage>
+                            <modelPackage>gen.io.github.onecx.portal.rs.legacy.model</modelPackage>
+                            <modelNameSuffix>DTO</modelNameSuffix>
+                        </configuration>
+                    </execution>
                    <!--  <execution>
                         <id>v1</id>
                         <goals>
@@ -182,18 +194,6 @@
                             <modelPackage>gen.io.github.onecx.portal.rs.external.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <apiNameSuffix>V1Api</apiNameSuffix>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>legacy</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>src/main/openapi/onecx-portal-legacy-openapi.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.portal.rs.legacy</apiPackage>
-                            <modelPackage>gen.io.github.onecx.portal.rs.legacy.model</modelPackage>
-                            <modelNameSuffix>DTO</modelNameSuffix>
                         </configuration>
                     </execution>
                     <execution>

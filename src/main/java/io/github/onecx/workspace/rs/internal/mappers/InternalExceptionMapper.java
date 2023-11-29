@@ -1,13 +1,14 @@
 package io.github.onecx.workspace.rs.internal.mappers;
 
-import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailInvalidParamDTO;
-import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailParamDTO;
-import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.slf4j.Slf4j;
+
 import org.jboss.resteasy.reactive.RestResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,9 +16,10 @@ import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailInvalidParamDTO;
+import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailParamDTO;
+import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Mapper(uses = { OffsetDateTimeMapper.class })

@@ -1,6 +1,7 @@
 package io.github.onecx.workspace.domain.models;
 
 import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 
 import java.util.List;
 
@@ -25,6 +26,10 @@ public class Product extends TraceableEntity {
 
     @Column(name = "BASE_URL", unique = true)
     private String baseUrl;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "WORKSPACE_GUID")
+    private Workspace workspace;
 
     @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "PRODUCT_GUID")

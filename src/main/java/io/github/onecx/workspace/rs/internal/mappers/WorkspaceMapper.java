@@ -1,14 +1,15 @@
 package io.github.onecx.workspace.rs.internal.mappers;
 
-import gen.io.github.onecx.workspace.rs.internal.model.*;
-import io.github.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
-import io.github.onecx.workspace.domain.models.SubjectLink;
-import io.github.onecx.workspace.domain.models.Workspace;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.mapstruct.*;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
+
+import gen.io.github.onecx.workspace.rs.internal.model.*;
+import io.github.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
+import io.github.onecx.workspace.domain.models.Workspace;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface WorkspaceMapper {
@@ -40,10 +41,23 @@ public interface WorkspaceMapper {
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTO dto);
 
     @Mapping(target = "removeStreamItem", ignore = true)
+    @Mapping(target = "stream", qualifiedByName = "mapStream")
     WorkspacePageResultDTO mapPageResult(PageResult<Workspace> page);
 
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
     @Mapping(target = "version", source = "modificationCount")
     WorkspaceDTO map(Workspace data);
+
+    @Mapping(target = "removeSubjectLinksItem", ignore = true)
+    @Mapping(target = "removeImageUrlsItem", ignore = true)
+    @Mapping(target = "imageUrls", ignore = true)
+    @Mapping(target = "subjectLinks", ignore = true)
+    @Mapping(target = "version", source = "modificationCount")
+    @Named("mapWithoutLazy")
+    WorkspaceDTO mapWithoutLazy(Workspace data);
+
+    @Named("mapStream")
+    @IterableMapping(qualifiedByName = "mapWithoutLazy")
+    List<WorkspaceDTO> mapStream(Stream<Workspace> stream);
 }

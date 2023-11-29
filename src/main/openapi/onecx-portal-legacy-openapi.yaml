@@ -78,6 +78,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestException'
       deprecated: true
+  /1000kit-portal-server/menustructure/{portalName}:
+    get:
+      tags:
+        - portalLegacy
+      description: Fetch the menuItems of the portal in the tree structure
+      operationId: getMenuStructureForTkitPortalName
+      parameters:
+        - name: portalName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: interpolate
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TkitMenuItemStructure'
+        "401":
+          description: Not authorized
+        "404":
+          description: Not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestException'
+      deprecated: true
 components:
   schemas:
     RestException:
@@ -95,6 +132,51 @@ components:
           type: object
           additionalProperties:
             type: object
+    TkitMenuItemStructure:
+      type: object
+      properties:
+        version:
+          format: int32
+          type: integer
+        guid:
+          type: string
+        persisted:
+          type: boolean
+        key:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+        portalId:
+          type: string
+        applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        badge:
+          type: string
+        portalExit:
+          type: boolean
+        parentItemId:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/TkitMenuItemStructure'
+        parentKey:
+          type: string
+        permissionObject:
+          type: string
     MenuItemStructure:
       type: object
       properties:
@@ -152,7 +234,7 @@ components:
       example: 2022-03-10T12:15:50-04:00
     Scope:
       enum:
-        - WORKSPACE
+        - PORTAL
         - APP
         - PAGE
       type: string
