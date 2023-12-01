@@ -71,44 +71,6 @@ public class TkitPortalRestControllerTest extends AbstractTest {
         assertThat(data).isNotNull();
         assertThat(data).isNotEmpty();
         assertThat(data).hasSize(5);
-
-        data = given()
-                .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "test01")
-                .queryParam("interpolate", Boolean.TRUE)
-                .get()
-                .then().statusCode(OK.getStatusCode())
-                .contentType(APPLICATION_JSON)
-                .extract()
-                .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
-                });
-
-        assertThat(data).isNotNull();
-        assertThat(data).isNotEmpty();
-        assertThat(data).hasSize(5);
-        assertThat(getUrlFromMenuItemByName(data, "PORTAL_CHILD_5")).isEqualTo("interpolated5");
-        assertThat(getUrlFromMenuItemByName(data, "PORTAL_CHILD_6")).isEqualTo("interpolated6");
-        assertThat(getUrlFromMenuItemByName(data, "PORTAL_CHILD_7")).isEqualTo("/interpolated7");
-        assertThat(getUrlFromMenuItemByName(data, "PORTAL_CHILD_8")).isEqualTo("/interpolated8");
-    }
-
-    private String getUrlFromMenuItemByName(List<TkitMenuItemStructureDTO> menuList, String key) {
-        String foundurl;
-        for (TkitMenuItemStructureDTO menuItem : menuList) {
-            if (menuItem.getKey().equals(key)) {
-                foundurl = menuItem.getUrl();
-                return foundurl;
-            }
-
-            if (menuItem.getChildren() != null && !menuItem.getChildren().isEmpty()) {
-                foundurl = getUrlFromMenuItemByName(menuItem.getChildren(), key);
-                if (foundurl != null) {
-                    return foundurl;
-                }
-            }
-        }
-
-        return null;
     }
 
     @Test

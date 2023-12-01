@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,22 @@ public class ProductRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getMicrofrontends()).hasSize(2);
+
+        request.setMicrofrontends(null);
+        request.setProductName("testProduct1");
+        request.setBaseUrl("/test1");
+        dto = given()
+                .when()
+                .body(request)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .post()
+                .then()
+                .statusCode(CREATED.getStatusCode())
+                .extract().as(ProductDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getMicrofrontends()).isNull();
     }
 
     @Test
@@ -163,6 +180,22 @@ public class ProductRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getMicrofrontends()).isNull();
+        assertThat(dto.getBaseUrl()).isEqualTo(request.getBaseUrl());
+
+        request.setMicrofrontends(new ArrayList<>());
+        dto = given()
+                .when()
+                .body(request)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .pathParam("productId", "1234")
+                .put("{productId}")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ProductDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getMicrofrontends()).isEmpty();
         assertThat(dto.getBaseUrl()).isEqualTo(request.getBaseUrl());
     }
 }
