@@ -36,7 +36,7 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
                 .post()
-                .then().log().all()
+                .then()
                 .statusCode(CREATED.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
 
@@ -62,7 +62,7 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
                 .post()
-                .then().log().all()
+                .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
@@ -97,7 +97,7 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .get("{id}")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
 

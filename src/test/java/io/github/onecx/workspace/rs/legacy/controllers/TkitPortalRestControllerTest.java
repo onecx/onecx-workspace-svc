@@ -78,7 +78,6 @@ public class TkitPortalRestControllerTest extends AbstractTest {
                 .queryParam("interpolate", Boolean.TRUE)
                 .get()
                 .then().statusCode(OK.getStatusCode())
-                .log().all()
                 .contentType(APPLICATION_JSON)
                 .extract()
                 .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
@@ -153,7 +152,6 @@ public class TkitPortalRestControllerTest extends AbstractTest {
                 .pathParam("appId", "parameters-management-ui")
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
-                .log().all()
                 .contentType(APPLICATION_JSON)
                 .extract()
                 .body().as(MenuRegistrationResponseDTO.class);

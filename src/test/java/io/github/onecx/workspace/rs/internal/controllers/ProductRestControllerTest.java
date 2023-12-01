@@ -134,7 +134,7 @@ public class ProductRestControllerTest extends AbstractTest {
                 .pathParam("id", "11-111")
                 .pathParam("productId", "does-not-exist")
                 .put("{productId}")
-                .then().log().all()
+                .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
 
         assertThat(error).isNotNull();
@@ -147,7 +147,7 @@ public class ProductRestControllerTest extends AbstractTest {
                 .pathParam("id", "11-111")
                 .pathParam("productId", "does-not-exist")
                 .put("{productId}")
-                .then().log().all()
+                .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
         var dto = given()
@@ -157,7 +157,7 @@ public class ProductRestControllerTest extends AbstractTest {
                 .pathParam("id", "11-111")
                 .pathParam("productId", "1234")
                 .put("{productId}")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(ProductDTO.class);
 

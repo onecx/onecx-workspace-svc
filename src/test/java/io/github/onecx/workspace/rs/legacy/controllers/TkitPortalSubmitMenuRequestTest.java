@@ -37,7 +37,6 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .pathParam("appId", "parameters-management-ui")
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
-                .log().all()
                 .contentType(APPLICATION_JSON)
                 .extract()
                 .body().as(MenuRegistrationResponseDTO.class);
@@ -52,7 +51,6 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .pathParam("appId", "parameters-management-ui")
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
-                .log().all()
                 .contentType(APPLICATION_JSON)
                 .extract()
                 .body().as(MenuRegistrationResponseDTO.class);
@@ -67,7 +65,6 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .pathParam("appId", "parameters-management-ui")
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
-                .log().all()
                 .contentType(APPLICATION_JSON)
                 .extract()
                 .body().as(MenuRegistrationResponseDTO.class);
@@ -112,7 +109,6 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .pathParam("appId", "parameters-management-ui")
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
-                .log().all()
                 .contentType(APPLICATION_JSON)
                 .extract()
                 .body().as(MenuRegistrationResponseDTO.class);
@@ -128,7 +124,6 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .pathParam("appId", "parameters-management-ui")
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
-                .log().all()
                 .contentType(APPLICATION_JSON)
                 .extract()
                 .body().as(MenuRegistrationResponseDTO.class);

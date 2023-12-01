@@ -39,7 +39,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .get()
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
@@ -63,7 +63,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .get()
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
@@ -86,7 +86,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .get()
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
@@ -262,7 +262,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .pathParam("id", "11-111")
                 .get("/tree")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().body().as(WorkspaceMenuItemStructrueDTO.class);
 
@@ -577,7 +577,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "does-not-exists")
                 .post("/tree/upload")
-                .then().log().all()
+                .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
@@ -628,7 +628,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .pathParam("id", "11-222")
                 .get("/tree")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().body().as(WorkspaceMenuItemStructrueDTO.class);
 
