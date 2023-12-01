@@ -115,6 +115,7 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
     void searchWorkspacesTest() {
         var criteria = new WorkspaceSearchCriteriaDTO();
 
+        // empty criteria
         var data = given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -130,6 +131,7 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(data.getStream()).isNotNull().hasSize(3);
 
         criteria.setWorkspaceName("test01");
+        criteria.setThemeName("11-111");
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -144,6 +146,23 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(data).isNotNull();
         assertThat(data.getTotalElements()).isEqualTo(1);
         assertThat(data.getStream()).isNotNull().hasSize(1);
+
+        criteria.setWorkspaceName("");
+        criteria.setThemeName("");
+
+        data = given()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .as(WorkspacePageResultDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getTotalElements()).isEqualTo(3);
+        assertThat(data.getStream()).isNotNull().hasSize(3);
 
         criteria.setWorkspaceName(" ");
 
@@ -198,6 +217,7 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
         // normal update
         response.setBaseUrl("/company2/updated");
         response.setCompanyName("Company 2 updated");
+        response.setWorkspaceName("Workspace2Test");
         given().when()
                 .contentType(APPLICATION_JSON)
                 .body(response)

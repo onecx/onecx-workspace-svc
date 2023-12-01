@@ -18,14 +18,13 @@ import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 import io.github.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
 import io.github.onecx.workspace.domain.models.Workspace;
-import io.github.onecx.workspace.domain.models.Workspace_;
 
 @ApplicationScoped
 public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
     /**
-     * This method fetches a portal with
-     * portalName provided as a param and
+     * This method fetches a workspace with
+     * workspaceName provided as a param and
      * tenantId provided as a param
      *
      * @return Workspace entity if exists otherwise null
@@ -75,46 +74,24 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
-    public Workspace findByBaseUrl(String baseUrl) {
-
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(Workspace.class);
-            var root = cq.from(Workspace.class);
-
-            cq.where(cb.like(cb.literal(baseUrl), cb.concat(root.get(Workspace_.BASE_URL), "%")));
-            cq.orderBy(cb.desc(cb.length(root.get(Workspace_.BASE_URL))));
-            var results = this.getEntityManager().createQuery(cq).getResultList();
-
-            if (results.isEmpty()) {
-                return null;
-            }
-            return results.get(0);
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_BY_BASE_URL, ex);
-        }
-    }
-
     public PageResult<Workspace> findBySearchCriteria(WorkspaceSearchCriteria criteria) {
         try {
             var cb = getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Workspace.class);
             var workspaceTable = cq.from(Workspace.class);
 
-            if (criteria != null) {
-                List<Predicate> predicates = new ArrayList<>();
-                if (criteria.getWorkspaceName() != null && !criteria.getWorkspaceName().isEmpty()) {
-                    predicates.add(
-                            cb.like(workspaceTable.get(WORKSPACE_NAME),
-                                    QueryCriteriaUtil.wildcard(criteria.getWorkspaceName(), false)));
-                }
-                if (criteria.getThemeName() != null && !criteria.getThemeName().isEmpty()) {
-                    predicates.add(
-                            cb.like(workspaceTable.get(THEME), QueryCriteriaUtil.wildcard(criteria.getThemeName(), false)));
-                }
-                if (!predicates.isEmpty()) {
-                    cq.where(cb.and(predicates.toArray(new Predicate[0])));
-                }
+            List<Predicate> predicates = new ArrayList<>();
+            if (criteria.getWorkspaceName() != null && !criteria.getWorkspaceName().isEmpty()) {
+                predicates.add(
+                        cb.like(workspaceTable.get(WORKSPACE_NAME),
+                                QueryCriteriaUtil.wildcard(criteria.getWorkspaceName(), false)));
+            }
+            if (criteria.getThemeName() != null && !criteria.getThemeName().isEmpty()) {
+                predicates.add(
+                        cb.like(workspaceTable.get(THEME), QueryCriteriaUtil.wildcard(criteria.getThemeName(), false)));
+            }
+            if (!predicates.isEmpty()) {
+                cq.where(cb.and(predicates.toArray(new Predicate[0])));
             }
 
             cq.orderBy(cb.asc(workspaceTable.get(WORKSPACE_NAME)));

@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.HttpHeaders;
@@ -101,6 +102,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
         menuItem.setDisabled(false);
         menuItem.setRoles(List.of("Role1"));
         menuItem.setParentItemId("44-1");
+        menuItem.setI18n(Map.of("de", "Test DE Menu", "en", "Test EN Menu"));
 
         var uri = given()
                 .when()

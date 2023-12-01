@@ -1,0 +1,37 @@
+{
+  "requestVersion": 0,
+  "menuItems": [
+    {
+      "key": "PARAMETERS_MANAGEMENT_UI_ROOT",
+      "name": "Parameters management root menu item",
+      "i18n": {
+        "de": "Parameters management",
+        "en": "Parameters management"
+      },
+      "url": "/1000kit-parameters-ui",
+      "disabled": false,
+      "position": 0,
+      "scope": "APP",
+      "parentKey": "PORTAL_MAIN_MENU",
+      "permissionObject": "PARAMETERS_MANAGEMENT_UI_ROOT",
+      "children": [
+        {
+          "key": "PARAMETERS_MANAGEMENT_SEARCH",
+          "name": "Parameters management search page menu item",
+          "i18n": {
+            "de": "Parameters Management Search",
+            "en": "Parameters Management Search"
+          },
+          "url": "/1000kit-parameters-ui/parameters/search",
+          "disabled": false,
+          "position": 0,
+          "children": null,
+          "scope": "PAGE",
+          "portalExit": false,
+          "parentKey": "PARAMETERS_MANAGEMENT_UI_ROOT",
+          "permissionObject": "PARAMETER_SEARCH"
+        }
+      ]
+    }
+  ]
+}

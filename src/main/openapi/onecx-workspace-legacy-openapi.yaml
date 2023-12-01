@@ -7,6 +7,7 @@ servers:
   - url: "http://onecx-portal:8080"
 tags:
   - name: portalLegacy
+  - name: tkitPortal
 paths:
   /legacy/menustructure/{portalId}/{applicationId}:
     get:
@@ -81,7 +82,7 @@ paths:
   /1000kit-portal-server/menustructure/{portalName}:
     get:
       tags:
-        - portalLegacy
+        - tkitPortal
       description: Fetch the menuItems of the portal in the tree structure
       operationId: getMenuStructureForTkitPortalName
       parameters:
@@ -115,6 +116,44 @@ paths:
               schema:
                 $ref: '#/components/schemas/RestException'
       deprecated: true
+  /1000kit-portal-server/menustructure/{portalName}/{appId}:
+    post:
+      tags:
+        - tkitPortal
+      description: Register menu from the application
+      operationId: submitMenuRegistrationRequest
+      parameters:
+        - name: portalName
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuRegistrationRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuRegistrationResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestException'
 components:
   schemas:
     RestException:
@@ -238,3 +277,23 @@ components:
         - APP
         - PAGE
       type: string
+    MenuRegistrationRequest:
+      type: object
+      properties:
+        requestVersion:
+          type: integer
+        menuItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/TkitMenuItemStructure'
+    MenuRegistrationResponse:
+      type: object
+      properties:
+        applicationId:
+          type: string
+        requestVersion:
+          type: integer
+        applied:
+          type: boolean
+        notice:
+          type: string

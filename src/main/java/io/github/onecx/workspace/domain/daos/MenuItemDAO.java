@@ -72,6 +72,57 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
     }
 
     /**
+     * This method delete all menu items by workspace name and application id.
+     *
+     * @param workspaceName - workspace name
+     * @param appId - application id
+     */
+    @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
+    public void deleteAllMenuItemsByWorkspaceNameAndAppId(String workspaceName, String appId) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = this.criteriaQuery();
+            var root = cq.from(MenuItem.class);
+
+            cq.where(cb.and(
+                    cb.equal(root.get(MenuItem_.WORKSPACE_NAME), workspaceName),
+                    cb.equal(root.get(MenuItem_.APPLICATION_ID), appId)));
+
+            var items = getEntityManager().createQuery(cq).getResultList();
+            delete(items);
+
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID, ex);
+        }
+    }
+
+    /**
+     * This method fetches all menuItems assigned to a workspace with
+     *
+     * @param workspaceName - provided as a param and
+     *
+     * @return List of the menu items
+     */
+    public MenuItem loadMenuItemByWorkspaceAndKey(String workspaceName, String itemKey) {
+
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(MenuItem.class);
+            var root = cq.from(MenuItem.class);
+
+            cq.where(cb.and(
+                    cb.equal(root.get(MenuItem_.WORKSPACE_NAME), workspaceName),
+                    cb.equal(root.get(MenuItem_.key), itemKey)));
+
+            return getEntityManager()
+                    .createQuery(cq)
+                    .getSingleResult();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME, ex);
+        }
+    }
+
+    /**
      * This method fetches all menuItems assigned to a workspace with
      *
      * @param workspaceName - provided as a param and
@@ -122,5 +173,8 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME,
+        ERROR_LOAD_ALL_MENU_ITEM_BY_KEY,
+
+        ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID,
     }
 }

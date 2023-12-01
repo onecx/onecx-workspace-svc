@@ -10,7 +10,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -28,7 +27,6 @@ import io.github.onecx.workspace.domain.models.MenuItem;
 import io.github.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import io.github.onecx.workspace.rs.internal.mappers.MenuItemMapper;
 
-@Path("/internal/workspaces/{id}/menuItems")
 @LogService
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)

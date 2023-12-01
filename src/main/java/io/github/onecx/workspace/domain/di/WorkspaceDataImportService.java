@@ -16,6 +16,7 @@ import gen.io.github.onecx.workspace.di.workspace.v1.model.ImportRequestDTOV1;
 import gen.io.github.onecx.workspace.di.workspace.v1.model.MenuItemStructureDTOV1;
 import gen.io.github.onecx.workspace.di.workspace.v1.model.WorkspaceDataImportDTOV1;
 import io.github.onecx.workspace.domain.daos.MenuItemDAO;
+import io.github.onecx.workspace.domain.daos.ProductDAO;
 import io.github.onecx.workspace.domain.daos.WorkspaceDAO;
 import io.github.onecx.workspace.domain.di.mappers.WorkspaceDataImportMapperV1;
 import io.github.onecx.workspace.domain.models.MenuItem;
@@ -29,6 +30,9 @@ public class WorkspaceDataImportService implements DataImportService {
 
     @Inject
     WorkspaceDAO workspaceDAO;
+
+    @Inject
+    ProductDAO productDAO;
 
     @Inject
     ObjectMapper objectMapper;
@@ -59,6 +63,7 @@ public class WorkspaceDataImportService implements DataImportService {
         }
 
         // clean data
+        productDAO.deleteAll();
         menuItemDAO.deleteAll();
         workspaceDAO.deleteAll();
 

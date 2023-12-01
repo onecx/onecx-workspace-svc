@@ -28,13 +28,12 @@ class WorkspaceDAOTest {
 
     @Test
     void methodExceptionTests() {
-        //        methodExceptionTests(() -> dao.countPortalsForRegMfeId(null),
-        //                WorkspaceDAO.ErrorKeys.ERROR_COUNT_PORTALS_FOR_MFE_ID);
-        methodExceptionTests(() -> dao.findByWorkspaceName(null), WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
-        methodExceptionTests(() -> dao.findByBaseUrl(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_BASE_URL);
+        methodExceptionTests(() -> dao.loadByWorkspaceName(null),
+                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
         methodExceptionTests(() -> dao.findBySearchCriteria(null),
                 WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_CRITERIA);
+        methodExceptionTests(() -> dao.findByWorkspaceName(null),
+                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

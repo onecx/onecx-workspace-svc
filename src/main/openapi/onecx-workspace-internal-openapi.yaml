@@ -8,6 +8,7 @@ servers:
 tags:
   - name: workspaceInternal
   - name: menuInternal
+  - name: productInternal
 paths:
   /internal/workspaces:
     post:
@@ -324,6 +325,104 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
           description: Menu item not found
+  /internal/workspaces/{id}/products:
+    post:
+      tags:
+        - productInternal
+      description: Create/Register new product to workspace
+      operationId: createProductInWorkspace
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        "201":
+          description: Product added
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    get:
+      tags:
+        - productInternal
+      description: Find all products belonging to a workspace
+      operationId: getProductsForWorkspaceId
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        "404":
+          description: Not found
+  /internal/workspaces/{id}/products/{productId}:
+    delete:
+      tags:
+        - productInternal
+      description: Delete a product by the workspace id and the productId
+      operationId: deleteProductById
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/productId'
+      responses:
+        "204":
+          description: OK
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    put:
+      tags:
+        - productInternal
+      description: Update product and MFEs
+      operationId: updateProductById
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/productId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Product not found
 components:
   schemas:
     WorkspaceSearchCriteria:
@@ -702,7 +801,85 @@ components:
       format: date-time
       type: string
       example: 2022-03-10T12:15:50-04:00
-
+    CreateProductRequest:
+      required:
+        - productName
+        - baseUrl
+      type: object
+      properties:
+        productName:
+          type: string
+        baseUrl:
+          type: string
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateMicrofrontend'
+    CreateMicrofrontend:
+      required:
+        - mfeId
+        - basePath
+      type: object
+      properties:
+        mfeId:
+          type: string
+        basePath:
+          type: string
+    UpdateProductRequest:
+      required:
+        - baseUrl
+      type: object
+      properties:
+        baseUrl:
+          type: string
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateMicrofrontend'
+    UpdateMicrofrontend:
+      required:
+        - mfeId
+        - basePath
+      type: object
+      properties:
+        mfeId:
+          type: string
+        basePath:
+          type: string
+    Product:
+      type: object
+      properties:
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        productName:
+          type: string
+        baseUrl:
+          type: string
+        microfrontends:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Microfrontend'
+    Microfrontend:
+      type: object
+      properties:
+        id:
+          type: string
+        mfeId:
+          type: string
+        basePath:
+          type: string
   parameters:
     pageNumber:
       in: query
@@ -729,6 +906,12 @@ components:
     menuItemId:
       in: path
       name: menuItemId
+      required: true
+      schema:
+        type: string
+    productId:
+      in: path
+      name: productId
       required: true
       schema:
         type: string

@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.18.0</version>
+        <version>0.23.0</version>
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
@@ -177,9 +177,9 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-portal-legacy-openapi.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.portal.rs.legacy</apiPackage>
-                            <modelPackage>gen.io.github.onecx.portal.rs.legacy.model</modelPackage>
+                            <inputSpec>src/main/openapi/onecx-workspace-legacy-openapi.yaml</inputSpec>
+                            <apiPackage>gen.io.github.onecx.workspace.rs.legacy</apiPackage>
+                            <modelPackage>gen.io.github.onecx.workspace.rs.legacy.model</modelPackage>
                             <modelNameSuffix>DTO</modelNameSuffix>
                         </configuration>
                     </execution>
@@ -223,6 +223,19 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire-plugin.version}</version>
+                <configuration>
+                    <environmentVariables>
+                        <child5>interpolated5</child5>
+                        <child6>interpolated6</child6>
+                        <child7>interpolated7</child7>
+                        <child8>interpolated8</child8>
+                    </environmentVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>

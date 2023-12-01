@@ -88,8 +88,9 @@ public class MenuItem extends TraceableEntity {
     @OrderBy("position")
     private Set<MenuItem> children = new HashSet<>();
 
-    @ElementCollection(fetch = LAZY)
+    @ElementCollection
     @MapKeyColumn(name = "LANGUAGE")
+    @Column(name = "i18n")
     @CollectionTable(name = "WS_MENU_ITEM_I18N")
     private Map<String, String> i18n = new HashMap<>();
 

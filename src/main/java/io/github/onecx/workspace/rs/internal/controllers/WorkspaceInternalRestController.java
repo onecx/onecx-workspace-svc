@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -25,7 +24,6 @@ import io.github.onecx.workspace.domain.models.Workspace;
 import io.github.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import io.github.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
 
-@Path("/internal/workspaces")
 @LogService
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
@@ -83,13 +81,22 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 
     @Override
     public Response updateWorkspace(String id, UpdateWorkspaceRequestDTO updateWorkspaceRequestDTO) {
-        Workspace item = dao.findById(id);
-        if (item == null) {
+        Workspace workspace = dao.findById(id);
+        if (workspace == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        workspaceMapper.update(updateWorkspaceRequestDTO, item);
-        dao.update(item);
+        // update portalItemName for all portal's menu items
+        var newWorkspaceName = updateWorkspaceRequestDTO.getWorkspaceName();
+        var oldWorkspaceName = workspace.getWorkspaceName();
+
+        if (!oldWorkspaceName.equals(newWorkspaceName)) {
+            menuDao.updateMenuItems(newWorkspaceName, oldWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
+        }
+
+        workspaceMapper.update(updateWorkspaceRequestDTO, workspace);
+        dao.update(workspace);
+
         return Response.noContent().build();
     }
 

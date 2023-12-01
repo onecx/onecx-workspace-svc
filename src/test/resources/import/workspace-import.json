@@ -34,7 +34,7 @@
                   "id": "3146bfd2-f232-4e5a-9ab6-c8c80a230309",
                   "applicationId": "announcement-help-management-ui",
                   "badge": "comment",
-                  "children": [],
+                  "children": null,
                   "disabled": false,
                   "i18n": {
                     "de": "Ankündigungen",
@@ -69,7 +69,8 @@
                   "position": 0,
                   "scope": "WORKSPACE",
                   "url": "/admin/ah-mgmt/helpitems/"
-                }
+                },
+                null
               ],
               "disabled": false,
               "i18n": {

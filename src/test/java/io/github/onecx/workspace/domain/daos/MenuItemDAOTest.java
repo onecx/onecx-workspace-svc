@@ -35,6 +35,10 @@ class MenuItemDAOTest {
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME);
         methodExceptionTests(() -> dao.loadAllMenuItemsByWorkspaceId(null),
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID);
+        methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceNameAndAppId(null, null),
+                MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID);
+        methodExceptionTests(() -> dao.loadMenuItemByWorkspaceAndKey(null, null),
+                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {
