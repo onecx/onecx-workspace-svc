@@ -1,0 +1,169 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-workspace data import workspace
+  version: 1.0.0
+servers:
+  - url: "http://localhost"
+paths:
+  /import/workspace:
+    post:
+      operationId: importWorkspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceDataImport'
+      responses:
+        200:
+          description: ok
+components:
+  schemas:
+    WorkspaceDataImport:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportRequest'
+    ImportRequest:
+      required:
+        - workspace
+      type: object
+      properties:
+        workspace:
+          $ref: '#/components/schemas/WorkspaceImport'
+        menuItems:
+          description: Menu Items structure imported with a workspace
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItemStructure'
+    MenuItemStructure:
+      type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        workspaceExit:
+          type: boolean
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItemStructure'
+        roles:
+          type: array
+          items:
+            type: string
+    WorkspaceImport:
+      description: Workspace data to be imported
+      required:
+        - workspaceName
+      type: object
+      properties:
+        workspaceName:
+          description: Name of the workspace that should be created/updated
+          minLength: 1
+          type: string
+        tenantId:
+          description: "TenantId which will be set to Workspace, when superAdmin Role\
+            \ is assigned"
+          type: string
+        themeName:
+          description: Theme name provided in a case when themeImportData is empty
+          type: string
+        description:
+          type: string
+        homePage:
+          type: string
+        baseUrl:
+          type: string
+        companyName:
+          type: string
+        address:
+          $ref: '#/components/schemas/WorkspaceAddress'
+        phoneNumber:
+          type: string
+        rssFeedUrl:
+          type: string
+        footerLabel:
+          type: string
+        subjectLinks:
+          maxItems: 3
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectLink'
+        products:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: "#/components/schemas/Product"
+        imageUrls:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        workspaceRoles:
+          type: array
+          items:
+            type: string
+        logoUrl:
+          type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+    SubjectLink:
+      type: object
+      properties:
+        label:
+          type: string
+        url:
+          type: string
+    WorkspaceAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        streetNo:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+    Product:
+      description: "Product to be imported"
+      type: object
+      properties:
+        productName:
+          type: string
+        baseUrl:
+          type: string
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/Microfrontend'
+    Microfrontend:
+      description: "MFE defined under product for a path inside of the product"
+      type: object
+      properties:
+        mfeId:
+          type: string
+        basePath:
+          type: string

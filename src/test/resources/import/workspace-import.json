@@ -1,0 +1,411 @@
+{
+  "requests": [
+    {
+      "menuItems": [
+        {
+          "id": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+          "children": [
+            {
+              "id": "3ee3b5cb-1757-4a8b-b83f-cadee6b3c30a",
+              "applicationId": "portal-welcome-ui",
+              "badge": "home",
+              "children": [],
+              "disabled": false,
+              "i18n": {
+                "de": "Portal Startseite",
+                "en": "Portal Home"
+              },
+              "key": "CORE_WELCOME",
+              "name": "Welcome Page",
+              "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+              "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 0,
+              "scope": "WORKSPACE",
+              "url": "/admin/"
+            },
+            {
+              "id": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
+              "applicationId": "announcement-help-management-ui",
+              "badge": "calendar-plus",
+              "children": [
+                {
+                  "id": "3146bfd2-f232-4e5a-9ab6-c8c80a230309",
+                  "applicationId": "announcement-help-management-ui",
+                  "badge": "comment",
+                  "children": null,
+                  "disabled": false,
+                  "i18n": {
+                    "de": "Ankündigungen",
+                    "en": "Announcements"
+                  },
+                  "key": "CORE_AHM_MGMT_A",
+                  "name": "Announcements",
+                  "parentItemId": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
+                  "parentKey": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
+                  "portalExit": false,
+                  "portalId": "ADMIN",
+                  "position": 0,
+                  "scope": "WORKSPACE",
+                  "url": "/admin/ah-mgmt/announcements"
+                },
+                {
+                  "id": "42e77a69-ca69-4cd4-a9bd-efd8e2daf190",
+                  "applicationId": "announcement-help-management-ui",
+                  "badge": "question-circle",
+                  "children": [],
+                  "disabled": false,
+                  "i18n": {
+                    "de": "Hilfe Artikel",
+                    "en": "Help Items"
+                  },
+                  "key": "CORE_AHM_MGMT_HI",
+                  "name": "Help Items",
+                  "parentItemId": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
+                  "parentKey": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
+                  "portalExit": false,
+                  "portalId": "ADMIN",
+                  "position": 0,
+                  "scope": "WORKSPACE",
+                  "url": "/admin/ah-mgmt/helpitems/"
+                },
+                null
+              ],
+              "disabled": false,
+              "i18n": {
+                "de": "Ankündigungs & Hilfe Verwaltung",
+                "en": "Announcement & Help Management"
+              },
+              "key": "CORE_AHM_MGMT",
+              "name": "Announcement & Help Management",
+              "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+              "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 6,
+              "scope": "WORKSPACE",
+              "url": "/admin/ah-mgmt/"
+            },
+            {
+              "id": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
+              "applicationId": "",
+              "badge": "folder",
+              "children": [
+                {
+                  "id": "20a2207c-cd4b-48cf-90e7-bb8ad91428e3",
+                  "applicationId": "tkit-menu-management-ui",
+                  "badge": "sitemap",
+                  "children": [],
+                  "disabled": false,
+                  "i18n": {
+                    "de": "Menü Verwaltung",
+                    "en": "Menu Management"
+                  },
+                  "key": "CORE_MENU_MGMT",
+                  "name": "Menu Management",
+                  "parentItemId": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
+                  "parentKey": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
+                  "portalExit": false,
+                  "portalId": "ADMIN",
+                  "position": 3,
+                  "scope": "WORKSPACE",
+                  "url": "/admin/portal-mgmt/menu/"
+                },
+                {
+                  "id": "bbb93e3e-6743-46fa-b18d-134a664294e1",
+                  "applicationId": "portal-theme-management-ui",
+                  "badge": "palette",
+                  "children": [],
+                  "disabled": false,
+                  "i18n": {
+                    "de": "Thema Verwaltung",
+                    "en": "Theme Management"
+                  },
+                  "key": "CORE_THEME_MGMT",
+                  "name": "Theme Management",
+                  "parentItemId": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
+                  "parentKey": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
+                  "portalExit": false,
+                  "portalId": "ADMIN",
+                  "position": 0,
+                  "scope": "WORKSPACE",
+                  "url": "/admin/portal-mgmt/theme/"
+                },
+                {
+                  "id": "412810d4-31c9-424e-b843-70dd6f186f5a",
+                  "applicationId": "tkit-menu-management-ui",
+                  "badge": "ellipsis-h",
+                  "children": [],
+                  "disabled": false,
+                  "i18n": {
+                    "de": "Portal Verwaltung",
+                    "en": "Portal Management"
+                  },
+                  "key": "CORE_PORTAL_MGMT",
+                  "name": "Portal Management",
+                  "parentItemId": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
+                  "parentKey": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
+                  "portalExit": false,
+                  "portalId": "ADMIN",
+                  "position": 2,
+                  "scope": "WORKSPACE",
+                  "url": "/admin/portal-mgmt/portal/"
+                }
+              ],
+              "disabled": false,
+              "i18n": {
+                "de": "Portal Verwaltung",
+                "en": "Portal Management"
+              },
+              "key": "CORE_PORTAL_PARENT",
+              "name": "Portal",
+              "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+              "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 2,
+              "scope": "WORKSPACE",
+              "url": ""
+            },
+            {
+              "id": "f8f7f3b7-7fca-40af-8396-8550e664e10e",
+              "applicationId": "",
+              "badge": "cog",
+              "children": [],
+              "disabled": false,
+              "i18n": {
+                "de": "MFE Konfiguration",
+                "en": "MFE Configuration"
+              },
+              "key": "CORE_MFE_CONFIG",
+              "name": "MFE Config",
+              "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+              "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 98,
+              "scope": "WORKSPACE",
+              "url": "/admin/config/"
+            }
+          ],
+          "disabled": false,
+          "i18n": {},
+          "key": "PORTAL_MAIN_MENU",
+          "name": "Main Menu",
+          "portalExit": false,
+          "portalId": "ADMIN",
+          "position": 0,
+          "scope": "WORKSPACE"
+        },
+        {
+          "id": "92037049-3b2a-4539-bb06-61b5e441474c",
+          "children": [
+            {
+              "id": "f92d0652-36ac-4c24-8f62-b0ba4322148f",
+              "applicationId": "personal-info",
+              "badge": "user",
+              "children": [],
+              "disabled": false,
+              "i18n": {
+                "de": "Meine persönlichen Daten",
+                "en": "My Personal Info"
+              },
+              "key": "PERSONAL_INFO",
+              "name": "Personal Info",
+              "parentItemId": "92037049-3b2a-4539-bb06-61b5e441474c",
+              "parentKey": "92037049-3b2a-4539-bb06-61b5e441474c",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 1,
+              "scope": "WORKSPACE",
+              "url": "/admin/account/profile"
+            },
+            {
+              "id": "31b33bf3-cb77-424b-8599-18b75ebe7eb6",
+              "applicationId": "account-settings",
+              "badge": "cog",
+              "children": [],
+              "disabled": false,
+              "i18n": {
+                "de": "Kontoeinstellungen",
+                "en": "Account Settings"
+              },
+              "key": "ACCOUNT_SETTINGS",
+              "name": "Account Settings",
+              "parentItemId": "92037049-3b2a-4539-bb06-61b5e441474c",
+              "parentKey": "92037049-3b2a-4539-bb06-61b5e441474c",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 2,
+              "scope": "WORKSPACE",
+              "url": "/admin/account/settings"
+            },
+            {
+              "id": "2011a598-a82a-47c0-b4fa-8ae4aef9febc",
+              "applicationId": "change-password",
+              "badge": "key",
+              "children": [],
+              "disabled": false,
+              "i18n": {
+                "de": "Passwort ändern",
+                "en": "Change Password"
+              },
+              "key": "CHANGE_PASSWORD",
+              "name": "Change Password",
+              "parentItemId": "92037049-3b2a-4539-bb06-61b5e441474c",
+              "parentKey": "92037049-3b2a-4539-bb06-61b5e441474c",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 3,
+              "scope": "WORKSPACE",
+              "url": "/admin/account/change-password"
+            },
+            {
+              "id": "eac723dd-5bed-4501-94a9-fed6b662dd2a",
+              "applicationId": "roles-and-perms",
+              "badge": "unlock",
+              "children": [],
+              "disabled": false,
+              "i18n": {
+                "de": "Rollen & Berechtigungen",
+                "en": "Roles & Permissions"
+              },
+              "key": "ROLES_AND_PERMS",
+              "name": "Roles & Permissions",
+              "parentItemId": "92037049-3b2a-4539-bb06-61b5e441474c",
+              "parentKey": "92037049-3b2a-4539-bb06-61b5e441474c",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 4,
+              "scope": "WORKSPACE",
+              "url": "/admin/account/roles-and-perms"
+            }
+          ],
+          "disabled": false,
+          "i18n": {},
+          "key": "USER_PROFILE_MENU",
+          "name": "User Profile Menu",
+          "portalExit": false,
+          "portalId": "ADMIN",
+          "position": 5,
+          "scope": "WORKSPACE"
+        },
+        {
+          "id": "6102484b-f7fc-465d-bca9-f2346539e507",
+          "children": [],
+          "disabled": false,
+          "i18n": {},
+          "key": "PORTAL_ADMIN_MENU",
+          "name": "Admin Menu",
+          "portalExit": false,
+          "portalId": "ADMIN",
+          "position": 2,
+          "scope": "WORKSPACE"
+        },
+        {
+          "id": "2bc91211-95df-4d2d-b56d-b9ece916d956",
+          "disabled": false,
+          "i18n": {},
+          "key": "PORTAL_FOOTER_MENU",
+          "name": "Footer Menu",
+          "portalExit": false,
+          "portalId": "ADMIN",
+          "position": 2,
+          "scope": "WORKSPACE",
+          "children": [
+            {
+              "children": [],
+              "disabled": false,
+              "i18n": {
+                "de": "Kontakt",
+                "en": "Contact"
+              },
+              "key": "FOOTER_CONTACT",
+              "name": "Contact",
+              "parentItemId": "2bc91211-95df-4d2d-b56d-b9ece916d956",
+              "parentKey": "PORTAL_FOOTER_MENU",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 1,
+              "scope": "WORKSPACE",
+              "url": "/contact"
+            },
+            {
+              "children": [],
+              "disabled": false,
+              "i18n": {
+                "de": "Impressum",
+                "en": "Imprint"
+              },
+              "key": "FOOTER_Impressum",
+              "name": "Impressum",
+              "parentItemId": "2bc91211-95df-4d2d-b56d-b9ece916d956",
+              "parentKey": "PORTAL_FOOTER_MENU",
+              "portalExit": false,
+              "portalId": "ADMIN",
+              "position": 2,
+              "scope": "WORKSPACE",
+              "url": "/Impressum"
+            }
+          ]
+        },
+        {
+          "id": "d9363003-def6-4315-9684-fc514c5987d9",
+          "children": [],
+          "disabled": false,
+          "i18n": {},
+          "key": "PORTAL_EXTERNAL_NAV",
+          "name": "External Navigation Menu",
+          "portalExit": false,
+          "portalId": "ADMIN",
+          "position": 4,
+          "scope": "WORKSPACE"
+        },
+        {
+          "id": "fc7a48e1-18e7-44ab-9f90-673871c11e84",
+          "children": [],
+          "disabled": false,
+          "i18n": {},
+          "key": "PORTAL_MENU_HOME",
+          "name": "Home Menu",
+          "portalExit": false,
+          "portalId": "ADMIN",
+          "position": 0,
+          "scope": "WORKSPACE",
+          "url": "/admin/"
+        }
+      ],
+      "workspace": {
+        "baseUrl": "/admin",
+        "companyName": "Company",
+        "description": "Portal zur Administration von Portalen",
+        "footerLabel": "Admin Portal",
+        "homePage": "/admin",
+        "workspaceName": "ADMIN",
+        "workspaceRoles": [
+          "onecx-portal-user",
+          "onecx-portal-admin",
+          "onecx-portal-super-admin"
+        ],
+        "products": [
+          {
+            "baseUrl" : "/core",
+            "productName": "onecx-core",
+            "microfrontends": [
+              {
+                "mfeId": "menu",
+                "basePath": "/menu"
+              },
+              {
+                "mfeId": "theme",
+                "basePath": "/theme"
+              }
+            ]
+          }
+        ],
+        "themeName": "Theme1"
+      }
+    }
+  ]
+}
