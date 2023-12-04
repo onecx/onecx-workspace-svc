@@ -1,6 +1,5 @@
 package io.github.onecx.workspace.rs.internal.controllers;
 
-import static org.jboss.resteasy.reactive.RestResponse.StatusCode.BAD_REQUEST;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.NOT_FOUND;
 
 import java.util.*;
@@ -140,10 +139,7 @@ public class MenuInternalRestController implements MenuInternalApi {
             MenuItemDTO dto = tmp.get(item.getId());
 
             // update parent
-            var response = updateParent(item, dto);
-            if (response != null) {
-                return response;
-            }
+            updateParent(item, dto);
 
             mapper.update(dto, item);
         }
@@ -160,10 +156,7 @@ public class MenuInternalRestController implements MenuInternalApi {
         }
 
         // update parent
-        var response = updateParent(menuItem, menuItemDTO);
-        if (response != null) {
-            return response;
-        }
+        updateParent(menuItem, menuItemDTO);
 
         mapper.update(menuItemDTO, menuItem);
 
@@ -191,45 +184,48 @@ public class MenuInternalRestController implements MenuInternalApi {
 
     }
 
-    private Response updateParent(MenuItem menuItem, MenuItemDTO dto) {
+    private void updateParent(MenuItem menuItem, MenuItemDTO dto) {
 
         if (dto.getParentItemId() == null) {
             menuItem.setParent(null);
-            return null;
+            return;
         }
 
         // check parent change
         if (menuItem.getParent() != null && dto.getParentItemId().equals(menuItem.getParent().getId())) {
-            return null;
+            return;
         }
 
         // checking if request parent id is the same as current id
         if (dto.getParentItemId().equals(menuItem.getId())) {
-            throw new ConstraintException("Menu Item " + menuItem.getId() + " id and parentItem id are the same", MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM, null);
+            throw new ConstraintException("Menu Item " + menuItem.getId() + " id and parentItem id are the same",
+                    MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM, null);
         }
 
         // checking if parent exists
         var parent = dao.findById(dto.getParentItemId());
         if (parent == null) {
-            throw new ConstraintException("Parent menu item " + dto.getParentItemId() + " does not exists", MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST, null);
+            throw new ConstraintException("Parent menu item " + dto.getParentItemId() + " does not exists",
+                    MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST, null);
         } else {
             // checking if parent exists in the same portal
             if (!parent.getWorkspace().getId().equals(menuItem.getWorkspace().getId())) {
-                throw new ConstraintException("Parent menu item is assigned to different portal", MenuItemErrorKeys.PARENT_ASSIGNED_TO_DIFFERENT_PORTAL, null);
+                throw new ConstraintException("Parent menu item is assigned to different portal",
+                        MenuItemErrorKeys.PARENT_ASSIGNED_TO_DIFFERENT_PORTAL, null);
             }
 
             // check for cycle
             Set<String> children = new HashSet<>();
             children(menuItem, children);
             if (children.contains(parent.getId())) {
-                throw new ConstraintException("One of the items try to set one of its children to the new parent. Cycle dependency can not be created in tree structure", MenuItemErrorKeys.CYCLE_DEPENDENCY, null);
+                throw new ConstraintException(
+                        "One of the items try to set one of its children to the new parent. Cycle dependency can not be created in tree structure",
+                        MenuItemErrorKeys.CYCLE_DEPENDENCY, null);
             }
         }
 
         // set new parent
         menuItem.setParent(parent);
-
-        return null;
     }
 
     private void children(MenuItem menuItem, Set<String> result) {
