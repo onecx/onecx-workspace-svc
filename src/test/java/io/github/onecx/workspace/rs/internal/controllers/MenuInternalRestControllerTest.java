@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +31,7 @@ import io.restassured.common.mapper.TypeRef;
 @QuarkusTest
 @TestHTTPEndpoint(MenuInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class MenuInternalRestControllerTest extends AbstractTest {
+class MenuInternalRestControllerTest extends AbstractTest {
 
     @Test
     void getMenuItemsForWorkspaceIdTest() {
@@ -43,8 +44,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
-        assertThat(dto).isNotNull().isNotEmpty();
-        assertThat(dto).hasSize(13);
+        assertThat(dto).isNotNull().isNotEmpty().hasSize(13);
     }
 
     @Test
@@ -67,8 +67,7 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
-        assertThat(dto).isNotNull().isNotEmpty();
-        assertThat(dto).hasSize(12);
+        assertThat(dto).isNotNull().isNotEmpty().hasSize(12);
     }
 
     @Test
@@ -91,7 +90,6 @@ public class MenuInternalRestControllerTest extends AbstractTest {
                 .extract().as(List.class);
 
         assertThat(dto).isNotNull().isEmpty();
-        assertThat(dto).hasSize(0);
     }
 
     @Test
@@ -127,23 +125,32 @@ public class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(dto.getDescription()).isEqualTo(menuItem.getDescription());
     }
 
-    @Test
-    void addMenuItemForPortalDuplicateKeyTest() {
+    @ParameterizedTest
+    @MethodSource("badRequestArguments")
+    void addMenuItemBadRequestTest(String key, String parentItemId, String workspaceId) {
         CreateMenuItemDTO menuItem = new CreateMenuItemDTO();
         menuItem.setName("menu");
-        menuItem.setKey("PORTAL_MAIN_MENU");
+        menuItem.setKey(key);
         menuItem.setDisabled(false);
         menuItem.setRoles(List.of("Role1"));
-        menuItem.setParentItemId("44-1");
+        menuItem.setParentItemId(parentItemId);
 
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
+                .pathParam("id", workspaceId)
                 .body(menuItem)
                 .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
+    }
+
+    private static Stream<Arguments> badRequestArguments() {
+        return Stream.of(
+                arguments("PORTAL_MAIN_MENU", "44-1", "11-222"),
+                arguments("test01_menu", "33-6", "11-222"),
+                arguments("test01_menu", "does-not-exists", "11-222"),
+                arguments("test01_menu", "does-not-exists", "does-not-exists"));
     }
 
     @Test
@@ -177,69 +184,6 @@ public class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(dto).isNotNull();
         assertThat(dto.getName()).isEqualTo(menuItem.getName());
         assertThat(dto.getDescription()).isEqualTo(menuItem.getDescription());
-    }
-
-    @Test
-    @DisplayName("Add menu item to the portal with wrong menu parent from another portal")
-    void addMenuItemForPortalParentFromAnotherPortalTest() {
-
-        CreateMenuItemDTO menuItem = new CreateMenuItemDTO();
-        menuItem.setName("menu");
-        menuItem.setKey("test01_menu");
-        menuItem.setDisabled(false);
-        menuItem.setRoles(List.of("Role1"));
-        menuItem.setParentItemId("33-6");
-
-        var uri = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
-                .body(menuItem)
-                .post()
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Add menu item to the portal with wrong menu parent id")
-    void addMenuItemForPortalWrongMenuParentIdTest() {
-
-        CreateMenuItemDTO menuItem = new CreateMenuItemDTO();
-        menuItem.setName("menu");
-        menuItem.setKey("test01_menu");
-        menuItem.setDisabled(false);
-        menuItem.setRoles(List.of("Role1"));
-        menuItem.setParentItemId("does-not-exists");
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
-                .body(menuItem)
-                .post()
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode());
-    }
-
-    @Test
-    @DisplayName("Add menu item to the portal which does not exists")
-    void addMenuItemForPortalWrongPortalIdTest() {
-
-        CreateMenuItemDTO menuItem = new CreateMenuItemDTO();
-        menuItem.setName("menu");
-        menuItem.setKey("test01_menu");
-        menuItem.setDisabled(false);
-        menuItem.setRoles(List.of("Role1"));
-        menuItem.setParentItemId("does-not-exists");
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "does-not-exists")
-                .body(menuItem)
-                .post()
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test

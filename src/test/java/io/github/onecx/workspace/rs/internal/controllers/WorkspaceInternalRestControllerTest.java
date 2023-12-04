@@ -19,7 +19,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class WorkspaceInternalRestControllerTest extends AbstractTest {
+class WorkspaceInternalRestControllerTest extends AbstractTest {
 
     @Test
     void createWorkspaceTest() {
@@ -177,8 +177,8 @@ public class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .as(WorkspacePageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(0);
-        assertThat(data.getStream()).isNotNull().hasSize(0);
+        assertThat(data.getTotalElements()).isZero();
+        assertThat(data.getStream()).isNotNull().isEmpty();
     }
 
     @Test

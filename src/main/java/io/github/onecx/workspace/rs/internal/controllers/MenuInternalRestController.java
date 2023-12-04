@@ -10,6 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -29,6 +30,7 @@ import io.github.onecx.workspace.rs.internal.mappers.MenuItemMapper;
 
 @LogService
 @ApplicationScoped
+@Path("/internal/workspaces/{id}/menuItems")
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class MenuInternalRestController implements MenuInternalApi {
 
@@ -203,33 +205,24 @@ public class MenuInternalRestController implements MenuInternalApi {
 
         // checking if request parent id is the same as current id
         if (dto.getParentItemId().equals(menuItem.getId())) {
-            // TODO: make a failed contraint error
-            return Response.status(BAD_REQUEST).entity("Menu Item " + menuItem.getId() + " id and parentItem id are the same")
-                    .build();
+            throw new ConstraintException("Menu Item " + menuItem.getId() + " id and parentItem id are the same", MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM, null);
         }
 
         // checking if parent exists
         var parent = dao.findById(dto.getParentItemId());
         if (parent == null) {
-            // TODO: make a failed contraint error
-            return Response.status(BAD_REQUEST)
-                    .entity("Parent menu item " + dto.getParentItemId() + " does not exists").build();
+            throw new ConstraintException("Parent menu item " + dto.getParentItemId() + " does not exists", MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST, null);
         } else {
-
             // checking if parent exists in the same portal
             if (!parent.getWorkspace().getId().equals(menuItem.getWorkspace().getId())) {
-                // TODO: make a failed contraint error
-                return Response.status(BAD_REQUEST).entity("Parent menu item is assigned to different portal").build();
+                throw new ConstraintException("Parent menu item is assigned to different portal", MenuItemErrorKeys.PARENT_ASSIGNED_TO_DIFFERENT_PORTAL, null);
             }
 
             // check for cycle
             Set<String> children = new HashSet<>();
             children(menuItem, children);
             if (children.contains(parent.getId())) {
-                // TODO: make a failed contraint error
-                return Response.status(BAD_REQUEST).entity(
-                        "One of the items try to set one of its children to the new parent. Cycle dependency can not be created in tree structure")
-                        .build();
+                throw new ConstraintException("One of the items try to set one of its children to the new parent. Cycle dependency can not be created in tree structure", MenuItemErrorKeys.CYCLE_DEPENDENCY, null);
             }
         }
 
@@ -259,9 +252,15 @@ public class MenuInternalRestController implements MenuInternalApi {
     enum MenuItemErrorKeys {
         WORKSPACE_DOES_NOT_EXIST,
         PARENT_MENU_DOES_NOT_EXIST,
+
+        PARENT_MENU_SAME_AS_MENU_ITEM,
         WORKSPACE_DIFFERENT,
 
         MENU_ITEMS_NULL,
+
+        PARENT_ASSIGNED_TO_DIFFERENT_PORTAL,
+
+        CYCLE_DEPENDENCY
 
     }
 }

@@ -80,11 +80,7 @@ public class WorkspaceDataImportService implements DataImportService {
             try {
                 importRequest(request);
             } catch (Exception ex) {
-                if (request.getWorkspace() != null && request.getWorkspace().getWorkspaceName() != null) {
-                    throw new ImportException("Error import portal " + request.getWorkspace().getWorkspaceName(), ex);
-                } else {
-                    throw new ImportException("Error import portal", ex);
-                }
+                throw new ImportException("Error import portal " + request.getWorkspace().getWorkspaceName(), ex);
             }
         }
     }
