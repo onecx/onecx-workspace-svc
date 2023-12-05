@@ -1,0 +1,48 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-workspace external service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-workspace:8080"
+tags:
+  - name: workspaceExternal
+paths:
+  /v1/workspaces/theme/{themeName}:
+    get:
+      tags:
+        - workspaceExternal
+      description: Get workspace info by theme name
+      operationId: getWorkspaceInfos
+      parameters:
+        - $ref: '#/components/parameters/themeName'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceInfoList'
+components:
+  schemas:
+    WorkspaceInfoList:
+      type: object
+      properties:
+        workspaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceInfo'
+    WorkspaceInfo:
+      type: object
+      properties:
+        workspaceName:
+          type: string
+        description:
+          type: string
+  parameters:
+    themeName:
+      in: path
+      name: themeName
+      required: true
+      schema:
+        type: string

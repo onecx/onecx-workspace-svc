@@ -34,6 +34,8 @@ class WorkspaceDAOTest {
                 WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_CRITERIA);
         methodExceptionTests(() -> dao.findByWorkspaceName(null),
                 WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
+        methodExceptionTests(() -> dao.findByThemeName(null),
+                WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_THEME_NAME);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {
