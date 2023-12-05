@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.23.0</version>
+        <version>0.22.0</version>
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
@@ -183,31 +183,19 @@
                             <modelNameSuffix>DTO</modelNameSuffix>
                         </configuration>
                     </execution>
-                   <!--  <execution>
+                     <execution>
                         <id>v1</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-portal-v1-openapi.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.portal.rs.external.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.portal.rs.external.v1.model</modelPackage>
+                            <inputSpec>src/main/openapi/onecx-workspace-v1-openapi.yaml</inputSpec>
+                            <apiPackage>gen.io.github.onecx.workspace.rs.external.v1</apiPackage>
+                            <modelPackage>gen.io.github.onecx.workspace.rs.external.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <apiNameSuffix>V1Api</apiNameSuffix>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>operator</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>src/main/openapi/onecx-portal-operator-v1-openapi.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.portal.rs.operator.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.portal.rs.operator.v1.model</modelPackage>
-                            <modelNameSuffix>DTOV1</modelNameSuffix>
-                        </configuration>
-                    </execution> -->
                     <execution>
                         <id>di-workspace-v1</id>
                         <goals>

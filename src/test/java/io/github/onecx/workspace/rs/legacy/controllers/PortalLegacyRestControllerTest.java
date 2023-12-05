@@ -19,7 +19,7 @@ import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
 @TestHTTPEndpoint(PortalLegacyRestController.class)
-public class PortalLegacyRestControllerTest extends AbstractTest {
+class PortalLegacyRestControllerTest extends AbstractTest {
 
     @Test
     void getMenuStructureForNoPortalNameTest() {
@@ -34,8 +34,7 @@ public class PortalLegacyRestControllerTest extends AbstractTest {
                 .body().as(new TypeRef<List<MenuItemStructureDTO>>() {
                 });
 
-        assertThat(data).isNotNull();
-        assertThat(data).isEmpty();
+        assertThat(data).isNotNull().isEmpty();
     }
 
     @Test
@@ -52,9 +51,7 @@ public class PortalLegacyRestControllerTest extends AbstractTest {
                 .body().as(new TypeRef<List<MenuItemStructureDTO>>() {
                 });
 
-        assertThat(data).isNotNull();
-        assertThat(data).isNotEmpty();
-        assertThat(data).hasSize(5);
+        assertThat(data).isNotNull().isNotEmpty().hasSize(5);
     }
 
     @Test
@@ -72,8 +69,6 @@ public class PortalLegacyRestControllerTest extends AbstractTest {
                 .body().as(new TypeRef<List<MenuItemStructureDTO>>() {
                 });
 
-        assertThat(data).isNotNull();
-        assertThat(data).isNotEmpty();
-        assertThat(data).hasSize(5);
+        assertThat(data).isNotNull().isNotEmpty().hasSize(5);
     }
 }

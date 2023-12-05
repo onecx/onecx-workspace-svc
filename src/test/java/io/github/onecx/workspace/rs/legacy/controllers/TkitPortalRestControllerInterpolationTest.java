@@ -18,7 +18,7 @@ import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
 @TestHTTPEndpoint(TkitPortalRestController.class)
-public class TkitPortalRestControllerInterpolationTest extends AbstractTest {
+class TkitPortalRestControllerInterpolationTest extends AbstractTest {
 
     @Test
     @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
@@ -35,9 +35,7 @@ public class TkitPortalRestControllerInterpolationTest extends AbstractTest {
                 .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
                 });
 
-        assertThat(data).isNotNull();
-        assertThat(data).isNotEmpty();
-        assertThat(data).hasSize(5);
+        assertThat(data).isNotNull().isNotEmpty().hasSize(5);
         assertThat(getUrlFromMenuItemByName(data, "PORTAL_CHILD_5")).isEqualTo("interpolated5");
         assertThat(getUrlFromMenuItemByName(data, "PORTAL_CHILD_6")).isEqualTo("interpolated6");
         assertThat(getUrlFromMenuItemByName(data, "PORTAL_CHILD_7")).isEqualTo("/interpolated7");

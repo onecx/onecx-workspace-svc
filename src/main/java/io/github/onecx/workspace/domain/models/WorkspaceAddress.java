@@ -1,5 +1,7 @@
 package io.github.onecx.workspace.domain.models;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
@@ -9,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class WorkspaceAddress {
+public class WorkspaceAddress implements Serializable {
 
     @Column(name = "street")
     private String street;

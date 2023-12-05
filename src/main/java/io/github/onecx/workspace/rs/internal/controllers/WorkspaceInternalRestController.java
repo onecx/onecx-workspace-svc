@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -26,6 +27,7 @@ import io.github.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
 
 @LogService
 @ApplicationScoped
+@Path("/internal/workspaces")
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 

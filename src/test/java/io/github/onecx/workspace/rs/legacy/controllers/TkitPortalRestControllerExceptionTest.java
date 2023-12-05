@@ -22,7 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(TkitPortalRestController.class)
-public class TkitPortalRestControllerExceptionTest extends AbstractTest {
+class TkitPortalRestControllerExceptionTest extends AbstractTest {
 
     @InjectMock
     MenuItemDAO dao;

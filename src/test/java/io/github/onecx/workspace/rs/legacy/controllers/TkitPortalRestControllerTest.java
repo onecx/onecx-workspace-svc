@@ -20,7 +20,7 @@ import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
 @TestHTTPEndpoint(TkitPortalRestController.class)
-public class TkitPortalRestControllerTest extends AbstractTest {
+class TkitPortalRestControllerTest extends AbstractTest {
 
     @Test
     void getMenuStructureForNoPortalNameTest() {
@@ -35,8 +35,7 @@ public class TkitPortalRestControllerTest extends AbstractTest {
                 .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
                 });
 
-        assertThat(data).isNotNull();
-        assertThat(data).isEmpty();
+        assertThat(data).isNotNull().isEmpty();
     }
 
     @Test
@@ -53,9 +52,7 @@ public class TkitPortalRestControllerTest extends AbstractTest {
                 .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
                 });
 
-        assertThat(data).isNotNull();
-        assertThat(data).isNotEmpty();
-        assertThat(data).hasSize(5);
+        assertThat(data).isNotNull().isNotEmpty().hasSize(5);
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -68,9 +65,7 @@ public class TkitPortalRestControllerTest extends AbstractTest {
                 .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
                 });
 
-        assertThat(data).isNotNull();
-        assertThat(data).isNotEmpty();
-        assertThat(data).hasSize(5);
+        assertThat(data).isNotNull().isNotEmpty().hasSize(5);
     }
 
     @Test

@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,7 @@ import org.apache.commons.text.StringSubstitutor;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -29,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @LogService
 @ApplicationScoped
+@Path("/1000kit-portal-server/menustructure/{portalName}")
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class TkitPortalRestController implements TkitPortalApi {
 
@@ -75,11 +78,11 @@ public class TkitPortalRestController implements TkitPortalApi {
         try {
             var workspace = workspaceDAO.findByWorkspaceName(portalName);
             if (workspace == null) {
-                throw new Exception("Workspace not found");
+                throw new ConstraintException("Workspace not found", ErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
             }
 
             if (menuRegistrationRequestDTO.getMenuItems() == null || menuRegistrationRequestDTO.getMenuItems().isEmpty()) {
-                throw new Exception("Menu items are empty");
+                throw new ConstraintException("Menu items are empty", ErrorKeys.MENU_ITEMS_EMPTY, null);
             }
 
             // In the old structure just a sub part of the menu was send so we need to find the parent menu item if defined
@@ -106,7 +109,7 @@ public class TkitPortalRestController implements TkitPortalApi {
 
     @ServerExceptionMapper
     public RestResponse<RestExceptionDTO> exception(Exception ex) {
-        log.error("Processing portal legacy rest controller error: {}", ex.getMessage());
+        log.error("Processing tkit portal rest controller error: {}", ex.getMessage());
 
         if (ex instanceof DAOException de) {
             return RestResponse.status(Response.Status.BAD_REQUEST,
@@ -114,6 +117,12 @@ public class TkitPortalRestController implements TkitPortalApi {
         }
         return RestResponse.status(Response.Status.INTERNAL_SERVER_ERROR,
                 mapper.exception("UNDEFINED_ERROR_CODE", ex.getMessage()));
+
+    }
+
+    enum ErrorKeys {
+        WORKSPACE_DOES_NOT_EXIST,
+        MENU_ITEMS_EMPTY,
 
     }
 }

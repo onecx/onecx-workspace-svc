@@ -20,7 +20,7 @@ import io.restassured.common.mapper.TypeRef;
 @QuarkusTest
 @TestHTTPEndpoint(ProductInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class ProductRestControllerTest extends AbstractTest {
+class ProductRestControllerTest extends AbstractTest {
 
     @Test
     void createProductInWorkspaceTest() {
@@ -101,8 +101,7 @@ public class ProductRestControllerTest extends AbstractTest {
                 .extract().as(new TypeRef<List<ProductDTO>>() {
                 });
 
-        assertThat(dto).isNotNull().isNotEmpty();
-        assertThat(dto).hasSize(1);
+        assertThat(dto).isNotNull().isNotEmpty().hasSize(1);
         assertThat(dto.get(0).getMicrofrontends()).isNotEmpty();
     }
 
@@ -119,8 +118,7 @@ public class ProductRestControllerTest extends AbstractTest {
                 .extract().as(new TypeRef<List<ProductDTO>>() {
                 });
 
-        assertThat(response).isNotNull();
-        assertThat(response).isEmpty();
+        assertThat(response).isNotNull().isEmpty();
 
         // existing product
         var dto = given()
@@ -133,8 +131,7 @@ public class ProductRestControllerTest extends AbstractTest {
                 .extract().as(new TypeRef<List<ProductDTO>>() {
                 });
 
-        assertThat(dto).isNotNull().isNotEmpty();
-        assertThat(dto).hasSize(2);
+        assertThat(dto).isNotNull().isNotEmpty().hasSize(2);
         assertThat(dto.get(0).getMicrofrontends()).isNotEmpty();
         assertThat(dto.get(1).getMicrofrontends()).isNotEmpty();
     }

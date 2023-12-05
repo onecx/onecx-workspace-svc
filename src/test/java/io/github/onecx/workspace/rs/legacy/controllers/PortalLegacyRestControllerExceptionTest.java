@@ -21,7 +21,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(PortalLegacyRestController.class)
-public class PortalLegacyRestControllerExceptionTest extends AbstractTest {
+class PortalLegacyRestControllerExceptionTest extends AbstractTest {
 
     @InjectMock
     MenuItemDAO dao;

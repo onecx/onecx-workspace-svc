@@ -3,6 +3,7 @@ package io.github.onecx.workspace.rs.legacy.controllers;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @LogService
 @ApplicationScoped
+@Path("/legacy/menustructure")
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class PortalLegacyRestController implements PortalLegacyApi {
 
