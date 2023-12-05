@@ -8,7 +8,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Map;
 
+import jakarta.enterprise.context.ApplicationScoped;
+
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.io.github.onecx.workspace.rs.legacy.model.MenuRegistrationRequestDTO;
@@ -16,19 +19,22 @@ import gen.io.github.onecx.workspace.rs.legacy.model.MenuRegistrationResponseDTO
 import gen.io.github.onecx.workspace.rs.legacy.model.ScopeDTO;
 import gen.io.github.onecx.workspace.rs.legacy.model.TkitMenuItemStructureDTO;
 import io.github.onecx.workspace.test.AbstractTest;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.Mock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.QuarkusTestProfile;
-import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@TestProfile(TkitPortalSubmitMenuRequestTest.CustomProfile.class)
 @TestHTTPEndpoint(TkitPortalRestController.class)
 class TkitPortalSubmitMenuRequestTest extends AbstractTest {
+
+    @InjectMock
+    TkitLegacyAppConfig appConfig;
 
     @Test
     @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
     void submitMenuRegistrationRequestTest() {
+        Mockito.when(appConfig.enableMenuAutoRegistration()).thenReturn(true);
         var request = new MenuRegistrationRequestDTO();
         var response = given()
                 .contentType(APPLICATION_JSON)
@@ -132,17 +138,13 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
         assertThat(response.getApplied()).isTrue();
     }
 
-    public static class CustomProfile implements QuarkusTestProfile {
+    @ApplicationScoped
+    @Mock
+    public static class MockedAppConfig implements TkitLegacyAppConfig {
 
         @Override
-        public String getConfigProfile() {
-            return "test";
-        }
-
-        @Override
-        public Map<String, String> getConfigOverrides() {
-            return Map.of(
-                    "tkit.legacy.enable.menu.auto.registration", "true");
+        public boolean enableMenuAutoRegistration() {
+            return false;
         }
     }
 

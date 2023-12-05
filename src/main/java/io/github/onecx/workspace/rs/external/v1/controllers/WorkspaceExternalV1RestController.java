@@ -3,7 +3,6 @@ package io.github.onecx.workspace.rs.external.v1.controllers;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 import org.tkit.quarkus.log.cdi.LogService;
@@ -14,7 +13,6 @@ import io.github.onecx.workspace.rs.external.v1.mappers.WorkspaceMapper;
 
 @LogService
 @ApplicationScoped
-@Path("/v1/workspaces/theme/{themeName}")
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api {
 
