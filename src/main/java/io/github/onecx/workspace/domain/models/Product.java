@@ -7,6 +7,7 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -16,10 +17,14 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "PRODUCT", uniqueConstraints = {
-        @UniqueConstraint(name = "PRODUCT_NAME_WORKSPACE_GUID", columnNames = { "PRODUCT_NAME", "WORKSPACE_GUID" })
+        @UniqueConstraint(name = "PRODUCT_NAME_WORKSPACE_GUID", columnNames = { "PRODUCT_NAME", "WORKSPACE_GUID", "TENANT_ID" })
 })
 @SuppressWarnings("squid:S2160")
 public class Product extends TraceableEntity {
+
+    @TenantId
+    @Column(name = "TENANT_ID")
+    private String tenantId;
 
     @Column(name = "PRODUCT_NAME")
     private String productName;

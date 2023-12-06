@@ -13,6 +13,9 @@
                 <column name="optlock" type="INTEGER">
                     <constraints nullable="false"/>
                 </column>
+                <column name="tenant_id" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
                 <column name="workspace_exit" type="BOOLEAN"/>
                 <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
                 <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
@@ -60,6 +63,9 @@
                 <column name="guid" type="VARCHAR(255)">
                     <constraints nullable="false" primaryKey="true" primaryKeyName="product_pkey"/>
                 </column>
+                <column name="tenant_id" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
                 <column name="product_name" type="VARCHAR(255)"/>
                 <column name="workspace_guid" type="VARCHAR(255)"/>
                 <column name="creationuser" type="VARCHAR(255)"/>
@@ -83,7 +89,9 @@
                 <column name="logo_url" type="VARCHAR(255)"/>
                 <column name="phone_number" type="VARCHAR(255)"/>
                 <column name="rss_feed_url" type="VARCHAR(255)"/>
-                <column name="tenant_id" type="VARCHAR(255)"/>
+                <column name="tenant_id" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
                 <column name="theme" type="VARCHAR(255)"/>
                 <column name="workspace_name" type="VARCHAR(255)">
                     <constraints nullable="false"/>
@@ -106,13 +114,13 @@
                 <column name="item_parent"/>
             </createIndex>
 
-            <addUniqueConstraint columnNames="item_key, item_workspace" constraintName="ws_menu_item_item_key_workspace" tableName="ws_menu_item"/>
+            <addUniqueConstraint columnNames="item_key, item_workspace, tenant_id" constraintName="ws_menu_item_item_key_workspace" tableName="ws_menu_item"/>
 
             <addUniqueConstraint columnNames="mfe_id, base_path, product_guid" constraintName="mfe_id_path_product_guid" tableName="microfrontend"/>
 
             <addUniqueConstraint columnNames="base_url" constraintName="product_base_url_key" tableName="product"/>
 
-            <addUniqueConstraint columnNames="product_name, workspace_guid" constraintName="product_name_workspace_guid" tableName="product"/>
+            <addUniqueConstraint columnNames="product_name, workspace_guid, tenant_id" constraintName="product_name_workspace_guid" tableName="product"/>
 
             <addUniqueConstraint columnNames="base_url" constraintName="workspace_base_url_key" tableName="workspace"/>
 

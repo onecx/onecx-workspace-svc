@@ -19,6 +19,7 @@ import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
 import gen.io.github.onecx.workspace.rs.internal.model.UpdateWorkspaceRequestDTO;
 import gen.io.github.onecx.workspace.rs.internal.model.WorkspaceSearchCriteriaDTO;
 import io.github.onecx.workspace.domain.daos.MenuItemDAO;
+import io.github.onecx.workspace.domain.daos.ProductDAO;
 import io.github.onecx.workspace.domain.daos.WorkspaceDAO;
 import io.github.onecx.workspace.domain.models.Workspace;
 import io.github.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
@@ -41,6 +42,9 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     @Inject
     MenuItemDAO menuDao;
 
+    @Inject
+    ProductDAO productDAO;
+
     @Context
     UriInfo uriInfo;
 
@@ -58,6 +62,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     public Response deleteWorkspace(String id) {
         // delete menu before deleting workspace
         menuDao.deleteAllMenuItemsByWorkspaceId(id);
+        productDAO.deleteProductByWorkspaceId(id);
 
         dao.deleteQueryById(id);
         return Response.noContent().build();

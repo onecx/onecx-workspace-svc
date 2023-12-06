@@ -42,7 +42,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
     private static Stream<Arguments> themeNamesAndResults() {
         return Stream.of(
                 arguments("11-111", 3),
-                arguments("22-222", 2),
+                arguments("22-222", 0), // different tenant so will not find it
                 arguments("does-not-exists", 0));
     }
 }

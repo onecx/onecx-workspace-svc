@@ -375,7 +375,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     static Stream<Arguments> inputParams() {
         return Stream.of(
-                Arguments.of("22-111", "55-4", "55-6"),
+                Arguments.of("11-111", "33-2", "55-6"),
                 Arguments.of("11-222", "44-6", "does-not-exists"),
                 Arguments.of("11-222", "44-6", "55-1"));
     }

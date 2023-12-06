@@ -25,6 +25,7 @@ class AfterStartDataImportTest extends AbstractTest {
         var restulList = result.toList();
         assertThat(restulList).hasSize(1);
         assertThat(restulList.get(0).getWorkspaceName()).isEqualTo("ADMIN");
+        assertThat(restulList.get(0).getTenantId()).isEqualTo("tenant-100");
 
     }
 

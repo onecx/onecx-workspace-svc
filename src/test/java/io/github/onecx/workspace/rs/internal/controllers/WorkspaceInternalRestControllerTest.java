@@ -75,18 +75,18 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     void deleteWorkspace() {
         given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "22-111")
+                .pathParam("id", "11-111")
                 .delete("{id}")
                 .then().statusCode(NO_CONTENT.getStatusCode());
 
         given().contentType(APPLICATION_JSON)
-                .pathParam("id", "22-111")
+                .pathParam("id", "11-111")
                 .get("{id}")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "22-111")
+                .pathParam("id", "11-111")
                 .delete("{id}")
                 .then().statusCode(NO_CONTENT.getStatusCode());
     }
@@ -127,8 +127,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .as(WorkspacePageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(3);
-        assertThat(data.getStream()).isNotNull().hasSize(3);
+        assertThat(data.getTotalElements()).isEqualTo(2);
+        assertThat(data.getStream()).isNotNull().hasSize(2);
 
         criteria.setWorkspaceName("test01");
         criteria.setThemeName("11-111");
@@ -161,8 +161,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .as(WorkspacePageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(3);
-        assertThat(data.getStream()).isNotNull().hasSize(3);
+        assertThat(data.getTotalElements()).isEqualTo(2);
+        assertThat(data.getStream()).isNotNull().hasSize(2);
 
         criteria.setWorkspaceName(" ");
 

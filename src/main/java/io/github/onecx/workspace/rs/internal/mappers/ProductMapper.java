@@ -21,6 +21,7 @@ public interface ProductMapper {
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
     Product create(CreateProductRequestDTO dto);
 
     @Mapping(target = "id", ignore = true)
@@ -36,6 +37,7 @@ public interface ProductMapper {
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
     void update(UpdateProductRequestDTO dto, @MappingTarget Product product);
 
     @Mapping(target = "id", ignore = true)
