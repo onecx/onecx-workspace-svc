@@ -41,7 +41,7 @@ public class ProductDAO extends AbstractDAO<Product> {
             var product = this.getEntityManager().createQuery(cq).getSingleResult();
             this.getEntityManager().remove(product);
         } catch (NoResultException nre) {
-            return;
+            // do nothing on No result
         } catch (Exception ex) {
             throw this.handleConstraint(ex, ProductDAO.ErrorKeys.ERROR_DELETE_PRODUCT_ID);
         }
