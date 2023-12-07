@@ -116,7 +116,7 @@
 
             <addUniqueConstraint columnNames="item_key, item_workspace, tenant_id" constraintName="ws_menu_item_item_key_workspace" tableName="ws_menu_item"/>
 
-            <addUniqueConstraint columnNames="mfe_id, base_path, product_guid" constraintName="mfe_id_path_product_guid" tableName="microfrontend"/>
+            <addUniqueConstraint columnNames="base_path, product_guid" constraintName="mfe_id_path_product_guid" tableName="microfrontend"/>
 
             <addUniqueConstraint columnNames="base_url" constraintName="product_base_url_key" tableName="product"/>
 

@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "MICROFRONTEND", uniqueConstraints = {
-        @UniqueConstraint(name = "MFE_ID_PATH_PRODUCT_GUID", columnNames = { "MFE_ID", "BASE_PATH", "PRODUCT_GUID" })
+        @UniqueConstraint(name = "MFE_ID_PATH_PRODUCT_GUID", columnNames = { "BASE_PATH", "PRODUCT_GUID" })
 })
 @SuppressWarnings("squid:S2160")
 public class Microfrontend implements Serializable {
