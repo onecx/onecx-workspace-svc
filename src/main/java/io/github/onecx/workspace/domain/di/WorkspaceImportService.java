@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.context.Context;
 
@@ -19,6 +20,7 @@ import io.github.onecx.workspace.domain.di.mappers.WorkspaceDataImportMapperV1;
 import io.github.onecx.workspace.domain.models.MenuItem;
 import io.github.onecx.workspace.domain.models.Workspace;
 
+@Slf4j
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class WorkspaceImportService {
@@ -42,7 +44,7 @@ public class WorkspaceImportService {
                     .principal("data-import")
                     .tenantId(tenanId)
                     .build();
-
+            log.info("#### tenant to delete " + tenanId);
             ApplicationContext.start(ctx);
 
             // clean data

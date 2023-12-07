@@ -4,5 +4,5 @@ import io.github.onecx.workspace.test.AbstractTest;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-public class WorkspaceExternalV1RestControllerIT extends WorkspaceExternalV1RestControllerTest {
+public class WorkspaceExternalV1RestControllerTenantIT extends WorkspaceExternalV1RestControllerTenantTest {
 }

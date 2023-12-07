@@ -415,7 +415,7 @@
         "workspace": {
           "baseUrl": "/tkom",
           "companyName": "Company2",
-          "tenantId": "tenant-200",
+          "tenantId": "default",
           "description": "Portal zur Core von Portalen",
           "footerLabel": "Core Portal",
           "homePage": "/tkom",

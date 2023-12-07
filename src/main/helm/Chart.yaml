@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 name: onecx-workspace-svc
 version: 0.0.0
 appVersion: 0.0.0
