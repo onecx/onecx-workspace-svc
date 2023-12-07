@@ -38,7 +38,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         } catch (NoResultException nre) {
             return null;
         } catch (Exception e) {
-            throw new DAOException(ErrorKeys.FIND_ENTITY_BY_ID_FAILED, e, entityName, id);
+            throw handleConstraint(e, ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         }
     }
 
@@ -62,7 +62,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         } catch (NoResultException nre) {
             return null;
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_WORKSPACE_NAME, ex);
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
         }
     }
 
@@ -90,7 +90,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         } catch (NoResultException nre) {
             return null;
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_WORKSPACE_NAME, ex);
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
         }
     }
 
@@ -118,7 +118,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_BY_CRITERIA, ex);
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_BY_CRITERIA);
         }
     }
 
@@ -141,7 +141,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
             return this.getEntityManager().createQuery(cq).getResultStream();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_BY_THEME_NAME, ex);
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_BY_THEME_NAME);
         }
     }
 

@@ -64,6 +64,7 @@ public class TkitPortalRestController implements TkitPortalApi {
     }
 
     @Override
+    @Transactional
     public Response submitMenuRegistrationRequest(String portalName, String appId,
             MenuRegistrationRequestDTO menuRegistrationRequestDTO) {
         MenuRegistrationResponseDTO response = new MenuRegistrationResponseDTO();

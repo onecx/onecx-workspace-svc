@@ -4,18 +4,20 @@ import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS
 import static io.restassured.RestAssured.config;
 import static io.restassured.config.ObjectMapperConfig.objectMapperConfig;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.security.PrivateKey;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.jwt.Claims;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.restassured.config.RestAssuredConfig;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.util.KeyUtils;
-import java.security.PrivateKey;
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.jwt.Claims;
 
 @SuppressWarnings("java:S2187")
 public class AbstractTest {

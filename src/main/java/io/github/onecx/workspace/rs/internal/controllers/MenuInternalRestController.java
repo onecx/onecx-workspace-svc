@@ -47,6 +47,7 @@ public class MenuInternalRestController implements MenuInternalApi {
     WorkspaceDAO workspaceDAO;
 
     @Override
+    @Transactional
     public Response createMenuItemForWorkspace(String id, CreateMenuItemDTO menuItemDTO) {
         var workspace = workspaceDAO.findById(id);
 
@@ -83,6 +84,7 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @Override
+    @Transactional
     public Response deleteAllMenuItemsForWorkspace(String id) {
         dao.deleteAllMenuItemsByWorkspaceId(id);
 
@@ -90,6 +92,7 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @Override
+    @Transactional
     public Response deleteMenuItemById(String id, String menuItemId) {
         dao.deleteQueryById(menuItemId);
 
@@ -118,6 +121,7 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @Override
+    @Transactional
     public Response patchMenuItems(String id, List<MenuItemDTO> menuItemDTO) {
         // create map of <ID, DTO>
         Map<Object, MenuItemDTO> tmp = menuItemDTO.stream()
@@ -147,6 +151,7 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @Override
+    @Transactional
     public Response updateMenuItem(String id, String menuItemId, MenuItemDTO menuItemDTO) {
         var menuItem = dao.findById(menuItemId);
         if (menuItem == null) {
@@ -158,10 +163,13 @@ public class MenuInternalRestController implements MenuInternalApi {
 
         mapper.update(menuItemDTO, menuItem);
 
+        menuItem = dao.update(menuItem);
+
         return Response.ok(mapper.map(menuItem)).build();
     }
 
     @Override
+    @Transactional
     public Response uploadMenuStructureForWorkspaceId(String id, WorkspaceMenuItemStructrueDTO menuItemStructrueDTO) {
         var workspace = workspaceDAO.findById(id);
         if (workspace == null) {

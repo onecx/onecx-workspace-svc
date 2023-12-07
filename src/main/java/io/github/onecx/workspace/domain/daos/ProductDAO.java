@@ -26,19 +26,25 @@ public class ProductDAO extends AbstractDAO<Product> {
             cq.where(cb.equal(root.get(Product_.WORKSPACE).get(TraceableEntity_.ID), id));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
-            throw new DAOException(ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID, ex);
+            throw this.handleConstraint(ex, ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID);
         }
     }
 
     @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
     public void deleteProduct(String id) {
-        var cb = this.getEntityManager().getCriteriaBuilder();
-        var cq = cb.createQuery(Product.class);
-        var root = cq.from(Product.class);
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Product.class);
+            var root = cq.from(Product.class);
 
-        cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
-        var product = this.getEntityManager().createQuery(cq).getSingleResult();
-        this.getEntityManager().remove(product);
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
+            var product = this.getEntityManager().createQuery(cq).getSingleResult();
+            this.getEntityManager().remove(product);
+        } catch (NoResultException nre) {
+            return;
+        } catch (Exception ex) {
+            throw this.handleConstraint(ex, ProductDAO.ErrorKeys.ERROR_DELETE_PRODUCT_ID);
+        }
     }
 
     @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
@@ -64,13 +70,15 @@ public class ProductDAO extends AbstractDAO<Product> {
         } catch (NoResultException nre) {
             return null;
         } catch (Exception e) {
-            throw new DAOException(ProductDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED, e, entityName, id);
+            throw this.handleConstraint(e, ProductDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         }
     }
 
     public enum ErrorKeys {
 
         FIND_ENTITY_BY_ID_FAILED,
+
+        ERROR_DELETE_PRODUCT_ID,
 
         ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID,
 

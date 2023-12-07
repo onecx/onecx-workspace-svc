@@ -49,6 +49,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     UriInfo uriInfo;
 
     @Override
+    @Transactional
     public Response createWorkspace(CreateWorkspaceRequestDTO createWorkspaceRequestDTO) {
         var workspace = workspaceMapper.create(createWorkspaceRequestDTO);
         workspace = dao.create(workspace);
@@ -59,6 +60,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
+    @Transactional
     public Response deleteWorkspace(String id) {
         // delete menu before deleting workspace
         menuDao.deleteAllMenuItemsByWorkspaceId(id);
@@ -85,6 +87,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
+    @Transactional
     public Response updateWorkspace(String id, UpdateWorkspaceRequestDTO updateWorkspaceRequestDTO) {
         Workspace workspace = dao.findById(id);
         if (workspace == null) {

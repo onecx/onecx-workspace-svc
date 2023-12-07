@@ -20,7 +20,7 @@ import io.restassured.common.mapper.TypeRef;
 @QuarkusTest
 @TestHTTPEndpoint(ProductInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-class ProductRestControllerTest extends AbstractTest {
+class ProductRestControllerTenantTest extends AbstractTest {
 
     @Test
     void createProductInWorkspaceTest() {
@@ -36,12 +36,13 @@ class ProductRestControllerTest extends AbstractTest {
         mfe.setBasePath("/testMfe2");
         request.addMicrofrontendsItem(mfe);
 
-        // test not existing workspace
+        // test workspace under different tenant
         var error = given()
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "does-not-exists")
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org2"))
                 .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -55,6 +56,7 @@ class ProductRestControllerTest extends AbstractTest {
                 .body(request)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .post()
                 .then()
                 .statusCode(CREATED.getStatusCode())
@@ -71,6 +73,7 @@ class ProductRestControllerTest extends AbstractTest {
                 .body(request)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .post()
                 .then()
                 .statusCode(CREATED.getStatusCode())
@@ -78,23 +81,31 @@ class ProductRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getMicrofrontends()).isNull();
+
+        // test the same with org 3 the workspace will not be found
+        error = given()
+                .when()
+                .body(request)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org3"))
+                .post()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
     }
 
     @Test
     void deleteProductByIdTest() {
+        // delete with different tenant
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
-                .pathParam("productId", "5678")
-                .delete("{productId}")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org2"))
                 .pathParam("productId", "5678")
                 .delete("{productId}")
                 .then()
@@ -104,6 +115,32 @@ class ProductRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
+                .get()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(new TypeRef<List<ProductDTO>>() {
+                });
+
+        assertThat(dto).isNotNull().isNotEmpty().hasSize(2);
+        assertThat(dto.get(0).getMicrofrontends()).isNotEmpty();
+
+        // delete with correct tenant
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
+                .pathParam("productId", "5678")
+                .delete("{productId}")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -116,11 +153,12 @@ class ProductRestControllerTest extends AbstractTest {
 
     @Test
     void getProductsForWorkspaceIdTest() {
-        // not existing product
+        // existing product different tenant
         var response = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "does-not-exist")
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org3"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -134,6 +172,7 @@ class ProductRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -155,7 +194,8 @@ class ProductRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
-                .pathParam("productId", "does-not-exist")
+                .pathParam("productId", "1234")
+                .header(APM_HEADER_PARAM, createToken("org2"))
                 .put("{productId}")
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
@@ -168,7 +208,8 @@ class ProductRestControllerTest extends AbstractTest {
                 .body(request)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
-                .pathParam("productId", "does-not-exist")
+                .pathParam("productId", "1234")
+                .header(APM_HEADER_PARAM, createToken("org2"))
                 .put("{productId}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -177,6 +218,7 @@ class ProductRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -194,12 +236,25 @@ class ProductRestControllerTest extends AbstractTest {
         }
         request.getMicrofrontends().get(0).setBasePath("/mfe1-test");
 
+        // do not find as another tenant
+        given()
+                .when()
+                .body(request)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .pathParam("productId", "1234")
+                .header(APM_HEADER_PARAM, createToken("org2"))
+                .put("{productId}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
         var dto = given()
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .pathParam("productId", "1234")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .put("{productId}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -209,10 +264,24 @@ class ProductRestControllerTest extends AbstractTest {
         assertThat(dto.getMicrofrontends()).isNotEmpty();
         assertThat(dto.getBaseUrl()).isEqualTo(request.getBaseUrl());
 
+        var emptyResponse = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org3"))
+                .get()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(new TypeRef<List<ProductDTO>>() {
+                });
+
+        assertThat(emptyResponse).isNotNull().isEmpty();
+
         var response = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -232,6 +301,7 @@ class ProductRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .pathParam("productId", "1234")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .put("{productId}")
                 .then()
                 .statusCode(OK.getStatusCode())

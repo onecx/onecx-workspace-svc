@@ -1,17 +1,20 @@
 package io.github.onecx.workspace.rs.legacy.controllers;
 
+import static io.restassured.RestAssured.given;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.Response.Status.OK;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.tkit.quarkus.test.WithDBData;
+
 import gen.io.github.onecx.workspace.rs.legacy.model.MenuItemStructureDTO;
 import io.github.onecx.workspace.test.AbstractTest;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.tkit.quarkus.test.WithDBData;
-import static io.restassured.RestAssured.given;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.Response.Status.OK;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestHTTPEndpoint(PortalLegacyRestController.class)

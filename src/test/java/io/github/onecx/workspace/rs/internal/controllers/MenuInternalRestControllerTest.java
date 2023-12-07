@@ -373,11 +373,35 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(updatedData.getWorkspaceName()).isEqualTo("test02");
     }
 
+    @Test
+    void patchMenuItemParentSetChildAsParentTest() {
+
+        var request = new MenuItemDTO();
+        request.setKey("Test menu");
+        request.setDisabled(false);
+        request.setParentItemId("44-6");
+
+        // update menu item
+        var error = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-2")
+                .put("{menuItemId}")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo("CYCLE_DEPENDENCY");
+    }
+
     static Stream<Arguments> inputParams() {
         return Stream.of(
                 Arguments.of("11-111", "33-2", "55-6"),
                 Arguments.of("11-222", "44-6", "does-not-exists"),
-                Arguments.of("11-222", "44-6", "55-1"));
+                Arguments.of("11-222", "44-6", "55-1"),
+                Arguments.of("11-222", "44-6", "33-11"));
     }
 
     @ParameterizedTest

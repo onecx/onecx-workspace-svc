@@ -1,24 +1,25 @@
 package io.github.onecx.workspace.rs.legacy.controllers;
 
+import static io.restassured.RestAssured.given;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static jakarta.ws.rs.core.Response.Status.OK;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.tkit.quarkus.test.WithDBData;
+
 import gen.io.github.onecx.workspace.rs.legacy.model.MenuRegistrationRequestDTO;
 import gen.io.github.onecx.workspace.rs.legacy.model.MenuRegistrationResponseDTO;
 import gen.io.github.onecx.workspace.rs.legacy.model.ScopeDTO;
 import gen.io.github.onecx.workspace.rs.legacy.model.TkitMenuItemStructureDTO;
 import io.github.onecx.workspace.test.AbstractTest;
 import io.quarkus.test.InjectMock;
-import io.quarkus.test.Mock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.enterprise.context.ApplicationScoped;
-import java.util.ArrayList;
-import java.util.Map;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.tkit.quarkus.test.WithDBData;
-import static io.restassured.RestAssured.given;
-import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.Response.Status.OK;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
 @TestHTTPEndpoint(TkitPortalRestController.class)

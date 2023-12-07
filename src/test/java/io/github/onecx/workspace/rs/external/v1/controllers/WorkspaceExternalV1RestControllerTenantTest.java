@@ -1,19 +1,22 @@
 package io.github.onecx.workspace.rs.external.v1.controllers;
 
-import gen.io.github.onecx.workspace.rs.external.v1.model.WorkspaceInfoListDTOV1;
-import io.github.onecx.workspace.test.AbstractTest;
-import io.quarkus.test.common.http.TestHTTPEndpoint;
-import io.quarkus.test.junit.QuarkusTest;
-import java.util.stream.Stream;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.tkit.quarkus.test.WithDBData;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.tkit.quarkus.test.WithDBData;
+
+import gen.io.github.onecx.workspace.rs.external.v1.model.WorkspaceInfoListDTOV1;
+import io.github.onecx.workspace.test.AbstractTest;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceExternalV1RestController.class)

@@ -3,10 +3,15 @@ package io.github.onecx.workspace.rs.internal.controllers;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.io.github.onecx.workspace.rs.internal.model.*;
@@ -17,7 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-class WorkspaceInternalRestControllerTest extends AbstractTest {
+class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void createWorkspaceTest() {
@@ -33,6 +38,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
+                .header(APM_HEADER_PARAM, createToken("org2"))
                 .post()
                 .then()
                 .statusCode(CREATED.getStatusCode())
@@ -43,10 +49,32 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(dto.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
         assertThat(dto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
+        given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", dto.getId())
+                .header(APM_HEADER_PARAM, createToken("org1"))
+                .get("{id}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        var workspaceDTO = given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", dto.getId())
+                .header(APM_HEADER_PARAM, createToken("org2"))
+                .get("{id}")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTO.class);
+        assertThat(workspaceDTO).isNotNull();
+        assertThat(workspaceDTO.getWorkspaceName()).isNotNull().isEqualTo(createWorkspaceDTO.getWorkspaceName());
+        assertThat(workspaceDTO.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
+        assertThat(workspaceDTO.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
+
         // create without body
         var exception = given()
                 .when()
                 .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -59,6 +87,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -74,26 +103,59 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         given()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org2"))
                 .delete("{id}")
                 .then().statusCode(NO_CONTENT.getStatusCode());
 
         given().contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
+                .get("{id}")
+                .then().statusCode(OK.getStatusCode());
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
+                .delete("{id}")
+                .then().statusCode(NO_CONTENT.getStatusCode());
+
+        given().contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("{id}")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         given()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .delete("{id}")
                 .then().statusCode(NO_CONTENT.getStatusCode());
     }
 
     @Test
     void getWorkspace() {
+        given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org2"))
+                .get("{id}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org3"))
+                .get("{id}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
         var dto = given()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("{id}")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -109,14 +171,16 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(dto.getSubjectLinks()).isNotEmpty();
     }
 
-    @Test
-    void searchWorkspacesTest() {
+    @ParameterizedTest
+    @MethodSource("orgAndResults")
+    void searchByTenant(String organization, int results, int criteriaReults) {
         var criteria = new WorkspaceSearchCriteriaDTO();
 
         // empty criteria
         var data = given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
+                .header(APM_HEADER_PARAM, createToken(organization))
                 .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -125,8 +189,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .as(WorkspacePageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(2);
-        assertThat(data.getStream()).isNotNull().hasSize(2);
+        assertThat(data.getTotalElements()).isEqualTo(results);
+        assertThat(data.getStream()).isNotNull().hasSize(results);
 
         criteria.setWorkspaceName("test01");
         criteria.setThemeName("11-111");
@@ -134,6 +198,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         data = given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
+                .header(APM_HEADER_PARAM, createToken(organization))
                 .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -142,8 +207,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .as(WorkspacePageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(1);
-        assertThat(data.getStream()).isNotNull().hasSize(1);
+        assertThat(data.getTotalElements()).isEqualTo(criteriaReults);
+        assertThat(data.getStream()).isNotNull().hasSize(criteriaReults);
 
         criteria.setWorkspaceName("");
         criteria.setThemeName("");
@@ -151,6 +216,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         data = given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
+                .header(APM_HEADER_PARAM, createToken(organization))
                 .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -159,14 +225,15 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .as(WorkspacePageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(2);
-        assertThat(data.getStream()).isNotNull().hasSize(2);
+        assertThat(data.getTotalElements()).isEqualTo(results);
+        assertThat(data.getStream()).isNotNull().hasSize(results);
 
         criteria.setWorkspaceName(" ");
 
         data = given()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
+                .header(APM_HEADER_PARAM, createToken(organization))
                 .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -179,19 +246,28 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(data.getStream()).isNotNull().isEmpty();
     }
 
+    private static Stream<Arguments> orgAndResults() {
+        return Stream.of(
+                arguments("org1", 2, 1),
+                arguments("org2", 1, 0),
+                arguments("org3", 0, 0));
+    }
+
     @Test
     void updateWorkspaceTest() {
         var response = given().when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("{id}")
                 .then().statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
-        // update none existing workspace
+        // update workspace with different tenant
         given().when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
-                .pathParam("id", "none-exists")
+                .pathParam("id", "11-222")
+                .header(APM_HEADER_PARAM, createToken("org2"))
                 .put("{id}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -202,6 +278,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .put("{id}")
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -220,6 +297,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .put("{id}")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
@@ -227,6 +305,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         var updatedResponse = given().when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("{id}")
                 .then().statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
