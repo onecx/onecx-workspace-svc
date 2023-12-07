@@ -6,6 +6,7 @@ import static jakarta.persistence.criteria.JoinType.LEFT;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.Join;
 import jakarta.transaction.Transactional;
 
@@ -13,10 +14,7 @@ import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
-import io.github.onecx.workspace.domain.models.MenuItem;
-import io.github.onecx.workspace.domain.models.MenuItem_;
-import io.github.onecx.workspace.domain.models.Workspace;
-import io.github.onecx.workspace.domain.models.Workspace_;
+import io.github.onecx.workspace.domain.models.*;
 
 @ApplicationScoped
 public class MenuItemDAO extends AbstractDAO<MenuItem> {
@@ -168,7 +166,25 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         }
     }
 
+    @Override
+    public MenuItem findById(Object id) throws DAOException {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(MenuItem.class);
+            var root = cq.from(MenuItem.class);
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
+            return this.getEntityManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception e) {
+            throw new DAOException(MenuItemDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED, e, entityName, id);
+        }
+    }
+
     public enum ErrorKeys {
+
+        FIND_ENTITY_BY_ID_FAILED,
+
         ERROR_UPDATE_MENU_ITEMS,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,

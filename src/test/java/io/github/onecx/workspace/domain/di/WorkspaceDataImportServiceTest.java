@@ -50,11 +50,11 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
         Assertions.assertNull(workspace);
 
         Stream<Workspace> result = dao.findAll();
-        Assertions.assertEquals(3, result.count());
+        Assertions.assertEquals(2, result.count());
     }
 
     @Test
-    void importDataWithoutMenuItemsTest() {
+    void importDataMenuItemsNullTest() {
         service.importData(new DataImportConfig() {
             @Override
             public Map<String, String> getMetadata() {
@@ -72,6 +72,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
                     importRequest.setWorkspace(workspace);
                     workspace.setWorkspaceName("test1");
                     workspace.setBaseUrl("baseurl");
+                    workspace.setTenantId("tenant-100");
                     importRequest.setMenuItems(null);
                     return mapper.writeValueAsBytes(data);
                 } catch (Exception ex) {
@@ -82,7 +83,10 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
 
         var workspaces = dao.findAll().toList();
         assertThat(workspaces).hasSize(1);
+    }
 
+    @Test
+    void importDataMenuItemsEmptyTest() {
         service.importData(new DataImportConfig() {
             @Override
             public Map<String, String> getMetadata() {
@@ -99,6 +103,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
                     WorkspaceImportDTOV1 workspace = new WorkspaceImportDTOV1();
                     importRequest.setWorkspace(workspace);
                     workspace.setWorkspaceName("test1");
+                    workspace.setTenantId("tenant-100");
                     workspace.setBaseUrl("baseurl");
                     importRequest.setMenuItems(new ArrayList<>());
                     return mapper.writeValueAsBytes(data);
@@ -108,7 +113,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
             }
         });
 
-        workspaces = dao.findAll().toList();
+        var workspaces = dao.findAll().toList();
         assertThat(workspaces).hasSize(1);
     }
 
@@ -122,7 +127,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
         });
 
         var workspaces = dao.findAll().toList();
-        assertThat(workspaces).hasSize(3);
+        assertThat(workspaces).hasSize(2);
     }
 
     @Test
@@ -135,7 +140,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
         });
 
         var workspaces = dao.findAll().toList();
-        assertThat(workspaces).hasSize(3);
+        assertThat(workspaces).hasSize(2);
     }
 
     @Test

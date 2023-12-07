@@ -21,15 +21,16 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceExternalV1RestController.class)
 @WithDBData(value = "data/testdata-external.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-class WorkspaceExternalV1RestControllerTest extends AbstractTest {
+class WorkspaceExternalV1RestControllerTenantTest extends AbstractTest {
 
     @ParameterizedTest
     @MethodSource("themeNamesAndResults")
-    void getWorkspacesByThemeName(String themeName, int results) {
+    void getWorkspacesByThemeName(String themeName, int results, String organisation) {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("themeName", themeName)
+                .header(APM_HEADER_PARAM, createToken(organisation))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -41,8 +42,10 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
     private static Stream<Arguments> themeNamesAndResults() {
         return Stream.of(
-                arguments("11-111", 3),
-                arguments("22-222", 0), // different tenant so will not find it
-                arguments("does-not-exists", 0));
+                arguments("11-111", 3, "org1"),
+                arguments("22-222", 0, "org1"), // different tenant so will not find it
+                arguments("does-not-exists", 0, "org1"),
+                arguments("11-111", 0, "org2"),
+                arguments("22-222", 2, "org2"));
     }
 }

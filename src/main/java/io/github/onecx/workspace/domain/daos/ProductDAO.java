@@ -3,12 +3,14 @@ package io.github.onecx.workspace.domain.daos;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
+import io.github.onecx.workspace.domain.models.MenuItem_;
 import io.github.onecx.workspace.domain.models.Product;
 import io.github.onecx.workspace.domain.models.Product_;
 
@@ -24,22 +26,59 @@ public class ProductDAO extends AbstractDAO<Product> {
             cq.where(cb.equal(root.get(Product_.WORKSPACE).get(TraceableEntity_.ID), id));
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
-            throw new DAOException(ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID, ex);
+            throw this.handleConstraint(ex, ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID);
         }
     }
 
     @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
     public void deleteProduct(String id) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Product.class);
+            var root = cq.from(Product.class);
+
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
+            var product = this.getEntityManager().createQuery(cq).getSingleResult();
+            this.getEntityManager().remove(product);
+        } catch (NoResultException nre) {
+            // do nothing on No result
+        } catch (Exception ex) {
+            throw this.handleConstraint(ex, ProductDAO.ErrorKeys.ERROR_DELETE_PRODUCT_ID);
+        }
+    }
+
+    @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
+    public void deleteProductByWorkspaceId(String workspaceId) {
         var cb = this.getEntityManager().getCriteriaBuilder();
         var cq = cb.createQuery(Product.class);
         var root = cq.from(Product.class);
 
-        cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
-        var product = this.getEntityManager().createQuery(cq).getSingleResult();
-        this.getEntityManager().remove(product);
+        cq.where(cb.equal(root.get(MenuItem_.WORKSPACE).get(TraceableEntity_.ID), workspaceId));
+
+        var products = this.getEntityManager().createQuery(cq).getResultList();
+        delete(products);
+    }
+
+    @Override
+    public Product findById(Object id) throws DAOException {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Product.class);
+            var root = cq.from(Product.class);
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
+            return this.getEntityManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception e) {
+            throw this.handleConstraint(e, ProductDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
+        }
     }
 
     public enum ErrorKeys {
+
+        FIND_ENTITY_BY_ID_FAILED,
+
+        ERROR_DELETE_PRODUCT_ID,
 
         ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID,
 

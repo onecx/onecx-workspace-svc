@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -20,6 +19,7 @@ import gen.io.github.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
 import gen.io.github.onecx.workspace.rs.internal.model.UpdateWorkspaceRequestDTO;
 import gen.io.github.onecx.workspace.rs.internal.model.WorkspaceSearchCriteriaDTO;
 import io.github.onecx.workspace.domain.daos.MenuItemDAO;
+import io.github.onecx.workspace.domain.daos.ProductDAO;
 import io.github.onecx.workspace.domain.daos.WorkspaceDAO;
 import io.github.onecx.workspace.domain.models.Workspace;
 import io.github.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
@@ -27,7 +27,6 @@ import io.github.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
 
 @LogService
 @ApplicationScoped
-@Path("/internal/workspaces")
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 
@@ -43,10 +42,14 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     @Inject
     MenuItemDAO menuDao;
 
+    @Inject
+    ProductDAO productDAO;
+
     @Context
     UriInfo uriInfo;
 
     @Override
+    @Transactional
     public Response createWorkspace(CreateWorkspaceRequestDTO createWorkspaceRequestDTO) {
         var workspace = workspaceMapper.create(createWorkspaceRequestDTO);
         workspace = dao.create(workspace);
@@ -57,9 +60,11 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
+    @Transactional
     public Response deleteWorkspace(String id) {
         // delete menu before deleting workspace
         menuDao.deleteAllMenuItemsByWorkspaceId(id);
+        productDAO.deleteProductByWorkspaceId(id);
 
         dao.deleteQueryById(id);
         return Response.noContent().build();
@@ -82,6 +87,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
+    @Transactional
     public Response updateWorkspace(String id, UpdateWorkspaceRequestDTO updateWorkspaceRequestDTO) {
         Workspace workspace = dao.findById(id);
         if (workspace == null) {

@@ -15,6 +15,7 @@ import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
+import org.tkit.quarkus.jpa.models.TraceableEntity_;
 import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 import io.github.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
@@ -24,6 +25,22 @@ import io.github.onecx.workspace.domain.models.Workspace_;
 
 @ApplicationScoped
 public class WorkspaceDAO extends AbstractDAO<Workspace> {
+
+    // https://hibernate.atlassian.net/browse/HHH-16830#icft=HHH-16830
+    @Override
+    public Workspace findById(Object id) throws DAOException {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Workspace.class);
+            var root = cq.from(Workspace.class);
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
+            return this.getEntityManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception e) {
+            throw handleConstraint(e, ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
+        }
+    }
 
     /**
      * This method fetches a workspace with
@@ -45,7 +62,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         } catch (NoResultException nre) {
             return null;
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_WORKSPACE_NAME, ex);
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
         }
     }
 
@@ -73,7 +90,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         } catch (NoResultException nre) {
             return null;
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_WORKSPACE_NAME, ex);
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
         }
     }
 
@@ -101,7 +118,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_BY_CRITERIA, ex);
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_BY_CRITERIA);
         }
     }
 
@@ -124,12 +141,13 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
             return this.getEntityManager().createQuery(cq).getResultStream();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_BY_THEME_NAME, ex);
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_BY_THEME_NAME);
         }
     }
 
     public enum ErrorKeys {
 
+        FIND_ENTITY_BY_ID_FAILED,
         ERROR_FIND_BY_BASE_URL,
 
         ERROR_FIND_BY_CRITERIA,

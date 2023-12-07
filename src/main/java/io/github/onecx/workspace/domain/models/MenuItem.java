@@ -13,6 +13,7 @@ import java.util.Set;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import io.github.onecx.workspace.domain.models.enums.Scope;
@@ -26,7 +27,7 @@ import lombok.Setter;
         @Index(columnList = "ITEM_WORKSPACE", name = "WS_MENU_ITEM_ITEM_WORKSPACE_IDX"),
         @Index(columnList = "ITEM_PARENT", name = "WS_MENU_ITEM_ITEM_PARENT_IDX"),
 }, uniqueConstraints = {
-        @UniqueConstraint(name = "WS_MENU_ITEM_ITEM_KEY_WORKSPACE", columnNames = { "ITEM_KEY", "ITEM_WORKSPACE" })
+        @UniqueConstraint(name = "WS_MENU_ITEM_ITEM_KEY_WORKSPACE", columnNames = { "ITEM_KEY", "ITEM_WORKSPACE", "TENANT_ID" })
 })
 @NamedEntityGraph(name = MenuItem.MENU_ITEM_WORKSPACE_AND_TRANSLATIONS, attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("workspace") })
@@ -36,6 +37,10 @@ import lombok.Setter;
 public class MenuItem extends TraceableEntity {
 
     public static final String MENU_ITEM_WORKSPACE_AND_TRANSLATIONS = "MenuItem.workspaceAndTranslations";
+
+    @TenantId
+    @Column(name = "TENANT_ID")
+    private String tenantId;
 
     @ManyToOne(cascade = { REFRESH }, optional = false)
     @JoinColumn(name = "ITEM_WORKSPACE")

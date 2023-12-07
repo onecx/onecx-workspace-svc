@@ -33,6 +33,7 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
     public abstract Workspace createWorkspace(WorkspaceImportDTOV1 workspaceDTO);
 
     @Mapping(target = "id", ignore = true)
@@ -44,6 +45,7 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
     public abstract Product createWorkspace(ProductDTOV1 productDTO);
 
     @Mapping(target = "id", ignore = true)
@@ -72,6 +74,7 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "permission", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "parent", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
     public abstract MenuItem mapMenu(MenuItemStructureDTOV1 menuItemStructureDto);
 
 }

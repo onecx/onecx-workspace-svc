@@ -1,5 +1,6 @@
 package io.github.onecx.workspace.rs.internal.mappers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mapstruct.*;
@@ -21,6 +22,7 @@ public interface ProductMapper {
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
     Product create(CreateProductRequestDTO dto);
 
     @Mapping(target = "id", ignore = true)
@@ -36,7 +38,22 @@ public interface ProductMapper {
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "microfrontends", qualifiedByName = "updateListDTO")
     void update(UpdateProductRequestDTO dto, @MappingTarget Product product);
+
+    @Named("updateListDTO")
+    default List<Microfrontend> updateMicrofrontendList(List<UpdateMicrofrontendDTO> listToUpdate) {
+        var list = new ArrayList<Microfrontend>();
+
+        if (listToUpdate != null) {
+            for (var mf : listToUpdate) {
+                list.add(update(mf));
+            }
+        }
+
+        return list;
+    }
 
     @Mapping(target = "id", ignore = true)
     Microfrontend update(UpdateMicrofrontendDTO dto);

@@ -6,7 +6,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -27,7 +26,6 @@ import io.github.onecx.workspace.rs.internal.mappers.ProductMapper;
 
 @LogService
 @ApplicationScoped
-@Path("/internal/workspaces/{id}/products")
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class ProductInternalRestController implements ProductInternalApi {
 
@@ -47,6 +45,7 @@ public class ProductInternalRestController implements ProductInternalApi {
     WorkspaceDAO workspaceDAO;
 
     @Override
+    @Transactional
     public Response createProductInWorkspace(String id, CreateProductRequestDTO createProductRequestDTO) {
         var workspace = workspaceDAO.findById(id);
         if (workspace == null) {
@@ -64,6 +63,7 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @Override
+    @Transactional
     public Response deleteProductById(String id, String productId) {
         dao.deleteProduct(productId);
 
@@ -77,6 +77,7 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @Override
+    @Transactional
     public Response updateProductById(String id, String productId, UpdateProductRequestDTO updateProductRequestDTO) {
         var product = dao.findById(productId);
         if (product == null) {
@@ -84,7 +85,7 @@ public class ProductInternalRestController implements ProductInternalApi {
         }
 
         mapper.update(updateProductRequestDTO, product);
-
+        product = dao.update(product);
         return Response.ok(mapper.map(product)).build();
     }
 

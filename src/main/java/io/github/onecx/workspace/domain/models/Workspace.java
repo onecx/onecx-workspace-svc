@@ -8,6 +8,7 @@ import java.util.Set;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Workspace extends TraceableEntity {
 
     public static final String WORKSPACE_FULL = "Workspace.full";
 
+    @TenantId
     @Column(name = "TENANT_ID")
     private String tenantId;
 

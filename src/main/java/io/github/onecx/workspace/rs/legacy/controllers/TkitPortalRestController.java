@@ -6,7 +6,6 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,12 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @LogService
 @ApplicationScoped
-@Path("/1000kit-portal-server/menustructure/{portalName}")
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class TkitPortalRestController implements TkitPortalApi {
 
     @ConfigProperty(name = "tkit.legacy.enable.menu.auto.registration", defaultValue = "false")
     boolean enableAutoRegistration;
+
+    @Inject
+    TkitLegacyAppConfig appConfig;
 
     @Inject
     MenuItemDAO menuItemDAO;
@@ -63,12 +64,13 @@ public class TkitPortalRestController implements TkitPortalApi {
     }
 
     @Override
+    @Transactional
     public Response submitMenuRegistrationRequest(String portalName, String appId,
             MenuRegistrationRequestDTO menuRegistrationRequestDTO) {
         MenuRegistrationResponseDTO response = new MenuRegistrationResponseDTO();
         response.setApplicationId(appId);
         response.setRequestVersion(menuRegistrationRequestDTO.getRequestVersion());
-        if (!enableAutoRegistration) {
+        if (!appConfig.enableMenuAutoRegistration()) {
             log.info("Auto registration of menu requests is disabled, ignoring request from {}", appId);
             response.setApplied(false);
             response.setNotice("TKITPORTAL10003 Menu registration request has been ignored");

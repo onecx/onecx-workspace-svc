@@ -8,8 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.Map;
 
-import jakarta.enterprise.context.ApplicationScoped;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.tkit.quarkus.test.WithDBData;
@@ -20,13 +18,12 @@ import gen.io.github.onecx.workspace.rs.legacy.model.ScopeDTO;
 import gen.io.github.onecx.workspace.rs.legacy.model.TkitMenuItemStructureDTO;
 import io.github.onecx.workspace.test.AbstractTest;
 import io.quarkus.test.InjectMock;
-import io.quarkus.test.Mock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestHTTPEndpoint(TkitPortalRestController.class)
-class TkitPortalSubmitMenuRequestTest extends AbstractTest {
+class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
 
     @InjectMock
     TkitLegacyAppConfig appConfig;
@@ -41,6 +38,7 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .body(request)
                 .pathParam("portalName", "does-not-exist")
                 .pathParam("appId", "parameters-management-ui")
+                .header(APM_HEADER_PARAM, createToken("org3"))
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -55,6 +53,7 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .body(request)
                 .pathParam("portalName", "test03")
                 .pathParam("appId", "parameters-management-ui")
+                .header(APM_HEADER_PARAM, createToken("org3"))
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -69,6 +68,7 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .body(request)
                 .pathParam("portalName", "test03")
                 .pathParam("appId", "parameters-management-ui")
+                .header(APM_HEADER_PARAM, createToken("org3"))
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -113,6 +113,22 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .body(request)
                 .pathParam("portalName", "test01")
                 .pathParam("appId", "parameters-management-ui")
+                .header(APM_HEADER_PARAM, createToken("org3"))
+                .post("{appId}")
+                .then().statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .body().as(MenuRegistrationResponseDTO.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getApplied()).isFalse();
+
+        response = given()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("portalName", "test01")
+                .pathParam("appId", "parameters-management-ui")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -128,6 +144,7 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
                 .body(request)
                 .pathParam("portalName", "test01")
                 .pathParam("appId", "parameters-management-ui")
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -136,16 +153,21 @@ class TkitPortalSubmitMenuRequestTest extends AbstractTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getApplied()).isTrue();
-    }
 
-    @ApplicationScoped
-    @Mock
-    public static class MockedAppConfig implements TkitLegacyAppConfig {
+        response = given()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("portalName", "test01")
+                .pathParam("appId", "parameters-management-ui")
+                .header(APM_HEADER_PARAM, createToken("org3"))
+                .post("{appId}")
+                .then().statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .body().as(MenuRegistrationResponseDTO.class);
 
-        @Override
-        public boolean enableMenuAutoRegistration() {
-            return false;
-        }
+        assertThat(response).isNotNull();
+        assertThat(response.getApplied()).isFalse();
     }
 
 }
