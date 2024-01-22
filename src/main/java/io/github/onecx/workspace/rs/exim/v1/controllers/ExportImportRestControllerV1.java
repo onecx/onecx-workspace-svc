@@ -39,8 +39,8 @@ public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     ExportImportMapperV1 mapper;
 
     @Override
-    public Response exportMenuByWorkspaceId(String id) {
-        var menu = menuItemDAO.loadAllMenuItemsByWorkspaceId(id);
+    public Response exportMenuByWorkspaceName(String name) {
+        var menu = menuItemDAO.loadAllMenuItemsByWorkspaceName(name);
         if (menu.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -48,8 +48,8 @@ public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
-    public Response exportWorkspaceById(String id) {
-        var workspace = dao.findById(id);
+    public Response exportWorkspaceByName(String name) {
+        var workspace = dao.findByWorkspaceName(name);
         if (workspace == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -57,16 +57,16 @@ public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
-    public Response importMenu(String id, MenuSnapshotDTOV1 menuSnapshotDTOV1) {
-        var menu = menuItemDAO.loadAllMenuItemsByWorkspaceId(id);
-        var workspace = dao.findById(id);
+    public Response importMenu(String name, MenuSnapshotDTOV1 menuSnapshotDTOV1) {
+        var menu = menuItemDAO.loadAllMenuItemsByWorkspaceName(name);
+        var workspace = dao.findByWorkspaceName(name);
         ImportResponseDTOV1 responseDTOV1 = new ImportResponseDTOV1();
 
         if (workspace == null) {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
         if (!menu.isEmpty()) {
-            menuItemDAO.deleteAllMenuItemsByWorkspaceId(id);
+            menuItemDAO.deleteAllMenuItemsByWorkspaceId(workspace.getId());
             responseDTOV1.setStatus(ImportResponseStatusDTOV1.UPDATE);
         } else {
             responseDTOV1.setStatus(ImportResponseStatusDTOV1.CREATED);

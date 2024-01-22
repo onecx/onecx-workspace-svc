@@ -26,7 +26,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .get("/11-111/export")
+                .get("/test01/export")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceSnapshotDTOV1.class);
@@ -109,7 +109,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .get("/11-111/menu/export")
+                .get("/test01/menu/export")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(MenuSnapshotDTOV1.class);
@@ -123,7 +123,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .get("/33-222/menu/export")
+                .get("/test05/menu/export")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -144,7 +144,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
-                .post("/11-222/menu/import")
+                .post("/test02/menu/import")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(ImportResponseDTOV1.class);
@@ -167,7 +167,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
-                .post("/11-111/menu/import")
+                .post("/test01/menu/import")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(ImportResponseDTOV1.class);

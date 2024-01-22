@@ -8,14 +8,14 @@ servers:
 tags:
   - name: workspaceExportImport
 paths:
-  /exim/v1/workspace/{id}/export:
+  /exim/v1/workspace/{name}/export:
     get:
       tags:
         - workspaceExportImport
-      description: Export workspace by id
-      operationId: exportWorkspaceById
+      description: Export workspace by name
+      operationId: exportWorkspaceByName
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:
@@ -54,14 +54,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EximProblemDetailResponse'
-  /exim/v1/workspace/{id}/menu/export:
+  /exim/v1/workspace/{name}/menu/export:
     get:
       tags:
         - workspaceExportImport
-      description: Export menu
-      operationId: exportMenuByWorkspaceId
+      description: Export menu by workspace name
+      operationId: exportMenuByWorkspaceName
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:
@@ -75,14 +75,14 @@ paths:
                 $ref: '#/components/schemas/MenuSnapshot'
         "404":
           description: No menu found
-  /exim/v1/workspace/{id}/menu/import:
+  /exim/v1/workspace/{name}/menu/import:
     post:
       tags:
         - workspaceExportImport
       description: Import menu
       operationId: importMenu
       parameters:
-        - name: id
+        - name: name
           in: path
           required: true
           schema:
@@ -133,7 +133,6 @@ components:
       enum:
         - UPDATE
         - CREATED
-        - SKIP
     EximWorkspace:
       type: object
       properties:
