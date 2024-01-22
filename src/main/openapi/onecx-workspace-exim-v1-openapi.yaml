@@ -1,0 +1,304 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-workspace exim service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-workspace:8080"
+tags:
+  - name: workspaceExportImport
+paths:
+  /exim/v1/workspace/{id}/export:
+    get:
+      tags:
+        - workspaceExportImport
+      description: Export workspace by id
+      operationId: exportWorkspaceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceSnapshot'
+        "404":
+          description: No workspaces found
+  /exim/v1/workspace/import:
+    post:
+      tags:
+        - workspaceExportImport
+      description: Import workspaces
+      operationId: importWorkspaces
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSnapshot'
+      responses:
+        "200":
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EximProblemDetailResponse'
+  /exim/v1/workspace/{id}/menu/export:
+    get:
+      tags:
+        - workspaceExportImport
+      description: Export menu
+      operationId: exportMenuByWorkspaceId
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuSnapshot'
+        "404":
+          description: No menu found
+  /exim/v1/workspace/{id}/menu/import:
+    post:
+      tags:
+        - workspaceExportImport
+      description: Import menu
+      operationId: importMenu
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuSnapshot'
+      responses:
+        "200":
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EximProblemDetailResponse'
+components:
+  schemas:
+    WorkspaceSnapshot:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 10
+          description: ID of the request
+        created:
+          $ref: '#/components/schemas/OffsetDateTime'
+        workspace:
+          $ref: '#/components/schemas/EximWorkspace'
+    ImportResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 10
+          description: ID of the request
+        status:
+          $ref: '#/components/schemas/ImportResponseStatus'
+    ImportResponseStatus:
+      type: string
+      enum:
+        - UPDATE
+        - CREATED
+        - SKIP
+    EximWorkspace:
+      type: object
+      properties:
+        workspaceName:
+          type: string
+        description:
+          type: string
+        theme:
+          type: string
+        homePage:
+          type: string
+        baseUrl:
+          type: string
+        companyName:
+          type: string
+        phoneNumber:
+          type: string
+        rssFeedUrl:
+          type: string
+        footerLabel:
+          type: string
+        workspaceRoles:
+          type: string
+        logoUrl:
+          type: string
+        address:
+          $ref: '#/components/schemas/EximWorkspaceAddress'
+        subjectLinks:
+          uniqueItems: true
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/EximSubjectLink'
+        imageUrls:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+    EximWorkspaceAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        streetNo:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+    EximSubjectLink:
+      type: object
+      properties:
+        label:
+          type: string
+        url:
+          type: string
+    MenuSnapshot:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 10
+          description: ID of the request
+        created:
+          $ref: '#/components/schemas/OffsetDateTime'
+        menu:
+          $ref: '#/components/schemas/EximMenuStructure'
+    EximMenuStructure:
+      type: object
+      properties:
+        menuItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximWorkspaceMenuItem'
+    EximWorkspaceMenuItem:
+      type: object
+      properties:
+        version:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        workspaceName:
+          type: string
+        applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        permission:
+          type: string
+        badge:
+          type: string
+        scope:
+          $ref: '#/components/schemas/EximScope'
+        workspaceExit:
+          type: boolean
+        parentItemId:
+          type: string
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        roles:
+          type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximWorkspaceMenuItem'
+    EximScope:
+      enum:
+        - WORKSPACE
+        - APP
+        - PAGE
+      type: string
+    EximProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximProblemDetailInvalidParam'
+    EximProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    EximProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
