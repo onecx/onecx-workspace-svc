@@ -3,6 +3,7 @@ package io.github.onecx.workspace.rs.exim.v1.mappers;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.mapstruct.Mapper;
@@ -15,15 +16,16 @@ import io.github.onecx.workspace.domain.models.Workspace;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ExportImportMapperV1 {
-    default WorkspaceSnapshotDTOV1 create(Workspace workspace) {
+    default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces) {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         snapshot.setCreated(OffsetDateTime.now());
         snapshot.setId(UUID.randomUUID().toString());
-        snapshot.setWorkspace(map(workspace));
+        snapshot.setWorkspaces(map(workspaces));
         return snapshot;
     }
 
-    @Mapping(source = "workspace", target = ".")
+    Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data);
+
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
@@ -33,8 +35,13 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "products", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
-    @Mapping(target = "id", expression = "java(java.util.UUID.randomUUID().toString())")
-    Workspace create(WorkspaceSnapshotDTOV1 snapshotDTOV1);
+    @Mapping(target = "id", ignore = true)
+    Workspace create(EximWorkspaceDTOV1 workspaceDTO);
+
+    @Mapping(target = "id", source = "request.id")
+    @Mapping(target = "workspaces", source = "workspaces")
+    ImportWorkspaceResponseDTOV1 create(WorkspaceSnapshotDTOV1 request,
+            Map<String, ImportResponseStatusDTOV1> workspaces);
 
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)

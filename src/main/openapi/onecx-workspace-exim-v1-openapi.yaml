@@ -8,18 +8,18 @@ servers:
 tags:
   - name: workspaceExportImport
 paths:
-  /exim/v1/workspace/{name}/export:
-    get:
+  /exim/v1/workspace/export:
+    post:
       tags:
         - workspaceExportImport
       description: Export workspace by name
       operationId: exportWorkspaceByName
-      parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportWorkspacesRequest'
       responses:
         "200":
           description: OK
@@ -47,7 +47,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ImportResponse'
+                $ref: '#/components/schemas/ImportWorkspaceResponse'
         "400":
           description: Bad request
           content:
@@ -99,7 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ImportResponse'
+                $ref: '#/components/schemas/ImportMenuResponse'
         "400":
           description: Bad request
           content:
@@ -117,9 +117,12 @@ components:
           description: ID of the request
         created:
           $ref: '#/components/schemas/OffsetDateTime'
-        workspace:
-          $ref: '#/components/schemas/EximWorkspace'
-    ImportResponse:
+        workspaces:
+          type: object
+          nullable: false
+          additionalProperties:
+            $ref: '#/components/schemas/EximWorkspace'
+    ImportMenuResponse:
       type: object
       properties:
         id:
@@ -128,11 +131,22 @@ components:
           description: ID of the request
         status:
           $ref: '#/components/schemas/ImportResponseStatus'
+    ImportWorkspaceResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 10
+          description: ID of the request
+        workspaces:
+          additionalProperties:
+            $ref: '#/components/schemas/ImportResponseStatus'
     ImportResponseStatus:
       type: string
       enum:
         - UPDATE
         - CREATED
+        - SKIP
     EximWorkspace:
       type: object
       properties:
@@ -268,6 +282,14 @@ components:
         - APP
         - PAGE
       type: string
+    ExportWorkspacesRequest:
+      type: object
+      properties:
+        names:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
     EximProblemDetailResponse:
       type: object
       properties:

@@ -1,6 +1,7 @@
 package io.github.onecx.workspace.rs.exim.v1.controllers;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -18,6 +19,7 @@ import gen.io.github.onecx.workspace.rs.exim.v1.model.*;
 import io.github.onecx.workspace.domain.daos.MenuItemDAO;
 import io.github.onecx.workspace.domain.daos.WorkspaceDAO;
 import io.github.onecx.workspace.domain.models.MenuItem;
+import io.github.onecx.workspace.domain.models.Workspace;
 import io.github.onecx.workspace.rs.exim.v1.mappers.ExportImportExceptionMapperV1;
 import io.github.onecx.workspace.rs.exim.v1.mappers.ExportImportMapperV1;
 
@@ -48,19 +50,21 @@ public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
-    public Response exportWorkspaceByName(String name) {
-        var workspace = dao.findByWorkspaceName(name);
-        if (workspace == null) {
+    public Response exportWorkspaceByName(ExportWorkspacesRequestDTOV1 request) {
+        var workspaces = dao.findByWorkspaceNames(request.getNames());
+        var data = workspaces.collect(Collectors.toMap(Workspace::getWorkspaceName, workspace -> workspace));
+
+        if (data.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(mapper.create(workspace)).build();
+        return Response.ok(mapper.create(data)).build();
     }
 
     @Override
     public Response importMenu(String name, MenuSnapshotDTOV1 menuSnapshotDTOV1) {
         var menu = menuItemDAO.loadAllMenuItemsByWorkspaceName(name);
         var workspace = dao.findByWorkspaceName(name);
-        ImportResponseDTOV1 responseDTOV1 = new ImportResponseDTOV1();
+        ImportMenuResponseDTOV1 responseDTOV1 = new ImportMenuResponseDTOV1();
 
         if (workspace == null) {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
@@ -80,17 +84,39 @@ public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
-    public Response importWorkspaces(WorkspaceSnapshotDTOV1 workspaceSnapshotDTOV1) {
-        var workspace = dao.findByWorkspaceName(workspaceSnapshotDTOV1.getWorkspace().getWorkspaceName());
-        ImportResponseDTOV1 response = new ImportResponseDTOV1();
-        if (workspace == null) {
-            dao.create(mapper.create(workspaceSnapshotDTOV1));
-            response.setStatus(ImportResponseStatusDTOV1.CREATED);
-        } else {
-            throw new ConstraintException("Workspace already exists", MenuItemErrorKeys.WORKSPACE_ALREADY_EXIST, null);
-        }
+    public Response importWorkspaces(WorkspaceSnapshotDTOV1 request) {
+        /**
+         * var workspace = dao.findByWorkspaceName(workspaceSnapshotDTOV1.getWorkspace().getWorkspaceName());
+         * ImportResponseDTOV1 response = new ImportResponseDTOV1();
+         * if (workspace == null) {
+         * dao.create(mapper.create(workspaceSnapshotDTOV1));
+         * response.setStatus(ImportResponseStatusDTOV1.CREATED);
+         * } else {
+         * throw new ConstraintException("Workspace already exists", MenuItemErrorKeys.WORKSPACE_ALREADY_EXIST, null);
+         * }
+         *
+         * return Response.ok(response).build();
+         */
+        var keys = request.getWorkspaces().keySet();
+        var workspaces = dao.findByWorkspaceNames(keys);
+        var map = workspaces.collect(Collectors.toMap(Workspace::getWorkspaceName, workspace -> workspace));
 
-        return Response.ok(response).build();
+        Map<String, ImportResponseStatusDTOV1> items = new HashMap<>();
+
+        request.getWorkspaces().forEach((name, dto) -> {
+
+            var workspace = map.get(name);
+            if (workspace == null) {
+                workspace = mapper.create(dto);
+                workspace.setWorkspaceName(name);
+                dao.create(workspace);
+                items.put(name, ImportResponseStatusDTOV1.CREATED);
+            } else {
+                items.put(name, ImportResponseStatusDTOV1.SKIP);
+            }
+        });
+
+        return Response.ok(mapper.create(request, items)).build();
     }
 
     @ServerExceptionMapper
@@ -104,7 +130,6 @@ public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     enum MenuItemErrorKeys {
-        WORKSPACE_DOES_NOT_EXIST,
-        WORKSPACE_ALREADY_EXIST
+        WORKSPACE_DOES_NOT_EXIST
     }
 }

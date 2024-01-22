@@ -6,7 +6,9 @@ import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.quarkus.test.WithDBData;
@@ -23,25 +25,31 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
     @Test
     void exportWorkspaceTest() {
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
+        request.addNamesItem("test01");
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .get("/test01/export")
+                .body(request)
+                .post("/export")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceSnapshotDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getWorkspace().getWorkspaceName()).isEqualTo("test01");
+        assertThat(dto.getWorkspaces().get("test01").getWorkspaceName()).isEqualTo("test01");
 
     }
 
     @Test
     void exportWorkspaceNotFoundTest() {
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
+        request.addNamesItem("12345");
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .get("/12345/export")
+                .body(request)
+                .post("/export")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -54,7 +62,9 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
         workspace.setBaseUrl("/someurl");
         workspace.setWorkspaceName("testWorkspace");
-        snapshot.setWorkspace(workspace);
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        map.put("testWorkspace", workspace);
+        snapshot.setWorkspaces(map);
 
         var importResponse = given()
                 .when()
@@ -63,10 +73,10 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .post("/import")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(ImportResponseDTOV1.class);
+                .extract().as(ImportWorkspaceResponseDTOV1.class);
 
         assertThat(importResponse).isNotNull();
-        assertThat(importResponse.getStatus()).isEqualTo(ImportResponseStatusDTOV1.CREATED);
+        assertThat(importResponse.getWorkspaces().get("testWorkspace")).isEqualTo(ImportResponseStatusDTOV1.CREATED);
     }
 
     @Test
@@ -75,7 +85,9 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
         workspace.setBaseUrl("/company01");
         workspace.setWorkspaceName("test01");
-        snapshot.setWorkspace(workspace);
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        map.put("test01", workspace);
+        snapshot.setWorkspaces(map);
 
         var importResponse = given()
                 .when()
@@ -83,11 +95,11 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .body(snapshot)
                 .post("/import")
                 .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(EximProblemDetailResponseDTOV1.class);
+                .statusCode(OK.getStatusCode())
+                .extract().as(ImportWorkspaceResponseDTOV1.class);
 
         assertThat(importResponse).isNotNull();
-        assertThat(importResponse.getErrorCode()).isEqualTo("WORKSPACE_ALREADY_EXIST");
+        assertThat(importResponse.getWorkspaces().get("test01")).isEqualTo(ImportResponseStatusDTOV1.SKIP);
     }
 
     @Test
@@ -147,7 +159,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .post("/test02/menu/import")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(ImportResponseDTOV1.class);
+                .extract().as(ImportMenuResponseDTOV1.class);
 
         assertThat(dto).isNotNull();
         assertThat(dto.getStatus()).isEqualTo(ImportResponseStatusDTOV1.CREATED);
@@ -170,7 +182,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .post("/test01/menu/import")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(ImportResponseDTOV1.class);
+                .extract().as(ImportMenuResponseDTOV1.class);
 
         assertThat(dto).isNotNull();
         assertThat(dto.getStatus()).isEqualTo(ImportResponseStatusDTOV1.UPDATE);
