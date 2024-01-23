@@ -50,7 +50,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
-    public Response exportWorkspaceByName(ExportWorkspacesRequestDTOV1 request) {
+    public Response exportWorkspacesByNames(ExportWorkspacesRequestDTOV1 request) {
         var workspaces = dao.findByWorkspaceNames(request.getNames());
         var data = workspaces.collect(Collectors.toMap(Workspace::getWorkspaceName, workspace -> workspace));
 
@@ -61,6 +61,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
+    @Transactional
     public Response importMenu(String name, MenuSnapshotDTOV1 menuSnapshotDTOV1) {
         var menu = menuItemDAO.loadAllMenuItemsByWorkspaceName(name);
         var workspace = dao.findByWorkspaceName(name);
@@ -71,7 +72,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         }
         if (!menu.isEmpty()) {
             menuItemDAO.deleteAllMenuItemsByWorkspaceId(workspace.getId());
-            responseDTOV1.setStatus(ImportResponseStatusDTOV1.UPDATE);
+            responseDTOV1.setStatus(ImportResponseStatusDTOV1.UPDATED);
         } else {
             responseDTOV1.setStatus(ImportResponseStatusDTOV1.CREATED);
         }
@@ -83,6 +84,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
+    @Transactional
     public Response importWorkspaces(WorkspaceSnapshotDTOV1 request) {
         var keys = request.getWorkspaces().keySet();
         var workspaces = dao.findByWorkspaceNames(keys);
@@ -91,15 +93,18 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         Map<String, ImportResponseStatusDTOV1> items = new HashMap<>();
 
         request.getWorkspaces().forEach((name, dto) -> {
-
-            var workspace = map.get(name);
-            if (workspace == null) {
-                workspace = mapper.create(dto);
-                workspace.setWorkspaceName(name);
-                dao.create(workspace);
-                items.put(name, ImportResponseStatusDTOV1.CREATED);
-            } else {
-                items.put(name, ImportResponseStatusDTOV1.SKIP);
+            try {
+                var workspace = map.get(name);
+                if (workspace == null) {
+                    workspace = mapper.create(dto);
+                    workspace.setWorkspaceName(name);
+                    dao.create(workspace);
+                    items.put(name, ImportResponseStatusDTOV1.CREATED);
+                } else {
+                    items.put(name, ImportResponseStatusDTOV1.SKIPPED);
+                }
+            } catch (Exception ex) {
+                items.put(name, ImportResponseStatusDTOV1.ERROR);
             }
         });
 

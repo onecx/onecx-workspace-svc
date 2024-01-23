@@ -12,8 +12,8 @@ paths:
     post:
       tags:
         - workspaceExportImport
-      description: Export workspace by name
-      operationId: exportWorkspaceByName
+      description: Export workspaces by names
+      operationId: exportWorkspacesByNames
       requestBody:
         required: true
         content:
@@ -144,9 +144,10 @@ components:
     ImportResponseStatus:
       type: string
       enum:
-        - UPDATE
+        - UPDATED
         - CREATED
-        - SKIP
+        - SKIPPED
+        - ERROR
     EximWorkspace:
       type: object
       properties:

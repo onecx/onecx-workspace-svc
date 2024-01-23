@@ -98,7 +98,33 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .extract().as(ImportWorkspaceResponseDTOV1.class);
 
         assertThat(importResponse).isNotNull();
-        assertThat(importResponse.getWorkspaces()).containsEntry("test01", ImportResponseStatusDTOV1.SKIP);
+        assertThat(importResponse.getWorkspaces()).containsEntry("test01", ImportResponseStatusDTOV1.SKIPPED);
+    }
+
+    @Test
+    void importWorkspacesWithOneInvalidWorkspaceTest() {
+        WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
+        EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
+        workspace.setBaseUrl("/company01");
+        workspace.setWorkspaceName("test01");
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        map.put("test01", workspace);
+        map.put("test", null);
+        snapshot.setWorkspaces(map);
+
+        var importResponse = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("/import")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ImportWorkspaceResponseDTOV1.class);
+
+        assertThat(importResponse).isNotNull();
+        assertThat(importResponse.getWorkspaces()).containsEntry("test01", ImportResponseStatusDTOV1.SKIPPED);
+        assertThat(importResponse.getWorkspaces()).containsEntry("test", ImportResponseStatusDTOV1.ERROR);
+
     }
 
     @Test
@@ -184,7 +210,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .extract().as(ImportMenuResponseDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getStatus()).isEqualTo(ImportResponseStatusDTOV1.UPDATE);
+        assertThat(dto.getStatus()).isEqualTo(ImportResponseStatusDTOV1.UPDATED);
     }
 
     @Test
