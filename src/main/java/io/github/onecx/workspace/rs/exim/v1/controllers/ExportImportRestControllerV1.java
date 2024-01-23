@@ -26,7 +26,7 @@ import io.github.onecx.workspace.rs.exim.v1.mappers.ExportImportMapperV1;
 @LogService
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
-public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
+class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
     @Inject
     WorkspaceDAO dao;

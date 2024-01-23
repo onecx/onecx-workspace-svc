@@ -38,7 +38,6 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getWorkspaces().get("test01").getWorkspaceName()).isEqualTo("test01");
-
     }
 
     @Test
@@ -76,7 +75,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .extract().as(ImportWorkspaceResponseDTOV1.class);
 
         assertThat(importResponse).isNotNull();
-        assertThat(importResponse.getWorkspaces().get("testWorkspace")).isEqualTo(ImportResponseStatusDTOV1.CREATED);
+        assertThat(importResponse.getWorkspaces()).containsEntry("testWorkspace", ImportResponseStatusDTOV1.CREATED);
     }
 
     @Test
@@ -99,7 +98,7 @@ public class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .extract().as(ImportWorkspaceResponseDTOV1.class);
 
         assertThat(importResponse).isNotNull();
-        assertThat(importResponse.getWorkspaces().get("test01")).isEqualTo(ImportResponseStatusDTOV1.SKIP);
+        assertThat(importResponse.getWorkspaces()).containsEntry("test01", ImportResponseStatusDTOV1.SKIP);
     }
 
     @Test
