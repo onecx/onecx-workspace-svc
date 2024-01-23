@@ -1,10 +1,8 @@
 package io.github.onecx.workspace.rs.exim.v1.mappers;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -64,10 +62,11 @@ public interface ExportImportMapperV1 {
     List<EximWorkspaceMenuItemDTOV1> mapList(List<MenuItem> menuItems);
 
     @Mapping(target = "version", ignore = true)
-    @Mapping(target = "parentItemId", ignore = true)
+    @Mapping(target = "parentItemId", source = "parent.id")
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeChildrenItem", ignore = true)
     EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem);
+
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "workspaceName", ignore = true)
@@ -83,21 +82,20 @@ public interface ExportImportMapperV1 {
     MenuItem map(EximWorkspaceMenuItemDTOV1 eximWorkspaceMenuItemDTOV1);
 
     default void recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace, MenuItem parent,
-            List<MenuItem> mappedItems, ArrayList<String> itemKeys) {
+            List<MenuItem> mappedItems) {
         int position = 0;
         for (EximWorkspaceMenuItemDTOV1 item : items) {
-            if (item != null && !itemKeys.contains(item.getKey())) {
+            if (item != null) {
                 MenuItem menu = map(item);
                 updateMenu(menu, position, workspace, parent);
                 mappedItems.add(menu);
-                itemKeys.add(item.getKey());
                 position++;
 
                 if (item.getChildren() == null || item.getChildren().isEmpty()) {
                     continue;
                 }
 
-                recursiveMappingTreeStructure(item.getChildren(), workspace, menu, mappedItems, itemKeys);
+                recursiveMappingTreeStructure(item.getChildren(), workspace, menu, mappedItems);
             }
         }
     }
@@ -109,5 +107,22 @@ public interface ExportImportMapperV1 {
         menuItem.setPosition(position);
         menuItem.setParent(parent);
         return menuItem;
+    }
+
+    default MenuSnapshotDTOV1 mapTree(Collection<MenuItem> entities) {
+        MenuSnapshotDTOV1 dto = new MenuSnapshotDTOV1();
+        dto.setCreated(OffsetDateTime.now());
+        dto.setId(UUID.randomUUID().toString());
+        if (entities.isEmpty()) {
+            dto.getMenu().setMenuItems(new ArrayList<>());
+            return dto;
+        }
+
+        var parentChildrenMap = entities.stream()
+                .collect(Collectors
+                        .groupingBy(menuItem -> menuItem.getParent() == null ? "TOP" : menuItem.getParent().getKey()));
+        dto.setMenu(new EximMenuStructureDTOV1());
+        dto.getMenu().setMenuItems(parentChildrenMap.get("TOP").stream().map(this::map).toList());
+        return dto;
     }
 }

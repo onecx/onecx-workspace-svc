@@ -46,7 +46,7 @@ public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         if (menu.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(mapper.create(menu)).build();
+        return Response.ok(mapper.mapTree(menu)).build();
     }
 
     @Override
@@ -77,26 +77,13 @@ public class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         }
 
         List<MenuItem> items = new LinkedList<>();
-        ArrayList<String> itemKeys = new ArrayList<>();
-        mapper.recursiveMappingTreeStructure(menuSnapshotDTOV1.getMenu().getMenuItems(), workspace, null, items, itemKeys);
+        mapper.recursiveMappingTreeStructure(menuSnapshotDTOV1.getMenu().getMenuItems(), workspace, null, items);
         menuItemDAO.create(items);
         return Response.ok(responseDTOV1).build();
     }
 
     @Override
     public Response importWorkspaces(WorkspaceSnapshotDTOV1 request) {
-        /**
-         * var workspace = dao.findByWorkspaceName(workspaceSnapshotDTOV1.getWorkspace().getWorkspaceName());
-         * ImportResponseDTOV1 response = new ImportResponseDTOV1();
-         * if (workspace == null) {
-         * dao.create(mapper.create(workspaceSnapshotDTOV1));
-         * response.setStatus(ImportResponseStatusDTOV1.CREATED);
-         * } else {
-         * throw new ConstraintException("Workspace already exists", MenuItemErrorKeys.WORKSPACE_ALREADY_EXIST, null);
-         * }
-         *
-         * return Response.ok(response).build();
-         */
         var keys = request.getWorkspaces().keySet();
         var workspaces = dao.findByWorkspaceNames(keys);
         var map = workspaces.collect(Collectors.toMap(Workspace::getWorkspaceName, workspace -> workspace));
