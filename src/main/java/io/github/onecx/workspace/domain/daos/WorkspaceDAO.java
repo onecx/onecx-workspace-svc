@@ -5,11 +5,13 @@ import static io.github.onecx.workspace.domain.models.Workspace_.WORKSPACE_NAME;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
@@ -61,6 +63,27 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
             return this.getEntityManager().createQuery(cq).getSingleResult();
         } catch (NoResultException nre) {
             return null;
+        } catch (Exception ex) {
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
+        }
+    }
+
+    /**
+     * This method fetches multiple workspaces with
+     * workspaceNames provided as a param and
+     * tenantId provided as a param
+     *
+     * @return Stream containing Workspace entities if exists otherwise empty
+     */
+    @Transactional(Transactional.TxType.SUPPORTS)
+    public Stream<Workspace> findByWorkspaceNames(Set<String> workspaceNames) {
+
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Workspace.class);
+            var root = cq.from(Workspace.class);
+            cq.where(root.get(WORKSPACE_NAME).in(workspaceNames));
+            return this.getEntityManager().createQuery(cq).getResultStream();
         } catch (Exception ex) {
             throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
         }
