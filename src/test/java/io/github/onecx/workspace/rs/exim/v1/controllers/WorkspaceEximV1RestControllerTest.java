@@ -21,7 +21,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(ExportImportRestControllerV1.class)
 @WithDBData(value = "data/testdata-exim.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class WorkspaceEximV1RestControllerTest extends AbstractTest {
+class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
     @Test
     void exportWorkspaceTest() {
