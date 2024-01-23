@@ -61,24 +61,25 @@ public interface ExportImportMapperV1 {
 
     List<EximWorkspaceMenuItemDTOV1> mapList(List<MenuItem> menuItems);
 
-    @Mapping(target = "version", ignore = true)
-    @Mapping(target = "parentItemId", source = "parent.id")
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeChildrenItem", ignore = true)
     EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem);
-
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
-    @Mapping(target = "parent.id", source = "parentItemId")
+    @Mapping(target = "parent.id", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "permission", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
     MenuItem map(EximWorkspaceMenuItemDTOV1 eximWorkspaceMenuItemDTOV1);
 
     default void recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace, MenuItem parent,

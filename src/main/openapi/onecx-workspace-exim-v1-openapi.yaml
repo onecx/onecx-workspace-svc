@@ -226,19 +226,6 @@ components:
     EximWorkspaceMenuItem:
       type: object
       properties:
-        version:
-          format: int32
-          type: integer
-        creationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        creationUser:
-          type: string
-        modificationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        modificationUser:
-          type: string
-        id:
-          type: string
         key:
           type: string
         name:
@@ -264,8 +251,6 @@ components:
           $ref: '#/components/schemas/EximScope'
         workspaceExit:
           type: boolean
-        parentItemId:
-          type: string
         i18n:
           type: object
           additionalProperties:
