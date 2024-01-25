@@ -1,8 +1,5 @@
 package io.github.onecx.workspace.rs.internal.mappers;
 
-import java.util.List;
-import java.util.stream.Stream;
-
 import org.mapstruct.*;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -41,7 +38,6 @@ public interface WorkspaceMapper {
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTO dto);
 
     @Mapping(target = "removeStreamItem", ignore = true)
-    @Mapping(target = "stream", qualifiedByName = "mapStream")
     WorkspacePageResultDTO mapPageResult(PageResult<Workspace> page);
 
     @Mapping(target = "removeSubjectLinkItem", ignore = true)
@@ -49,15 +45,4 @@ public interface WorkspaceMapper {
     @Mapping(target = "version", source = "modificationCount")
     WorkspaceDTO map(Workspace data);
 
-    @Mapping(target = "removeSubjectLinkItem", ignore = true)
-    @Mapping(target = "removeImageUrlItem", ignore = true)
-    @Mapping(target = "imageUrl", ignore = true)
-    @Mapping(target = "subjectLink", ignore = true)
-    @Mapping(target = "version", source = "modificationCount")
-    @Named("mapWithoutLazy")
-    WorkspaceDTO mapWithoutLazy(Workspace data);
-
-    @Named("mapStream")
-    @IterableMapping(qualifiedByName = "mapWithoutLazy")
-    List<WorkspaceDTO> mapStream(Stream<Workspace> stream);
 }

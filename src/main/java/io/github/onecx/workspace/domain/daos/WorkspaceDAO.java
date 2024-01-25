@@ -22,8 +22,6 @@ import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 import io.github.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
 import io.github.onecx.workspace.domain.models.Workspace;
-import io.github.onecx.workspace.domain.models.WorkspaceInfo;
-import io.github.onecx.workspace.domain.models.Workspace_;
 
 @ApplicationScoped
 public class WorkspaceDAO extends AbstractDAO<Workspace> {
@@ -145,38 +143,10 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
-    /**
-     * This method fetches a workspace info with
-     * themeName provided as a param and
-     * tenantId provided as a param
-     *
-     * @return WorkspaceInfo entity if exists otherwise null
-     */
-    public Stream<WorkspaceInfo> findByThemeName(String themeName) {
-
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(WorkspaceInfo.class);
-            var root = cq.from(Workspace.class);
-
-            cq.select(cb.construct(WorkspaceInfo.class, root.get(NAME), root.get(Workspace_.DESCRIPTION)));
-            cq.where(cb.equal(root.get(THEME), themeName));
-
-            return this.getEntityManager().createQuery(cq).getResultStream();
-        } catch (Exception ex) {
-            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_BY_THEME_NAME);
-        }
-    }
-
     public enum ErrorKeys {
-
         FIND_ENTITY_BY_ID_FAILED,
-        ERROR_FIND_BY_BASE_URL,
-
         ERROR_FIND_BY_CRITERIA,
         ERROR_FIND_WORKSPACE_NAME,
-
-        ERROR_FIND_BY_THEME_NAME,
     }
 
 }

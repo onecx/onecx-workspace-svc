@@ -461,7 +461,7 @@ components:
         stream:
           type: array
           items:
-            $ref: '#/components/schemas/Workspace'
+            $ref: '#/components/schemas/WorkspaceAbstract'
     CreateWorkspaceRequest:
       required:
         - name
@@ -589,6 +589,21 @@ components:
           type: array
           items:
             type: string
+    WorkspaceAbstract:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        theme:
+          type: string
+        baseUrl:
+          type: string
+        logoUrl:
+          type: string
     WorkspaceAddress:
       type: object
       properties:
