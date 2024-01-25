@@ -151,7 +151,7 @@ components:
     EximWorkspace:
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         description:
           type: string
@@ -169,19 +169,17 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: string
         logoUrl:
           type: string
         address:
           $ref: '#/components/schemas/EximWorkspaceAddress'
-        subjectLinks:
+        subjectLink:
           uniqueItems: true
           maxItems: 3
           type: array
           items:
             $ref: '#/components/schemas/EximSubjectLink'
-        imageUrls:
+        imageUrl:
           uniqueItems: true
           type: array
           items:
@@ -256,8 +254,6 @@ components:
           type: object
           additionalProperties:
             type: string
-        roles:
-          type: string
         children:
           type: array
           items:

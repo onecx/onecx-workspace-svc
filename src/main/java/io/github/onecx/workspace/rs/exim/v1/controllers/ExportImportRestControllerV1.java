@@ -52,7 +52,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     @Override
     public Response exportWorkspacesByNames(ExportWorkspacesRequestDTOV1 request) {
         var workspaces = dao.findByWorkspaceNames(request.getNames());
-        var data = workspaces.collect(Collectors.toMap(Workspace::getWorkspaceName, workspace -> workspace));
+        var data = workspaces.collect(Collectors.toMap(Workspace::getName, workspace -> workspace));
 
         if (data.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -88,7 +88,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     public Response importWorkspaces(WorkspaceSnapshotDTOV1 request) {
         var keys = request.getWorkspaces().keySet();
         var workspaces = dao.findByWorkspaceNames(keys);
-        var map = workspaces.collect(Collectors.toMap(Workspace::getWorkspaceName, workspace -> workspace));
+        var map = workspaces.collect(Collectors.toMap(Workspace::getName, workspace -> workspace));
 
         Map<String, ImportResponseStatusDTOV1> items = new HashMap<>();
 
@@ -97,7 +97,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
                 var workspace = map.get(name);
                 if (workspace == null) {
                     workspace = mapper.create(dto);
-                    workspace.setWorkspaceName(name);
+                    workspace.setName(name);
                     dao.create(workspace);
                     items.put(name, ImportResponseStatusDTOV1.CREATED);
                 } else {

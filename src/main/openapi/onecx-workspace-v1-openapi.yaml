@@ -35,7 +35,7 @@ components:
     WorkspaceInfo:
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         description:
           type: string

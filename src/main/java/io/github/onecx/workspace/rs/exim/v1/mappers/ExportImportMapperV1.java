@@ -41,8 +41,8 @@ public interface ExportImportMapperV1 {
     ImportWorkspaceResponseDTOV1 create(WorkspaceSnapshotDTOV1 request,
             Map<String, ImportResponseStatusDTOV1> workspaces);
 
-    @Mapping(target = "removeSubjectLinksItem", ignore = true)
-    @Mapping(target = "removeImageUrlsItem", ignore = true)
+    @Mapping(target = "removeSubjectLinkItem", ignore = true)
+    @Mapping(target = "removeImageUrlItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
 
     default MenuSnapshotDTOV1 create(List<MenuItem> menuStructure) {
@@ -104,7 +104,7 @@ public interface ExportImportMapperV1 {
     default MenuItem updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent) {
         menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getWorkspaceName());
+        menuItem.setWorkspaceName(workspace.getName());
         menuItem.setPosition(position);
         menuItem.setParent(parent);
         return menuItem;

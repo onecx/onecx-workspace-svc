@@ -37,7 +37,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .extract().as(WorkspaceSnapshotDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getWorkspaces().get("test01").getWorkspaceName()).isEqualTo("test01");
+        assertThat(dto.getWorkspaces().get("test01").getName()).isEqualTo("test01");
     }
 
     @Test
@@ -60,7 +60,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
         workspace.setBaseUrl("/someurl");
-        workspace.setWorkspaceName("testWorkspace");
+        workspace.setName("testWorkspace");
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("testWorkspace", workspace);
         snapshot.setWorkspaces(map);
@@ -83,7 +83,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
         workspace.setBaseUrl("/company01");
-        workspace.setWorkspaceName("test01");
+        workspace.setName("test01");
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("test01", workspace);
         snapshot.setWorkspaces(map);
@@ -106,7 +106,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
         workspace.setBaseUrl("/company01");
-        workspace.setWorkspaceName("test01");
+        workspace.setName("test01");
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("test01", workspace);
         map.put("test", null);

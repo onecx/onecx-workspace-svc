@@ -36,7 +36,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             subquery.select(root2);
 
             Join<MenuItem, Workspace> join = root2.join(MenuItem_.WORKSPACE, LEFT);
-            subquery.where(cb.equal(join.get(Workspace_.WORKSPACE_NAME), oldWorkspaceName));
+            subquery.where(cb.equal(join.get(Workspace_.NAME), oldWorkspaceName));
 
             update.where(root.in(subquery));
             this.em.createQuery(update).executeUpdate();
@@ -134,7 +134,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             var cq = cb.createQuery(MenuItem.class);
             var root = cq.from(MenuItem.class);
 
-            cq.where(cb.equal(root.get(MenuItem_.WORKSPACE).get(Workspace_.WORKSPACE_NAME), workspaceName));
+            cq.where(cb.equal(root.get(MenuItem_.WORKSPACE).get(Workspace_.NAME), workspaceName));
 
             return getEntityManager()
                     .createQuery(cq)

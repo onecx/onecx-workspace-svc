@@ -18,11 +18,11 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "WORKSPACE", uniqueConstraints = {
-        @UniqueConstraint(name = "WORKSPACE_NAME_TENANT_ID", columnNames = { "WORKSPACE_NAME", "TENANT_ID" }),
+        @UniqueConstraint(name = "NAME_TENANT_ID", columnNames = { "NAME", "TENANT_ID" }),
         @UniqueConstraint(name = "WORKSPACE_BASE_URL", columnNames = { "BASE_URL" })
 })
-@NamedEntityGraph(name = Workspace.WORKSPACE_FULL, attributeNodes = { @NamedAttributeNode("subjectLinks"),
-        @NamedAttributeNode("imageUrls"), @NamedAttributeNode(value = "products") })
+@NamedEntityGraph(name = Workspace.WORKSPACE_FULL, attributeNodes = { @NamedAttributeNode("subjectLink"),
+        @NamedAttributeNode("imageUrl"), @NamedAttributeNode(value = "products") })
 @SuppressWarnings("squid:S2160")
 public class Workspace extends TraceableEntity {
 
@@ -32,8 +32,8 @@ public class Workspace extends TraceableEntity {
     @Column(name = "TENANT_ID")
     private String tenantId;
 
-    @Column(name = "WORKSPACE_NAME", nullable = false)
-    private String workspaceName;
+    @Column(name = "NAME", nullable = false)
+    private String name;
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -63,18 +63,15 @@ public class Workspace extends TraceableEntity {
     private String footerLabel;
 
     @ElementCollection(fetch = LAZY)
-    @CollectionTable(name = "WS_ITEM_SUBJECT_LINKS")
+    @CollectionTable(name = "SUBJECT_LINK")
     @AttributeOverride(name = "label", column = @Column(name = "link_label"))
     @AttributeOverride(name = "url", column = @Column(name = "link_url"))
-    private Set<SubjectLink> subjectLinks = new HashSet<>();
+    private Set<SubjectLink> subjectLink = new HashSet<>();
 
     @ElementCollection(fetch = LAZY)
-    @CollectionTable(name = "WS_ITEM_IMAGE_URLS")
+    @CollectionTable(name = "IMAGE_URL")
     @Column(name = "IMAGE_URL")
-    private Set<String> imageUrls = new HashSet<>();
-
-    @Column(name = "WORKSPACE_ROLES", columnDefinition = "TEXT")
-    private String workspaceRoles;
+    private Set<String> imageUrl = new HashSet<>();
 
     @Column(name = "LOGO_URL")
     private String logoUrl;

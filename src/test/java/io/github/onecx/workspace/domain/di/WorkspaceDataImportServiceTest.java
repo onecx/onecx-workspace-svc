@@ -70,7 +70,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
                     data.getRequests().add(importRequest);
                     WorkspaceImportDTOV1 workspace = new WorkspaceImportDTOV1();
                     importRequest.setWorkspace(workspace);
-                    workspace.setWorkspaceName("test1");
+                    workspace.setName("test1");
                     workspace.setBaseUrl("baseurl");
                     workspace.setTenantId("tenant-100");
                     importRequest.setMenuItems(null);
@@ -102,7 +102,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
                     data.getRequests().add(importRequest);
                     WorkspaceImportDTOV1 workspace = new WorkspaceImportDTOV1();
                     importRequest.setWorkspace(workspace);
-                    workspace.setWorkspaceName("test1");
+                    workspace.setName("test1");
                     workspace.setTenantId("tenant-100");
                     workspace.setBaseUrl("baseurl");
                     importRequest.setMenuItems(new ArrayList<>());

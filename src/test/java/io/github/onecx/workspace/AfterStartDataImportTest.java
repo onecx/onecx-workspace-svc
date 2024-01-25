@@ -22,10 +22,10 @@ class AfterStartDataImportTest extends AbstractTest {
     @Test
     void importDataFromFileTest() {
         Stream<Workspace> result = workspaceDAO.findAll();
-        var restulList = result.toList();
-        assertThat(restulList).hasSize(1);
-        assertThat(restulList.get(0).getWorkspaceName()).isEqualTo("ADMIN");
-        assertThat(restulList.get(0).getTenantId()).isEqualTo("tenant-100");
+        var resultList = result.toList();
+        assertThat(resultList).hasSize(1);
+        assertThat(resultList.get(0).getName()).isEqualTo("ADMIN");
+        assertThat(resultList.get(0).getTenantId()).isEqualTo("tenant-100");
 
     }
 

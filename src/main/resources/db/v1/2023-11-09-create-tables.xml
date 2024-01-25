@@ -7,9 +7,9 @@
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 
         <changeSet author="dev (generated)" id="1699550634274-1">
-            <createTable tableName="ws_menu_item">
-                <column name="item_disabled" type="BOOLEAN"/>
-                <column name="item_pos" type="INTEGER"/>
+            <createTable tableName="menu_item">
+                <column name="disabled" type="BOOLEAN"/>
+                <column name="pos" type="INTEGER"/>
                 <column name="optlock" type="INTEGER">
                     <constraints nullable="false"/>
                 </column>
@@ -21,21 +21,20 @@
                 <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
                 <column name="application_id" type="VARCHAR(255)"/>
                 <column name="guid" type="VARCHAR(255)">
-                    <constraints nullable="false" primaryKey="true" primaryKeyName="ws_menu_item_pkey"/>
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="menu_item_pkey"/>
                 </column>
-                <column name="item_badge" type="VARCHAR(255)"/>
-                <column name="item_description" type="VARCHAR(255)"/>
-                <column name="item_key" type="VARCHAR(255)"/>
-                <column name="item_name" type="VARCHAR(255)"/>
-                <column name="item_parent" type="VARCHAR(255)"/>
-                <column name="item_permission_object" type="VARCHAR(255)"/>
-                <column name="item_scope" type="VARCHAR(255)"/>
-                <column name="item_url" type="VARCHAR(255)"/>
-                <column name="item_workspace" type="VARCHAR(255)">
+                <column name="badge" type="VARCHAR(255)"/>
+                <column name="description" type="VARCHAR(255)"/>
+                <column name="key" type="VARCHAR(255)"/>
+                <column name="name" type="VARCHAR(255)"/>
+                <column name="parent" type="VARCHAR(255)"/>
+                <column name="permission_object" type="VARCHAR(255)"/>
+                <column name="scope" type="VARCHAR(255)"/>
+                <column name="url" type="VARCHAR(255)"/>
+                <column name="workspace" type="VARCHAR(255)">
                     <constraints nullable="false"/>
                 </column>
-                <column name="item_workspace_name" type="VARCHAR(255)"/>
-                <column name="roles" type="TEXT"/>
+                <column name="workspace_name" type="VARCHAR(255)"/>
                 <column name="creationuser" type="VARCHAR(255)"/>
                 <column name="modificationuser" type="VARCHAR(255)"/>
             </createTable>
@@ -93,10 +92,9 @@
                     <constraints nullable="false"/>
                 </column>
                 <column name="theme" type="VARCHAR(255)"/>
-                <column name="workspace_name" type="VARCHAR(255)">
+                <column name="name" type="VARCHAR(255)">
                     <constraints nullable="false"/>
                 </column>
-                <column name="workspace_roles" type="TEXT"/>
                 <column name="city" type="VARCHAR(255)"/>
                 <column name="country" type="VARCHAR(255)"/>
                 <column name="creationuser" type="VARCHAR(255)"/>
@@ -106,15 +104,15 @@
                 <column name="streetno" type="VARCHAR(255)"/>
             </createTable>
 
-            <createIndex indexName="ws_menu_item_item_workspace_idx" tableName="ws_menu_item">
-                <column name="item_workspace"/>
+            <createIndex indexName="menu_item_workspace_idx" tableName="menu_item">
+                <column name="workspace"/>
             </createIndex>
 
-            <createIndex indexName="ws_menu_item_item_parent_idx" tableName="ws_menu_item">
-                <column name="item_parent"/>
+            <createIndex indexName="menu_item_parent_idx" tableName="menu_item">
+                <column name="parent"/>
             </createIndex>
 
-            <addUniqueConstraint columnNames="item_key, item_workspace, tenant_id" constraintName="ws_menu_item_item_key_workspace" tableName="ws_menu_item"/>
+            <addUniqueConstraint columnNames="key, workspace, tenant_id" constraintName="menu_item_key_workspace" tableName="menu_item"/>
 
             <addUniqueConstraint columnNames="base_path, product_guid" constraintName="mfe_id_path_product_guid" tableName="microfrontend"/>
 
@@ -124,16 +122,16 @@
 
             <addUniqueConstraint columnNames="base_url" constraintName="workspace_base_url_key" tableName="workspace"/>
 
-            <addUniqueConstraint columnNames="workspace_name, tenant_id" constraintName="workspace_name_tenant_id" tableName="workspace"/>
+            <addUniqueConstraint columnNames="name, tenant_id" constraintName="name_tenant_id" tableName="workspace"/>
 
-            <createTable tableName="ws_item_image_urls">
+            <createTable tableName="image_url">
                 <column name="image_url" type="VARCHAR(255)"/>
                 <column name="workspace_guid" type="VARCHAR(255)">
                     <constraints nullable="false"/>
                 </column>
             </createTable>
 
-            <createTable tableName="ws_item_subject_links">
+            <createTable tableName="subject_link">
                 <column name="workspace_guid" type="VARCHAR(255)">
                     <constraints nullable="false"/>
                 </column>
@@ -141,27 +139,27 @@
                 <column name="link_url" type="VARCHAR(255)"/>
             </createTable>
 
-            <createTable tableName="ws_menu_item_i18n">
+            <createTable tableName="menu_item_i18n">
                 <column name="language" type="VARCHAR(255)">
-                    <constraints nullable="false" primaryKey="true" primaryKeyName="ws_menu_item_i18n_pkey"/>
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="menu_item_i18n_pkey"/>
                 </column>
                 <column name="menuitem_guid" type="VARCHAR(255)">
-                    <constraints nullable="false" primaryKey="true" primaryKeyName="ws_menu_item_i18n_pkey"/>
+                    <constraints nullable="false" primaryKey="true" primaryKeyName="menu_item_i18n_pkey"/>
                 </column>
                 <column name="i18n" type="VARCHAR(255)"/>
             </createTable>
 
-            <addForeignKeyConstraint baseColumnNames="workspace_guid" baseTableName="ws_item_subject_links" constraintName="fkbwd50kjc356ftnrtn6dcsiyre" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="workspace_guid" baseTableName="subject_link" constraintName="fkbwd50kjc356ftnrtn6dcsiyre" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
 
-            <addForeignKeyConstraint baseColumnNames="item_parent" baseTableName="ws_menu_item" constraintName="fkcek7q11yqut2v7ej37lfekndj" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="ws_menu_item" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="parent" baseTableName="menu_item" constraintName="fkcek7q11yqut2v7ej37lfekndj" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="menu_item" validate="true"/>
 
-            <addForeignKeyConstraint baseColumnNames="item_workspace" baseTableName="ws_menu_item" constraintName="fkgnsfsuvoy0jevgv775mggomgq" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="workspace" baseTableName="menu_item" constraintName="fkgnsfsuvoy0jevgv775mggomgq" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
 
-            <addForeignKeyConstraint baseColumnNames="workspace_guid" baseTableName="ws_item_image_urls" constraintName="fkh1qlu71wattgffu0sxrw8io8p" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="workspace_guid" baseTableName="image_url" constraintName="fkh1qlu71wattgffu0sxrw8io8p" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
 
             <addForeignKeyConstraint baseColumnNames="product_guid" baseTableName="microfrontend" constraintName="fkk55007adbrus4lh6phroka3mu" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="product" validate="true"/>
 
-            <addForeignKeyConstraint baseColumnNames="menuitem_guid" baseTableName="ws_menu_item_i18n" constraintName="fklxo2nsagy225gfaypd3pn71nq" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="ws_menu_item" validate="true"/>
+            <addForeignKeyConstraint baseColumnNames="menuitem_guid" baseTableName="menu_item_i18n" constraintName="fklxo2nsagy225gfaypd3pn71nq" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="menu_item" validate="true"/>
 
             <addForeignKeyConstraint baseColumnNames="workspace_guid" baseTableName="product" constraintName="fktfrkhr5w9euslvvbedu4ua0ub" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
         </changeSet>

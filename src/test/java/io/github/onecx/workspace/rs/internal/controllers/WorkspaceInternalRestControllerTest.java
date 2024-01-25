@@ -25,7 +25,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
-                .workspaceName("Workspace1")
+                .name("Workspace1")
                 .companyName("Company1")
                 .baseUrl("/work1");
 
@@ -39,7 +39,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .extract().as(WorkspaceDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getWorkspaceName()).isNotNull().isEqualTo(createWorkspaceDTO.getWorkspaceName());
+        assertThat(dto.getName()).isNotNull().isEqualTo(createWorkspaceDTO.getName());
         assertThat(dto.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
         assertThat(dto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
@@ -100,13 +100,13 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .extract().as(WorkspaceDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getWorkspaceName()).isNotNull().isEqualTo("test01");
+        assertThat(dto.getName()).isNotNull().isEqualTo("test01");
         assertThat(dto.getCompanyName()).isNotNull().isEqualTo("Company1");
         assertThat(dto.getBaseUrl()).isNotNull().isEqualTo("/company1");
         assertThat(dto.getAddress()).isNotNull();
         assertThat(dto.getAddress().getStreetNo()).isEqualTo("6");
-        assertThat(dto.getImageUrls()).isNotEmpty();
-        assertThat(dto.getSubjectLinks()).isNotEmpty();
+        assertThat(dto.getImageUrl()).isNotEmpty();
+        assertThat(dto.getSubjectLink()).isNotEmpty();
     }
 
     @Test
@@ -128,7 +128,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(data.getTotalElements()).isEqualTo(2);
         assertThat(data.getStream()).isNotNull().hasSize(2);
 
-        criteria.setWorkspaceName("test01");
+        criteria.setName("test01");
         criteria.setThemeName("11-111");
 
         data = given()
@@ -145,7 +145,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(data.getTotalElements()).isEqualTo(1);
         assertThat(data.getStream()).isNotNull().hasSize(1);
 
-        criteria.setWorkspaceName("");
+        criteria.setName("");
         criteria.setThemeName("");
 
         data = given()
@@ -162,7 +162,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(data.getTotalElements()).isEqualTo(2);
         assertThat(data.getStream()).isNotNull().hasSize(2);
 
-        criteria.setWorkspaceName(" ");
+        criteria.setName(" ");
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -215,7 +215,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         // normal update
         response.setBaseUrl("/company2/updated");
         response.setCompanyName("Company 2 updated");
-        response.setWorkspaceName("Workspace2Test");
+        response.setName("Workspace2Test");
         given().when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
@@ -235,7 +235,6 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(updatedResponse.getAddress()).isNotNull();
         assertThat(updatedResponse.getAddress().getStreetNo()).isEqualTo(response.getAddress().getStreetNo());
         assertThat(updatedResponse.getAddress().getStreet()).isEqualTo(response.getAddress().getStreet());
-        assertThat(updatedResponse.getWorkspaceRoles()).isEqualTo(response.getWorkspaceRoles());
         assertThat(updatedResponse.getCompanyName()).isEqualTo(response.getCompanyName());
         assertThat(updatedResponse.getBaseUrl()).isEqualTo(response.getBaseUrl());
     }

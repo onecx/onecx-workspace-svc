@@ -428,7 +428,7 @@ components:
     WorkspaceSearchCriteria:
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         themeName:
           type: string
@@ -464,10 +464,10 @@ components:
             $ref: '#/components/schemas/Workspace'
     CreateWorkspaceRequest:
       required:
-        - workspaceName
+        - name
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         description:
           type: string
@@ -485,29 +485,27 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: string
         logoUrl:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
-        subjectLinks:
+        subjectLink:
           uniqueItems: true
           maxItems: 3
           type: array
           items:
             $ref: '#/components/schemas/SubjectLink'
-        imageUrls:
+        imageUrl:
           uniqueItems: true
           type: array
           items:
             type: string
     UpdateWorkspaceRequest:
       required:
-        - workspaceName
+        - name
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         description:
           type: string
@@ -525,26 +523,24 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: string
         logoUrl:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
-        subjectLinks:
+        subjectLink:
           uniqueItems: true
           maxItems: 3
           type: array
           items:
             $ref: '#/components/schemas/SubjectLink'
-        imageUrls:
+        imageUrl:
           uniqueItems: true
           type: array
           items:
             type: string
     Workspace:
       required:
-        - workspaceName
+        - name
       type: object
       properties:
         id:
@@ -560,7 +556,7 @@ components:
           $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
-        workspaceName:
+        name:
           type: string
         description:
           type: string
@@ -578,19 +574,17 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: string
         logoUrl:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
-        subjectLinks:
+        subjectLink:
           uniqueItems: true
           maxItems: 3
           type: array
           items:
             $ref: '#/components/schemas/SubjectLink'
-        imageUrls:
+        imageUrl:
           uniqueItems: true
           type: array
           items:
@@ -669,10 +663,6 @@ components:
           type: object
           additionalProperties:
             type: string
-        roles:
-          type: array
-          items:
-            type: string
         children:
           type: array
           items:
@@ -724,10 +714,6 @@ components:
           type: object
           additionalProperties:
             type: string
-        roles:
-          type: array
-          items:
-            type: string
     CreateMenuItem:
       type: object
       properties:
@@ -757,10 +743,6 @@ components:
         i18n:
           type: object
           additionalProperties:
-            type: string
-        roles:
-          type: array
-          items:
             type: string
     Scope:
       enum:

@@ -23,11 +23,11 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "WS_MENU_ITEM", indexes = {
-        @Index(columnList = "ITEM_WORKSPACE", name = "WS_MENU_ITEM_ITEM_WORKSPACE_IDX"),
-        @Index(columnList = "ITEM_PARENT", name = "WS_MENU_ITEM_ITEM_PARENT_IDX"),
+@Table(name = "MENU_ITEM", indexes = {
+        @Index(columnList = "WORKSPACE", name = "MENU_ITEM_WORKSPACE_IDX"),
+        @Index(columnList = "PARENT", name = "MENU_ITEM_PARENT_IDX"),
 }, uniqueConstraints = {
-        @UniqueConstraint(name = "WS_MENU_ITEM_ITEM_KEY_WORKSPACE", columnNames = { "ITEM_KEY", "ITEM_WORKSPACE", "TENANT_ID" })
+        @UniqueConstraint(name = "MENU_ITEM_KEY_WORKSPACE", columnNames = { "KEY", "WORKSPACE", "TENANT_ID" })
 })
 @NamedEntityGraph(name = MenuItem.MENU_ITEM_WORKSPACE_AND_TRANSLATIONS, attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("workspace") })
@@ -43,41 +43,41 @@ public class MenuItem extends TraceableEntity {
     private String tenantId;
 
     @ManyToOne(cascade = { REFRESH }, optional = false)
-    @JoinColumn(name = "ITEM_WORKSPACE")
+    @JoinColumn(name = "WORKSPACE")
     Workspace workspace;
 
-    @Column(name = "ITEM_KEY")
+    @Column(name = "KEY")
     private String key;
 
-    @Column(name = "ITEM_NAME")
+    @Column(name = "NAME")
     private String name;
 
-    @Column(name = "ITEM_DESCRIPTION")
+    @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "ITEM_URL")
+    @Column(name = "URL")
     private String url;
 
-    @Column(name = "ITEM_WORKSPACE_NAME")
+    @Column(name = "WORKSPACE_NAME")
     private String workspaceName;
 
     @Column(name = "APPLICATION_ID")
     private String applicationId;
 
-    @Column(name = "ITEM_DISABLED")
+    @Column(name = "DISABLED")
     @NotNull
     private boolean disabled;
 
-    @Column(name = "ITEM_POS")
+    @Column(name = "POS")
     private int position;
 
-    @Column(name = "ITEM_PERMISSION_OBJECT")
+    @Column(name = "PERMISSION_OBJECT")
     private String permission;
 
-    @Column(name = "ITEM_BADGE")
+    @Column(name = "BADGE")
     private String badge;
 
-    @Column(name = "ITEM_SCOPE")
+    @Column(name = "SCOPE")
     @Enumerated(STRING)
     private Scope scope;
 
@@ -86,7 +86,7 @@ public class MenuItem extends TraceableEntity {
     private boolean workspaceExit;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "ITEM_PARENT")
+    @JoinColumn(name = "PARENT")
     private MenuItem parent;
 
     @OneToMany(fetch = LAZY, cascade = ALL, mappedBy = "parent", orphanRemoval = true)
@@ -96,10 +96,6 @@ public class MenuItem extends TraceableEntity {
     @ElementCollection
     @MapKeyColumn(name = "LANGUAGE")
     @Column(name = "i18n")
-    @CollectionTable(name = "WS_MENU_ITEM_I18N")
+    @CollectionTable(name = "MENU_ITEM_I18N")
     private Map<String, String> i18n = new HashMap<>();
-
-    @Column(name = "ROLES", columnDefinition = "TEXT")
-    private String roles;
-
 }

@@ -44,15 +44,15 @@ public interface WorkspaceMapper {
     @Mapping(target = "stream", qualifiedByName = "mapStream")
     WorkspacePageResultDTO mapPageResult(PageResult<Workspace> page);
 
-    @Mapping(target = "removeSubjectLinksItem", ignore = true)
-    @Mapping(target = "removeImageUrlsItem", ignore = true)
+    @Mapping(target = "removeSubjectLinkItem", ignore = true)
+    @Mapping(target = "removeImageUrlItem", ignore = true)
     @Mapping(target = "version", source = "modificationCount")
     WorkspaceDTO map(Workspace data);
 
-    @Mapping(target = "removeSubjectLinksItem", ignore = true)
-    @Mapping(target = "removeImageUrlsItem", ignore = true)
-    @Mapping(target = "imageUrls", ignore = true)
-    @Mapping(target = "subjectLinks", ignore = true)
+    @Mapping(target = "removeSubjectLinkItem", ignore = true)
+    @Mapping(target = "removeImageUrlItem", ignore = true)
+    @Mapping(target = "imageUrl", ignore = true)
+    @Mapping(target = "subjectLink", ignore = true)
     @Mapping(target = "version", source = "modificationCount")
     @Named("mapWithoutLazy")
     WorkspaceDTO mapWithoutLazy(Workspace data);

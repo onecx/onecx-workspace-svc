@@ -74,7 +74,7 @@ public class MenuInternalRestController implements MenuInternalApi {
 
         var menuItem = mapper.create(menuItemDTO);
         menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getWorkspaceName());
+        menuItem.setWorkspaceName(workspace.getName());
         menuItem.setParent(parentItem);
         menuItem = dao.create(menuItem);
 
