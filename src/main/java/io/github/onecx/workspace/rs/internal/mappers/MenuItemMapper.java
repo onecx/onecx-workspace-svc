@@ -55,7 +55,6 @@ public abstract class MenuItemMapper {
     public abstract List<MenuItemDTO> mapList(List<MenuItem> items);
 
     @Mapping(target = "version", source = "modificationCount")
-    @Mapping(target = "removeRolesItem", ignore = true)
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "parentItemId", source = "parent.id")
     public abstract MenuItemDTO map(MenuItem item);
@@ -95,7 +94,6 @@ public abstract class MenuItemMapper {
     @Mapping(target = "version", source = "modificationCount")
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeChildrenItem", ignore = true)
-    @Mapping(target = "removeRolesItem", ignore = true)
     public abstract WorkspaceMenuItemDTO mapTreeItem(MenuItem entity);
 
     public void recursiveMappingTreeStructure(List<WorkspaceMenuItemDTO> items, Workspace workspace, MenuItem parent,
@@ -134,7 +132,7 @@ public abstract class MenuItemMapper {
     public void updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent) {
         menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getWorkspaceName());
+        menuItem.setWorkspaceName(workspace.getName());
         menuItem.setPosition(position);
         menuItem.setParent(parent);
     }

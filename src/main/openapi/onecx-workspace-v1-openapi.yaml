@@ -8,41 +8,65 @@ servers:
 tags:
   - name: workspaceExternal
 paths:
-  /v1/workspaces/theme/{themeName}:
-    get:
+  /v1/workspaces/search:
+    post:
       tags:
         - workspaceExternal
-      description: Get workspace info by theme name
-      operationId: getWorkspaceInfos
-      parameters:
-        - $ref: '#/components/parameters/themeName'
+      description: search workspace abstracts by criteria
+      operationId: searchWorkspaces
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSearchCriteria'
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WorkspaceInfoList'
+                $ref: '#/components/schemas/WorkspacePageResult'
 components:
   schemas:
-    WorkspaceInfoList:
+    WorkspacePageResult:
       type: object
       properties:
-        workspaces:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
           type: array
           items:
-            $ref: '#/components/schemas/WorkspaceInfo'
-    WorkspaceInfo:
+            $ref: '#/components/schemas/WorkspaceAbstract'
+    WorkspaceAbstract:
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         description:
           type: string
-  parameters:
-    themeName:
-      in: path
-      name: themeName
-      required: true
-      schema:
-        type: string
+    WorkspaceSearchCriteria:
+      type: object
+      properties:
+        themeName:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          type: integer

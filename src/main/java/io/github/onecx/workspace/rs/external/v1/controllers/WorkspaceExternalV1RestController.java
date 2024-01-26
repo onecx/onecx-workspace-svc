@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.io.github.onecx.workspace.rs.external.v1.WorkspaceExternalV1Api;
+import gen.io.github.onecx.workspace.rs.external.v1.model.WorkspaceSearchCriteriaDTOV1;
 import io.github.onecx.workspace.domain.daos.WorkspaceDAO;
 import io.github.onecx.workspace.rs.external.v1.mappers.WorkspaceMapper;
 
@@ -23,8 +24,9 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     WorkspaceMapper mapper;
 
     @Override
-    public Response getWorkspaceInfos(String themeName) {
-        var workspaceInfos = workspaceDAO.findByThemeName(themeName);
-        return Response.ok(mapper.mapInfoList(workspaceInfos)).build();
+    public Response searchWorkspaces(WorkspaceSearchCriteriaDTOV1 workspaceSearchCriteriaDTOV1) {
+        var criteria = mapper.map(workspaceSearchCriteriaDTOV1);
+        var result = workspaceDAO.findBySearchCriteria(criteria);
+        return Response.ok(mapper.mapAbstractList(result)).build();
     }
 }

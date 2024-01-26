@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class WorkspaceSearchCriteria implements Serializable {
 
-    private String workspaceName;
+    private String name;
 
     private String themeName;
 

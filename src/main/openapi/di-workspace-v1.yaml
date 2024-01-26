@@ -64,17 +64,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MenuItemStructure'
-        roles:
-          type: array
-          items:
-            type: string
     WorkspaceImport:
       description: Workspace data to be imported
       required:
-        - workspaceName
+        - name
       type: object
       properties:
-        workspaceName:
+        name:
           description: Name of the workspace that should be created/updated
           minLength: 1
           type: string
@@ -114,10 +110,6 @@ components:
             $ref: "#/components/schemas/Product"
         imageUrls:
           uniqueItems: true
-          type: array
-          items:
-            type: string
-        workspaceRoles:
           type: array
           items:
             type: string

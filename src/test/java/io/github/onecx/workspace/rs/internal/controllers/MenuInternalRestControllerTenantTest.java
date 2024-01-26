@@ -152,7 +152,6 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         menuItem.setName("menu");
         menuItem.setKey("test01_menu");
         menuItem.setDisabled(false);
-        menuItem.setRoles(List.of("Role1"));
         menuItem.setParentItemId("44-1");
         menuItem.setI18n(Map.of("de", "Test DE Menu", "en", "Test EN Menu"));
 
@@ -275,20 +274,16 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void patchMenuItemsTest() {
-        var newRolesMenuItem = List.of("Role2");
-
         var menuItemDetailsDTO = new MenuItemDTO();
         menuItemDetailsDTO.setId("44-1");
         menuItemDetailsDTO.setName("Test menu 44-1");
         menuItemDetailsDTO.setDisabled(false);
-        menuItemDetailsDTO.setRoles(newRolesMenuItem);
 
         var menuItemDetailsDTO1 = new MenuItemDTO();
         menuItemDetailsDTO1.setId("44-2");
         menuItemDetailsDTO1.setParentItemId("44-5");
         menuItemDetailsDTO1.setName("Test menu 44-2");
         menuItemDetailsDTO1.setDisabled(false);
-        menuItemDetailsDTO1.setRoles(newRolesMenuItem);
 
         given()
                 .when()

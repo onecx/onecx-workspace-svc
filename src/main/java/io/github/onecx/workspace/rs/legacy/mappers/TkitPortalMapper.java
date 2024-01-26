@@ -39,7 +39,6 @@ public interface TkitPortalMapper {
     }
 
     @Mapping(target = "workspaceExit", source = "portalExit")
-    @Mapping(target = "roles", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "description", ignore = true)
@@ -60,7 +59,7 @@ public interface TkitPortalMapper {
     default void updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent, String applicationId) {
         menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getWorkspaceName());
+        menuItem.setWorkspaceName(workspace.getName());
         menuItem.setPosition(position);
         menuItem.setParent(parent);
         menuItem.setApplicationId(applicationId);

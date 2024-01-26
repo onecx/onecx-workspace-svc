@@ -95,8 +95,8 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
         }
 
         // update portalItemName for all portal's menu items
-        var newWorkspaceName = updateWorkspaceRequestDTO.getWorkspaceName();
-        var oldWorkspaceName = workspace.getWorkspaceName();
+        var newWorkspaceName = updateWorkspaceRequestDTO.getName();
+        var oldWorkspaceName = workspace.getName();
 
         if (!oldWorkspaceName.equals(newWorkspaceName)) {
             menuDao.updateMenuItems(newWorkspaceName, oldWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());

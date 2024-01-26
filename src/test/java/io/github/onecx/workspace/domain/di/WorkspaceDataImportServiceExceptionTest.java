@@ -60,7 +60,7 @@ class WorkspaceDataImportServiceExceptionTest extends AbstractTest {
                     data.getRequests().add(importRequest);
                     WorkspaceImportDTOV1 workspace = new WorkspaceImportDTOV1();
                     importRequest.setWorkspace(workspace);
-                    workspace.setWorkspaceName("test1");
+                    workspace.setName("test1");
                     workspace.setBaseUrl("baseurl");
                     workspace.setTenantId("tenant-100");
                     return mapper.writeValueAsBytes(data);

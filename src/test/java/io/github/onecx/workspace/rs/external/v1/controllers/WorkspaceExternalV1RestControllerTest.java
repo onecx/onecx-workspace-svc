@@ -13,7 +13,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.io.github.onecx.workspace.rs.external.v1.model.WorkspaceInfoListDTOV1;
+import gen.io.github.onecx.workspace.rs.external.v1.model.WorkspacePageResultDTOV1;
+import gen.io.github.onecx.workspace.rs.external.v1.model.WorkspaceSearchCriteriaDTOV1;
 import io.github.onecx.workspace.test.AbstractTest;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -24,25 +25,34 @@ import io.quarkus.test.junit.QuarkusTest;
 class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
     @ParameterizedTest
-    @MethodSource("themeNamesAndResults")
-    void getWorkspacesByThemeName(String themeName, int results) {
+    @MethodSource("criteriaAndResults")
+    void searchWorkspacesByCriteria(WorkspaceSearchCriteriaDTOV1 criteriaDTOV1, int results) {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("themeName", themeName)
-                .get()
+                .body(criteriaDTOV1)
+                .post()
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(WorkspaceInfoListDTOV1.class);
+                .extract().as(WorkspacePageResultDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getWorkspaces()).hasSize(results);
+        assertThat(dto.getStream()).hasSize(results);
     }
 
-    private static Stream<Arguments> themeNamesAndResults() {
+    private static Stream<Arguments> criteriaAndResults() {
+        WorkspaceSearchCriteriaDTOV1 criteria1 = new WorkspaceSearchCriteriaDTOV1();
+        criteria1.setThemeName("11-111");
+        WorkspaceSearchCriteriaDTOV1 criteria2 = new WorkspaceSearchCriteriaDTOV1();
+        criteria2.setThemeName("22-222");
+        WorkspaceSearchCriteriaDTOV1 criteria3 = new WorkspaceSearchCriteriaDTOV1();
+        criteria3.setThemeName("does-not-exists");
+        WorkspaceSearchCriteriaDTOV1 emptyCriteria = new WorkspaceSearchCriteriaDTOV1();
+
         return Stream.of(
-                arguments("11-111", 3),
-                arguments("22-222", 0), // different tenant so will not find it
-                arguments("does-not-exists", 0));
+                arguments(criteria1, 3),
+                arguments(criteria2, 0), // different tenant so will not find it
+                arguments(criteria3, 0),
+                arguments(emptyCriteria, 3));
     }
 }

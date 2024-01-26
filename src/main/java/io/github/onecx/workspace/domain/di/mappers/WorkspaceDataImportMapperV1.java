@@ -34,6 +34,8 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "subjectLink", source = "subjectLinks")
+    @Mapping(target = "imageUrl", source = "imageUrls")
     public abstract Workspace createWorkspace(WorkspaceImportDTOV1 workspaceDTO);
 
     @Mapping(target = "id", ignore = true)

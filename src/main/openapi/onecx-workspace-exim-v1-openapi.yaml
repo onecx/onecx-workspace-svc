@@ -151,7 +151,7 @@ components:
     EximWorkspace:
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         description:
           type: string
@@ -168,8 +168,6 @@ components:
         rssFeedUrl:
           type: string
         footerLabel:
-          type: string
-        workspaceRoles:
           type: string
         logoUrl:
           type: string
@@ -256,8 +254,6 @@ components:
           type: object
           additionalProperties:
             type: string
-        roles:
-          type: string
         children:
           type: array
           items:

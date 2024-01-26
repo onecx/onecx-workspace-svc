@@ -91,7 +91,7 @@ public class WorkspaceImportService {
             if (item != null) {
                 MenuItem menu = mapper.mapMenu(item);
                 menu.setWorkspace(workspace);
-                menu.setWorkspaceName(workspace.getWorkspaceName());
+                menu.setWorkspaceName(workspace.getName());
                 menu.setPosition(position);
                 menu.setParent(parent);
                 mappedItems.add(menu);

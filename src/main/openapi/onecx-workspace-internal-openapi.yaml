@@ -428,7 +428,7 @@ components:
     WorkspaceSearchCriteria:
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         themeName:
           type: string
@@ -461,13 +461,13 @@ components:
         stream:
           type: array
           items:
-            $ref: '#/components/schemas/Workspace'
+            $ref: '#/components/schemas/WorkspaceAbstract'
     CreateWorkspaceRequest:
       required:
-        - workspaceName
+        - name
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         description:
           type: string
@@ -485,29 +485,27 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: string
         logoUrl:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
-        subjectLinks:
+        subjectLink:
           uniqueItems: true
           maxItems: 3
           type: array
           items:
             $ref: '#/components/schemas/SubjectLink'
-        imageUrls:
+        imageUrl:
           uniqueItems: true
           type: array
           items:
             type: string
     UpdateWorkspaceRequest:
       required:
-        - workspaceName
+        - name
       type: object
       properties:
-        workspaceName:
+        name:
           type: string
         description:
           type: string
@@ -525,26 +523,24 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: string
         logoUrl:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
-        subjectLinks:
+        subjectLink:
           uniqueItems: true
           maxItems: 3
           type: array
           items:
             $ref: '#/components/schemas/SubjectLink'
-        imageUrls:
+        imageUrl:
           uniqueItems: true
           type: array
           items:
             type: string
     Workspace:
       required:
-        - workspaceName
+        - name
       type: object
       properties:
         id:
@@ -560,7 +556,7 @@ components:
           $ref: '#/components/schemas/OffsetDateTime'
         modificationUser:
           type: string
-        workspaceName:
+        name:
           type: string
         description:
           type: string
@@ -578,8 +574,6 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: string
         logoUrl:
           type: string
         address:
@@ -595,6 +589,21 @@ components:
           type: array
           items:
             type: string
+    WorkspaceAbstract:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        theme:
+          type: string
+        baseUrl:
+          type: string
+        logoUrl:
+          type: string
     WorkspaceAddress:
       type: object
       properties:
@@ -669,10 +678,6 @@ components:
           type: object
           additionalProperties:
             type: string
-        roles:
-          type: array
-          items:
-            type: string
         children:
           type: array
           items:
@@ -724,10 +729,6 @@ components:
           type: object
           additionalProperties:
             type: string
-        roles:
-          type: array
-          items:
-            type: string
     CreateMenuItem:
       type: object
       properties:
@@ -757,10 +758,6 @@ components:
         i18n:
           type: object
           additionalProperties:
-            type: string
-        roles:
-          type: array
-          items:
             type: string
     Scope:
       enum:
