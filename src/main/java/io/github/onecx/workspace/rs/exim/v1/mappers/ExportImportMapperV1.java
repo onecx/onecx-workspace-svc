@@ -88,7 +88,6 @@ public interface ExportImportMapperV1 {
 
     default void recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace, MenuItem parent,
             List<MenuItem> mappedItems) {
-
         int position = 0;
         for (EximWorkspaceMenuItemDTOV1 item : items) {
             if (item != null) {
