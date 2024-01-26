@@ -578,13 +578,13 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
-        subjectLink:
+        subjectLinks:
           uniqueItems: true
           maxItems: 3
           type: array
           items:
             $ref: '#/components/schemas/SubjectLink'
-        imageUrl:
+        imageUrls:
           uniqueItems: true
           type: array
           items:

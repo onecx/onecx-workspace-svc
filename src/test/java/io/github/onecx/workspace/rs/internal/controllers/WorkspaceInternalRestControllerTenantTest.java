@@ -167,8 +167,8 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         assertThat(dto.getBaseUrl()).isNotNull().isEqualTo("/company1");
         assertThat(dto.getAddress()).isNotNull();
         assertThat(dto.getAddress().getStreetNo()).isEqualTo("6");
-        assertThat(dto.getImageUrl()).isNotEmpty();
-        assertThat(dto.getSubjectLink()).isNotEmpty();
+        assertThat(dto.getImageUrls()).isNotEmpty();
+        assertThat(dto.getSubjectLinks()).isNotEmpty();
     }
 
     @ParameterizedTest

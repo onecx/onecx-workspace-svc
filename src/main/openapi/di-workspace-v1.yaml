@@ -97,7 +97,7 @@ components:
           type: string
         footerLabel:
           type: string
-        subjectLink:
+        subjectLinks:
           maxItems: 3
           uniqueItems: true
           type: array
@@ -108,7 +108,7 @@ components:
           uniqueItems: true
           items:
             $ref: "#/components/schemas/Product"
-        imageUrl:
+        imageUrls:
           uniqueItems: true
           type: array
           items:

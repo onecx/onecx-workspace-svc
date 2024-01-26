@@ -40,9 +40,11 @@ public interface WorkspaceMapper {
     @Mapping(target = "removeStreamItem", ignore = true)
     WorkspacePageResultDTO mapPageResult(PageResult<Workspace> page);
 
-    @Mapping(target = "removeSubjectLinkItem", ignore = true)
-    @Mapping(target = "removeImageUrlItem", ignore = true)
+    @Mapping(target = "removeSubjectLinksItem", ignore = true)
+    @Mapping(target = "removeImageUrlsItem", ignore = true)
     @Mapping(target = "version", source = "modificationCount")
+    @Mapping(target = "subjectLinks", source = "subjectLink")
+    @Mapping(target = "imageUrls", source = "imageUrl")
     WorkspaceDTO map(Workspace data);
 
 }

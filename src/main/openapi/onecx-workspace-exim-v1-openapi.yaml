@@ -173,13 +173,13 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/EximWorkspaceAddress'
-        subjectLink:
+        subjectLinks:
           uniqueItems: true
           maxItems: 3
           type: array
           items:
             $ref: '#/components/schemas/EximSubjectLink'
-        imageUrl:
+        imageUrls:
           uniqueItems: true
           type: array
           items:
