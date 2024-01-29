@@ -123,6 +123,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspaces/name/{name}:
+    get:
+      tags:
+        - workspaceInternal
+      description: Return workspace by name
+      operationId: getWorkspaceByName
+      parameters:
+        - $ref: '#/components/parameters/name'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        "404":
+          description: Not found
   /internal/workspaces/{id}/menuItems:
     get:
       tags:
@@ -897,6 +914,12 @@ components:
     id:
       in: path
       name: id
+      required: true
+      schema:
+        type: string
+    name:
+      in: path
+      name: name
       required: true
       schema:
         type: string

@@ -32,7 +32,7 @@ class WorkspaceExternalV1RestControllerTenantTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(criteriaDTOV1)
                 .header(APM_HEADER_PARAM, createToken(organisation))
-                .post()
+                .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspacePageResultDTOV1.class);

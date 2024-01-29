@@ -110,6 +110,38 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void getWorkspaceByName() {
+        var dto = given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("name", "test01")
+                .get("/name/{name}")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getName()).isNotNull().isEqualTo("test01");
+        assertThat(dto.getCompanyName()).isNotNull().isEqualTo("Company1");
+        assertThat(dto.getBaseUrl()).isNotNull().isEqualTo("/company1");
+        assertThat(dto.getAddress()).isNotNull();
+        assertThat(dto.getAddress().getStreetNo()).isEqualTo("6");
+        assertThat(dto.getImageUrls()).isNotEmpty();
+        assertThat(dto.getSubjectLinks()).isNotEmpty();
+    }
+
+    @Test
+    void getWorkspaceByNameNotFound() {
+        var dto = given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("name", "not-found")
+                .get("/name/{name}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        assertThat(dto).isNotNull();
+    }
+
+    @Test
     void searchWorkspacesTest() {
         var criteria = new WorkspaceSearchCriteriaDTO();
 

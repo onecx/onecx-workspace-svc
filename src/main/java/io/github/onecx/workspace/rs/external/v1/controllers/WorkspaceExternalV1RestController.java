@@ -24,6 +24,15 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     WorkspaceMapper mapper;
 
     @Override
+    public Response getWorkspaceByName(String name) {
+        var item = workspaceDAO.findByWorkspaceName(name);
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(mapper.map(item)).build();
+    }
+
+    @Override
     public Response searchWorkspaces(WorkspaceSearchCriteriaDTOV1 workspaceSearchCriteriaDTOV1) {
         var criteria = mapper.map(workspaceSearchCriteriaDTOV1);
         var result = workspaceDAO.findBySearchCriteria(criteria);
