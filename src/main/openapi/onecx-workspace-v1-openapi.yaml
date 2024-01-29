@@ -26,8 +26,83 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspacePageResult'
+  /v1/workspaces/name/{name}:
+    get:
+      tags:
+        - workspaceExternal
+      description: get workspace by name
+      operationId: getWorkspaceByName
+      parameters:
+        - $ref: '#/components/parameters/name'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
 components:
   schemas:
+    Workspace:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        theme:
+          type: string
+        homePage:
+          type: string
+        baseUrl:
+          type: string
+        companyName:
+          type: string
+        phoneNumber:
+          type: string
+        rssFeedUrl:
+          type: string
+        footerLabel:
+          type: string
+        logoUrl:
+          type: string
+        address:
+          $ref: '#/components/schemas/WorkspaceAddress'
+        subjectLinks:
+          uniqueItems: true
+          maxItems: 3
+          type: array
+          items:
+            $ref: '#/components/schemas/SubjectLink'
+        imageUrls:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+    WorkspaceAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        streetNo:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+    SubjectLink:
+      type: object
+      properties:
+        label:
+          type: string
+        url:
+          type: string
     WorkspacePageResult:
       type: object
       properties:
@@ -70,3 +145,10 @@ components:
           description: The size of page
           default: 10
           type: integer
+  parameters:
+    name:
+      in: path
+      name: name
+      required: true
+      schema:
+        type: string
