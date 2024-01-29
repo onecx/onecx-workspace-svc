@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.25.0</version>
+        <version>0.29.0</version>
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
