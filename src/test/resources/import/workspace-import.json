@@ -363,11 +363,8 @@
         "footerLabel": "Admin Portal",
         "homePage": "/admin",
         "name": "ADMIN",
-        "workspaceRoles": [
-          "onecx-portal-user",
-          "onecx-portal-admin",
-          "onecx-portal-super-admin"
-        ],
+        "workspaceRoles":
+          "onecx-portal-user, onecx-portal-admin, onecx-portal-super-admin",
         "products": [
           {
             "baseUrl" : "/core",
@@ -420,11 +417,8 @@
           "footerLabel": "Core Portal",
           "homePage": "/tkom",
           "name": "TKOM",
-          "workspaceRoles": [
-            "onecx-portal-user",
-            "onecx-portal-admin",
-            "onecx-portal-super-admin"
-          ],
+          "workspaceRoles":
+            "onecx-portal-user, onecx-portal-admin, onecx-portal-super-admin",
           "products": [
             {
               "baseUrl" : "/core",
