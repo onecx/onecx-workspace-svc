@@ -95,6 +95,7 @@
                 <column name="name" type="VARCHAR(255)">
                     <constraints nullable="false"/>
                 </column>
+                <column name="workspace_roles" type="TEXT"/>
                 <column name="city" type="VARCHAR(255)"/>
                 <column name="country" type="VARCHAR(255)"/>
                 <column name="creationuser" type="VARCHAR(255)"/>

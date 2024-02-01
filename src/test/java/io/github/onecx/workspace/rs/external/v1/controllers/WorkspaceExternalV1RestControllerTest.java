@@ -7,6 +7,7 @@ import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,35 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getName()).isEqualTo("test01");
+    }
+
+    @Test
+    void getALlWorkspaceNamesTest() {
+        var names = given()
+                .when()
+                .get()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(List.class);
+
+        assertThat(names).isNotNull();
+        assertThat(names).hasSize(3);
+    }
+
+    @Test
+    void getALlWorkspacesByProductNameTest() {
+        var names = given()
+                .when()
+                .pathParam("productName", "onecx-core")
+                .get("/productName/{productName}")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(List.class);
+
+        assertThat(names).isNotNull();
+        assertThat(names).hasSize(2);
+        assertThat(names).contains("test01");
+        assertThat(names).contains("test02");
     }
 
     @Test

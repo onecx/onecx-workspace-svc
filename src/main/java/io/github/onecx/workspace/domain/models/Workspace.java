@@ -68,6 +68,9 @@ public class Workspace extends TraceableEntity {
     @AttributeOverride(name = "url", column = @Column(name = "link_url"))
     private Set<SubjectLink> subjectLink = new HashSet<>();
 
+    @Column(name = "WORKSPACE_ROLES", columnDefinition = "TEXT")
+    private String workspaceRoles;
+
     @ElementCollection(fetch = LAZY)
     @CollectionTable(name = "IMAGE_URL")
     @Column(name = "IMAGE_URL")

@@ -24,4 +24,5 @@ public interface WorkspaceMapper {
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
     WorkspaceDTOV1 map(Workspace workspace);
+
 }

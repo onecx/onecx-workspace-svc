@@ -502,6 +502,8 @@ components:
           type: string
         footerLabel:
           type: string
+        workspaceRoles:
+          type: string
         logoUrl:
           type: string
         address:
@@ -539,6 +541,8 @@ components:
         rssFeedUrl:
           type: string
         footerLabel:
+          type: string
+        workspaceRoles:
           type: string
         logoUrl:
           type: string
@@ -590,6 +594,8 @@ components:
         rssFeedUrl:
           type: string
         footerLabel:
+          type: string
+        workspaceRoles:
           type: string
         logoUrl:
           type: string

@@ -143,10 +143,15 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
+    public List<String> getAllWorkspaceNames() {
+        var allNames = getEntityManager().createQuery("SELECT name FROM Workspace", String.class);
+        return allNames.getResultList();
+    }
+
     public enum ErrorKeys {
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_FIND_BY_CRITERIA,
-        ERROR_FIND_WORKSPACE_NAME,
+        ERROR_FIND_WORKSPACE_NAME
     }
 
 }
