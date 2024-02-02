@@ -169,6 +169,8 @@ components:
           type: string
         footerLabel:
           type: string
+        workspaceRoles:
+          type: string
         logoUrl:
           type: string
         address:

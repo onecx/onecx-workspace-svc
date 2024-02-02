@@ -113,6 +113,11 @@ components:
           type: array
           items:
             type: string
+        workspaceRoles:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         logoUrl:
           type: string
     OffsetDateTime:

@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.onecx</groupId>
+        <groupId>org.tkit.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.25.0</version>
+        <version>0.31.0</version>
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
@@ -42,7 +42,7 @@
 
         <!-- TENANT -->
         <dependency>
-            <groupId>io.github.onecx.quarkus</groupId>
+            <groupId>org.tkit.onecx.quarkus</groupId>
             <artifactId>onecx-tenant</artifactId>
         </dependency>
         <dependency>
@@ -180,8 +180,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/onecx-workspace-internal-openapi.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.workspace.rs.internal</apiPackage>
-                            <modelPackage>gen.io.github.onecx.workspace.rs.internal.model</modelPackage>
+                            <apiPackage>gen.org.tkit.onecx.workspace.rs.internal</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.rs.internal.model</modelPackage>
                             <modelNameSuffix>DTO</modelNameSuffix>
                         </configuration>
                     </execution>
@@ -192,8 +192,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/onecx-workspace-legacy-openapi.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.workspace.rs.legacy</apiPackage>
-                            <modelPackage>gen.io.github.onecx.workspace.rs.legacy.model</modelPackage>
+                            <apiPackage>gen.org.tkit.onecx.workspace.rs.legacy</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.rs.legacy.model</modelPackage>
                             <modelNameSuffix>DTO</modelNameSuffix>
                         </configuration>
                     </execution>
@@ -204,8 +204,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/onecx-workspace-v1-openapi.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.workspace.rs.external.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.workspace.rs.external.v1.model</modelPackage>
+                            <apiPackage>gen.org.tkit.onecx.workspace.rs.external.v1</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.rs.external.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <apiNameSuffix>V1Api</apiNameSuffix>
                         </configuration>
@@ -217,8 +217,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/di-workspace-v1.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.workspace.di.workspace.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.workspace.di.workspace.v1.model</modelPackage>
+                            <apiPackage>gen.org.tkit.onecx.workspace.di.workspace.v1</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.di.workspace.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                             <skipValidateSpec>true</skipValidateSpec>
                             <generateApis>false</generateApis>
@@ -231,8 +231,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>src/main/openapi/onecx-workspace-exim-v1-openapi.yaml</inputSpec>
-                            <apiPackage>gen.io.github.onecx.workspace.rs.exim.v1</apiPackage>
-                            <modelPackage>gen.io.github.onecx.workspace.rs.exim.v1.model</modelPackage>
+                            <apiPackage>gen.org.tkit.onecx.workspace.rs.exim.v1</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.rs.exim.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                         </configuration>
                     </execution>

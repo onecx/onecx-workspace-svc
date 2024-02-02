@@ -502,6 +502,11 @@ components:
           type: string
         footerLabel:
           type: string
+        workspaceRoles:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         logoUrl:
           type: string
         address:
@@ -540,6 +545,11 @@ components:
           type: string
         footerLabel:
           type: string
+        workspaceRoles:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         logoUrl:
           type: string
         address:
@@ -591,6 +601,11 @@ components:
           type: string
         footerLabel:
           type: string
+        workspaceRoles:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         logoUrl:
           type: string
         address:

@@ -7,6 +7,8 @@ servers:
   - url: "http://onecx-workspace:8080"
 tags:
   - name: workspaceExternal
+  - name: productExternal
+
 paths:
   /v1/workspaces/search:
     post:
@@ -41,6 +43,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workspace'
+  /v1/workspaces/productName/{productName}:
+    get:
+      tags:
+        - workspaceExternal
+      description: get list of workspace names using this product
+      operationId: getWorkspacesByProductName
+      parameters:
+        - $ref: '#/components/parameters/productName'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceNameList'
+  /v1/workspaces:
+    get:
+      tags:
+        - workspaceExternal
+      description: get list of all workspace names
+      operationId: getAllWorkspaceNames
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceNameList'
+
+  /v1/workspaces/{id}/products:
+    get:
+      tags:
+        - productExternal
+      description: Find all products belonging to a workspace
+      operationId: getProductsForWorkspaceId
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        "404":
+          description: Not found
 components:
   schemas:
     Workspace:
@@ -68,6 +118,11 @@ components:
           type: string
         footerLabel:
           type: string
+        workspaceRoles:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         logoUrl:
           type: string
         address:
@@ -145,10 +200,49 @@ components:
           description: The size of page
           default: 10
           type: integer
+    WorkspaceNameList:
+      type: array
+      items:
+        type: string
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        productName:
+          type: string
+        baseUrl:
+          type: string
+        microfrontends:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/Microfrontend'
+    Microfrontend:
+      type: object
+      properties:
+        id:
+          type: string
+        mfeId:
+          type: string
+        basePath:
+          type: string
   parameters:
     name:
       in: path
       name: name
+      required: true
+      schema:
+        type: string
+    productName:
+      in: path
+      name: productName
+      required: true
+      schema:
+        type: string
+    id:
+      in: path
+      name: id
       required: true
       schema:
         type: string
