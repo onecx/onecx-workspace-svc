@@ -19,7 +19,7 @@ import io.restassured.common.mapper.TypeRef;
 @QuarkusTest
 @TestHTTPEndpoint(ProductsExternalV1RestController.class)
 @WithDBData(value = "data/testdata-external.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class ProductExternalV1RestControllerTest extends AbstractTest {
+class ProductExternalV1RestControllerTest extends AbstractTest {
 
     @Test
     void getProductsForWorkspaceIdTest() {

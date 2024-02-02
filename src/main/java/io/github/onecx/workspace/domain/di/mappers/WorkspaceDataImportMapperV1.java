@@ -67,16 +67,14 @@ public abstract class WorkspaceDataImportMapperV1 {
     public Set<String> map(String roles) {
         if (roles != null && !roles.isBlank()) {
             String[] values = roles.split(",");
-            Set<String> hashSet = new HashSet<>(Arrays.asList(values));
-            return hashSet;
+            return new HashSet<>(Arrays.asList(values));
         } else
             return new HashSet<>();
     }
 
     public String map(Set<String> roles) {
         if (roles != null && !roles.isEmpty()) {
-            String str = roles.stream().map(Object::toString).collect(Collectors.joining(","));
-            return str;
+            return roles.stream().map(Object::toString).collect(Collectors.joining(","));
         } else
             return "";
     }
