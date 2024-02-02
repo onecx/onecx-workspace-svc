@@ -50,9 +50,7 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     public Response getWorkspacesByProductName(String productName) {
         var products = productDAO.findByName(productName);
         List<String> workspaceNames = new ArrayList<>();
-        products.forEach(product -> {
-            workspaceNames.add(product.getWorkspace().getName());
-        });
+        products.forEach(product -> workspaceNames.add(product.getWorkspace().getName()));
         return Response.ok(workspaceNames).build();
     }
 

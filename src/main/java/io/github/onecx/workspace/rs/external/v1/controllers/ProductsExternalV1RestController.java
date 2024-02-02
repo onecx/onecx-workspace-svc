@@ -14,7 +14,7 @@ import io.github.onecx.workspace.rs.external.v1.mappers.ProductMapper;
 @LogService
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
-public class ProductsExternalV1RestController implements ProductExternalV1Api {
+class ProductsExternalV1RestController implements ProductExternalV1Api {
     @Inject
     ProductMapper mapper;
 

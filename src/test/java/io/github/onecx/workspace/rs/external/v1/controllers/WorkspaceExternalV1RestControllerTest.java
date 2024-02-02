@@ -67,8 +67,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
-        assertThat(names).isNotNull();
-        assertThat(names).hasSize(3);
+        assertThat(names).isNotNull().hasSize(3);
     }
 
     @Test
@@ -83,8 +82,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
         assertThat(names).isNotNull();
         assertThat(names).hasSize(2);
-        assertThat(names).contains("test01");
-        assertThat(names).contains("test02");
+        assertThat(names).contains("test01").contains("test02");
     }
 
     @Test
