@@ -10,7 +10,9 @@ import java.util.stream.Stream;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
@@ -144,8 +146,15 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
     }
 
     public List<String> getAllWorkspaceNames() {
-        var allNames = getEntityManager().createQuery("SELECT name FROM Workspace", String.class);
-        return allNames.getResultList();
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            CriteriaQuery<String> cq = cb.createQuery(String.class);
+            Root<Workspace> root = cq.from(Workspace.class);
+            cq.select(root.get(NAME)).distinct(true);
+            return getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
+        }
     }
 
     public enum ErrorKeys {

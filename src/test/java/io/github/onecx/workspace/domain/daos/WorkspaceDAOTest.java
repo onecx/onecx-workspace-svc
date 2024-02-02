@@ -38,6 +38,8 @@ class WorkspaceDAOTest {
                 WorkspaceDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.findByWorkspaceNames(null),
                 WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
+        methodExceptionTests(() -> dao.getAllWorkspaceNames(),
+                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {
