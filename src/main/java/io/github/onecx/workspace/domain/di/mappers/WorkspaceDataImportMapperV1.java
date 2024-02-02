@@ -1,6 +1,10 @@
 package io.github.onecx.workspace.domain.di.mappers;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
 
@@ -58,6 +62,23 @@ public abstract class WorkspaceDataImportMapperV1 {
             return null;
         }
         return String.join(",", value);
+    }
+
+    public Set<String> map(String roles) {
+        if (roles != null && !roles.isBlank()) {
+            String[] values = roles.split(",");
+            Set<String> hashSet = new HashSet<>(Arrays.asList(values));
+            return hashSet;
+        } else
+            return new HashSet<>();
+    }
+
+    public String map(Set<String> roles) {
+        if (roles != null && !roles.isEmpty()) {
+            String str = roles.stream().map(Object::toString).collect(Collectors.joining(","));
+            return str;
+        } else
+            return "";
     }
 
     @Mapping(target = "id", ignore = true)

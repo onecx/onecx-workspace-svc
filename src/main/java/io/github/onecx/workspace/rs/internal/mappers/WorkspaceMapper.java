@@ -1,5 +1,10 @@
 package io.github.onecx.workspace.rs.internal.mappers;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.mapstruct.*;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -45,6 +50,24 @@ public interface WorkspaceMapper {
     @Mapping(target = "version", source = "modificationCount")
     @Mapping(target = "subjectLinks", source = "subjectLink")
     @Mapping(target = "imageUrls", source = "imageUrl")
+    @Mapping(target = "removeWorkspaceRolesItem", ignore = true)
     WorkspaceDTO map(Workspace data);
+
+    default Set<String> map(String roles) {
+        if (roles != null && !roles.isBlank()) {
+            String[] values = roles.split(",");
+            Set<String> hashSet = new HashSet<>(Arrays.asList(values));
+            return hashSet;
+        } else
+            return new HashSet<>();
+    }
+
+    default String map(Set<String> roles) {
+        if (roles != null && !roles.isEmpty()) {
+            String str = roles.stream().map(Object::toString).collect(Collectors.joining(","));
+            return str;
+        } else
+            return "";
+    }
 
 }

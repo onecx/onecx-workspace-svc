@@ -119,7 +119,10 @@ components:
         footerLabel:
           type: string
         workspaceRoles:
-          type: string
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         logoUrl:
           type: string
         address:

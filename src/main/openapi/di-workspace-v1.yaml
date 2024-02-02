@@ -114,7 +114,10 @@ components:
           items:
             type: string
         workspaceRoles:
-          type: string
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         logoUrl:
           type: string
     OffsetDateTime:

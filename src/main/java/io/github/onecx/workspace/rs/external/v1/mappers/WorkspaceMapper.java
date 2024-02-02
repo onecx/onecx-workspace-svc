@@ -1,5 +1,10 @@
 package io.github.onecx.workspace.rs.external.v1.mappers;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.quarkus.jpa.daos.PageResult;
@@ -23,6 +28,24 @@ public interface WorkspaceMapper {
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
+    @Mapping(target = "removeWorkspaceRolesItem", ignore = true)
     WorkspaceDTOV1 map(Workspace workspace);
+
+    default Set<String> map(String roles) {
+        if (roles != null && !roles.isBlank()) {
+            String[] values = roles.split(",");
+            Set<String> hashSet = new HashSet<>(Arrays.asList(values));
+            return hashSet;
+        } else
+            return new HashSet<>();
+    }
+
+    default String map(Set<String> roles) {
+        if (roles != null && !roles.isEmpty()) {
+            String str = roles.stream().map(Object::toString).collect(Collectors.joining(","));
+            return str;
+        } else
+            return "";
+    }
 
 }
