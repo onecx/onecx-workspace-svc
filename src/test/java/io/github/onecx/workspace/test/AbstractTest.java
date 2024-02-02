@@ -22,8 +22,7 @@ import io.smallrye.jwt.util.KeyUtils;
 @SuppressWarnings("java:S2187")
 public class AbstractTest {
 
-    protected static final String APM_HEADER_PARAM = ConfigProvider.getConfig()
-            .getValue("%test.tkit.rs.context.tenant-id.mock.token-header-param", String.class);
+    protected static final String APM_HEADER_PARAM = "apm-principal-token";
     protected static final String CLAIMS_ORG_ID = ConfigProvider.getConfig()
             .getValue("%test.tkit.rs.context.tenant-id.mock.claim-org-id", String.class);;
 
