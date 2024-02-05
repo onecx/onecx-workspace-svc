@@ -6,3 +6,9 @@ updates:
       interval: daily
     labels:
       - dependencies
+  - package-ecosystem: "docker"
+    directory: "/src/main/docker"
+    schedule:
+      interval: daily
+    labels:
+      - docker-image
