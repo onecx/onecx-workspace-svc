@@ -38,7 +38,7 @@ public abstract class MenuItemMapper {
     @Mapping(target = "workspace", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
+    //@Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
     @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
@@ -54,7 +54,6 @@ public abstract class MenuItemMapper {
 
     public abstract List<MenuItemDTO> mapList(List<MenuItem> items);
 
-    @Mapping(target = "version", source = "modificationCount")
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "parentItemId", source = "parent.id")
     public abstract MenuItemDTO map(MenuItem item);
@@ -91,7 +90,6 @@ public abstract class MenuItemMapper {
     public abstract List<WorkspaceMenuItemDTO> mapCollection(Collection<MenuItem> entities);
 
     @Mapping(target = "parentItemId", source = "parent.id")
-    @Mapping(target = "version", source = "modificationCount")
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeChildrenItem", ignore = true)
     public abstract WorkspaceMenuItemDTO mapTreeItem(MenuItem entity);

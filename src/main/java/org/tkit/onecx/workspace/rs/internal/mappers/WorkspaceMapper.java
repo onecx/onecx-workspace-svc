@@ -35,9 +35,9 @@ public interface WorkspaceMapper {
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
-    @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "modificationCount", source = "modificationCount")
     void update(UpdateWorkspaceRequestDTO dto, @MappingTarget Workspace workspace);
 
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTO dto);
@@ -47,7 +47,6 @@ public interface WorkspaceMapper {
 
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
-    @Mapping(target = "version", source = "modificationCount")
     @Mapping(target = "subjectLinks", source = "subjectLink")
     @Mapping(target = "imageUrls", source = "imageUrl")
     @Mapping(target = "removeWorkspaceRolesItem", ignore = true)

@@ -269,6 +269,45 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(updatedResponse.getAddress().getStreet()).isEqualTo(response.getAddress().getStreet());
         assertThat(updatedResponse.getCompanyName()).isEqualTo(response.getCompanyName());
         assertThat(updatedResponse.getBaseUrl()).isEqualTo(response.getBaseUrl());
+
+        // update second time
+        updatedResponse.setBaseUrl("/company2/test");
+        updatedResponse.setCompanyName("Company 2 test");
+        updatedResponse.setName("Workspace2Test");
+        updatedResponse.setModificationCount(0);
+        given().when()
+                .contentType(APPLICATION_JSON)
+                .body(updatedResponse)
+                .pathParam("id", "11-222")
+                .put("{id}")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+    }
+
+    @Test
+    void optlockTest() {
+        var updatedResponse = given().when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-222")
+                .get("{id}")
+                .then().statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTO.class);
+
+        // update second time
+        updatedResponse.setBaseUrl("/company2/test");
+        updatedResponse.setCompanyName("Company 2 test");
+        updatedResponse.setName("Workspace2Test");
+        updatedResponse.setModificationCount(0);
+        given().when()
+                .contentType(APPLICATION_JSON)
+                .body(updatedResponse)
+                .pathParam("id", "11-222")
+                .put("{id}")
+                .then()
+                .log().all()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
     }
 
 }

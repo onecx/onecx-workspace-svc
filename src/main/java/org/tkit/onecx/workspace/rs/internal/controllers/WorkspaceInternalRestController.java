@@ -2,6 +2,7 @@ package org.tkit.onecx.workspace.rs.internal.controllers;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
@@ -16,6 +17,7 @@ import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
+import org.tkit.onecx.workspace.rs.internal.services.WorkspaceService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -47,6 +49,9 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 
     @Context
     UriInfo uriInfo;
+
+    @Inject
+    WorkspaceService workspaceService;
 
     @Override
     @Transactional
@@ -96,7 +101,6 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
-    @Transactional
     public Response updateWorkspace(String id, UpdateWorkspaceRequestDTO updateWorkspaceRequestDTO) {
         Workspace workspace = dao.findById(id);
         if (workspace == null) {
@@ -107,12 +111,9 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
         var newWorkspaceName = updateWorkspaceRequestDTO.getName();
         var oldWorkspaceName = workspace.getName();
 
-        if (!oldWorkspaceName.equals(newWorkspaceName)) {
-            menuDao.updateMenuItems(newWorkspaceName, oldWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
-        }
-
         workspaceMapper.update(updateWorkspaceRequestDTO, workspace);
-        dao.update(workspace);
+        workspaceService.updateWorkspace(!oldWorkspaceName.equals(newWorkspaceName),
+                workspace, oldWorkspaceName, newWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
 
         return Response.noContent().build();
     }
@@ -125,5 +126,10 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         return exceptionMapper.constraint(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> daoException(OptimisticLockException ex) {
+        return exceptionMapper.optimisticLock(ex);
     }
 }

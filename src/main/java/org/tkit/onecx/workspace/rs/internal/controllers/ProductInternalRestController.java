@@ -4,6 +4,7 @@ import static org.jboss.resteasy.reactive.RestResponse.StatusCode.NOT_FOUND;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
@@ -97,6 +98,11 @@ public class ProductInternalRestController implements ProductInternalApi {
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         return exceptionMapper.constraint(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> daoException(OptimisticLockException ex) {
+        return exceptionMapper.optimisticLock(ex);
     }
 
     enum ProductErrorKeys {

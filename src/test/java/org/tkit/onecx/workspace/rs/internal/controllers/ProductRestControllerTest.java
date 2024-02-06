@@ -149,6 +149,7 @@ class ProductRestControllerTest extends AbstractTest {
     void updateProductByIdTest() {
         var request = new UpdateProductRequestDTO();
         request.setBaseUrl("/onecx-core");
+        request.setModificationCount(0);
 
         // not sending request
         var error = given()
@@ -240,5 +241,17 @@ class ProductRestControllerTest extends AbstractTest {
         assertThat(dto).isNotNull();
         assertThat(dto.getMicrofrontends()).isEmpty();
         assertThat(dto.getBaseUrl()).isEqualTo(request.getBaseUrl());
+
+        //second time should fail because of wrong modificationCount
+        //        request.setModificationCount(-1);
+        //        given()
+        //                .when()
+        //                .body(request)
+        //                .contentType(APPLICATION_JSON)
+        //                .pathParam("id", "11-111")
+        //                .pathParam("productId", "1234")
+        //                .put("{productId}")
+        //                .then()
+        //                .statusCode(BAD_REQUEST.getStatusCode());
     }
 }

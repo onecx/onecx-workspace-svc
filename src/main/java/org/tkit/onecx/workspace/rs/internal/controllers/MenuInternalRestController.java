@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
@@ -249,6 +250,11 @@ public class MenuInternalRestController implements MenuInternalApi {
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         return exceptionMapper.constraint(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> daoException(OptimisticLockException ex) {
+        return exceptionMapper.optimisticLock(ex);
     }
 
     enum MenuItemErrorKeys {
