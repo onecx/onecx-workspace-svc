@@ -22,7 +22,6 @@ import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.MenuItemMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
-import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.internal.MenuInternalApi;

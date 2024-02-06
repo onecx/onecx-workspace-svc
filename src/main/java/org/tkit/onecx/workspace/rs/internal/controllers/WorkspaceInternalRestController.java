@@ -113,7 +113,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 
         workspaceMapper.update(updateWorkspaceRequestDTO, workspace);
         workspaceService.updateWorkspace(!oldWorkspaceName.equals(newWorkspaceName),
-                    workspace, oldWorkspaceName, newWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
+                workspace, oldWorkspaceName, newWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
 
         return Response.noContent().build();
     }
@@ -130,6 +130,6 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> daoException(OptimisticLockException ex) {
-            return exceptionMapper.optimisticLock(ex);
+        return exceptionMapper.optimisticLock(ex);
     }
 }

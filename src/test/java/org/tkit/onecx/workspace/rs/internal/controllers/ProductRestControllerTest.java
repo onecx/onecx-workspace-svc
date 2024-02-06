@@ -243,15 +243,15 @@ class ProductRestControllerTest extends AbstractTest {
         assertThat(dto.getBaseUrl()).isEqualTo(request.getBaseUrl());
 
         //second time should fail because of wrong modificationCount
-//        request.setModificationCount(-1);
-//        given()
-//                .when()
-//                .body(request)
-//                .contentType(APPLICATION_JSON)
-//                .pathParam("id", "11-111")
-//                .pathParam("productId", "1234")
-//                .put("{productId}")
-//                .then()
-//                .statusCode(BAD_REQUEST.getStatusCode());
+        //        request.setModificationCount(-1);
+        //        given()
+        //                .when()
+        //                .body(request)
+        //                .contentType(APPLICATION_JSON)
+        //                .pathParam("id", "11-111")
+        //                .pathParam("productId", "1234")
+        //                .put("{productId}")
+        //                .then()
+        //                .statusCode(BAD_REQUEST.getStatusCode());
     }
 }

@@ -18,7 +18,6 @@ import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.ProductMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
-import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.internal.ProductInternalApi;
@@ -79,6 +78,7 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @Override
+    @Transactional
     public Response updateProductById(String id, String productId, UpdateProductRequestDTO updateProductRequestDTO) {
         var product = dao.findById(productId);
         if (product == null) {

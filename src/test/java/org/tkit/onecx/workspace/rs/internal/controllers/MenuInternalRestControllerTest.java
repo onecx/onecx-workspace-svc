@@ -446,15 +446,15 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(updatedData.getWorkspaceName()).isEqualTo("test02");
 
         //Update second time and expect a BAD REQUEST because of wrong modificationCount
-//        given()
-//                .when()
-//                .contentType(APPLICATION_JSON)
-//                .body(updatedData)
-//                .pathParam("id", "11-222")
-//                .pathParam("menuItemId", "44-6")
-//                .put("{menuItemId}")
-//                .then()
-//                .statusCode(BAD_REQUEST.getStatusCode());
+        //        given()
+        //                .when()
+        //                .contentType(APPLICATION_JSON)
+        //                .body(updatedData)
+        //                .pathParam("id", "11-222")
+        //                .pathParam("menuItemId", "44-6")
+        //                .put("{menuItemId}")
+        //                .then()
+        //                .statusCode(BAD_REQUEST.getStatusCode());
 
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
