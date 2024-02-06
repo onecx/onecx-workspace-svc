@@ -9,6 +9,6 @@ updates:
   - package-ecosystem: "docker"
     directory: "/src/main/docker"
     schedule:
-        interval: daily
+      interval: daily
     labels:
       - docker-image
