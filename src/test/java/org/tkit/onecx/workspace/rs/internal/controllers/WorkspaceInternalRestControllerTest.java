@@ -271,12 +271,13 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(updatedResponse.getBaseUrl()).isEqualTo(response.getBaseUrl());
 
         // update second time
-        response.setBaseUrl("/company2/updated");
-        response.setCompanyName("Company 2 updated");
-        response.setName("Workspace2Test");
+        updatedResponse.setBaseUrl("/company2/test");
+        updatedResponse.setCompanyName("Company 2 test");
+        updatedResponse.setName("Workspace2Test");
+        updatedResponse.setModificationCount(0);
         given().when()
                 .contentType(APPLICATION_JSON)
-                .body(response)
+                .body(updatedResponse)
                 .pathParam("id", "11-222")
                 .put("{id}")
                 .then()

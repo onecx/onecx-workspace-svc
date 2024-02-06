@@ -243,7 +243,7 @@ class ProductRestControllerTest extends AbstractTest {
         assertThat(dto.getBaseUrl()).isEqualTo(request.getBaseUrl());
 
         //second time should fail because of wrong modificationCount
-        request.setModificationCount(0);
+        request.setModificationCount(-1);
         given()
                 .when()
                 .body(request)
