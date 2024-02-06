@@ -2,6 +2,7 @@ package org.tkit.onecx.workspace.rs.internal.controllers;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
@@ -17,6 +18,7 @@ import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
+import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.internal.WorkspaceInternalApi;
@@ -125,5 +127,13 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         return exceptionMapper.constraint(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> daoException(DAOException ex) {
+        if (ex.getCause() instanceof OptimisticLockException oex) {
+            return exceptionMapper.optimisticLock(oex);
+        }
+        throw ex;
     }
 }

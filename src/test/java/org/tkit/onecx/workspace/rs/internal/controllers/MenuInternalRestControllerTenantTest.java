@@ -278,12 +278,14 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         menuItemDetailsDTO.setId("44-1");
         menuItemDetailsDTO.setName("Test menu 44-1");
         menuItemDetailsDTO.setDisabled(false);
+        menuItemDetailsDTO.setModificationCount(0);
 
         var menuItemDetailsDTO1 = new MenuItemDTO();
         menuItemDetailsDTO1.setId("44-2");
         menuItemDetailsDTO1.setParentItemId("44-5");
         menuItemDetailsDTO1.setName("Test menu 44-2");
         menuItemDetailsDTO1.setDisabled(false);
+        menuItemDetailsDTO1.setModificationCount(0);
 
         given()
                 .when()
@@ -327,6 +329,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         request.setDescription("New test menu description");
         request.setDisabled(false);
         request.setParentItemId("44-1");
+        request.setModificationCount(0);
 
         given()
                 .when()

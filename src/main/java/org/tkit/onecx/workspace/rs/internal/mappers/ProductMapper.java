@@ -33,7 +33,6 @@ public interface ProductMapper {
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
-    @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
@@ -60,7 +59,6 @@ public interface ProductMapper {
 
     List<ProductDTO> map(List<Product> entity);
 
-    @Mapping(target = "version", source = "modificationCount")
     @Mapping(target = "removeMicrofrontendsItem", ignore = true)
     ProductDTO map(Product entity);
 

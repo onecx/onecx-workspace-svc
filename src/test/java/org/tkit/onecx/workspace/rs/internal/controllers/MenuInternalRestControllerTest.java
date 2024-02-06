@@ -266,12 +266,14 @@ class MenuInternalRestControllerTest extends AbstractTest {
         menuItemDetailsDTO.setId("44-1");
         menuItemDetailsDTO.setName("Test menu 44-1");
         menuItemDetailsDTO.setDisabled(false);
+        menuItemDetailsDTO.setModificationCount(0);
 
         var menuItemDetailsDTO1 = new MenuItemDTO();
         menuItemDetailsDTO1.setId("44-2");
         menuItemDetailsDTO1.setParentItemId("44-5");
         menuItemDetailsDTO1.setName("Test menu 44-2");
         menuItemDetailsDTO1.setDisabled(false);
+        menuItemDetailsDTO1.setModificationCount(0);
 
         var updatedData = given()
                 .when()
@@ -305,12 +307,14 @@ class MenuInternalRestControllerTest extends AbstractTest {
         menuItemDetailsDTO.setId("44-1");
         menuItemDetailsDTO.setName("Test menu 44-1");
         menuItemDetailsDTO.setDisabled(false);
+        menuItemDetailsDTO.setModificationCount(0);
 
         var menuItemDetailsDTO1 = new MenuItemDTO();
         menuItemDetailsDTO1.setId("does-not-exists");
         menuItemDetailsDTO1.setParentItemId("44-5");
         menuItemDetailsDTO1.setName("Test menu 44-2");
         menuItemDetailsDTO1.setDisabled(false);
+        menuItemDetailsDTO1.setModificationCount(0);
 
         given()
                 .when()
@@ -346,6 +350,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId("44-2");
+        request.setModificationCount(0);
 
         // update menu item
         var updatedData = given()
@@ -370,6 +375,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId("44-6");
+        request.setModificationCount(0);
 
         // update menu item
         var error = given()
@@ -420,6 +426,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         request.setDescription("New test menu description");
         request.setDisabled(false);
         request.setParentItemId("44-1");
+        request.setModificationCount(0);
 
         // update menu item
         var updatedData = given()
@@ -437,6 +444,17 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(updatedData.getKey()).isEqualTo(request.getKey());
         assertThat(updatedData.getDescription()).isEqualTo(request.getDescription());
         assertThat(updatedData.getWorkspaceName()).isEqualTo("test02");
+
+        //Update second time and expect a BAD REQUEST because of wrong modificationCount
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-6")
+                .put("{menuItemId}")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
 
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
@@ -461,6 +479,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         request.setDescription("New test menu description");
         request.setDisabled(false);
         request.setParentItemId("44-1");
+        request.setModificationCount(0);
 
         given()
                 .when()

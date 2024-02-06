@@ -525,8 +525,12 @@ components:
     UpdateWorkspaceRequest:
       required:
         - name
+        - modificationCount
       type: object
       properties:
+        modificationCount:
+          format: int32
+          type: integer
         name:
           type: string
         description:
@@ -572,7 +576,7 @@ components:
       properties:
         id:
           type: string
-        version:
+        modificationCount:
           format: int32
           type: integer
         creationDate:
@@ -666,7 +670,7 @@ components:
     WorkspaceMenuItem:
       type: object
       properties:
-        version:
+        modificationCount:
           format: int32
           type: integer
         creationDate:
@@ -716,8 +720,10 @@ components:
             $ref: '#/components/schemas/WorkspaceMenuItem'
     MenuItem:
       type: object
+      required:
+        - modificationCount
       properties:
-        version:
+        modificationCount:
           format: int32
           type: integer
         creationDate:
@@ -857,8 +863,12 @@ components:
     UpdateProductRequest:
       required:
         - baseUrl
+        - modificationCount
       type: object
       properties:
+        modificationCount:
+          format: int32
+          type: integer
         baseUrl:
           type: string
         microfrontends:
@@ -878,7 +888,7 @@ components:
     Product:
       type: object
       properties:
-        version:
+        modificationCount:
           format: int32
           type: integer
         creationDate:

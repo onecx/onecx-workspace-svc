@@ -188,6 +188,7 @@ class ProductRestControllerTenantTest extends AbstractTest {
     void updateProductByIdTest() {
         var request = new UpdateProductRequestDTO();
         request.setBaseUrl("/onecx-core");
+        request.setModificationCount(0);
 
         // not sending request
         var error = given()

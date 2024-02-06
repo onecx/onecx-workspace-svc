@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.persistence.OptimisticLockException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
@@ -27,7 +28,7 @@ public abstract class InternalExceptionMapper {
 
     @LogService(log = false)
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
-        var dto = exception("CONSTRAINT_VIOLATIONS", ex.getMessage());
+        var dto = exception(TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name(), ex.getMessage());
         dto.setInvalidParams(createErrorValidationResponse(ex.getConstraintViolations()));
         return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }
@@ -37,6 +38,12 @@ public abstract class InternalExceptionMapper {
         var e = exception(ce.getMessageKey().name(), ce.getConstraints());
         e.setParams(map(ce.namedParameters));
         return RestResponse.status(Response.Status.BAD_REQUEST, e);
+    }
+
+    @LogService(log = false)
+    public RestResponse<ProblemDetailResponseDTO> optimisticLock(OptimisticLockException ex) {
+        var dto = exception(TechnicalErrorKeys.OPTIMISTIC_LOCK.name(), ex.getMessage());
+        return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }
 
     public List<ProblemDetailParamDTO> map(Map<String, Object> params) {
@@ -68,5 +75,10 @@ public abstract class InternalExceptionMapper {
 
     public String mapPath(Path path) {
         return path.toString();
+    }
+
+    public enum TechnicalErrorKeys {
+        CONSTRAINT_VIOLATIONS,
+        OPTIMISTIC_LOCK
     }
 }

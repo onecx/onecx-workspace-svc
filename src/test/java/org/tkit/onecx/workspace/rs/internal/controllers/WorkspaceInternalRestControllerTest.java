@@ -269,6 +269,19 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(updatedResponse.getAddress().getStreet()).isEqualTo(response.getAddress().getStreet());
         assertThat(updatedResponse.getCompanyName()).isEqualTo(response.getCompanyName());
         assertThat(updatedResponse.getBaseUrl()).isEqualTo(response.getBaseUrl());
+
+        // update second time
+        response.setBaseUrl("/company2/updated");
+        response.setCompanyName("Company 2 updated");
+        response.setName("Workspace2Test");
+        given().when()
+                .contentType(APPLICATION_JSON)
+                .body(response)
+                .pathParam("id", "11-222")
+                .put("{id}")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
     }
 
 }
