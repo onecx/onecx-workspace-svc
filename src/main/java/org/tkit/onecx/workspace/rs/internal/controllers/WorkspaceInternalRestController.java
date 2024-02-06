@@ -17,8 +17,8 @@ import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
+import org.tkit.onecx.workspace.rs.internal.services.WorkspaceService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
-import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.internal.WorkspaceInternalApi;
@@ -49,6 +49,9 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 
     @Context
     UriInfo uriInfo;
+
+    @Inject
+    WorkspaceService workspaceService;
 
     @Override
     @Transactional
@@ -98,7 +101,6 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
-    @Transactional
     public Response updateWorkspace(String id, UpdateWorkspaceRequestDTO updateWorkspaceRequestDTO) {
         Workspace workspace = dao.findById(id);
         if (workspace == null) {
@@ -109,12 +111,9 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
         var newWorkspaceName = updateWorkspaceRequestDTO.getName();
         var oldWorkspaceName = workspace.getName();
 
-        if (!oldWorkspaceName.equals(newWorkspaceName)) {
-            menuDao.updateMenuItems(newWorkspaceName, oldWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
-        }
-
         workspaceMapper.update(updateWorkspaceRequestDTO, workspace);
-        dao.update(workspace);
+        workspaceService.updateWorkspace(!oldWorkspaceName.equals(newWorkspaceName),
+                    workspace, oldWorkspaceName, newWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
 
         return Response.noContent().build();
     }
@@ -130,10 +129,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @ServerExceptionMapper
-    public RestResponse<ProblemDetailResponseDTO> daoException(DAOException ex) {
-        if (ex.getCause() instanceof OptimisticLockException oex) {
-            return exceptionMapper.optimisticLock(oex);
-        }
-        throw ex;
+    public RestResponse<ProblemDetailResponseDTO> daoException(OptimisticLockException ex) {
+            return exceptionMapper.optimisticLock(ex);
     }
 }

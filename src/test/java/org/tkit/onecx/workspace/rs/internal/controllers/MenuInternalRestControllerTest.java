@@ -449,7 +449,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 //        given()
 //                .when()
 //                .contentType(APPLICATION_JSON)
-//                .body(request)
+//                .body(updatedData)
 //                .pathParam("id", "11-222")
 //                .pathParam("menuItemId", "44-6")
 //                .put("{menuItemId}")

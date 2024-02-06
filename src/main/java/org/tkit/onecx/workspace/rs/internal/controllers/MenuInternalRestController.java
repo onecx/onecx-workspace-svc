@@ -254,11 +254,8 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @ServerExceptionMapper
-    public RestResponse<ProblemDetailResponseDTO> daoException(DAOException ex) {
-        if (ex.getCause() instanceof OptimisticLockException oex) {
-            return exceptionMapper.optimisticLock(oex);
-        }
-        throw ex;
+    public RestResponse<ProblemDetailResponseDTO> daoException(OptimisticLockException ex) {
+        return exceptionMapper.optimisticLock(ex);
     }
 
     enum MenuItemErrorKeys {

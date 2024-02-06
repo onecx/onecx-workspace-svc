@@ -79,7 +79,6 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @Override
-    @Transactional
     public Response updateProductById(String id, String productId, UpdateProductRequestDTO updateProductRequestDTO) {
         var product = dao.findById(productId);
         if (product == null) {
@@ -102,11 +101,8 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @ServerExceptionMapper
-    public RestResponse<ProblemDetailResponseDTO> daoException(DAOException ex) {
-        if (ex.getCause() instanceof OptimisticLockException oex) {
-            return exceptionMapper.optimisticLock(oex);
-        }
-        throw ex;
+    public RestResponse<ProblemDetailResponseDTO> daoException(OptimisticLockException ex) {
+        return exceptionMapper.optimisticLock(ex);
     }
 
     enum ProductErrorKeys {

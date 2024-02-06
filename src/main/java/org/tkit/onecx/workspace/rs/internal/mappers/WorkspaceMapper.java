@@ -37,6 +37,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "modificationCount", source = "modificationCount")
     void update(UpdateWorkspaceRequestDTO dto, @MappingTarget Workspace workspace);
 
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTO dto);
