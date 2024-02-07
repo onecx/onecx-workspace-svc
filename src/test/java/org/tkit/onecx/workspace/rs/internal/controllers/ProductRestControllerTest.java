@@ -257,7 +257,7 @@ class ProductRestControllerTest extends AbstractTest {
     }
 
     @Test
-    public void modificationCountTest() {
+    void modificationCountTest() {
 
         var update = new UpdateProductRequestDTO();
         update.setBaseUrl("1234");
