@@ -188,7 +188,7 @@ class ProductRestControllerTenantTest extends AbstractTest {
     void updateProductByIdTest() {
         var request = new UpdateProductRequestDTO();
         request.setBaseUrl("/onecx-core");
-        request.setModificationCount(0);
+        request.setModificationCount(10);
 
         // not sending request
         var error = given()
@@ -206,11 +206,11 @@ class ProductRestControllerTenantTest extends AbstractTest {
         // not existing product
         given()
                 .when()
-                .body(request)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .pathParam("productId", "1234")
                 .header(APM_HEADER_PARAM, createToken("org2"))
+                .body(request)
                 .put("{productId}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -295,10 +295,10 @@ class ProductRestControllerTenantTest extends AbstractTest {
         assertThat(filteredProduct.get().getMicrofrontends().get(0).getBasePath())
                 .isEqualTo(request.getMicrofrontends().get(0).getBasePath());
 
-        request.setMicrofrontends(new ArrayList<>());
+        dto.setMicrofrontends(new ArrayList<>());
         dto = given()
                 .when()
-                .body(request)
+                .body(dto)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .pathParam("productId", "1234")

@@ -47,8 +47,8 @@
 	<SUBJECT_LINK workspace_guid="11-111" link_label="lebel_2" link_url="url-2"/>
 
 	<!-- PRODUCT -->
-	<PRODUCT guid="1234" optlock="0" workspace_guid="11-111" product_name="onecx-core" base_url="/core" tenant_id="tenant-100"/>
-	<PRODUCT guid="5678" optlock="0" workspace_guid="11-111" product_name="onecx-apm" base_url="/apm" tenant_id="tenant-100"/>
+	<PRODUCT guid="1234" optlock="10" workspace_guid="11-111" product_name="onecx-core" base_url="/core" tenant_id="tenant-100"/>
+	<PRODUCT guid="5678" optlock="10" workspace_guid="11-111" product_name="onecx-apm" base_url="/apm" tenant_id="tenant-100"/>
 
 	<!-- MICROFRONTEND -->
 	<MICROFRONTEND guid="1234" mfe_id="menu" base_path="/menu" product_guid="1234"/>

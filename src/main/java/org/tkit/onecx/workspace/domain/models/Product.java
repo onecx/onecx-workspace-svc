@@ -1,5 +1,6 @@
 package org.tkit.onecx.workspace.domain.models;
 
+import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Table(name = "PRODUCT", uniqueConstraints = {
         @UniqueConstraint(name = "PRODUCT_NAME_WORKSPACE_GUID", columnNames = { "PRODUCT_NAME", "WORKSPACE_GUID", "TENANT_ID" })
 })
+@NamedEntityGraph(name = "Product.loadById", includeAllAttributes = true, attributeNodes = { @NamedAttributeNode("workspace") })
 @SuppressWarnings("squid:S2160")
 public class Product extends TraceableEntity {
 

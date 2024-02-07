@@ -286,7 +286,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void optlockTest() {
+    void modificationCountTest() {
         var updatedResponse = given().when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")

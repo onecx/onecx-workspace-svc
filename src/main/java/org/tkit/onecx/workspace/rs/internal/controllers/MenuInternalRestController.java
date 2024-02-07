@@ -21,6 +21,7 @@ import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.MenuItemMapper;
+import org.tkit.onecx.workspace.rs.internal.services.MenuItemService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -151,22 +152,23 @@ public class MenuInternalRestController implements MenuInternalApi {
         return Response.ok(mapper.map(result)).build();
     }
 
+    @Inject
+    MenuItemService menuItemService;
+
     @Override
-    @Transactional
     public Response updateMenuItem(String id, String menuItemId, MenuItemDTO menuItemDTO) {
-        var menuItem = dao.findById(menuItemId);
+        var menuItem = menuItemService.updateMenuItem(id, menuItemId, menuItemDTO);
         if (menuItem == null) {
             return Response.status(NOT_FOUND).build();
         }
 
-        // update parent
-        updateParent(menuItem, menuItemDTO);
+        mapper.update(menuItemDTO, menuItem.menuItem);
+        if (menuItem.change && menuItem.parent != null) {
+            menuItem.menuItem.setParent(menuItem.parent);
+        }
+        var m = dao.update(menuItem.menuItem);
 
-        mapper.update(menuItemDTO, menuItem);
-
-        menuItem = dao.update(menuItem);
-
-        return Response.ok(mapper.map(menuItem)).build();
+        return Response.ok(mapper.map(m)).build();
     }
 
     @Override
