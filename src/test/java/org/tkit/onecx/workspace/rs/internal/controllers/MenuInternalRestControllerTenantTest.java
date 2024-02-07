@@ -228,7 +228,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructrueDTO.class);
+                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).isEmpty();
@@ -240,7 +240,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructrueDTO.class);
+                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(5);
@@ -264,7 +264,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(List.of())
+                .body(new UpdateMenuItemsRequestDTO())
                 .pathParam("id", "11-222")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .patch()
@@ -274,23 +274,25 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void patchMenuItemsTest() {
-        var menuItemDetailsDTO = new MenuItemDTO();
-        menuItemDetailsDTO.setId("44-1");
+        var menuItemDetailsDTO = new UpdateMenuItemRequestDTO();
         menuItemDetailsDTO.setName("Test menu 44-1");
         menuItemDetailsDTO.setDisabled(false);
         menuItemDetailsDTO.setModificationCount(0);
 
-        var menuItemDetailsDTO1 = new MenuItemDTO();
-        menuItemDetailsDTO1.setId("44-2");
+        var menuItemDetailsDTO1 = new UpdateMenuItemRequestDTO();
         menuItemDetailsDTO1.setParentItemId("44-5");
         menuItemDetailsDTO1.setName("Test menu 44-2");
         menuItemDetailsDTO1.setDisabled(false);
         menuItemDetailsDTO1.setModificationCount(0);
 
+        var request = new UpdateMenuItemsRequestDTO();
+        request.putItemsItem("44-1", menuItemDetailsDTO);
+        request.putItemsItem("44-2", menuItemDetailsDTO1);
+
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(List.of(menuItemDetailsDTO, menuItemDetailsDTO1))
+                .body(request)
                 .pathParam("id", "11-222")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .patch()
@@ -299,7 +301,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         var updatedData = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(List.of(menuItemDetailsDTO, menuItemDetailsDTO1))
+                .body(request)
                 .pathParam("id", "11-222")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .patch()
@@ -324,7 +326,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void updateMenuItemTest() {
-        var request = new MenuItemDTO();
+        var request = new UpdateMenuItemRequestDTO();
         request.setKey("Test menu");
         request.setDescription("New test menu description");
         request.setDisabled(false);
@@ -380,7 +382,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
     @Test
     void uploadMenuStructureTest() {
 
-        var menuStructureListDTO = new WorkspaceMenuItemStructrueDTO();
+        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
         var menuItemStructureDTO = new WorkspaceMenuItemDTO();
 
         menuItemStructureDTO.setKey("Test menu");
@@ -439,7 +441,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructrueDTO.class);
+                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(1);

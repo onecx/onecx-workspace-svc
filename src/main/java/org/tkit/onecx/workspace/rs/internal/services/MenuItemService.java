@@ -11,8 +11,6 @@ import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 
-import gen.org.tkit.onecx.workspace.rs.internal.model.MenuItemDTO;
-
 @ApplicationScoped
 public class MenuItemService {
 
@@ -20,33 +18,31 @@ public class MenuItemService {
     MenuItemDAO dao;
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public UpdateResult updateMenuItem(String id, String menuItemId, MenuItemDTO dto) {
-        var menuItem = dao.findById(menuItemId);
+    public UpdateResult updateMenuItem(String menuItemId, String newParentItemId) {
+        var menuItem = dao.loadById(menuItemId);
         if (menuItem == null) {
             return null;
         }
-        menuItem = dao.loadById(menuItemId);
 
-        if (dto.getParentItemId() == null) {
-            menuItem.setParent(null);
+        if (newParentItemId == null) {
             return UpdateResult.of(menuItem, null, true);
         }
 
         // check parent change
-        if (menuItem.getParent() != null && dto.getParentItemId().equals(menuItem.getParent().getId())) {
+        if (menuItem.getParent() != null && newParentItemId.equals(menuItem.getParent().getId())) {
             return UpdateResult.of(menuItem, null, false);
         }
 
         // checking if request parent id is the same as current id
-        if (dto.getParentItemId().equals(menuItem.getId())) {
+        if (newParentItemId.equals(menuItem.getId())) {
             throw new ConstraintException("Menu Item " + menuItem.getId() + " id and parentItem id are the same",
                     MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM, null);
         }
 
         // checking if parent exists
-        var parent = dao.findById(dto.getParentItemId());
+        var parent = dao.findById(newParentItemId);
         if (parent == null) {
-            throw new ConstraintException("Parent menu item " + dto.getParentItemId() + " does not exists",
+            throw new ConstraintException("Parent menu item " + newParentItemId + " does not exists",
                     MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST, null);
         } else {
             // checking if parent exists in the same portal
@@ -72,24 +68,13 @@ public class MenuItemService {
     public static class UpdateResult {
         public MenuItem menuItem;
         public MenuItem parent;
-        public boolean change;
+        public boolean parentChange;
 
-        public static UpdateResult of() {
-            return new UpdateResult();
-        }
-
-        public static UpdateResult of(MenuItem menuItem, MenuItem parent) {
+        public static UpdateResult of(MenuItem menuItem, MenuItem parent, boolean parentChange) {
             var r = new UpdateResult();
             r.menuItem = menuItem;
             r.parent = parent;
-            return r;
-        }
-
-        public static UpdateResult of(MenuItem menuItem, MenuItem parent, boolean change) {
-            var r = new UpdateResult();
-            r.menuItem = menuItem;
-            r.parent = parent;
-            r.change = change;
+            r.parentChange = parentChange;
             return r;
         }
 
@@ -102,7 +87,7 @@ public class MenuItemService {
         });
     }
 
-    enum MenuItemErrorKeys {
+    public enum MenuItemErrorKeys {
         PARENT_MENU_DOES_NOT_EXIST,
 
         PARENT_MENU_SAME_AS_MENU_ITEM,

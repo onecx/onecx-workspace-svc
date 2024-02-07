@@ -15,16 +15,15 @@ public class WorkspaceLogParam implements LogParam {
     public List<Item> getClasses() {
         return List.of(
                 this.item(10, CreateWorkspaceRequestDTO.class,
-                        x -> "CreateWorkspaceRequestDTO[ name: " + ((CreateWorkspaceRequestDTO) x).getName()
-                                + ", baseUrl: " + ((CreateWorkspaceRequestDTO) x).getBaseUrl()
-                                + ", company name: " + ((CreateWorkspaceRequestDTO) x).getCompanyName()
-                                + " ]"),
+                        x -> CreateWorkspaceRequestDTO.class.getSimpleName() + "[" + ((CreateWorkspaceRequestDTO) x).getName()
+                                + "]"),
                 this.item(10, UpdateWorkspaceRequestDTO.class,
-                        x -> "UpdateWorkspaceRequestDTO[ name: " + ((UpdateWorkspaceRequestDTO) x).getName()
-                                + ", baseUrl: " + ((UpdateWorkspaceRequestDTO) x).getBaseUrl()
-                                + ", company name: " + ((UpdateWorkspaceRequestDTO) x).getCompanyName()
-                                + " ]")
-
-        );
+                        x -> UpdateWorkspaceRequestDTO.class.getSimpleName() + "[" + ((UpdateWorkspaceRequestDTO) x).getName()
+                                + "]"),
+                item(10, WorkspaceSearchCriteriaDTO.class, x -> {
+                    WorkspaceSearchCriteriaDTO d = (WorkspaceSearchCriteriaDTO) x;
+                    return WorkspaceSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + "," + d.getPageSize()
+                            + "]";
+                }));
     }
 }

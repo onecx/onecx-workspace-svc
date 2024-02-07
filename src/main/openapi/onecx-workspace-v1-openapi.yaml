@@ -77,7 +77,7 @@ paths:
       tags:
         - productExternal
       description: Find all products belonging to a workspace
-      operationId: getProductsForWorkspaceId
+      operationId: getProducts
       parameters:
         - $ref: '#/components/parameters/id'
       responses:

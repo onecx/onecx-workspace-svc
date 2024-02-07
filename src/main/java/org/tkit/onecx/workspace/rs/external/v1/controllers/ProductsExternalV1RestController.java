@@ -22,7 +22,7 @@ class ProductsExternalV1RestController implements ProductExternalV1Api {
     ProductDAO productDAO;
 
     @Override
-    public Response getProductsForWorkspaceId(String id) {
+    public Response getProducts(String id) {
         var result = productDAO.getProductsForWorkspaceId(id);
         return Response.ok(mapper.map(result)).build();
     }
