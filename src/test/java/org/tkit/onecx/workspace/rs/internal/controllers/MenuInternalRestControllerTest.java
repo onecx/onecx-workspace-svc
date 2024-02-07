@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.tkit.onecx.workspace.rs.internal.services.MenuItemService;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
@@ -205,7 +206,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructrueDTO.class);
+                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(5);
@@ -231,7 +232,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .pathParam("id", "does-not-exists")
                 .get("/tree")
                 .then().statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructrueDTO.class);
+                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).isEmpty();
@@ -253,7 +254,16 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(List.of())
+                .body(new UpdateMenuItemsRequestDTO().items(null))
+                .pathParam("id", "11-222")
+                .patch()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new UpdateMenuItemsRequestDTO())
                 .pathParam("id", "11-222")
                 .patch()
                 .then()
@@ -262,23 +272,25 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     @Test
     void patchMenuItemsTest() {
-        var menuItemDetailsDTO = new MenuItemDTO();
-        menuItemDetailsDTO.setId("44-1");
+        var menuItemDetailsDTO = new UpdateMenuItemRequestDTO();
         menuItemDetailsDTO.setName("Test menu 44-1");
         menuItemDetailsDTO.setDisabled(false);
         menuItemDetailsDTO.setModificationCount(0);
 
-        var menuItemDetailsDTO1 = new MenuItemDTO();
-        menuItemDetailsDTO1.setId("44-2");
+        var menuItemDetailsDTO1 = new UpdateMenuItemRequestDTO();
         menuItemDetailsDTO1.setParentItemId("44-5");
         menuItemDetailsDTO1.setName("Test menu 44-2");
         menuItemDetailsDTO1.setDisabled(false);
         menuItemDetailsDTO1.setModificationCount(0);
 
+        var request = new UpdateMenuItemsRequestDTO();
+        request.putItemsItem("44-1", menuItemDetailsDTO);
+        request.putItemsItem("44-2", menuItemDetailsDTO1);
+
         var updatedData = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(List.of(menuItemDetailsDTO, menuItemDetailsDTO1))
+                .body(request)
                 .pathParam("id", "11-222")
                 .patch()
                 .then().statusCode(OK.getStatusCode())
@@ -303,23 +315,25 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void bulkPatchMenuItemsNewMenuItemTest() {
 
-        var menuItemDetailsDTO = new MenuItemDTO();
-        menuItemDetailsDTO.setId("44-1");
+        var menuItemDetailsDTO = new UpdateMenuItemRequestDTO();
         menuItemDetailsDTO.setName("Test menu 44-1");
         menuItemDetailsDTO.setDisabled(false);
         menuItemDetailsDTO.setModificationCount(0);
 
-        var menuItemDetailsDTO1 = new MenuItemDTO();
-        menuItemDetailsDTO1.setId("does-not-exists");
+        var menuItemDetailsDTO1 = new UpdateMenuItemRequestDTO();
         menuItemDetailsDTO1.setParentItemId("44-5");
         menuItemDetailsDTO1.setName("Test menu 44-2");
         menuItemDetailsDTO1.setDisabled(false);
         menuItemDetailsDTO1.setModificationCount(0);
 
+        var request = new UpdateMenuItemsRequestDTO();
+        request.putItemsItem("44-1", menuItemDetailsDTO);
+        request.putItemsItem("does-not-exists", menuItemDetailsDTO);
+
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(List.of(menuItemDetailsDTO, menuItemDetailsDTO1))
+                .body(request)
                 .pathParam("id", "11-222")
                 .patch()
                 .then().statusCode(NOT_FOUND.getStatusCode());
@@ -328,25 +342,27 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void bulkPatchMenuItemsParentToParentTest() {
 
-        var menuItemDetailsDTO1 = new MenuItemDTO();
-        menuItemDetailsDTO1.setId("44-5");
+        var menuItemDetailsDTO1 = new UpdateMenuItemRequestDTO();
         menuItemDetailsDTO1.setParentItemId("44-5");
         menuItemDetailsDTO1.setName("Test menu 44-2");
         menuItemDetailsDTO1.setDisabled(false);
 
+        var request = new UpdateMenuItemsRequestDTO();
+        request.putItemsItem("44-5", menuItemDetailsDTO1);
+
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(List.of(menuItemDetailsDTO1))
+                .body(request)
                 .pathParam("id", "11-222")
                 .patch()
                 .then().statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test
-    void patchMenuItemDoesNotUpdateParentTest() {
+    void updateMenuItemDoesNotUpdateParentTest() {
 
-        var request = new MenuItemDTO();
+        var request = new UpdateMenuItemRequestDTO();
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId("44-2");
@@ -369,9 +385,9 @@ class MenuInternalRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void patchMenuItemParentSetChildAsParentTest() {
+    void updateMenuItemParentSetChildAsParentTest() {
 
-        var request = new MenuItemDTO();
+        var request = new UpdateMenuItemRequestDTO();
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId("44-6");
@@ -389,7 +405,31 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .extract().as(ProblemDetailResponseDTO.class);
 
         assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("CYCLE_DEPENDENCY");
+        assertThat(error.getErrorCode()).isEqualTo(MenuItemService.MenuItemErrorKeys.CYCLE_DEPENDENCY.name());
+    }
+
+    @Test
+    void updateMenuItemParentSetToMenuItemTest() {
+
+        var request = new UpdateMenuItemRequestDTO();
+        request.setKey("Test menu");
+        request.setDisabled(false);
+        request.setParentItemId("44-2");
+        request.setModificationCount(0);
+
+        // update menu item
+        var error = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-2")
+                .put("{menuItemId}")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo(MenuItemService.MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM.name());
     }
 
     static Stream<Arguments> inputParams() {
@@ -402,11 +442,12 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     @ParameterizedTest
     @MethodSource("inputParams")
-    void patchMenuItemErrors(String portalId, String menuItemId, String parentItemId) {
-        var request = new MenuItemDTO();
+    void updateMenuItemErrors(String portalId, String menuItemId, String parentItemId) {
+        var request = new UpdateMenuItemRequestDTO();
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId(parentItemId);
+        request.setModificationCount(0);
 
         // update menu item
         given()
@@ -421,7 +462,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     @Test
     void updateMenuItemTest() {
-        var request = new MenuItemDTO();
+        var request = new UpdateMenuItemRequestDTO();
         request.setKey("Test menu");
         request.setDescription("New test menu description");
         request.setDisabled(false);
@@ -446,15 +487,16 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(updatedData.getWorkspaceName()).isEqualTo("test02");
 
         //Update second time and expect a BAD REQUEST because of wrong modificationCount
-        //        given()
-        //                .when()
-        //                .contentType(APPLICATION_JSON)
-        //                .body(updatedData)
-        //                .pathParam("id", "11-222")
-        //                .pathParam("menuItemId", "44-6")
-        //                .put("{menuItemId}")
-        //                .then()
-        //                .statusCode(BAD_REQUEST.getStatusCode());
+        request.setModificationCount(-1);
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-6")
+                .put("{menuItemId}")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
 
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
@@ -466,15 +508,15 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .extract().as(MenuItemDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(updatedData.getKey()).isEqualTo(request.getKey());
+        assertThat(updatedData.getKey()).isEqualTo(dto.getKey());
         assertThat(updatedData.getWorkspaceName()).isEqualTo("test02");
-        assertThat(updatedData.getDescription()).isEqualTo(request.getDescription());
+        assertThat(updatedData.getDescription()).isEqualTo(dto.getDescription());
         assertThat(dto.getName()).isEqualTo("Portal Child 1");
     }
 
     @Test
     void updateMenuItemNotExistsTest() {
-        var request = new MenuItemDTO();
+        var request = new UpdateMenuItemRequestDTO();
         request.setKey("Test menu");
         request.setDescription("New test menu description");
         request.setDisabled(false);
@@ -505,7 +547,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void uploadMenuStructureNoMenuItemsTest() {
 
-        var menuStructureListDTO = new WorkspaceMenuItemStructrueDTO();
+        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
         menuStructureListDTO.setMenuItems(null);
 
         var error = given()
@@ -520,7 +562,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo("MENU_ITEMS_NULL");
 
-        menuStructureListDTO = new WorkspaceMenuItemStructrueDTO();
+        menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
         menuStructureListDTO.setMenuItems(new ArrayList<>());
 
         error = given()
@@ -539,7 +581,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void uploadMenuStructurePortalDoesNotExistsTest() {
 
-        var menuStructureListDTO = new WorkspaceMenuItemStructrueDTO();
+        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
         var menuItemStructureDTO = new WorkspaceMenuItemDTO();
 
         menuItemStructureDTO.setKey("Test menu");
@@ -565,7 +607,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void uploadMenuStructureTest() {
 
-        var menuStructureListDTO = new WorkspaceMenuItemStructrueDTO();
+        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
         var menuItemStructureDTO = new WorkspaceMenuItemDTO();
 
         menuItemStructureDTO.setKey("Test menu");
@@ -607,7 +649,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructrueDTO.class);
+                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(1);

@@ -55,7 +55,4 @@ class TkitPortalRestControllerExceptionTest extends AbstractTest {
         assertThat(exception.getErrorCode()).isEqualTo(ERROR_TEST.name());
     }
 
-    public enum ErrorKey {
-        ERROR_TEST;
-    }
 }

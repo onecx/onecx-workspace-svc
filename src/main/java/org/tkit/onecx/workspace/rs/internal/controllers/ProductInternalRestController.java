@@ -78,13 +78,11 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @Override
-    @Transactional
     public Response updateProductById(String id, String productId, UpdateProductRequestDTO updateProductRequestDTO) {
-        var product = dao.findById(productId);
+        var product = dao.loadById(productId);
         if (product == null) {
             return Response.status(NOT_FOUND).build();
         }
-
         mapper.update(updateProductRequestDTO, product);
         product = dao.update(product);
         return Response.ok(mapper.map(product)).build();

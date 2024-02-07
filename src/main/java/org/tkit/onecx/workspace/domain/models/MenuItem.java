@@ -32,11 +32,13 @@ import lombok.Setter;
 @NamedEntityGraph(name = MenuItem.MENU_ITEM_WORKSPACE_AND_TRANSLATIONS, attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("workspace") })
 @NamedEntityGraph(name = "MenuItem.loadById", includeAllAttributes = true, attributeNodes = { @NamedAttributeNode("i18n"),
-        @NamedAttributeNode("children") })
+        @NamedAttributeNode("children"), @NamedAttributeNode("workspace") })
 @SuppressWarnings("squid:S2160")
 public class MenuItem extends TraceableEntity {
 
     public static final String MENU_ITEM_WORKSPACE_AND_TRANSLATIONS = "MenuItem.workspaceAndTranslations";
+
+    public static final String MENU_ITEM_LOAD_ALL = "MenuItem.loadById";
 
     @TenantId
     @Column(name = "TENANT_ID")

@@ -186,6 +186,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         var product = productDTOList.get(0);
         request.setBaseUrl("/mho-test");
+        request.setModificationCount(product.getModificationCount());
         request.setMicrofrontends(new ArrayList<>());
         for (var mf : product.getMicrofrontends()) {
             var updateDto = new UpdateMicrofrontendDTO();
@@ -222,14 +223,14 @@ class ProductRestControllerTest extends AbstractTest {
 
         assertThat(response).isNotNull().isNotEmpty().hasSize(2);
         var filteredProduct = response.stream().filter(x -> x.getProductName().equals(product.getProductName())).findFirst();
-        assertThat(filteredProduct.get().getMicrofrontends()).isNotEmpty();
+        assertThat(filteredProduct).isPresent();
         assertThat(filteredProduct.get().getMicrofrontends().get(0).getBasePath())
                 .isEqualTo(request.getMicrofrontends().get(0).getBasePath());
 
-        request.setMicrofrontends(new ArrayList<>());
+        dto.setMicrofrontends(new ArrayList<>());
         dto = given()
                 .when()
-                .body(request)
+                .body(dto)
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .pathParam("productId", "1234")
@@ -243,15 +244,32 @@ class ProductRestControllerTest extends AbstractTest {
         assertThat(dto.getBaseUrl()).isEqualTo(request.getBaseUrl());
 
         //second time should fail because of wrong modificationCount
-        //        request.setModificationCount(-1);
-        //        given()
-        //                .when()
-        //                .body(request)
-        //                .contentType(APPLICATION_JSON)
-        //                .pathParam("id", "11-111")
-        //                .pathParam("productId", "1234")
-        //                .put("{productId}")
-        //                .then()
-        //                .statusCode(BAD_REQUEST.getStatusCode());
+        request.setModificationCount(-1);
+        given()
+                .when()
+                .body(request)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .pathParam("productId", "1234")
+                .put("{productId}")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    void modificationCountTest() {
+
+        var update = new UpdateProductRequestDTO();
+        update.setBaseUrl("1234");
+        update.setModificationCount(-1);
+
+        given()
+                .when()
+                .body(update)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .put("1234")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
     }
 }

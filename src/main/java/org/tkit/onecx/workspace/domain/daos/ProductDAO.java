@@ -59,18 +59,18 @@ public class ProductDAO extends AbstractDAO<Product> {
         delete(products);
     }
 
-    @Override
-    public Product findById(Object id) throws DAOException {
+    public Product loadById(Object id) throws DAOException {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Product.class);
             var root = cq.from(Product.class);
+            root.fetch(Product_.WORKSPACE);
             cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
             return this.getEntityManager().createQuery(cq).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         } catch (Exception e) {
-            throw this.handleConstraint(e, ProductDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
+            throw this.handleConstraint(e, ProductDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED);
         }
     }
 
@@ -88,7 +88,7 @@ public class ProductDAO extends AbstractDAO<Product> {
 
     public enum ErrorKeys {
 
-        FIND_ENTITY_BY_ID_FAILED,
+        LOAD_ENTITY_BY_ID_FAILED,
 
         ERROR_DELETE_PRODUCT_ID,
 

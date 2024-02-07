@@ -1,6 +1,7 @@
 package org.tkit.onecx.workspace.domain.daos;
 
 import static jakarta.persistence.criteria.JoinType.LEFT;
+import static org.tkit.onecx.workspace.domain.models.MenuItem.MENU_ITEM_LOAD_ALL;
 import static org.tkit.onecx.workspace.domain.models.MenuItem.MENU_ITEM_WORKSPACE_AND_TRANSLATIONS;
 
 import java.util.List;
@@ -180,15 +181,32 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         }
     }
 
+    public MenuItem loadById(Object id) throws DAOException {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(MenuItem.class);
+            var root = cq.from(MenuItem.class);
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
+            return this.getEntityManager().createQuery(cq)
+                    .setHint(HINT_LOAD_GRAPH,
+                            this.getEntityManager().getEntityGraph(MENU_ITEM_LOAD_ALL))
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception e) {
+            throw new DAOException(MenuItemDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED, e, entityName, id);
+        }
+    }
+
     public enum ErrorKeys {
 
         FIND_ENTITY_BY_ID_FAILED,
 
+        LOAD_ENTITY_BY_ID_FAILED,
         ERROR_UPDATE_MENU_ITEMS,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME,
-        ERROR_LOAD_ALL_MENU_ITEM_BY_KEY,
 
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID,
     }

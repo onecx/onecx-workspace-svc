@@ -6,9 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import org.tkit.quarkus.log.cdi.LogParam;
 
-import gen.org.tkit.onecx.workspace.rs.internal.model.CreateMenuItemDTO;
-import gen.org.tkit.onecx.workspace.rs.internal.model.MenuItemDTO;
-import gen.org.tkit.onecx.workspace.rs.internal.model.WorkspaceMenuItemStructrueDTO;
+import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 
 @ApplicationScoped
 public class MenuItemLogParam implements LogParam {
@@ -16,18 +14,24 @@ public class MenuItemLogParam implements LogParam {
     @Override
     public List<Item> getClasses() {
         return List.of(
-                this.item(10, MenuItemDTO.class,
-                        x -> "MenuItem[ key: " + ((MenuItemDTO) x).getKey()
-                                + ", workspaceName: " + ((MenuItemDTO) x).getWorkspaceName() + " ]"),
+                this.item(10, UpdateMenuItemsRequestDTO.class,
+                        x -> {
+                            var items = ((UpdateMenuItemsRequestDTO) x).getItems();
+                            return UpdateMenuItemsRequestDTO.class.getSimpleName() + "["
+                                    + (items != null ? items.size() : "null") + "]";
+                        }),
+                this.item(10, UpdateMenuItemRequestDTO.class,
+                        x -> UpdateMenuItemRequestDTO.class.getSimpleName() + "[" + ((UpdateMenuItemRequestDTO) x).getKey()
+                                + "," + ((UpdateMenuItemRequestDTO) x).getWorkspaceName() + "]"),
                 this.item(10, CreateMenuItemDTO.class,
-                        x -> "CreateMenuItemDTO[ key: " + ((CreateMenuItemDTO) x).getKey()
-                                + ", url: " + ((CreateMenuItemDTO) x).getUrl() + " ]"),
-                this.item(10, WorkspaceMenuItemStructrueDTO.class,
-                        x -> "WorkspaceMenuItemStructrueDTO[ menu items size: "
-                                + (((WorkspaceMenuItemStructrueDTO) x).getMenuItems() != null
-                                        ? ((WorkspaceMenuItemStructrueDTO) x).getMenuItems().size()
+                        x -> CreateMenuItemDTO.class.getSimpleName() + "[" + ((CreateMenuItemDTO) x).getKey()
+                                + "," + ((CreateMenuItemDTO) x).getUrl() + "]"),
+                this.item(10, WorkspaceMenuItemStructureDTO.class,
+                        x -> WorkspaceMenuItemStructureDTO.class.getSimpleName() + "["
+                                + (((WorkspaceMenuItemStructureDTO) x).getMenuItems() != null
+                                        ? ((WorkspaceMenuItemStructureDTO) x).getMenuItems().size()
                                         : "null")
-                                + " ]")
+                                + "]")
 
         );
 

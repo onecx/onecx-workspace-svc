@@ -79,7 +79,7 @@ public class Workspace extends TraceableEntity {
     @Column(name = "LOGO_URL")
     private String logoUrl;
 
-    @OneToMany(mappedBy = "workspace")
+    @OneToMany(mappedBy = "workspace", fetch = LAZY)
     private List<Product> products;
 
 }

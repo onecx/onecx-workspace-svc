@@ -38,7 +38,6 @@ public abstract class MenuItemMapper {
     @Mapping(target = "workspace", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    //@Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
     @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
@@ -50,7 +49,7 @@ public abstract class MenuItemMapper {
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    public abstract void update(MenuItemDTO menuItemDetailsDto, @MappingTarget MenuItem entity);
+    public abstract void update(UpdateMenuItemRequestDTO menuItemDetailsDto, @MappingTarget MenuItem entity);
 
     public abstract List<MenuItemDTO> mapList(List<MenuItem> items);
 
@@ -72,8 +71,8 @@ public abstract class MenuItemMapper {
         return String.join(",", list);
     }
 
-    public WorkspaceMenuItemStructrueDTO mapTree(Collection<MenuItem> entities) {
-        WorkspaceMenuItemStructrueDTO dto = new WorkspaceMenuItemStructrueDTO();
+    public WorkspaceMenuItemStructureDTO mapTree(Collection<MenuItem> entities) {
+        WorkspaceMenuItemStructureDTO dto = new WorkspaceMenuItemStructureDTO();
         if (entities.isEmpty()) {
             dto.setMenuItems(new ArrayList<>());
             return dto;
