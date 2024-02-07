@@ -12,7 +12,6 @@ import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @ApplicationScoped
 public class MenuItemService {
@@ -69,7 +68,6 @@ public class MenuItemService {
     }
 
     @Getter
-    @Setter
     public static class UpdateResult {
         private MenuItem menuItem;
         private MenuItem parent;
