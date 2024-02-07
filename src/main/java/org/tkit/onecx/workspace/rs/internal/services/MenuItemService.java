@@ -7,6 +7,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
@@ -65,10 +67,12 @@ public class MenuItemService {
         return UpdateResult.of(menuItem, parent, true);
     }
 
+    @Getter
+    @Setter
     public static class UpdateResult {
-        public MenuItem menuItem;
-        public MenuItem parent;
-        public boolean parentChange;
+        private MenuItem menuItem;
+        private MenuItem parent;
+        private boolean parentChange;
 
         public static UpdateResult of(MenuItem menuItem, MenuItem parent, boolean parentChange) {
             var r = new UpdateResult();
@@ -77,6 +81,7 @@ public class MenuItemService {
             r.parentChange = parentChange;
             return r;
         }
+
 
     }
 

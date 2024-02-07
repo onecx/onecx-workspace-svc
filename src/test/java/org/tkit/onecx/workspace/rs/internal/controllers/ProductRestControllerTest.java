@@ -223,7 +223,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         assertThat(response).isNotNull().isNotEmpty().hasSize(2);
         var filteredProduct = response.stream().filter(x -> x.getProductName().equals(product.getProductName())).findFirst();
-        assertThat(filteredProduct.isPresent()).isTrue();
+        assertThat(filteredProduct).isPresent();
         assertThat(filteredProduct.get().getMicrofrontends().get(0).getBasePath())
                 .isEqualTo(request.getMicrofrontends().get(0).getBasePath());
 

@@ -166,10 +166,10 @@ public class MenuInternalRestController implements MenuInternalApi {
         if (result == null) {
             return null;
         }
-        var menuItem = result.menuItem;
+        var menuItem = result.getMenuItem();
         mapper.update(menuItemDTO, menuItem);
-        if (result.parentChange) {
-            menuItem.setParent(result.parent);
+        if (result.isParentChange()) {
+            menuItem.setParent(result.getParent());
         }
         return menuItem;
     }
