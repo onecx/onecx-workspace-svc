@@ -1,6 +1,6 @@
 app:
+  name: svc
   image:
     repository: "onecx/onecx-workspace-svc"
-    tag: 999-SNAPSHOT
   db:
     enabled: true
