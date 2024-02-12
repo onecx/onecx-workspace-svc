@@ -48,6 +48,30 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
     /**
      * This method delete all menu items by workspace id.
      *
+     * @param name - workspace id
+     */
+    @Transactional
+    public void deleteAllMenuItemsByWorkspaceName(String name) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = this.criteriaQuery();
+            var root = cq.from(MenuItem.class);
+
+            cq.where(cb.and(
+                    cb.equal(root.get(MenuItem_.WORKSPACE_NAME), name),
+                    cb.isNull(root.get(MenuItem_.PARENT))));
+
+            var items = getEntityManager().createQuery(cq).getResultList();
+            delete(items);
+
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME, ex);
+        }
+    }
+
+    /**
+     * This method delete all menu items by workspace id.
+     *
      * @param id - workspace id
      */
     @Transactional
@@ -206,6 +230,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         ERROR_UPDATE_MENU_ITEMS,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
+        ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME,
 
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID,
