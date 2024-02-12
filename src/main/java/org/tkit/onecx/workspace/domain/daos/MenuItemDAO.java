@@ -169,27 +169,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         }
     }
 
-    /**
-     * This method fetches all menuItems assigned to a workspace with just
-     * id provided as a param
-     *
-     * @return List of the menu items
-     */
-    public List<MenuItem> loadAllMenuItemsByWorkspaceId(String workspaceId) {
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(MenuItem.class);
-            var menuItem = cq.from(MenuItem.class);
-            cq.where(cb.equal(menuItem.get(MenuItem_.WORKSPACE).get(TraceableEntity_.ID), workspaceId));
-            var menuItemsQuery = getEntityManager().createQuery(cq);
-            menuItemsQuery.setHint(HINT_LOAD_GRAPH,
-                    this.getEntityManager().getEntityGraph(MENU_ITEM_WORKSPACE_AND_TRANSLATIONS));
-            return menuItemsQuery.getResultList();
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID, ex);
-        }
-    }
-
     @Override
     public MenuItem findById(Object id) throws DAOException {
         try {
@@ -228,7 +207,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
 
         LOAD_ENTITY_BY_ID_FAILED,
         ERROR_UPDATE_MENU_ITEMS,
-        ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME,

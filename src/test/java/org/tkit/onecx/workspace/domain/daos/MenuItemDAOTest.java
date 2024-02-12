@@ -30,11 +30,11 @@ class MenuItemDAOTest {
     void methodExceptionTests() {
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceId(null),
                 MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID);
+        methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceName(null),
+                MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME);
         methodExceptionTests(() -> dao.updateMenuItems(null, null, null), MenuItemDAO.ErrorKeys.ERROR_UPDATE_MENU_ITEMS);
         methodExceptionTests(() -> dao.loadAllMenuItemsByWorkspaceName(null),
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME);
-        methodExceptionTests(() -> dao.loadAllMenuItemsByWorkspaceId(null),
-                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_ID);
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceNameAndAppId(null, null),
                 MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID);
         methodExceptionTests(() -> dao.loadMenuItemByWorkspaceAndKey(null, null),
