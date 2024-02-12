@@ -32,25 +32,24 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
-        assertThat(dto).isNotNull().isNotEmpty().hasSize(13);
+        assertThat(dto).isNotNull().isNotEmpty().hasSize(6);
 
         dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
-
         assertThat(dto).isNotNull().isEmpty();
     }
 
@@ -59,7 +58,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "33-13")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .delete("{menuItemId}")
@@ -69,19 +68,19 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
-        assertThat(dto).isNotNull().isNotEmpty().hasSize(13);
+        assertThat(dto).isNotNull().isNotEmpty().hasSize(6);
 
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "33-13")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .delete("{menuItemId}")
@@ -91,14 +90,14 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(List.class);
 
-        assertThat(dto).isNotNull().isNotEmpty().hasSize(12);
+        assertThat(dto).isNotNull().isNotEmpty().hasSize(6);
     }
 
     @Test
@@ -106,7 +105,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org2"))
                 .delete()
                 .then()
@@ -115,7 +114,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
@@ -127,7 +126,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .delete()
                 .then()
@@ -136,7 +135,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get()
                 .then()
@@ -158,7 +157,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         var error = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .body(menuItem)
                 .post()
@@ -172,7 +171,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         var uri = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .body(menuItem)
                 .post()
@@ -198,7 +197,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
     void getMenuItemByIdTest() {
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "33-6")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("{menuItemId}")
@@ -210,7 +209,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
         dto = given().when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "33-6")
                 .header(APM_HEADER_PARAM, createToken("org2"))
                 .get("{menuItemId}")
@@ -223,7 +222,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
     void getMenuStructureForWorkspaceIdTest() {
         var data = given()
                 .when()
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org2"))
                 .get("/tree")
                 .then()
@@ -235,7 +234,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
         data = given()
                 .when()
-                .pathParam("id", "11-111")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("/tree")
                 .then()
@@ -244,7 +243,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(5);
-        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(13);
+        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(6);
     }
 
     private int countMenuItems(Collection<WorkspaceMenuItemDTO> menuItemDTOS) {
@@ -265,7 +264,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new UpdateMenuItemsRequestDTO())
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .patch()
                 .then()
@@ -293,7 +292,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .patch()
                 .then().statusCode(NOT_FOUND.getStatusCode());
@@ -302,7 +301,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .patch()
                 .then().statusCode(OK.getStatusCode())
@@ -337,7 +336,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-6")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .put("{menuItemId}")
@@ -349,7 +348,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-6")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .put("{menuItemId}")
@@ -364,7 +363,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-6")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("{menuItemId}")
@@ -413,7 +412,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(menuStructureListDTO)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org2"))
                 .post("/tree/upload")
                 .then()
@@ -428,7 +427,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(menuStructureListDTO)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .post("/tree/upload")
                 .then()
@@ -436,7 +435,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
         var data = given()
                 .when()
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("/tree")
                 .then()

@@ -39,7 +39,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -53,7 +53,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .pathParam("menuItemId", "33-13")
                 .delete("{menuItemId}")
                 .then()
@@ -62,7 +62,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -76,7 +76,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .delete()
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
@@ -84,7 +84,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -105,7 +105,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var uri = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .body(menuItem)
                 .post()
                 .then()
@@ -127,7 +127,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     @ParameterizedTest
     @MethodSource("badRequestArguments")
-    void addMenuItemBadRequestTest(String key, String parentItemId, String workspaceId) {
+    void addMenuItemBadRequestTest(String key, String parentItemId, String workspaceName) {
         CreateMenuItemDTO menuItem = new CreateMenuItemDTO();
         menuItem.setName("menu");
         menuItem.setKey(key);
@@ -137,7 +137,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", workspaceId)
+                .pathParam("name", workspaceName)
                 .body(menuItem)
                 .post()
                 .then()
@@ -146,9 +146,9 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     private static Stream<Arguments> badRequestArguments() {
         return Stream.of(
-                arguments("PORTAL_MAIN_MENU", "44-1", "11-222"),
-                arguments("test01_menu", "33-6", "11-222"),
-                arguments("test01_menu", "does-not-exists", "11-222"),
+                arguments("PORTAL_MAIN_MENU", "44-1", "test02"),
+                arguments("test01_menu", "33-6", "test02"),
+                arguments("test01_menu", "does-not-exists", "test02"),
                 arguments("test01_menu", "does-not-exists", "does-not-exists"));
     }
 
@@ -164,7 +164,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var uri = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .body(menuItem)
                 .post()
                 .then()
@@ -188,7 +188,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void getMenuItemByIdTest() {
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .pathParam("menuItemId", "33-6")
                 .get("{menuItemId}")
                 .then().statusCode(OK.getStatusCode())
@@ -202,7 +202,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void getMenuStructureForWorkspaceIdTest() {
         var data = given()
                 .when()
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -229,7 +229,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void getMenuStructureForPortalIdDoesNotExistsTest() {
         var data = given()
                 .when()
-                .pathParam("id", "does-not-exists")
+                .pathParam("name", "does-not-exists")
                 .get("/tree")
                 .then().statusCode(OK.getStatusCode())
                 .extract().body().as(WorkspaceMenuItemStructureDTO.class);
@@ -243,7 +243,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .patch()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
@@ -255,7 +255,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new UpdateMenuItemsRequestDTO().items(null))
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .patch()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
@@ -264,7 +264,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new UpdateMenuItemsRequestDTO())
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .patch()
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
@@ -291,7 +291,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .patch()
                 .then().statusCode(OK.getStatusCode())
                 .extract()
@@ -334,7 +334,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .patch()
                 .then().statusCode(NOT_FOUND.getStatusCode());
     }
@@ -354,7 +354,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .patch()
                 .then().statusCode(BAD_REQUEST.getStatusCode());
     }
@@ -373,7 +373,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-6")
                 .put("{menuItemId}")
                 .then().statusCode(OK.getStatusCode())
@@ -398,7 +398,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-2")
                 .put("{menuItemId}")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
@@ -422,7 +422,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-2")
                 .put("{menuItemId}")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
@@ -434,15 +434,15 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     static Stream<Arguments> inputParams() {
         return Stream.of(
-                Arguments.of("11-111", "33-2", "55-6"),
-                Arguments.of("11-222", "44-6", "does-not-exists"),
-                Arguments.of("11-222", "44-6", "55-1"),
-                Arguments.of("11-222", "44-6", "33-11"));
+                Arguments.of("test01", "33-2", "55-6"),
+                Arguments.of("test02", "44-6", "does-not-exists"),
+                Arguments.of("test02", "44-6", "55-1"),
+                Arguments.of("test02", "44-6", "33-11"));
     }
 
     @ParameterizedTest
     @MethodSource("inputParams")
-    void updateMenuItemErrors(String portalId, String menuItemId, String parentItemId) {
+    void updateMenuItemErrors(String workspaceName, String menuItemId, String parentItemId) {
         var request = new UpdateMenuItemRequestDTO();
         request.setKey("Test menu");
         request.setDisabled(false);
@@ -454,7 +454,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", portalId)
+                .pathParam("name", workspaceName)
                 .pathParam("menuItemId", menuItemId)
                 .put("{menuItemId}")
                 .then().statusCode(BAD_REQUEST.getStatusCode());
@@ -474,7 +474,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-6")
                 .put("{menuItemId}")
                 .then()
@@ -492,7 +492,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-6")
                 .put("{menuItemId}")
                 .then()
@@ -500,7 +500,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "44-6")
                 .get("{menuItemId}")
                 .then()
@@ -527,7 +527,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .pathParam("menuItemId", "not-exists")
                 .put("{menuItemId}")
                 .then()
@@ -539,7 +539,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .post("/tree/upload")
                 .then().statusCode(BAD_REQUEST.getStatusCode());
     }
@@ -554,7 +554,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .body(menuStructureListDTO)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .post("/tree/upload")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
@@ -569,7 +569,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .body(menuStructureListDTO)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .post("/tree/upload")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
@@ -594,7 +594,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .body(menuStructureListDTO)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "does-not-exists")
+                .pathParam("name", "does-not-exists")
                 .post("/tree/upload")
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -638,14 +638,14 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(menuStructureListDTO)
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .post("/tree/upload")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
         var data = given()
                 .when()
-                .pathParam("id", "11-222")
+                .pathParam("name", "test02")
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())

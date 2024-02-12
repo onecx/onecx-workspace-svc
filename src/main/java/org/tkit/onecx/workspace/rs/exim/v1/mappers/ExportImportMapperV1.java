@@ -38,11 +38,13 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "imageUrl", source = "imageUrls")
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
 
+    @Mapping(target = "removeWorkspacesItem", ignore = true)
     @Mapping(target = "id", source = "request.id")
     @Mapping(target = "workspaces", source = "workspaces")
     ImportWorkspaceResponseDTOV1 create(WorkspaceSnapshotDTOV1 request,
             Map<String, ImportResponseStatusDTOV1> workspaces);
 
+    @Mapping(target = "removeWorkspaceRolesItem", ignore = true)
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
     @Mapping(target = "subjectLinks", source = "subjectLink")
@@ -129,5 +131,20 @@ public interface ExportImportMapperV1 {
         dto.setMenu(new EximMenuStructureDTOV1());
         dto.getMenu().setMenuItems(parentChildrenMap.get("TOP").stream().map(this::map).toList());
         return dto;
+    }
+
+    default Set<String> map(String roles) {
+        if (roles != null && !roles.isBlank()) {
+            String[] values = roles.split(",");
+            return new HashSet<>(Arrays.asList(values));
+        } else
+            return new HashSet<>();
+    }
+
+    default String map(Set<String> roles) {
+        if (roles != null && !roles.isEmpty()) {
+            return roles.stream().map(Object::toString).collect(Collectors.joining(","));
+        } else
+            return "";
     }
 }

@@ -140,14 +140,14 @@ paths:
                 $ref: '#/components/schemas/Workspace'
         "404":
           description: Not found
-  /internal/workspaces/{id}/menuItems:
+  /internal/workspaces/{name}/menuItems:
     get:
       tags:
         - menuInternal
       description: Find all menu items belonging to a workspace
-      operationId: getMenuItemsForWorkspaceId
+      operationId: getMenuItemsForWorkspaceName
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
       responses:
         "200":
           description: OK
@@ -163,7 +163,7 @@ paths:
       description: Bulk update menu Items
       operationId: patchMenuItems
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
       requestBody:
         required: true
         content:
@@ -193,7 +193,7 @@ paths:
       description: Add a new menu item to workspace menu
       operationId: createMenuItemForWorkspace
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
       requestBody:
         required: true
         content:
@@ -225,7 +225,7 @@ paths:
       description: Delete all menu items in workspace
       operationId: deleteAllMenuItemsForWorkspace
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
       responses:
         "204":
           description: No content
@@ -235,14 +235,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/workspaces/{id}/menuItems/tree:
+  /internal/workspaces/{name}/menuItems/tree:
     get:
       tags:
         - menuInternal
       description: Fetch the menuItems of the workspace in the tree structure
-      operationId: getMenuStructureForWorkspaceId
+      operationId: getMenuStructureForWorkspaceName
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
       responses:
         "200":
           description: OK
@@ -252,14 +252,14 @@ paths:
                 $ref: '#/components/schemas/WorkspaceMenuItemStructure'
         "404":
           description: Not found
-  /internal/workspaces/{id}/menuItems/tree/upload:
+  /internal/workspaces/{name}/menuItems/tree/upload:
     post:
       tags:
         - menuInternal
       description: Upload the menu structure for workspace
-      operationId: uploadMenuStructureForWorkspaceId
+      operationId: uploadMenuStructureForWorkspaceName
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
       requestBody:
         required: true
         content:
@@ -275,14 +275,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/workspaces/{id}/menuItems/{menuItemId}:
+  /internal/workspaces/{name}/menuItems/{menuItemId}:
     get:
       tags:
         - menuInternal
       description: Retrieve menu item detail info
       operationId: getMenuItemById
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
         - $ref: '#/components/parameters/menuItemId'
       responses:
         "200":
@@ -299,7 +299,7 @@ paths:
       description: Delete a menuItem by the workspace id and the menuItemId
       operationId: deleteMenuItemById
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
         - $ref: '#/components/parameters/menuItemId'
       responses:
         "204":
@@ -316,7 +316,7 @@ paths:
       description: Update an existing menu item
       operationId: updateMenuItem
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
         - $ref: '#/components/parameters/menuItemId'
       requestBody:
         required: true
