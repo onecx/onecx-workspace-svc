@@ -30,6 +30,8 @@ class ProductDAOTest {
     void methodExceptionTests() {
         methodExceptionTests(() -> dao.getProductsForWorkspaceId(null),
                 ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID);
+        methodExceptionTests(() -> dao.getProductsForWorkspaceName(null),
+                ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_NAME);
         methodExceptionTests(() -> dao.loadById(null),
                 ProductDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.deleteProduct(null),
