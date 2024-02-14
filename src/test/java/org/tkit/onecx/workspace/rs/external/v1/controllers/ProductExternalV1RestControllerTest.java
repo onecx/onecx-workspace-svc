@@ -22,12 +22,12 @@ import io.restassured.common.mapper.TypeRef;
 class ProductExternalV1RestControllerTest extends AbstractTest {
 
     @Test
-    void getProductsForWorkspaceIdTest() {
+    void getProductsForWorkspaceNameTest() {
         // not existing product
         var response = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "does-not-exist")
+                .pathParam("name", "does-not-exist")
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -40,7 +40,7 @@ class ProductExternalV1RestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .pathParam("name", "test01")
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())

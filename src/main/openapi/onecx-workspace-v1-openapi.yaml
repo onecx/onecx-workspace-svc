@@ -72,14 +72,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/WorkspaceNameList'
 
-  /v1/workspaces/{id}/products:
+  /v1/workspaces/{name}/products:
     get:
       tags:
         - productExternal
       description: Find all products belonging to a workspace
       operationId: getProducts
       parameters:
-        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/name'
       responses:
         "200":
           description: OK
