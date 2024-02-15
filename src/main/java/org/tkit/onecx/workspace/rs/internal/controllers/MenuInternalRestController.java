@@ -83,7 +83,7 @@ public class MenuInternalRestController implements MenuInternalApi {
         menuItem = dao.create(menuItem);
 
         return Response
-                .created(uriInfo.getAbsolutePathBuilder().path(menuItem.getId()).build())
+                .created(uriInfo.getAbsolutePathBuilder().path(menuItem.getId()).build()).entity(mapper.map(menuItem))
                 .build();
     }
 
