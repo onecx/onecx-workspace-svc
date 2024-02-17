@@ -50,7 +50,11 @@ public class TkitPortalRestController implements TkitPortalApi {
 
     @Override
     public Response getMenuStructureForTkitPortalName(String portalName, Boolean interpolate) {
-        var menuItems = menuItemDAO.loadAllMenuItemsByWorkspaceName(portalName);
+        var workspace = workspaceDAO.findByWorkspaceName(portalName);
+        if (workspace == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var menuItems = menuItemDAO.loadAllMenuItemsByWorkspace(workspace.getId());
 
         if (interpolate != null && interpolate) {
             for (MenuItem item : menuItems) {
@@ -60,7 +64,7 @@ public class TkitPortalRestController implements TkitPortalApi {
             }
         }
 
-        return Response.ok(mapper.mapToTree(menuItems)).build();
+        return Response.ok(mapper.mapToTree(menuItems, workspace.getName())).build();
     }
 
     @Override
@@ -87,7 +91,7 @@ public class TkitPortalRestController implements TkitPortalApi {
                 throw new ConstraintException("Menu items are empty", ErrorKeys.MENU_ITEMS_EMPTY, null);
             }
 
-            // In the old structure just a sub part of the menu was send so we need to find the parent menu item if defined
+            // In the old structure just a sub part of the menu was sent, so we need to find the parent menu item if defined
             var parentKey = menuRegistrationRequestDTO.getMenuItems().get(0).getParentKey();
             MenuItem parent = null;
             if (parentKey != null) {
@@ -97,7 +101,7 @@ public class TkitPortalRestController implements TkitPortalApi {
             List<MenuItem> items = new LinkedList<>();
             mapper.recursiveMappingTreeStructure(menuRegistrationRequestDTO.getMenuItems(), workspace, parent, appId, items);
 
-            menuItemDAO.deleteAllMenuItemsByWorkspaceNameAndAppId(portalName, appId);
+            menuItemDAO.deleteAllMenuItemsByWorkspaceAndAppId(workspace.getId(), appId);
             menuItemDAO.create(items);
 
             response.setApplied(true);

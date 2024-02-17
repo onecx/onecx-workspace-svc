@@ -26,6 +26,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "products", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     Workspace create(CreateWorkspaceRequestDTO dto);
 
     @Mapping(target = "tenantId", ignore = true)
@@ -37,6 +38,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     @Mapping(target = "modificationCount", source = "modificationCount")
     void update(UpdateWorkspaceRequestDTO dto, @MappingTarget Workspace workspace);
 

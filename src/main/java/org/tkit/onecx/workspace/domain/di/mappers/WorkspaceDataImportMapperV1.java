@@ -6,16 +6,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.inject.Inject;
-
 import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Microfrontend;
 import org.tkit.onecx.workspace.domain.models.Product;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gen.org.tkit.onecx.workspace.di.workspace.v1.model.MenuItemStructureDTOV1;
 import gen.org.tkit.onecx.workspace.di.workspace.v1.model.MicrofrontendDTOV1;
@@ -24,9 +20,6 @@ import gen.org.tkit.onecx.workspace.di.workspace.v1.model.WorkspaceImportDTOV1;
 
 @Mapper(uses = OffsetDateTimeMapper.class)
 public abstract class WorkspaceDataImportMapperV1 {
-
-    @Inject
-    ObjectMapper mapper;
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "theme", source = "themeName")
@@ -40,6 +33,7 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "subjectLink", source = "subjectLinks")
     @Mapping(target = "imageUrl", source = "imageUrls")
+    @Mapping(target = "roles", ignore = true)
     public abstract Workspace createWorkspace(WorkspaceImportDTOV1 workspaceDTO);
 
     @Mapping(target = "id", ignore = true)
@@ -84,7 +78,6 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
-    @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "applicationId", ignore = true)
     @Mapping(target = "badge", ignore = true)
     @Mapping(target = "children", ignore = true)
@@ -92,7 +85,6 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "persisted", ignore = true)
-    @Mapping(target = "permission", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "tenantId", ignore = true)

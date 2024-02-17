@@ -17,7 +17,6 @@ import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
-import org.tkit.onecx.workspace.rs.internal.services.WorkspaceService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -49,9 +48,6 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 
     @Context
     UriInfo uriInfo;
-
-    @Inject
-    WorkspaceService workspaceService;
 
     @Override
     @Transactional
@@ -85,15 +81,6 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
-    public Response findWorkspaceByName(String name) {
-        var item = dao.findByWorkspaceName(name);
-        if (item == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.ok(workspaceMapper.map(item)).build();
-    }
-
-    @Override
     public Response searchWorkspace(WorkspaceSearchCriteriaDTO workspaceSearchCriteriaDTO) {
         var criteria = workspaceMapper.map(workspaceSearchCriteriaDTO);
         var result = dao.findBySearchCriteria(criteria);
@@ -107,13 +94,8 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        // update portalItemName for all portal's menu items
-        var newWorkspaceName = updateWorkspaceRequestDTO.getName();
-        var oldWorkspaceName = workspace.getName();
-
         workspaceMapper.update(updateWorkspaceRequestDTO, workspace);
-        workspaceService.updateWorkspace(!oldWorkspaceName.equals(newWorkspaceName),
-                workspace, oldWorkspaceName, newWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
+        dao.update(workspace);
 
         return Response.noContent().build();
     }

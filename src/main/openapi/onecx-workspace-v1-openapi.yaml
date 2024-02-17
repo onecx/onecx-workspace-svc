@@ -71,7 +71,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspaceNameList'
-
   /v1/workspaces/{name}/products:
     get:
       tags:

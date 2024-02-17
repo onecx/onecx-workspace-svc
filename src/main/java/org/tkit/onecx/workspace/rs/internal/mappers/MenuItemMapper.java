@@ -19,7 +19,6 @@ public abstract class MenuItemMapper {
 
     public abstract List<MenuItemDTO> map(Stream<MenuItem> items);
 
-    @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "parent", ignore = true)
@@ -38,14 +37,12 @@ public abstract class MenuItemMapper {
     @Mapping(target = "workspace", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
-    @Mapping(target = "permission", ignore = true)
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
@@ -114,14 +111,12 @@ public abstract class MenuItemMapper {
     }
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
     @Mapping(target = "parent.id", source = "parentItemId")
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
-    @Mapping(target = "permission", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     public abstract MenuItem mapMenu(WorkspaceMenuItemDTO menuItemStructureDto);
@@ -129,7 +124,6 @@ public abstract class MenuItemMapper {
     public void updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent) {
         menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getName());
         menuItem.setPosition(position);
         menuItem.setParent(parent);
     }

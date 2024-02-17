@@ -42,10 +42,11 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
     @Override
     public Response exportMenuByWorkspaceName(String name) {
-        var menu = menuItemDAO.loadAllMenuItemsByWorkspaceName(name);
-        if (menu.isEmpty()) {
+        var workspace = dao.findByWorkspaceName(name);
+        if (workspace == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
+        var menu = menuItemDAO.loadAllMenuItemsByWorkspace(workspace.getId());
         return Response.ok(mapper.mapTree(menu)).build();
     }
 
@@ -63,13 +64,13 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     @Override
     @Transactional
     public Response importMenu(String name, MenuSnapshotDTOV1 menuSnapshotDTOV1) {
-        var menu = menuItemDAO.loadAllMenuItemsByWorkspaceName(name);
         var workspace = dao.findByWorkspaceName(name);
-        ImportMenuResponseDTOV1 responseDTOV1 = new ImportMenuResponseDTOV1();
-
         if (workspace == null) {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
+        var menu = menuItemDAO.loadAllMenuItemsByWorkspace(workspace.getId());
+
+        ImportMenuResponseDTOV1 responseDTOV1 = new ImportMenuResponseDTOV1();
         if (!menu.isEmpty()) {
             menuItemDAO.deleteAllMenuItemsByWorkspaceId(workspace.getId());
             responseDTOV1.setStatus(ImportResponseStatusDTOV1.UPDATED);

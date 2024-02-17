@@ -22,7 +22,7 @@ public class MenuItemLogParam implements LogParam {
                         }),
                 this.item(10, UpdateMenuItemRequestDTO.class,
                         x -> UpdateMenuItemRequestDTO.class.getSimpleName() + "[" + ((UpdateMenuItemRequestDTO) x).getKey()
-                                + "," + ((UpdateMenuItemRequestDTO) x).getWorkspaceName() + "]"),
+                                + "]"),
                 this.item(10, CreateMenuItemDTO.class,
                         x -> CreateMenuItemDTO.class.getSimpleName() + "[" + ((CreateMenuItemDTO) x).getKey()
                                 + "," + ((CreateMenuItemDTO) x).getUrl() + "]"),

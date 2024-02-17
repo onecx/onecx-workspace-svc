@@ -43,13 +43,6 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
-    /**
-     * This method fetches a workspace with
-     * workspaceName provided as a param and
-     * tenantId provided as a param
-     *
-     * @return Workspace entity if exists otherwise null
-     */
     public Workspace findByWorkspaceName(String workspaceName) {
 
         try {

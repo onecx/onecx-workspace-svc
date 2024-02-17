@@ -71,6 +71,10 @@ public class Workspace extends TraceableEntity {
     @Column(name = "WORKSPACE_ROLES", columnDefinition = "TEXT")
     private String workspaceRoles;
 
+    @Column(name = "ROLES")
+    @OneToMany(mappedBy = "workspace", fetch = LAZY)
+    private List<Role> roles;
+
     @ElementCollection(fetch = LAZY)
     @CollectionTable(name = "IMAGE_URL")
     @Column(name = "IMAGE_URL")

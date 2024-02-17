@@ -11,10 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.TenantId;
-import org.tkit.onecx.workspace.domain.models.enums.Scope;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -60,21 +58,14 @@ public class MenuItem extends TraceableEntity {
     @Column(name = "URL")
     private String url;
 
-    @Column(name = "WORKSPACE_NAME")
-    private String workspaceName;
-
     @Column(name = "APPLICATION_ID")
     private String applicationId;
 
     @Column(name = "DISABLED")
-    @NotNull
     private boolean disabled;
 
     @Column(name = "POS")
     private int position;
-
-    @Column(name = "PERMISSION_OBJECT")
-    private String permission;
 
     @Column(name = "BADGE")
     private String badge;
@@ -84,7 +75,6 @@ public class MenuItem extends TraceableEntity {
     private Scope scope;
 
     @Column(name = "WORKSPACE_EXIT")
-    @NotNull
     private boolean workspaceExit;
 
     @ManyToOne(fetch = LAZY)
@@ -100,4 +90,11 @@ public class MenuItem extends TraceableEntity {
     @Column(name = "i18n")
     @CollectionTable(name = "MENU_ITEM_I18N")
     private Map<String, String> i18n = new HashMap<>();
+
+    public enum Scope {
+
+        WORKSPACE,
+        APP,
+        PAGE
+    }
 }

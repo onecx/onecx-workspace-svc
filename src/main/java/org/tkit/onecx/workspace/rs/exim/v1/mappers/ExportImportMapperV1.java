@@ -36,6 +36,7 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "subjectLink", source = "subjectLinks")
     @Mapping(target = "imageUrl", source = "imageUrls")
+    @Mapping(target = "roles", ignore = true)
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
 
     @Mapping(target = "removeWorkspacesItem", ignore = true)
@@ -72,14 +73,12 @@ public interface ExportImportMapperV1 {
     EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
     @Mapping(target = "parent.id", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
-    @Mapping(target = "permission", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
@@ -110,7 +109,6 @@ public interface ExportImportMapperV1 {
     default MenuItem updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent) {
         menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getName());
         menuItem.setPosition(position);
         menuItem.setParent(parent);
         return menuItem;

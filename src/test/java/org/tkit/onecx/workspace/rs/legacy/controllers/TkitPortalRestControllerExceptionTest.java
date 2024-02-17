@@ -11,7 +11,7 @@ import static org.tkit.onecx.workspace.rs.legacy.controllers.PortalLegacyRestCon
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
+import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 
@@ -25,11 +25,11 @@ import io.quarkus.test.junit.QuarkusTest;
 class TkitPortalRestControllerExceptionTest extends AbstractTest {
 
     @InjectMock
-    MenuItemDAO dao;
+    WorkspaceDAO dao;
 
     @BeforeEach
     void beforeAll() {
-        Mockito.when(dao.loadAllMenuItemsByWorkspaceName((String) notNull()))
+        Mockito.when(dao.findByWorkspaceName(notNull()))
                 .thenThrow(new RuntimeException("Test technical error exception"))
                 .thenThrow(new DAOException(ERROR_TEST, new RuntimeException("Test")));
     }

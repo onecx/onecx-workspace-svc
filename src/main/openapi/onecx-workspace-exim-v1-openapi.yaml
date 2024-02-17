@@ -238,8 +238,6 @@ components:
           type: string
         url:
           type: string
-        workspaceName:
-          type: string
         applicationId:
           type: string
         disabled:
@@ -247,8 +245,6 @@ components:
         position:
           format: int32
           type: integer
-        permission:
-          type: string
         badge:
           type: string
         scope:
