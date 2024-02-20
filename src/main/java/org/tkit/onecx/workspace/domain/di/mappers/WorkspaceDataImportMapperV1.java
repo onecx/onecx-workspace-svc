@@ -89,6 +89,7 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "parentId", ignore = true)
     public abstract MenuItem mapMenu(MenuItemStructureDTOV1 menuItemStructureDto);
 
 }

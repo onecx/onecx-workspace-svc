@@ -52,6 +52,7 @@ public interface TkitPortalMapper {
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "parentId", ignore = true)
     MenuItem mapMenu(TkitMenuItemStructureDTO menuItemStructureDto);
 
     default void updateMenu(MenuItem menuItem, int position, Workspace workspace,

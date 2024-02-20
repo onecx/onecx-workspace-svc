@@ -40,6 +40,7 @@ public abstract class MenuItemMapper {
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "applicationId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "parentId", ignore = true)
     public abstract MenuItem create(CreateMenuItemDTO dto);
 
     @Mapping(target = "workspace", ignore = true)
@@ -55,6 +56,7 @@ public abstract class MenuItemMapper {
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "parentId", ignore = true)
     public abstract void update(UpdateMenuItemRequestDTO menuItemDetailsDto, @MappingTarget MenuItem entity);
 
     public abstract List<MenuItemDTO> mapList(List<MenuItem> items);
@@ -129,6 +131,7 @@ public abstract class MenuItemMapper {
     @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "parentId", ignore = true)
     public abstract MenuItem mapMenu(WorkspaceMenuItemDTO menuItemStructureDto);
 
     public void updateMenu(MenuItem menuItem, int position, Workspace workspace,

@@ -3,7 +3,6 @@ package org.tkit.onecx.workspace.rs.internal.controllers;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.tkit.onecx.workspace.rs.internal.services.MenuItemService;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 

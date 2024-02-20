@@ -46,7 +46,7 @@ public class MenuItem extends TraceableEntity {
     @JoinColumn(name = "WORKSPACE")
     Workspace workspace;
 
-    @Column(name = "WORKSPACE_ID", insertable = false, updatable = false)
+    @Column(name = "WORKSPACE", insertable = false, updatable = false)
     private String workspaceId;
 
     @Column(name = "KEY")
@@ -84,6 +84,9 @@ public class MenuItem extends TraceableEntity {
     @JoinColumn(name = "PARENT")
     private MenuItem parent;
 
+    @Column(name = "PARENT", insertable = false, updatable = false)
+    private String parentId;
+
     @OneToMany(fetch = LAZY, cascade = ALL, mappedBy = "parent", orphanRemoval = true)
     @OrderBy("position")
     private Set<MenuItem> children = new HashSet<>();
@@ -96,6 +99,7 @@ public class MenuItem extends TraceableEntity {
 
     @PostPersist
     void postPersist() {
+        parentId = parent.getId();
         workspaceId = workspace.getId();
     }
 

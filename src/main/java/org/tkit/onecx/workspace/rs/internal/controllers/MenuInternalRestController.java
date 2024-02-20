@@ -20,7 +20,6 @@ import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.MenuItemMapper;
-import org.tkit.onecx.workspace.rs.internal.services.MenuItemService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -46,9 +45,6 @@ public class MenuInternalRestController implements MenuInternalApi {
 
     @Inject
     WorkspaceDAO workspaceDAO;
-
-    @Inject
-    MenuItemService menuItemService;
 
     @Override
     public Response createMenuItemForWorkspace(String id, CreateMenuItemDTO menuItemDTO) {
@@ -119,19 +115,30 @@ public class MenuInternalRestController implements MenuInternalApi {
     @Override
     public Response updateMenuItem(String id, String menuItemId, UpdateMenuItemRequestDTO menuItemDTO) {
 
-        var result = menuItemService.updateMenuItem(menuItemId, menuItemDTO.getParentItemId());
-        if (result == null) {
-            return null;
-        }
-        var menuItem = result.getMenuItem();
-        mapper.update(menuItemDTO, menuItem);
-        if (result.isParentChange()) {
-            menuItem.setParent(result.getParent());
-        }
-
+        var menuItem = dao.findById(menuItemId);
         if (menuItem == null) {
             return Response.status(NOT_FOUND).build();
         }
+
+        if (!menuItem.getWorkspaceId().equals(id)) {
+            throw new ConstraintException("Menu item does have different workspace",
+                    MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
+        }
+
+        if (menuItemDTO.getParentItemId() == null) {
+            menuItem.setParent(null);
+        } else {
+            if (menuItem.getParentId() == null || !menuItem.getParentId().equals(menuItemDTO.getParentItemId())) {
+                var parentItem = dao.findById(menuItemDTO.getParentItemId());
+                if (parentItem == null) {
+                    throw new ConstraintException("Parent menu item does not exist",
+                            MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST,
+                            null);
+                }
+                menuItem.setParent(parentItem);
+            }
+        }
+
         menuItem = dao.update(menuItem);
         return Response.ok(mapper.map(menuItem)).build();
     }
