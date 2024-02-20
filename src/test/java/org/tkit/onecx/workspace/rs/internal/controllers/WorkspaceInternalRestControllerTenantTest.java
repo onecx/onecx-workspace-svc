@@ -293,14 +293,19 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         response.setBaseUrl("/company2/updated");
         response.setCompanyName("Company 2 updated");
         response.setName("Workspace2Test");
-        given().when()
+        var updatedWorkspace = given().when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .put("{id}")
                 .then()
-                .statusCode(NO_CONTENT.getStatusCode());
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(WorkspaceDTO.class);
+
+        assertThat(updatedWorkspace).isNotNull();
+        assertThat(updatedWorkspace.getName()).isEqualTo("Workspace2Test");
 
         var updatedResponse = given().when()
                 .contentType(APPLICATION_JSON)
