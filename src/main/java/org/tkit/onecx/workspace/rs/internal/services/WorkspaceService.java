@@ -17,11 +17,12 @@ public class WorkspaceService {
     MenuItemDAO menuItemDAO;
 
     @Transactional
-    public void updateWorkspace(boolean updateMenuItem, Workspace workspace, String newWorkspaceName, String oldWorkspaceName,
+    public Workspace updateWorkspace(boolean updateMenuItem, Workspace workspace, String newWorkspaceName,
+            String oldWorkspaceName,
             String baseUrl) {
         if (updateMenuItem) {
             menuItemDAO.updateMenuItems(newWorkspaceName, oldWorkspaceName, baseUrl);
         }
-        workspaceDAO.update(workspace);
+        return workspaceDAO.update(workspace);
     }
 }

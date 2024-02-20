@@ -248,13 +248,17 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         response.setBaseUrl("/company2/updated");
         response.setCompanyName("Company 2 updated");
         response.setName("Workspace2Test");
-        given().when()
+        var updatedWorkspace = given().when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
                 .put("{id}")
                 .then()
-                .statusCode(NO_CONTENT.getStatusCode());
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(WorkspaceDTO.class);
+        assertThat(updatedWorkspace).isNotNull();
+        assertThat(updatedWorkspace.getName()).isEqualTo(response.getName());
 
         var updatedResponse = given().when()
                 .contentType(APPLICATION_JSON)

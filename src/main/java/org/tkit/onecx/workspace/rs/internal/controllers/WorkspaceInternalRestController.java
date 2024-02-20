@@ -112,10 +112,10 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
         var oldWorkspaceName = workspace.getName();
 
         workspaceMapper.update(updateWorkspaceRequestDTO, workspace);
-        workspaceService.updateWorkspace(!oldWorkspaceName.equals(newWorkspaceName),
+        var updatedWorkspace = workspaceService.updateWorkspace(!oldWorkspaceName.equals(newWorkspaceName),
                 workspace, oldWorkspaceName, newWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
 
-        return Response.noContent().build();
+        return Response.ok().entity(workspaceMapper.map(updatedWorkspace)).build();
     }
 
     @ServerExceptionMapper
