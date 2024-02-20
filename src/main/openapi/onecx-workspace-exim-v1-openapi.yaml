@@ -169,11 +169,6 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
         logoUrl:
           type: string
         address:
@@ -249,7 +244,7 @@ components:
           type: string
         scope:
           $ref: '#/components/schemas/EximScope'
-        workspaceExit:
+        external:
           type: boolean
         i18n:
           type: object

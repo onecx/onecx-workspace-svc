@@ -17,9 +17,17 @@ import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public abstract class MenuItemMapper {
 
+    public MenuItem update(MenuItem menu, MenuItem parent, UpdateMenuItemParentRequestDTO dto) {
+        menu.setParent(parent);
+        menu.setModificationCount(dto.getModificationCount());
+        menu.setPosition(dto.getPosition());
+        return menu;
+    }
+
     public abstract List<MenuItemDTO> map(Stream<MenuItem> items);
 
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
@@ -35,6 +43,7 @@ public abstract class MenuItemMapper {
     public abstract MenuItem create(CreateMenuItemDTO dto);
 
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
@@ -117,6 +126,7 @@ public abstract class MenuItemMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     public abstract MenuItem mapMenu(WorkspaceMenuItemDTO menuItemStructureDto);

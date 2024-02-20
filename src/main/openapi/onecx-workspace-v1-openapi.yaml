@@ -28,7 +28,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspacePageResult'
-  /v1/workspaces/name/{name}:
+  /v1/workspaces/{name}:
     get:
       tags:
         - workspaceExternal
@@ -43,34 +43,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workspace'
-  /v1/workspaces/productName/{productName}:
-    get:
-      tags:
-        - workspaceExternal
-      description: get list of workspace names using this product
-      operationId: getWorkspacesByProductName
-      parameters:
-        - $ref: '#/components/parameters/productName'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WorkspaceNameList'
-  /v1/workspaces:
-    get:
-      tags:
-        - workspaceExternal
-      description: get list of all workspace names
-      operationId: getAllWorkspaceNames
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WorkspaceNameList'
   /v1/workspaces/{name}/products:
     get:
       tags:
@@ -189,6 +161,8 @@ components:
       properties:
         themeName:
           type: string
+        productName:
+          type: string
         pageNumber:
           format: int32
           description: The number of page.
@@ -197,12 +171,8 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
           type: integer
-    WorkspaceNameList:
-      type: array
-      items:
-        type: string
     Product:
       type: object
       properties:
@@ -230,18 +200,6 @@ components:
     name:
       in: path
       name: name
-      required: true
-      schema:
-        type: string
-    productName:
-      in: path
-      name: productName
-      required: true
-      schema:
-        type: string
-    id:
-      in: path
-      name: id
       required: true
       schema:
         type: string

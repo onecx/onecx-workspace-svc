@@ -42,6 +42,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "modificationCount", source = "modificationCount")
     void update(UpdateWorkspaceRequestDTO dto, @MappingTarget Workspace workspace);
 
+    @Mapping(target = "names", ignore = true)
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTO dto);
 
     @Mapping(target = "removeStreamItem", ignore = true)
@@ -51,7 +52,6 @@ public interface WorkspaceMapper {
     @Mapping(target = "removeImageUrlsItem", ignore = true)
     @Mapping(target = "subjectLinks", source = "subjectLink")
     @Mapping(target = "imageUrls", source = "imageUrl")
-    @Mapping(target = "removeWorkspaceRolesItem", ignore = true)
     WorkspaceDTO map(Workspace data);
 
     default Set<String> map(String roles) {

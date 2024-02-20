@@ -54,7 +54,7 @@ components:
         position:
           format: int32
           type: integer
-        workspaceExit:
+        external:
           type: boolean
         i18n:
           type: object

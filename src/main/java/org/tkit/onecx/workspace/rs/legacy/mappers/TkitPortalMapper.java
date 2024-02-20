@@ -37,7 +37,7 @@ public interface TkitPortalMapper {
         }
     }
 
-    @Mapping(target = "workspaceExit", source = "portalExit")
+    @Mapping(target = "external", source = "portalExit")
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "description", ignore = true)
@@ -50,6 +50,7 @@ public interface TkitPortalMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     MenuItem mapMenu(TkitMenuItemStructureDTO menuItemStructureDto);
 
@@ -89,7 +90,7 @@ public interface TkitPortalMapper {
     }
 
     @Mapping(target = "permissionObject", ignore = true)
-    @Mapping(target = "portalExit", source = "workspaceExit")
+    @Mapping(target = "portalExit", source = "external")
     @Mapping(target = "parentItemId", source = "parent.id")
     @Mapping(target = "portalId", ignore = true)
     @Mapping(target = "parentKey", source = "parent.id")

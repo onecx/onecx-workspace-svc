@@ -46,11 +46,10 @@ public class ProductInternalRestController implements ProductInternalApi {
     WorkspaceDAO workspaceDAO;
 
     @Override
-    @Transactional
     public Response createProductInWorkspace(String id, CreateProductRequestDTO createProductRequestDTO) {
         var workspace = workspaceDAO.findById(id);
         if (workspace == null) {
-            throw new ConstraintException("Workspace does not exist",
+            throw new ConstraintException("Product does not exist",
                     ProductInternalRestController.ProductErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
         var product = mapper.create(createProductRequestDTO);
@@ -64,10 +63,8 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @Override
-    @Transactional
     public Response deleteProductById(String id, String productId) {
         dao.deleteProduct(productId);
-
         return Response.noContent().build();
     }
 

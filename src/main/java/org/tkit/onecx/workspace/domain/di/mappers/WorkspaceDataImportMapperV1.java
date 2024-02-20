@@ -84,6 +84,7 @@ public abstract class WorkspaceDataImportMapperV1 {
     @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "parent", ignore = true)

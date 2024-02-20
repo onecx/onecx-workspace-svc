@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import org.tkit.onecx.workspace.domain.models.MenuItem_;
 import org.tkit.onecx.workspace.domain.models.Product;
 import org.tkit.onecx.workspace.domain.models.Product_;
-import org.tkit.onecx.workspace.domain.models.Workspace_;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
@@ -28,19 +27,6 @@ public class ProductDAO extends AbstractDAO<Product> {
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
             throw this.handleConstraint(ex, ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID);
-        }
-    }
-
-    public List<Product> getProductsForWorkspaceName(String name) {
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(Product.class);
-            var root = cq.from(Product.class);
-
-            cq.where(cb.equal(root.get(Product_.WORKSPACE).get(Workspace_.NAME), name));
-            return this.getEntityManager().createQuery(cq).getResultList();
-        } catch (Exception ex) {
-            throw this.handleConstraint(ex, ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_NAME);
         }
     }
 

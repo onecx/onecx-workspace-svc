@@ -42,9 +42,12 @@ public class MenuItem extends TraceableEntity {
     @Column(name = "TENANT_ID")
     private String tenantId;
 
-    @ManyToOne(cascade = { REFRESH }, optional = false)
+    @ManyToOne(cascade = { REFRESH }, optional = false, fetch = LAZY)
     @JoinColumn(name = "WORKSPACE")
     Workspace workspace;
+
+    @Column(name = "WORKSPACE_ID", insertable = false, updatable = false)
+    private String workspaceId;
 
     @Column(name = "KEY")
     private String key;
@@ -74,8 +77,8 @@ public class MenuItem extends TraceableEntity {
     @Enumerated(STRING)
     private Scope scope;
 
-    @Column(name = "WORKSPACE_EXIT")
-    private boolean workspaceExit;
+    @Column(name = "EXTERNAL")
+    private boolean external;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "PARENT")
@@ -90,6 +93,11 @@ public class MenuItem extends TraceableEntity {
     @Column(name = "i18n")
     @CollectionTable(name = "MENU_ITEM_I18N")
     private Map<String, String> i18n = new HashMap<>();
+
+    @PostPersist
+    void postPersist() {
+        workspaceId = workspace.getId();
+    }
 
     public enum Scope {
 

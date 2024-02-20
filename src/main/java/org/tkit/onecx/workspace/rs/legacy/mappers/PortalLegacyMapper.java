@@ -41,7 +41,7 @@ public interface PortalLegacyMapper {
         return result;
     }
 
-    @Mapping(target = "portalExit", source = "workspaceExit")
+    @Mapping(target = "portalExit", source = "external")
     @Mapping(target = "parentItemId", source = "parent.id")
     @Mapping(target = "parentKey", source = "parent.id")
     @Mapping(target = "version", source = "modificationCount")

@@ -68,6 +68,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/workspaces/{name}:
+    get:
+      tags:
+        - workspaceInternal
+      description: Return workspace by name
+      operationId: getWorkspaceByName
+      parameters:
+        - $ref: '#/components/parameters/name'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceAbstract'
+        "404":
+          description: Not found
   /internal/workspaces/{id}:
     get:
       tags:
@@ -130,7 +147,7 @@ paths:
       tags:
         - menuInternal
       description: Find all menu items belonging to a workspace
-      operationId: getMenuItemsForWorkspaceName
+      operationId: getMenuItemsForWorkspace
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
@@ -142,43 +159,13 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/MenuItem'
-    patch:
-      tags:
-        - menuInternal
-      description: Bulk update menu Items
-      operationId: patchMenuItems
-      parameters:
-        - $ref: '#/components/parameters/name'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateMenuItemsRequest'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MenuItem'
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
-        "404":
-          description: Menu items not found
     post:
       tags:
         - menuInternal
       description: Add a new menu item to workspace menu
       operationId: createMenuItemForWorkspace
       parameters:
-        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/id'
       requestBody:
         required: true
         content:
@@ -244,7 +231,7 @@ paths:
       description: Delete a menuItem by the workspace id and the menuItemId
       operationId: deleteMenuItemById
       parameters:
-        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/id'
         - $ref: '#/components/parameters/menuItemId'
       responses:
         "204":
@@ -261,7 +248,7 @@ paths:
       description: Update an existing menu item
       operationId: updateMenuItem
       parameters:
-        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/id'
         - $ref: '#/components/parameters/menuItemId'
       requestBody:
         required: true
@@ -284,6 +271,37 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
           description: Menu item not found
+  /internal/workspaces/{id}/menuItems/{menuItemId}/parentItemId:
+    put:
+      tags:
+        - menuInternal
+      description: Update an existing menu item parent
+      operationId: updateMenuItemParent
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/menuItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMenuItemParentRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Menu item not found
+
   /internal/workspaces/{id}/menuItems/tree:
     get:
       tags:
@@ -740,7 +758,7 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
           type: integer
     WorkspacePageResult:
       type: object
@@ -785,11 +803,6 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
         logoUrl:
           type: string
         address:
@@ -832,11 +845,6 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
         logoUrl:
           type: string
         address:
@@ -888,11 +896,6 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
         logoUrl:
           type: string
         address:
@@ -911,8 +914,11 @@ components:
     WorkspaceAbstract:
       required:
         - name
+        - id
       type: object
       properties:
+        id:
+          type: string
         name:
           type: string
         description:
@@ -948,6 +954,7 @@ components:
       properties:
         menuItems:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/WorkspaceMenuItem'
     WorkspaceMenuItem:
@@ -985,7 +992,7 @@ components:
           type: string
         scope:
           $ref: '#/components/schemas/Scope'
-        workspaceExit:
+        external:
           type: boolean
         parentItemId:
           type: string
@@ -997,18 +1004,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WorkspaceMenuItem'
-    UpdateMenuItemsRequest:
+    UpdateMenuItemParentRequest:
       type: object
       required:
-        - items
+        - modificationCount
+        - position
+        - parentItemId
       properties:
-        items:
-          $ref: '#/components/schemas/UpdateMenuItemsRequestData'
-    UpdateMenuItemsRequestData:
-      type: object
-      nullable: false
-      additionalProperties:
-        $ref: '#/components/schemas/UpdateMenuItemRequest'
+        modificationCount:
+          format: int32
+          type: integer
+        position:
+          format: int32
+          type: integer
+        parentItemId:
+          type: string
     UpdateMenuItemRequest:
       type: object
       required:
@@ -1036,7 +1046,7 @@ components:
           type: string
         scope:
           $ref: '#/components/schemas/Scope'
-        workspaceExit:
+        external:
           type: boolean
         parentItemId:
           type: string
@@ -1081,7 +1091,7 @@ components:
           type: string
         scope:
           $ref: '#/components/schemas/Scope'
-        workspaceExit:
+        external:
           type: boolean
         parentItemId:
           type: string
@@ -1109,7 +1119,7 @@ components:
           type: string
         scope:
           $ref: '#/components/schemas/Scope'
-        workspaceExit:
+        external:
           type: boolean
         parentItemId:
           type: string

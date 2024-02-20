@@ -45,7 +45,6 @@ public interface ExportImportMapperV1 {
     ImportWorkspaceResponseDTOV1 create(WorkspaceSnapshotDTOV1 request,
             Map<String, ImportResponseStatusDTOV1> workspaces);
 
-    @Mapping(target = "removeWorkspaceRolesItem", ignore = true)
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
     @Mapping(target = "subjectLinks", source = "subjectLink")
@@ -79,6 +78,7 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "creationDate", ignore = true)

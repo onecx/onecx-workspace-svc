@@ -22,9 +22,11 @@ public interface WorkspaceMapper {
     WorkspacePageResultDTOV1 mapAbstractList(PageResult<Workspace> page);
 
     @Mapping(target = "name", ignore = true)
+    @Mapping(target = "names", ignore = true)
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTOV1 criteria);
 
     @Mapping(target = "subjectLinks", ignore = true)
+    @Mapping(target = "workspaceRoles", ignore = true)
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
