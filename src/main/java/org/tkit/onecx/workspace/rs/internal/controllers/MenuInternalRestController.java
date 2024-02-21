@@ -125,48 +125,58 @@ public class MenuInternalRestController implements MenuInternalApi {
                     MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
         }
 
+        var oldPosition = menuItem.getPosition();
+        var oldParentId = menuItem.getParentId();
+        var newParentId = menuItemDTO.getParentItemId();
+        var newPosition = menuItemDTO.getPosition() == null ? oldPosition : menuItemDTO.getPosition();
+
         mapper.update(menuItemDTO, menuItem);
+        var changeParent = updateMenuItemParent(menuItem, menuItemDTO.getParentItemId());
+        menuItem = dao.updateMenuItem(menuItem, oldParentId, oldPosition, newParentId, newPosition, changeParent);
 
-        if (menuItemDTO.getParentItemId() == null) {
+        return Response.ok(mapper.map(menuItem)).build();
+    }
+
+    private boolean updateMenuItemParent(MenuItem menuItem, String parentItemId) {
+        if (parentItemId == null) {
+            boolean result = menuItem.getParentId() != null;
             menuItem.setParent(null);
-        } else {
-
-            // checking if request parent id is the same as current id
-            if (menuItem.getId().equals(menuItemDTO.getParentItemId())) {
-                throw new ConstraintException("Menu Item " + menuItem.getId() + " id and parentItem id are the same",
-                        MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM, null);
-            }
-
-            if (!menuItemDTO.getParentItemId().equals(menuItem.getParentId())) {
-
-                // load and check parent
-                var parentItem = dao.findById(menuItemDTO.getParentItemId());
-                if (parentItem == null) {
-                    throw new ConstraintException("Parent menu item does not exist",
-                            MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST,
-                            null);
-                }
-
-                // checking if parent menu item is in correct workspace
-                if (!parentItem.getWorkspaceId().equals(id)) {
-                    throw new ConstraintException("Menu item does have different workspace",
-                            MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
-                }
-
-                // check for cycle
-                var children = children(menuItem, new HashSet<>());
-                if (children.contains(parentItem.getId())) {
-                    throw new ConstraintException(
-                            "One of the items try to set one of its children to the new parent. Cycle dependency can not be created in tree structure",
-                            MenuItemErrorKeys.CYCLE_DEPENDENCY, null);
-                }
-
-                menuItem.setParent(parentItem);
-            }
+            return result;
+        }
+        // checking if request parent id is the same as current id
+        if (menuItem.getId().equals(parentItemId)) {
+            throw new ConstraintException("Menu Item " + menuItem.getId() + " id and parentItem id are the same",
+                    MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM, null);
         }
 
-        menuItem = dao.update(menuItem);
-        return Response.ok(mapper.map(menuItem)).build();
+        if (parentItemId.equals(menuItem.getParentId())) {
+            return false;
+        }
+
+        // load and check parent
+        var parentItem = dao.findById(parentItemId);
+        if (parentItem == null) {
+            throw new ConstraintException("Parent menu item does not exist",
+                    MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST,
+                    null);
+        }
+
+        // checking if parent menu item is in correct workspace
+        if (!parentItem.getWorkspaceId().equals(menuItem.getWorkspaceId())) {
+            throw new ConstraintException("Menu item does have different workspace",
+                    MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
+        }
+
+        // check for cycle
+        var children = children(menuItem, new HashSet<>());
+        if (children.contains(parentItem.getId())) {
+            throw new ConstraintException(
+                    "One of the items try to set one of its children to the new parent. Cycle dependency can not be created in tree structure",
+                    MenuItemErrorKeys.CYCLE_DEPENDENCY, null);
+        }
+
+        menuItem.setParent(parentItem);
+        return true;
     }
 
     @Override
@@ -184,35 +194,14 @@ public class MenuInternalRestController implements MenuInternalApi {
                     MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
         }
 
-        // checking if request parent id is the same as current id
-        if (menuItem.getId().equals(updateMenuItemParentRequestDTO.getParentItemId())) {
-            throw new ConstraintException("Menu Item " + menuItem.getId() + " id and parentItem id are the same",
-                    MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM, null);
-        }
+        var oldPosition = menuItem.getPosition();
+        var oldParentId = menuItem.getParentId();
+        var newParentId = updateMenuItemParentRequestDTO.getParentItemId();
+        var newPosition = updateMenuItemParentRequestDTO.getPosition();
 
-        // load and check parent menu item
-        var parentItem = dao.findById(updateMenuItemParentRequestDTO.getParentItemId());
-        if (parentItem == null) {
-            throw new ConstraintException("Parent menu item does not exist", MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST,
-                    null);
-        }
-
-        // checking if parent menu item is in correct workspace
-        if (!parentItem.getWorkspaceId().equals(id)) {
-            throw new ConstraintException("Menu item does have different workspace",
-                    MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
-        }
-
-        // check for cycle
-        var children = children(menuItem, new HashSet<>());
-        if (children.contains(parentItem.getId())) {
-            throw new ConstraintException(
-                    "One of the items try to set one of its children to the new parent. Cycle dependency can not be created in tree structure",
-                    MenuItemErrorKeys.CYCLE_DEPENDENCY, null);
-        }
-
-        menuItem = mapper.update(menuItem, parentItem, updateMenuItemParentRequestDTO);
-        dao.update(menuItem);
+        menuItem = mapper.update(menuItem, updateMenuItemParentRequestDTO);
+        var changeParent = updateMenuItemParent(menuItem, updateMenuItemParentRequestDTO.getParentItemId());
+        menuItem = dao.updateMenuItem(menuItem, oldParentId, oldPosition, newParentId, newPosition, changeParent);
 
         return Response.ok(mapper.map(menuItem)).build();
     }

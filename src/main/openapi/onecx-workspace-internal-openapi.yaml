@@ -1011,7 +1011,6 @@ components:
       required:
         - modificationCount
         - position
-        - parentItemId
       properties:
         modificationCount:
           format: int32

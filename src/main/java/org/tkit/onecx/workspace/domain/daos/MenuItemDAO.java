@@ -2,10 +2,13 @@ package org.tkit.onecx.workspace.domain.daos;
 
 import static org.tkit.onecx.workspace.domain.models.MenuItem.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.models.*;
@@ -146,7 +149,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
     public MenuItem findById(Object id) throws DAOException {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(MenuItem.class);
+            var cq = criteriaQuery();
             var root = cq.from(MenuItem.class);
             cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
             return this.getEntityManager().createQuery(cq).getSingleResult();
@@ -157,8 +160,53 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         }
     }
 
+    @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
+    public MenuItem updateMenuItem(MenuItem menuItem, String oldParentId, int oldPosition, String newParentId,
+            int newPosition, boolean changeParent) {
+        try {
+            // update children position in old parent
+            if (changeParent) {
+                updatePosition(menuItem.getId(), oldParentId, oldPosition, -1);
+            }
+
+            // update children position in new parent
+            if (changeParent || newPosition != oldPosition) {
+                updatePosition(menuItem.getId(), newParentId, newPosition, 1);
+            }
+
+            // update menu item
+            return this.update(menuItem);
+        } catch (OptimisticLockException oe) {
+            throw oe;
+        } catch (Exception e) {
+            throw new DAOException(MenuItemDAO.ErrorKeys.ERROR_UPDATE_MENU_ITEM, e, entityName);
+        }
+    }
+
+    private void updatePosition(String menuId, String parentId, int position, int sum) {
+        var cb = getEntityManager().getCriteriaBuilder();
+        var uq = this.updateQuery();
+        var root = uq.from(MenuItem.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.greaterThanOrEqualTo(root.get(MenuItem_.POSITION), position));
+        predicates.add(cb.notEqual(root.get(MenuItem_.ID), menuId));
+        if (parentId == null) {
+            predicates.add(cb.isNull(root.get(MenuItem_.PARENT_ID)));
+        } else {
+            predicates.add(cb.equal(root.get(MenuItem_.PARENT_ID), parentId));
+        }
+
+        uq.set(MenuItem_.POSITION, cb.sum(root.get(MenuItem_.POSITION), sum))
+                .set(MenuItem_.MODIFICATION_COUNT, cb.sum(root.get(MenuItem_.MODIFICATION_COUNT), 1))
+                .where(cb.and(predicates.toArray(new Predicate[0])));
+
+        this.getEntityManager().createQuery(uq).executeUpdate();
+    }
+
     public enum ErrorKeys {
 
+        ERROR_UPDATE_MENU_ITEM,
         ERROR_LOAD_MENU_BY_ID_AND_KEY,
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,

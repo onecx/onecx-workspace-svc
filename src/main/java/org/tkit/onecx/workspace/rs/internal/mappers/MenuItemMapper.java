@@ -17,8 +17,7 @@ import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public abstract class MenuItemMapper {
 
-    public MenuItem update(MenuItem menu, MenuItem parent, UpdateMenuItemParentRequestDTO dto) {
-        menu.setParent(parent);
+    public MenuItem update(MenuItem menu, UpdateMenuItemParentRequestDTO dto) {
         menu.setModificationCount(dto.getModificationCount());
         menu.setPosition(dto.getPosition());
         return menu;

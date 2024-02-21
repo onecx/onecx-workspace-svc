@@ -345,6 +345,21 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .position(1)
                 .modificationCount(dto.getModificationCount());
 
+        dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-6")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(OK.getStatusCode())
+                .extract().as(MenuItemDTO.class);
+
+        request = new UpdateMenuItemParentRequestDTO()
+                .parentItemId(null)
+                .position(1)
+                .modificationCount(dto.getModificationCount());
+
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
