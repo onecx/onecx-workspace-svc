@@ -39,9 +39,9 @@ public class PortalLegacyRestController implements PortalLegacyApi {
 
     @Override
     public Response getMenuStructureForPortalName(String portalName) {
-        var workspace = workspaceDAO.findByWorkspaceName(portalName);
+        var workspace = workspaceDAO.findByName(portalName);
         if (workspace == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.ok(mapper.mapToEmptyTree()).build();
         }
         var items = dao.loadAllMenuItemsByWorkspace(workspace.getId());
         return Response.ok(mapper.mapToTree(items, workspace.getName())).build();

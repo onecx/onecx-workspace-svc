@@ -66,6 +66,10 @@ public interface TkitPortalMapper {
     @ValueMapping(target = "WORKSPACE", source = "PORTAL")
     MenuItem.Scope map(ScopeDTO scope);
 
+    default List<TkitMenuItemStructureDTO> mapToEmptyTree() {
+        return new ArrayList<TkitMenuItemStructureDTO>();
+    }
+
     default List<TkitMenuItemStructureDTO> mapToTree(List<MenuItem> menuItems, String portalId) {
         var result = new ArrayList<TkitMenuItemStructureDTO>();
         if (menuItems == null) {

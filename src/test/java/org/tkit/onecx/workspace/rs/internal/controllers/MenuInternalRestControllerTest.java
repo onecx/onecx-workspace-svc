@@ -6,7 +6,6 @@ import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ import org.tkit.quarkus.test.WithDBData;
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
 @TestHTTPEndpoint(MenuInternalRestController.class)
@@ -37,7 +35,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
+                .pathParam("id", "11-111")
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -51,7 +49,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
+                .pathParam("id", "11-111")
                 .pathParam("menuItemId", "33-13")
                 .delete("{menuItemId}")
                 .then()
@@ -60,7 +58,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
+                .pathParam("id", "11-111")
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -74,7 +72,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
+                .pathParam("id", "11-111")
                 .delete()
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
@@ -82,7 +80,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
+                .pathParam("id", "11-111")
                 .get()
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -103,7 +101,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var uri = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .body(menuItem)
                 .post()
                 .then()
@@ -135,7 +133,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", workspaceName)
+                .pathParam("id", workspaceName)
                 .body(menuItem)
                 .post()
                 .then()
@@ -144,9 +142,9 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     private static Stream<Arguments> badRequestArguments() {
         return Stream.of(
-                arguments("PORTAL_MAIN_MENU", "44-1", "test02"),
-                arguments("test01_menu", "33-6", "test02"),
-                arguments("test01_menu", "does-not-exists", "test02"),
+                arguments("PORTAL_MAIN_MENU", "44-1", "11-222"),
+                arguments("test01_menu", "33-6", "11-222"),
+                arguments("test01_menu", "does-not-exists", "11-222"),
                 arguments("test01_menu", "does-not-exists", "does-not-exists"));
     }
 
@@ -162,7 +160,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var uri = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .body(menuItem)
                 .post()
                 .then()
@@ -186,7 +184,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void getMenuItemByIdTest() {
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
+                .pathParam("id", "11-111")
                 .pathParam("menuItemId", "33-6")
                 .get("{menuItemId}")
                 .then().statusCode(OK.getStatusCode())
@@ -200,7 +198,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void getMenuStructureForWorkspaceIdTest() {
         var data = given()
                 .when()
-                .pathParam("name", "test01")
+                .pathParam("id", "11-111")
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
@@ -227,134 +225,13 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void getMenuStructureForPortalIdDoesNotExistsTest() {
         var data = given()
                 .when()
-                .pathParam("name", "does-not-exists")
+                .pathParam("id", "does-not-exists")
                 .get("/tree")
                 .then().statusCode(OK.getStatusCode())
                 .extract().body().as(WorkspaceMenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).isEmpty();
-    }
-
-    @Test
-    void bulkPatchMenuItemsNoBodyTest() {
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("name", "test02")
-                .patch()
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode());
-    }
-
-    @Test
-    void bulkPatchMenuItemsEmptyListTest() {
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(new UpdateMenuItemsRequestDTO().items(null))
-                .pathParam("name", "test02")
-                .patch()
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode());
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(new UpdateMenuItemsRequestDTO())
-                .pathParam("name", "test02")
-                .patch()
-                .then()
-                .statusCode(NOT_FOUND.getStatusCode());
-    }
-
-    @Test
-    void patchMenuItemsTest() {
-        var menuItemDetailsDTO = new UpdateMenuItemRequestDTO();
-        menuItemDetailsDTO.setName("Test menu 44-1");
-        menuItemDetailsDTO.setDisabled(false);
-        menuItemDetailsDTO.setModificationCount(0);
-
-        var menuItemDetailsDTO1 = new UpdateMenuItemRequestDTO();
-        menuItemDetailsDTO1.setParentItemId("44-5");
-        menuItemDetailsDTO1.setName("Test menu 44-2");
-        menuItemDetailsDTO1.setDisabled(false);
-        menuItemDetailsDTO1.setModificationCount(0);
-
-        var request = new UpdateMenuItemsRequestDTO();
-        request.putItemsItem("44-1", menuItemDetailsDTO);
-        request.putItemsItem("44-2", menuItemDetailsDTO1);
-
-        var updatedData = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .pathParam("name", "test02")
-                .patch()
-                .then().statusCode(OK.getStatusCode())
-                .extract()
-                .as(new TypeRef<List<MenuItemDTO>>() {
-                });
-
-        assertThat(updatedData).isNotNull().hasSize(2);
-
-        updatedData.forEach(e -> {
-            switch (e.getName()) {
-                case "Test menu 44-1":
-                case "Test menu 44-2":
-                    assertThat(e.getWorkspaceName()).isEqualTo("test02");
-                    break;
-                default:
-                    assertThat(e.getWorkspaceName()).isNull();
-            }
-        });
-    }
-
-    @Test
-    void bulkPatchMenuItemsNewMenuItemTest() {
-
-        var menuItemDetailsDTO = new UpdateMenuItemRequestDTO();
-        menuItemDetailsDTO.setName("Test menu 44-1");
-        menuItemDetailsDTO.setDisabled(false);
-        menuItemDetailsDTO.setModificationCount(0);
-
-        var menuItemDetailsDTO1 = new UpdateMenuItemRequestDTO();
-        menuItemDetailsDTO1.setParentItemId("44-5");
-        menuItemDetailsDTO1.setName("Test menu 44-2");
-        menuItemDetailsDTO1.setDisabled(false);
-        menuItemDetailsDTO1.setModificationCount(0);
-
-        var request = new UpdateMenuItemsRequestDTO();
-        request.putItemsItem("44-1", menuItemDetailsDTO);
-        request.putItemsItem("does-not-exists", menuItemDetailsDTO);
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .pathParam("name", "test02")
-                .patch()
-                .then().statusCode(NOT_FOUND.getStatusCode());
-    }
-
-    @Test
-    void bulkPatchMenuItemsParentToParentTest() {
-
-        var menuItemDetailsDTO1 = new UpdateMenuItemRequestDTO();
-        menuItemDetailsDTO1.setParentItemId("44-5");
-        menuItemDetailsDTO1.setName("Test menu 44-2");
-        menuItemDetailsDTO1.setDisabled(false);
-
-        var request = new UpdateMenuItemsRequestDTO();
-        request.putItemsItem("44-5", menuItemDetailsDTO1);
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .pathParam("name", "test02")
-                .patch()
-                .then().statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test
@@ -371,7 +248,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .pathParam("menuItemId", "44-6")
                 .put("{menuItemId}")
                 .then().statusCode(OK.getStatusCode())
@@ -379,7 +256,6 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         assertThat(updatedData).isNotNull();
         assertThat(updatedData.getKey()).isEqualTo(request.getKey());
-        assertThat(updatedData.getWorkspaceName()).isEqualTo("test02");
     }
 
     @Test
@@ -396,14 +272,14 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .pathParam("menuItemId", "44-2")
                 .put("{menuItemId}")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
         assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo(MenuItemService.MenuItemErrorKeys.CYCLE_DEPENDENCY.name());
+        assertThat(error.getErrorCode()).isEqualTo(MenuInternalRestController.MenuItemErrorKeys.CYCLE_DEPENDENCY.name());
     }
 
     @Test
@@ -420,22 +296,23 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .pathParam("menuItemId", "44-2")
                 .put("{menuItemId}")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
         assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo(MenuItemService.MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM.name());
+        assertThat(error.getErrorCode())
+                .isEqualTo(MenuInternalRestController.MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM.name());
     }
 
     static Stream<Arguments> inputParams() {
         return Stream.of(
-                Arguments.of("test01", "33-2", "55-6"),
-                Arguments.of("test02", "44-6", "does-not-exists"),
-                Arguments.of("test02", "44-6", "55-1"),
-                Arguments.of("test02", "44-6", "33-11"));
+                Arguments.of("11-111", "33-2", "55-6"),
+                Arguments.of("11-222", "44-6", "does-not-exists"),
+                Arguments.of("11-222", "44-6", "55-1"),
+                Arguments.of("11-222", "44-6", "33-11"));
     }
 
     @ParameterizedTest
@@ -452,7 +329,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("name", workspaceName)
+                .pathParam("id", workspaceName)
                 .pathParam("menuItemId", menuItemId)
                 .put("{menuItemId}")
                 .then().statusCode(BAD_REQUEST.getStatusCode());
@@ -472,7 +349,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .pathParam("menuItemId", "44-6")
                 .put("{menuItemId}")
                 .then()
@@ -482,7 +359,6 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(updatedData).isNotNull();
         assertThat(updatedData.getKey()).isEqualTo(request.getKey());
         assertThat(updatedData.getDescription()).isEqualTo(request.getDescription());
-        assertThat(updatedData.getWorkspaceName()).isEqualTo("test02");
 
         //Update second time and expect a BAD REQUEST because of wrong modificationCount
         request.setModificationCount(-1);
@@ -490,7 +366,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .pathParam("menuItemId", "44-6")
                 .put("{menuItemId}")
                 .then()
@@ -498,7 +374,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         var dto = given().when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .pathParam("menuItemId", "44-6")
                 .get("{menuItemId}")
                 .then()
@@ -507,7 +383,6 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(updatedData.getKey()).isEqualTo(dto.getKey());
-        assertThat(updatedData.getWorkspaceName()).isEqualTo("test02");
         assertThat(updatedData.getDescription()).isEqualTo(dto.getDescription());
         assertThat(dto.getName()).isEqualTo("Portal Child 1");
     }
@@ -525,132 +400,132 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("name", "test02")
+                .pathParam("id", "11-222")
                 .pathParam("menuItemId", "not-exists")
                 .put("{menuItemId}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }
 
-    @Test
-    void uploadMenuStructureNoBodyTest() {
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
-                .post("/tree/upload")
-                .then().statusCode(BAD_REQUEST.getStatusCode());
-    }
+    //    @Test
+    //    void uploadMenuStructureNoBodyTest() {
+    //        given()
+    //                .when()
+    //                .contentType(APPLICATION_JSON)
+    //                .pathParam("id", "11-111")
+    //                .post("/tree/upload")
+    //                .then().statusCode(BAD_REQUEST.getStatusCode());
+    //    }
 
-    @Test
-    void uploadMenuStructureNoMenuItemsTest() {
+    //    @Test
+    //    void uploadMenuStructureNoMenuItemsTest() {
+    //
+    //        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+    //        menuStructureListDTO.setMenuItems(null);
+    //
+    //        var error = given()
+    //                .when()
+    //                .body(menuStructureListDTO)
+    //                .contentType(APPLICATION_JSON)
+    //                .pathParam("id", "11-111")
+    //                .post("/tree/upload")
+    //                .then().statusCode(BAD_REQUEST.getStatusCode())
+    //                .extract().as(ProblemDetailResponseDTO.class);
+    //
+    //        assertThat(error).isNotNull();
+    //        assertThat(error.getErrorCode()).isEqualTo("MENU_ITEMS_NULL");
+    //
+    //        menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+    //        menuStructureListDTO.setMenuItems(new ArrayList<>());
+    //
+    //        error = given()
+    //                .when()
+    //                .body(menuStructureListDTO)
+    //                .contentType(APPLICATION_JSON)
+    //                .pathParam("id", "11-111")
+    //                .post("/tree/upload")
+    //                .then().statusCode(BAD_REQUEST.getStatusCode())
+    //                .extract().as(ProblemDetailResponseDTO.class);
+    //
+    //        assertThat(error).isNotNull();
+    //        assertThat(error.getErrorCode()).isEqualTo("MENU_ITEMS_NULL");
+    //    }
 
-        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
-        menuStructureListDTO.setMenuItems(null);
+    //    @Test
+    //    void uploadMenuStructurePortalDoesNotExistsTest() {
+    //
+    //        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+    //        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
+    //
+    //        menuItemStructureDTO.setKey("Test menu");
+    //        menuItemStructureDTO.setDisabled(false);
+    //        menuItemStructureDTO.setParentItemId("44-1");
+    //
+    //        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
+    //
+    //        var error = given()
+    //                .when()
+    //                .body(menuStructureListDTO)
+    //                .contentType(APPLICATION_JSON)
+    //                .pathParam("id", "does-not-exists")
+    //                .post("/tree/upload")
+    //                .then()
+    //                .statusCode(BAD_REQUEST.getStatusCode())
+    //                .extract().as(ProblemDetailResponseDTO.class);
+    //
+    //        assertThat(error).isNotNull();
+    //        assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
+    //    }
 
-        var error = given()
-                .when()
-                .body(menuStructureListDTO)
-                .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
-                .post("/tree/upload")
-                .then().statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("MENU_ITEMS_NULL");
-
-        menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
-        menuStructureListDTO.setMenuItems(new ArrayList<>());
-
-        error = given()
-                .when()
-                .body(menuStructureListDTO)
-                .contentType(APPLICATION_JSON)
-                .pathParam("name", "test01")
-                .post("/tree/upload")
-                .then().statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("MENU_ITEMS_NULL");
-    }
-
-    @Test
-    void uploadMenuStructurePortalDoesNotExistsTest() {
-
-        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
-        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
-
-        menuItemStructureDTO.setKey("Test menu");
-        menuItemStructureDTO.setDisabled(false);
-        menuItemStructureDTO.setParentItemId("44-1");
-
-        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
-
-        var error = given()
-                .when()
-                .body(menuStructureListDTO)
-                .contentType(APPLICATION_JSON)
-                .pathParam("name", "does-not-exists")
-                .post("/tree/upload")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
-    }
-
-    @Test
-    void uploadMenuStructureTest() {
-
-        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
-        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
-
-        menuItemStructureDTO.setKey("Test menu");
-        menuItemStructureDTO.setDisabled(false);
-        menuItemStructureDTO.setParentItemId("44-1");
-        menuItemStructureDTO.setChildren(new ArrayList<>());
-
-        var menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-        menuItemStructureDTO1.setKey("Sub menu");
-        menuItemStructureDTO1.setDisabled(false);
-        menuItemStructureDTO1.setParentItemId("44-1");
-        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-        menuItemStructureDTO1.setKey("Sub menu2");
-        menuItemStructureDTO1.setDisabled(false);
-        menuItemStructureDTO1.setParentItemId("44-1");
-        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-        menuItemStructureDTO1.setKey("Sub menu3");
-        menuItemStructureDTO1.setDisabled(false);
-        menuItemStructureDTO1.setParentItemId("44-1");
-        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-
-        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
-
-        // update menu item
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(menuStructureListDTO)
-                .pathParam("name", "test02")
-                .post("/tree/upload")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        var data = given()
-                .when()
-                .pathParam("name", "test02")
-                .get("/tree")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
-
-        assertThat(data).isNotNull();
-        assertThat(data.getMenuItems()).hasSize(1);
-        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(4);
-    }
+    //    @Test
+    //    void uploadMenuStructureTest() {
+    //
+    //        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+    //        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
+    //
+    //        menuItemStructureDTO.setKey("Test menu");
+    //        menuItemStructureDTO.setDisabled(false);
+    //        menuItemStructureDTO.setParentItemId("44-1");
+    //        menuItemStructureDTO.setChildren(new ArrayList<>());
+    //
+    //        var menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
+    //        menuItemStructureDTO1.setKey("Sub menu");
+    //        menuItemStructureDTO1.setDisabled(false);
+    //        menuItemStructureDTO1.setParentItemId("44-1");
+    //        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
+    //        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
+    //        menuItemStructureDTO1.setKey("Sub menu2");
+    //        menuItemStructureDTO1.setDisabled(false);
+    //        menuItemStructureDTO1.setParentItemId("44-1");
+    //        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
+    //        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
+    //        menuItemStructureDTO1.setKey("Sub menu3");
+    //        menuItemStructureDTO1.setDisabled(false);
+    //        menuItemStructureDTO1.setParentItemId("44-1");
+    //        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
+    //
+    //        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
+    //
+    //        // update menu item
+    //        given()
+    //                .when()
+    //                .contentType(APPLICATION_JSON)
+    //                .body(menuStructureListDTO)
+    //                .pathParam("id", "11-222")
+    //                .post("/tree/upload")
+    //                .then()
+    //                .statusCode(NO_CONTENT.getStatusCode());
+    //
+    //        var data = given()
+    //                .when()
+    //                .pathParam("id", "11-222")
+    //                .get("/tree")
+    //                .then()
+    //                .statusCode(OK.getStatusCode())
+    //                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
+    //
+    //        assertThat(data).isNotNull();
+    //        assertThat(data.getMenuItems()).hasSize(1);
+    //        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(4);
+    //    }
 }

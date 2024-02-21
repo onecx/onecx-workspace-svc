@@ -66,6 +66,21 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'name_tenant_id'  Detail: Key (name, tenant_id)=(Workspace1, tenant-100) already exists.]");
+
+        createWorkspaceDTO.setName("custom-new-name");
+
+        exception = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(createWorkspaceDTO)
+                .post()
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
+        assertThat(exception.getDetail()).isEqualTo(
                 "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_key'  Detail: Key (base_url)=(/work1) already exists.]");
     }
 
@@ -114,7 +129,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         var dto = given()
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "test01")
-                .get("/name/{name}")
+                .get("/search/{name}")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
@@ -178,7 +193,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(data.getStream()).isNotNull().hasSize(1);
 
         criteria.setName("");
-        criteria.setThemeName("");
+        criteria.setThemeName("   ");
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -194,7 +209,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(data.getTotalElements()).isEqualTo(2);
         assertThat(data.getStream()).isNotNull().hasSize(2);
 
-        criteria.setName(" ");
+        criteria.setName(" _ ");
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -291,7 +306,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
                 .get("{id}")
-                .then().statusCode(OK.getStatusCode())
+                .then()
+                .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
 
         // update second time

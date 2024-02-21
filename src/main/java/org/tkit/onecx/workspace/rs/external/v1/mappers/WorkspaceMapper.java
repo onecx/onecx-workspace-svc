@@ -2,22 +2,31 @@ package org.tkit.onecx.workspace.rs.external.v1.mappers;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
+import org.tkit.onecx.workspace.domain.models.Product;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
+import gen.org.tkit.onecx.workspace.rs.external.v1.model.ProductDTOV1;
 import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceDTOV1;
 import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspacePageResultDTOV1;
 import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceSearchCriteriaDTOV1;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface WorkspaceMapper {
+
+    List<ProductDTOV1> map(List<Product> entity);
+
+    @Mapping(target = "removeMicrofrontendsItem", ignore = true)
+    ProductDTOV1 map(Product entity);
+
     @Mapping(target = "removeStreamItem", ignore = true)
     WorkspacePageResultDTOV1 mapAbstractList(PageResult<Workspace> page);
 

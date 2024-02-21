@@ -1,8 +1,5 @@
 package org.tkit.onecx.workspace.rs.external.v1.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -31,27 +28,22 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     ProductDAO productDAO;
 
     @Override
-    public Response getAllWorkspaceNames() {
-        List<String> allWorkspaceNames = workspaceDAO.getAllWorkspaceNames();
-        return Response.ok(allWorkspaceNames).build();
+    public Response getWorkspaceProducts(String name) {
+        var item = workspaceDAO.findByName(name);
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var result = productDAO.getProductsForWorkspaceId(item.getId());
+        return Response.ok(mapper.map(result)).build();
     }
 
     @Override
     public Response getWorkspaceByName(String name) {
-        var item = workspaceDAO.findByWorkspaceName(name);
+        var item = workspaceDAO.findByName(name);
         if (item == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(mapper.map(item)).build();
-    }
-
-    @Override
-    @Transactional
-    public Response getWorkspacesByProductName(String productName) {
-        var products = productDAO.findByName(productName);
-        List<String> workspaceNames = new ArrayList<>();
-        products.forEach(product -> workspaceNames.add(product.getWorkspace().getName()));
-        return Response.ok(workspaceNames).build();
     }
 
     @Override

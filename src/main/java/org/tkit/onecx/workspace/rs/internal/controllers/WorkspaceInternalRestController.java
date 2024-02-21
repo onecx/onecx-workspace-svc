@@ -79,6 +79,15 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
+    public Response getWorkspaceByName(String name) {
+        var item = dao.findByName(name);
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(workspaceMapper.map(item)).build();
+    }
+
+    @Override
     public Response searchWorkspace(WorkspaceSearchCriteriaDTO workspaceSearchCriteriaDTO) {
         var criteria = workspaceMapper.map(workspaceSearchCriteriaDTO);
         var result = dao.findBySearchCriteria(criteria);

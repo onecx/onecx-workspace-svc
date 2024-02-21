@@ -50,9 +50,9 @@ public class TkitPortalRestController implements TkitPortalApi {
 
     @Override
     public Response getMenuStructureForTkitPortalName(String portalName, Boolean interpolate) {
-        var workspace = workspaceDAO.findByWorkspaceName(portalName);
+        var workspace = workspaceDAO.findByName(portalName);
         if (workspace == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.ok(mapper.mapToEmptyTree()).build();
         }
         var menuItems = menuItemDAO.loadAllMenuItemsByWorkspace(workspace.getId());
 
@@ -68,7 +68,6 @@ public class TkitPortalRestController implements TkitPortalApi {
     }
 
     @Override
-    @Transactional
     public Response submitMenuRegistrationRequest(String portalName, String appId,
             MenuRegistrationRequestDTO menuRegistrationRequestDTO) {
         MenuRegistrationResponseDTO response = new MenuRegistrationResponseDTO();
@@ -82,13 +81,13 @@ public class TkitPortalRestController implements TkitPortalApi {
         }
 
         try {
-            var workspace = workspaceDAO.findByWorkspaceName(portalName);
-            if (workspace == null) {
-                throw new ConstraintException("Workspace not found", ErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
-            }
-
             if (menuRegistrationRequestDTO.getMenuItems() == null || menuRegistrationRequestDTO.getMenuItems().isEmpty()) {
                 throw new ConstraintException("Menu items are empty", ErrorKeys.MENU_ITEMS_EMPTY, null);
+            }
+
+            var workspace = workspaceDAO.findByName(portalName);
+            if (workspace == null) {
+                throw new ConstraintException("Workspace not found", ErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
             }
 
             // In the old structure just a sub part of the menu was sent, so we need to find the parent menu item if defined

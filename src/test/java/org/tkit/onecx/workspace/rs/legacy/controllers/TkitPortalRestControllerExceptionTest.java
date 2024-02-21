@@ -29,7 +29,7 @@ class TkitPortalRestControllerExceptionTest extends AbstractTest {
 
     @BeforeEach
     void beforeAll() {
-        Mockito.when(dao.findByWorkspaceName(notNull()))
+        Mockito.when(dao.findByName(notNull()))
                 .thenThrow(new RuntimeException("Test technical error exception"))
                 .thenThrow(new DAOException(ERROR_TEST, new RuntimeException("Test")));
     }

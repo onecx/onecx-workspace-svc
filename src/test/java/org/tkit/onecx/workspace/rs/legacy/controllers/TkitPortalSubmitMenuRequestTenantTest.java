@@ -90,7 +90,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         menuItem.setDisabled(false);
         menuItem.setPosition(0);
         menuItem.setScope(ScopeDTO.APP);
-        menuItem.setParentKey("PORTAL_MAIN_MENU");
+        menuItem.setParentKey("PORTAL_MENU_HOME");
         menuItem.setPermissionObject("PARAMETERS_MANAGEMENT_UI_ROOT");
         menuItem.setI18n(Map.of("de", "Parameters management", "en", "Parameters management"));
         menuItem.setChildren(new ArrayList<>());

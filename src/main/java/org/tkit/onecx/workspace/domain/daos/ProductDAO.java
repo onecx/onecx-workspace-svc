@@ -93,7 +93,7 @@ public class ProductDAO extends AbstractDAO<Product> {
         ERROR_DELETE_PRODUCT_ID,
 
         ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID,
-        ERROR_FIND_PRODUCTS_BY_WORKSPACE_NAME,
+
         FIND_ENTITY_BY_NAME_FAILED,
 
     }

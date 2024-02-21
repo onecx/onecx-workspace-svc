@@ -7,9 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
-import org.tkit.onecx.workspace.domain.daos.ProductDAO;
-import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
+import org.tkit.onecx.workspace.domain.daos.*;
 import org.tkit.onecx.workspace.domain.di.mappers.WorkspaceDataImportMapperV1;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
@@ -37,6 +35,12 @@ public class WorkspaceImportService {
     @Inject
     WorkspaceDAO workspaceDAO;
 
+    @Inject
+    RoleDAO roleDAO;
+
+    @Inject
+    AssignmentDAO assignmentDAO;
+
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void deleteAll(String tenanId) {
         try {
@@ -44,12 +48,14 @@ public class WorkspaceImportService {
                     .principal("data-import")
                     .tenantId(tenanId)
                     .build();
-            log.info("#### tenant to delete " + tenanId);
+
             ApplicationContext.start(ctx);
 
             // clean data
+            roleDAO.deleteAll();
             productDAO.deleteAll();
             menuItemDAO.deleteAll();
+            assignmentDAO.deleteAll();
             workspaceDAO.deleteAll();
         } finally {
             ApplicationContext.close();

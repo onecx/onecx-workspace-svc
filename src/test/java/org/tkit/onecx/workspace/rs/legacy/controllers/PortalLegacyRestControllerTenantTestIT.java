@@ -3,6 +3,6 @@ package org.tkit.onecx.workspace.rs.legacy.controllers;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-public class TkitPortalRestControllerTenantIT extends TkitPortalRestControllerTenantTest {
+public class PortalLegacyRestControllerTenantTestIT extends PortalLegacyRestControllerTenantTest {
 
 }

@@ -17,6 +17,10 @@ import gen.org.tkit.onecx.workspace.rs.legacy.model.ScopeDTO;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface PortalLegacyMapper {
 
+    default List<MenuItemStructureDTO> mapToEmptyTree() {
+        return new ArrayList<>();
+    }
+
     default List<MenuItemStructureDTO> mapToTree(List<MenuItem> menuItems, String portalId) {
         List<MenuItemStructureDTO> result = new ArrayList<>();
         if (menuItems == null) {

@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
@@ -42,7 +43,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
     @Override
     public Response exportMenuByWorkspaceName(String name) {
-        var workspace = dao.findByWorkspaceName(name);
+        var workspace = dao.findByName(name);
         if (workspace == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -52,8 +53,12 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
     @Override
     public Response exportWorkspacesByNames(ExportWorkspacesRequestDTOV1 request) {
-        var workspaces = dao.findByWorkspaceNames(request.getNames());
-        var data = workspaces.collect(Collectors.toMap(Workspace::getName, workspace -> workspace));
+
+        var criteria = new WorkspaceSearchCriteria();
+        criteria.setNames(request.getNames());
+        var workspaces = dao.findBySearchCriteria(criteria);
+
+        var data = workspaces.getStream().collect(Collectors.toMap(Workspace::getName, workspace -> workspace));
 
         if (data.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -64,7 +69,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     @Override
     @Transactional
     public Response importMenu(String name, MenuSnapshotDTOV1 menuSnapshotDTOV1) {
-        var workspace = dao.findByWorkspaceName(name);
+        var workspace = dao.findByName(name);
         if (workspace == null) {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
@@ -88,8 +93,12 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     @Transactional
     public Response importWorkspaces(WorkspaceSnapshotDTOV1 request) {
         var keys = request.getWorkspaces().keySet();
-        var workspaces = dao.findByWorkspaceNames(keys);
-        var map = workspaces.collect(Collectors.toMap(Workspace::getName, workspace -> workspace));
+
+        var criteria = new WorkspaceSearchCriteria();
+        criteria.setNames(keys);
+        var workspaces = dao.findBySearchCriteria(criteria);
+
+        var map = workspaces.getStream().collect(Collectors.toMap(Workspace::getName, workspace -> workspace));
 
         Map<String, ImportResponseStatusDTOV1> items = new HashMap<>();
 

@@ -173,7 +173,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
 
     @ParameterizedTest
     @MethodSource("orgAndResults")
-    void searchByTenant(String organization, int results, int criteriaReults) {
+    void searchByTenant(String organization, int results, int criteriaResults) {
         var criteria = new WorkspaceSearchCriteriaDTO();
 
         // empty criteria
@@ -207,11 +207,11 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .as(WorkspacePageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(criteriaReults);
-        assertThat(data.getStream()).isNotNull().hasSize(criteriaReults);
+        assertThat(data.getTotalElements()).isEqualTo(criteriaResults);
+        assertThat(data.getStream()).isNotNull().hasSize(criteriaResults);
 
         criteria.setName("");
-        criteria.setThemeName("");
+        criteria.setThemeName("  ");
 
         data = given()
                 .contentType(APPLICATION_JSON)
@@ -228,7 +228,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         assertThat(data.getTotalElements()).isEqualTo(results);
         assertThat(data.getStream()).isNotNull().hasSize(results);
 
-        criteria.setName(" ");
+        criteria.setName(" _ ");
 
         data = given()
                 .contentType(APPLICATION_JSON)

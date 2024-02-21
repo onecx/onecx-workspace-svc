@@ -3,14 +3,14 @@
 <dataset>
 
     <!-- Workspace -->
-    <WORKSPACE guid="11-111" optlock="0" company_name="Company1" theme="11-111" description="Company1 test" home_page="main_page" name="test01" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company1" postalcode="56-789" street="Kolorowa" streetno="6" workspace_roles="Role1,Role2" tenant_id="tenant-100"/>
-    <WORKSPACE guid="11-222" optlock="0" company_name="Company2" theme="11-111" description="Company2 Test" home_page="main_page" name="test02" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company2" postalcode="12-345" street="Unter den Linden" streetno="23" workspace_roles="Role1,Role2" tenant_id="tenant-100"/>
-    <WORKSPACE guid="22-111" optlock="0" company_name="Company3" theme="11-111" description="Company3 Test" home_page="main_page" name="test03" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/company3" postalcode="45-341" street="Wilhelmstrasse" streetno="15" workspace_roles="Role1,Role2" tenant_id="tenant-100"/>
-    <WORKSPACE guid="33-111" optlock="0" company_name="Company4" theme="22-222" description="Company4 test" home_page="main_page" name="test04" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company4" postalcode="56-789" street="Kolorowa" streetno="6" workspace_roles="Role1,Role2" tenant_id="tenant-200"/>
-    <WORKSPACE guid="33-222" optlock="0" company_name="Company5" theme="22-222" description="Company5 Test" home_page="main_page" name="test05" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company5" postalcode="12-345" street="Unter den Linden" streetno="23" workspace_roles="Role1,Role2" tenant_id="tenant-200"/>
+    <WORKSPACE guid="11-111" optlock="0" company_name="Company1" theme="11-111" description="Company1 test" home_page="main_page" name="test01" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company1" postalcode="56-789" street="Kolorowa" streetno="6" tenant_id="tenant-100"/>
+    <WORKSPACE guid="11-222" optlock="0" company_name="Company2" theme="11-111" description="Company2 Test" home_page="main_page" name="test02" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company2" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-100"/>
+    <WORKSPACE guid="22-111" optlock="0" company_name="Company3" theme="11-111" description="Company3 Test" home_page="main_page" name="test03" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/company3" postalcode="45-341" street="Wilhelmstrasse" streetno="15" tenant_id="tenant-100"/>
+    <WORKSPACE guid="33-111" optlock="0" company_name="Company4" theme="22-222" description="Company4 test" home_page="main_page" name="test04" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company4" postalcode="56-789" street="Kolorowa" streetno="6" tenant_id="tenant-200"/>
+    <WORKSPACE guid="33-222" optlock="0" company_name="Company5" theme="22-222" description="Company5 Test" home_page="main_page" name="test05" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company5" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-200"/>
 
     <!-- MENU_ITEM -->
-    <MENU_ITEM guid="33-1" optlock="0" disabled="FALSE" key="PORTAL_MAIN_MENU" name="Main Menu" permission_object="" workspace_exit="FALSE" workspace_name="test01" pos="0" scope="WORKSPACE" url=""  workspace="11-111" application_id="" tenant_id="tenant-100"/>
+    <MENU_ITEM guid="33-1" optlock="0" disabled="FALSE" key="PORTAL_MAIN_MENU" name="Main Menu" external="FALSE"  pos="0" scope="WORKSPACE" url=""  workspace="11-111" application_id="" tenant_id="tenant-100"/>
     <MENU_ITEM_I18N menuitem_guid="33-1" language="de" i18n="DE translation"  />
     <MENU_ITEM_I18N menuitem_guid="33-1" language="en" i18n="EN translation"  />
 </dataset>

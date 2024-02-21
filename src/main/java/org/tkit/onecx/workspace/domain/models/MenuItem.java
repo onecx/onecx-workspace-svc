@@ -31,12 +31,16 @@ import lombok.Setter;
         @NamedAttributeNode("workspace") })
 @NamedEntityGraph(name = "MenuItem.loadById", includeAllAttributes = true, attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("children"), @NamedAttributeNode("workspace") })
+@NamedEntityGraph(name = "MenuItem.loadChildren", includeAllAttributes = true, attributeNodes = {
+        @NamedAttributeNode("children") })
 @SuppressWarnings("squid:S2160")
 public class MenuItem extends TraceableEntity {
 
     public static final String MENU_ITEM_WORKSPACE_AND_TRANSLATIONS = "MenuItem.workspaceAndTranslations";
 
     public static final String MENU_ITEM_LOAD_ALL = "MenuItem.loadById";
+
+    public static final String MENU_ITEM_LOAD_CHILDREN = "MenuItem.loadChildren";
 
     @TenantId
     @Column(name = "TENANT_ID")
@@ -99,7 +103,9 @@ public class MenuItem extends TraceableEntity {
 
     @PostPersist
     void postPersist() {
-        parentId = parent.getId();
+        if (parent != null) {
+            parentId = parent.getId();
+        }
         workspaceId = workspace.getId();
     }
 

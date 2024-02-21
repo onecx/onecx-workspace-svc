@@ -68,7 +68,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/workspaces/{name}:
+  /internal/workspaces/search/{name}:
     get:
       tags:
         - workspaceInternal

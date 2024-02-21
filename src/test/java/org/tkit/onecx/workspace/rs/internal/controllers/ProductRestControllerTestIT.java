@@ -3,6 +3,6 @@ package org.tkit.onecx.workspace.rs.internal.controllers;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-public class ProductRestControllerTenantIT extends ProductRestControllerTenantTest {
+public class ProductRestControllerTestIT extends ProductRestControllerTest {
 
 }
