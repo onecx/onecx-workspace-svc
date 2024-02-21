@@ -7,8 +7,6 @@ servers:
   - url: "http://onecx-workspace:8080"
 tags:
   - name: workspaceExternal
-  - name: productExternal
-
 paths:
   /v1/workspaces/search:
     post:

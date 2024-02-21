@@ -34,8 +34,6 @@ class ProductDAOTest {
                 ProductDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.deleteProduct(null),
                 ProductDAO.ErrorKeys.ERROR_DELETE_PRODUCT_ID);
-        methodExceptionTests(() -> dao.findByName(null),
-                ProductDAO.ErrorKeys.FIND_ENTITY_BY_NAME_FAILED);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

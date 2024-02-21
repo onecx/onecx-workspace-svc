@@ -14,9 +14,9 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-class WorkspaceDAOTest {
+class AssignmentDAOTest {
     @Inject
-    WorkspaceDAO dao;
+    AssignmentDAO dao;
 
     @InjectMock
     EntityManager em;
@@ -28,19 +28,15 @@ class WorkspaceDAOTest {
 
     @Test
     void methodExceptionTests() {
-        methodExceptionTests(() -> dao.loadById(null),
-                WorkspaceDAO.ErrorKeys.ERROR_LOAD_WORKSPACE);
-        methodExceptionTests(() -> dao.findBySearchCriteria(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_CRITERIA);
+        methodExceptionTests(() -> dao.findByCriteria(null),
+                AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA);
         methodExceptionTests(() -> dao.findById(null),
-                WorkspaceDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
-        methodExceptionTests(() -> dao.findByName(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_BY_NAME);
+                AssignmentDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
+
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {
         var exc = Assertions.assertThrows(DAOException.class, fn);
         Assertions.assertEquals(key, exc.key);
     }
-
 }

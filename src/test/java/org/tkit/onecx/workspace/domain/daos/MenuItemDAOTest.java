@@ -28,6 +28,8 @@ class MenuItemDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.loadAllChildren(null),
+                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_CHILDREN);
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceId(null),
                 MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID);
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspace(null),

@@ -138,24 +138,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         } catch (NoResultException nex) {
             return null;
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE, ex);
-        }
-    }
-
-    public List<MenuItem> findAllMenuItemsByWorkspace(String id) {
-
-        try {
-            var cb = getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(MenuItem.class);
-            var root = cq.from(MenuItem.class);
-
-            cq.where(cb.equal(root.get(MenuItem_.WORKSPACE).get(Workspace_.ID), id));
-
-            return getEntityManager()
-                    .createQuery(cq)
-                    .getResultList();
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_ALL_MENU_ITEMS_BY_WORKSPACE, ex);
+            throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_CHILDREN, ex);
         }
     }
 
@@ -182,7 +165,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE,
 
-        ERROR_FIND_ALL_MENU_ITEMS_BY_WORKSPACE,
+        ERROR_LOAD_ALL_CHILDREN,
 
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID,
     }

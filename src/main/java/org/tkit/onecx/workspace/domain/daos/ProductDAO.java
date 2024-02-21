@@ -1,7 +1,6 @@
 package org.tkit.onecx.workspace.domain.daos;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
@@ -74,18 +73,6 @@ public class ProductDAO extends AbstractDAO<Product> {
         }
     }
 
-    public Stream<Product> findByName(String name) throws DAOException {
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(Product.class);
-            var root = cq.from(Product.class);
-            cq.where(cb.equal(root.get(Product_.PRODUCT_NAME), name));
-            return this.getEntityManager().createQuery(cq).getResultStream();
-        } catch (Exception e) {
-            throw this.handleConstraint(e, ProductDAO.ErrorKeys.FIND_ENTITY_BY_NAME_FAILED);
-        }
-    }
-
     public enum ErrorKeys {
 
         LOAD_ENTITY_BY_ID_FAILED,
@@ -93,8 +80,6 @@ public class ProductDAO extends AbstractDAO<Product> {
         ERROR_DELETE_PRODUCT_ID,
 
         ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID,
-
-        FIND_ENTITY_BY_NAME_FAILED,
 
     }
 }

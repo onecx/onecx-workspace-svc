@@ -92,10 +92,10 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     @Override
     @Transactional
     public Response importWorkspaces(WorkspaceSnapshotDTOV1 request) {
-        var keys = request.getWorkspaces().keySet();
+        var workspaceNames = request.getWorkspaces().keySet();
 
         var criteria = new WorkspaceSearchCriteria();
-        criteria.setNames(keys);
+        criteria.setNames(workspaceNames);
         var workspaces = dao.findBySearchCriteria(criteria);
 
         var map = workspaces.getStream().collect(Collectors.toMap(Workspace::getName, workspace -> workspace));

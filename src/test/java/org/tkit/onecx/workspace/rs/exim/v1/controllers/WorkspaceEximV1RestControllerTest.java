@@ -5,10 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
@@ -38,6 +35,21 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getWorkspaces().get("test01").getName()).isEqualTo("test01");
+    }
+
+    @Test
+    void exportAllWorkspaceTest() {
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(new ExportWorkspacesRequestDTOV1().names(new HashSet<>()))
+                .post("/export")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getWorkspaces()).hasSize(3);
     }
 
     @Test
