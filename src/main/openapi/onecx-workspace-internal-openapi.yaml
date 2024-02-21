@@ -951,6 +951,8 @@ components:
           type: string
     WorkspaceMenuItemStructure:
       type: object
+      required:
+        - menuItems
       properties:
         menuItems:
           type: array

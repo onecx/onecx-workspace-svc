@@ -126,6 +126,13 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
     @Test
     void getWorkspaceByName() {
+        given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("name", "does-not-exists")
+                .get("/search/{name}")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
         var dto = given()
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "test01")

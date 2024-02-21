@@ -6,6 +6,7 @@ import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -235,6 +236,126 @@ class MenuInternalRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void updateMenuItemParentErrorTest() {
+        var request = new UpdateMenuItemParentRequestDTO()
+                .parentItemId("44-6")
+                .position(1)
+                .modificationCount(0);
+
+        // update menu item
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "does-not-exists")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(NOT_FOUND.getStatusCode());
+
+        var error = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "wrong-workspace")
+                .pathParam("menuItemId", "44-2")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo(MenuInternalRestController.MenuItemErrorKeys.WORKSPACE_DIFFERENT.name());
+        assertThat(error.getDetail()).isEqualTo("Menu item does have different workspace");
+
+        request.parentItemId("44-2");
+
+        error = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-2")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode())
+                .isEqualTo(MenuInternalRestController.MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM.name());
+        assertThat(error.getDetail()).isEqualTo("Menu Item 44-2 id and parentItem id are the same");
+
+        request.parentItemId("does-not-exists");
+        error = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-2")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode())
+                .isEqualTo(MenuInternalRestController.MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST.name());
+        assertThat(error.getDetail()).isEqualTo("Parent menu item does not exist");
+
+        request.parentItemId("33-13");
+        error = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-2")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo(MenuInternalRestController.MenuItemErrorKeys.WORKSPACE_DIFFERENT.name());
+        assertThat(error.getDetail()).isEqualTo("Menu item does have different workspace");
+
+        // update menu item
+        request.parentItemId("44-6");
+        error = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-2")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo(MenuInternalRestController.MenuItemErrorKeys.CYCLE_DEPENDENCY.name());
+    }
+
+    @Test
+    void updateMenuItemParentTest() {
+        var dto = given().when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-6")
+                .get("{menuItemId}")
+                .then().statusCode(OK.getStatusCode())
+                .extract().as(MenuItemDTO.class);
+
+        var request = new UpdateMenuItemParentRequestDTO()
+                .parentItemId("44-3")
+                .position(1)
+                .modificationCount(dto.getModificationCount());
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-6")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(OK.getStatusCode());
+    }
+
+    @Test
     void updateMenuItemDoesNotUpdateParentTest() {
 
         var request = new UpdateMenuItemRequestDTO();
@@ -256,6 +377,35 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         assertThat(updatedData).isNotNull();
         assertThat(updatedData.getKey()).isEqualTo(request.getKey());
+
+        request.setParentItemId(null);
+        request.setModificationCount(updatedData.getModificationCount());
+
+        // update menu item
+        updatedData = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-222")
+                .pathParam("menuItemId", "44-6")
+                .put("{menuItemId}")
+                .then().statusCode(OK.getStatusCode())
+                .extract().as(MenuItemDTO.class);
+
+        assertThat(updatedData).isNotNull();
+        assertThat(updatedData.getKey()).isEqualTo(request.getKey());
+
+        request.setModificationCount(updatedData.getModificationCount());
+
+        // update menu item
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "11-333")
+                .pathParam("menuItemId", "44-6")
+                .put("{menuItemId}")
+                .then().statusCode(BAD_REQUEST.getStatusCode());
     }
 
     @Test
@@ -407,125 +557,125 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
     }
 
-    //    @Test
-    //    void uploadMenuStructureNoBodyTest() {
-    //        given()
-    //                .when()
-    //                .contentType(APPLICATION_JSON)
-    //                .pathParam("id", "11-111")
-    //                .post("/tree/upload")
-    //                .then().statusCode(BAD_REQUEST.getStatusCode());
-    //    }
+    @Test
+    void uploadMenuStructureNoBodyTest() {
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .post("/tree")
+                .then().statusCode(BAD_REQUEST.getStatusCode());
+    }
 
-    //    @Test
-    //    void uploadMenuStructureNoMenuItemsTest() {
-    //
-    //        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
-    //        menuStructureListDTO.setMenuItems(null);
-    //
-    //        var error = given()
-    //                .when()
-    //                .body(menuStructureListDTO)
-    //                .contentType(APPLICATION_JSON)
-    //                .pathParam("id", "11-111")
-    //                .post("/tree/upload")
-    //                .then().statusCode(BAD_REQUEST.getStatusCode())
-    //                .extract().as(ProblemDetailResponseDTO.class);
-    //
-    //        assertThat(error).isNotNull();
-    //        assertThat(error.getErrorCode()).isEqualTo("MENU_ITEMS_NULL");
-    //
-    //        menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
-    //        menuStructureListDTO.setMenuItems(new ArrayList<>());
-    //
-    //        error = given()
-    //                .when()
-    //                .body(menuStructureListDTO)
-    //                .contentType(APPLICATION_JSON)
-    //                .pathParam("id", "11-111")
-    //                .post("/tree/upload")
-    //                .then().statusCode(BAD_REQUEST.getStatusCode())
-    //                .extract().as(ProblemDetailResponseDTO.class);
-    //
-    //        assertThat(error).isNotNull();
-    //        assertThat(error.getErrorCode()).isEqualTo("MENU_ITEMS_NULL");
-    //    }
+    @Test
+    void uploadMenuStructureNoMenuItemsTest() {
 
-    //    @Test
-    //    void uploadMenuStructurePortalDoesNotExistsTest() {
-    //
-    //        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
-    //        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
-    //
-    //        menuItemStructureDTO.setKey("Test menu");
-    //        menuItemStructureDTO.setDisabled(false);
-    //        menuItemStructureDTO.setParentItemId("44-1");
-    //
-    //        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
-    //
-    //        var error = given()
-    //                .when()
-    //                .body(menuStructureListDTO)
-    //                .contentType(APPLICATION_JSON)
-    //                .pathParam("id", "does-not-exists")
-    //                .post("/tree/upload")
-    //                .then()
-    //                .statusCode(BAD_REQUEST.getStatusCode())
-    //                .extract().as(ProblemDetailResponseDTO.class);
-    //
-    //        assertThat(error).isNotNull();
-    //        assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
-    //    }
+        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+        menuStructureListDTO.setMenuItems(null);
 
-    //    @Test
-    //    void uploadMenuStructureTest() {
-    //
-    //        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
-    //        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
-    //
-    //        menuItemStructureDTO.setKey("Test menu");
-    //        menuItemStructureDTO.setDisabled(false);
-    //        menuItemStructureDTO.setParentItemId("44-1");
-    //        menuItemStructureDTO.setChildren(new ArrayList<>());
-    //
-    //        var menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-    //        menuItemStructureDTO1.setKey("Sub menu");
-    //        menuItemStructureDTO1.setDisabled(false);
-    //        menuItemStructureDTO1.setParentItemId("44-1");
-    //        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-    //        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-    //        menuItemStructureDTO1.setKey("Sub menu2");
-    //        menuItemStructureDTO1.setDisabled(false);
-    //        menuItemStructureDTO1.setParentItemId("44-1");
-    //        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-    //        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-    //        menuItemStructureDTO1.setKey("Sub menu3");
-    //        menuItemStructureDTO1.setDisabled(false);
-    //        menuItemStructureDTO1.setParentItemId("44-1");
-    //        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-    //
-    //        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
-    //
-    //        // update menu item
-    //        given()
-    //                .when()
-    //                .contentType(APPLICATION_JSON)
-    //                .body(menuStructureListDTO)
-    //                .pathParam("id", "11-222")
-    //                .post("/tree/upload")
-    //                .then()
-    //                .statusCode(NO_CONTENT.getStatusCode());
-    //
-    //        var data = given()
-    //                .when()
-    //                .pathParam("id", "11-222")
-    //                .get("/tree")
-    //                .then()
-    //                .statusCode(OK.getStatusCode())
-    //                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
-    //
-    //        assertThat(data).isNotNull();
-    //        assertThat(data.getMenuItems()).hasSize(1);
-    //        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(4);
-    //    }
+        var error = given()
+                .when()
+                .body(menuStructureListDTO)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .post("/tree")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo("CONSTRAINT_VIOLATIONS");
+
+        menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+        menuStructureListDTO.setMenuItems(new ArrayList<>());
+
+        error = given()
+                .when()
+                .body(menuStructureListDTO)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .post("/tree")
+                .then().statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo("CONSTRAINT_VIOLATIONS");
+    }
+
+    @Test
+    void uploadMenuStructurePortalDoesNotExistsTest() {
+
+        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
+
+        menuItemStructureDTO.setKey("Test menu");
+        menuItemStructureDTO.setDisabled(false);
+        menuItemStructureDTO.setParentItemId("44-1");
+
+        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
+
+        var error = given()
+                .when()
+                .body(menuStructureListDTO)
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "does-not-exists")
+                .post("/tree")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(ProblemDetailResponseDTO.class);
+
+        assertThat(error).isNotNull();
+        assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
+    }
+
+    @Test
+    void uploadMenuStructureTest() {
+
+        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
+
+        menuItemStructureDTO.setKey("Test menu");
+        menuItemStructureDTO.setDisabled(false);
+        menuItemStructureDTO.setParentItemId("44-1");
+        menuItemStructureDTO.setChildren(new ArrayList<>());
+
+        var menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
+        menuItemStructureDTO1.setKey("Sub menu");
+        menuItemStructureDTO1.setDisabled(false);
+        menuItemStructureDTO1.setParentItemId("44-1");
+        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
+        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
+        menuItemStructureDTO1.setKey("Sub menu2");
+        menuItemStructureDTO1.setDisabled(false);
+        menuItemStructureDTO1.setParentItemId("44-1");
+        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
+        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
+        menuItemStructureDTO1.setKey("Sub menu3");
+        menuItemStructureDTO1.setDisabled(false);
+        menuItemStructureDTO1.setParentItemId("44-1");
+        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
+
+        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
+
+        // update menu item
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(menuStructureListDTO)
+                .pathParam("id", "11-222")
+                .post("/tree")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        var data = given()
+                .when()
+                .pathParam("id", "11-222")
+                .get("/tree")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getMenuItems()).hasSize(1);
+        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(4);
+    }
 }

@@ -14,6 +14,10 @@ public class MenuItemLogParam implements LogParam {
     @Override
     public List<Item> getClasses() {
         return List.of(
+                this.item(10, UpdateMenuItemParentRequestDTO.class,
+                        x -> UpdateMenuItemParentRequestDTO.class.getSimpleName() + "["
+                                + ((UpdateMenuItemParentRequestDTO) x).getParentItemId()
+                                + "]"),
                 this.item(10, UpdateMenuItemRequestDTO.class,
                         x -> UpdateMenuItemRequestDTO.class.getSimpleName() + "[" + ((UpdateMenuItemRequestDTO) x).getKey()
                                 + "]"),
