@@ -66,7 +66,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'name_tenant_id'  Detail: Key (name, tenant_id)=(Workspace1, tenant-100) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_key'  Detail: Key (base_url)=(/work1) already exists.]");
 
         createWorkspaceDTO.setName("custom-new-name");
 
