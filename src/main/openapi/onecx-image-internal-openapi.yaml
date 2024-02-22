@@ -1,0 +1,161 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-product-store image import from file during the start of the application
+  version: 1.0.0
+servers:
+  - url: "http://onecx-product-store-svc:8080"
+tags:
+  - name: imagesInternal
+paths:
+  /internal/images/{refId}/{refType}:
+    post:
+      tags:
+        - imagesInternal
+      description: Upload Images
+      parameters:
+        - in: header
+          name: Content-Length
+          required: true
+          schema:
+            minimum: 1
+            maximum: 110000
+            type: integer
+        - name: refId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: refType
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/RefType"
+      operationId: uploadImage
+      requestBody:
+        required: true
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "201":
+          description: CREATED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageInfo'
+        "400":
+          description: Bad Request
+    get:
+      tags:
+        - imagesInternal
+      description: Get Image by id
+      operationId: getImage
+      parameters:
+        - name: refId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: refType
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/RefType"
+      responses:
+        "200":
+          description: OK
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    put:
+      tags:
+        - imagesInternal
+      description: update Images
+      operationId: updateImage
+      parameters:
+        - in: header
+          name: Content-Length
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 110000
+        - name: refId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: refType
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/RefType"
+      requestBody:
+        required: true
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageInfo'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+  schemas:
+    RefType:
+      type: string
+      enum: [ logo, favicon ]
+    ImageInfo:
+      type: object
+      properties:
+        id:
+          type: string
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string

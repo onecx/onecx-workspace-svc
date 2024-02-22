@@ -236,6 +236,20 @@
                             <modelNameSuffix>DTOV1</modelNameSuffix>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>onecx-image-internal</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-image-internal-openapi.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.image.rs.internal</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.image.rs.internal.model</modelPackage>
+                            <generateModelTests>true</generateModelTests>
+                            <generateModelDocumentation>true</generateModelDocumentation>
+                            <typeMappings>File=byte[]</typeMappings>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
