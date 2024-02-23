@@ -21,19 +21,73 @@ import io.quarkus.test.junit.QuarkusTest;
 class MenuInternalRestControllerParentChangeTest extends AbstractTest {
 
     @Test
-    void updateMenuItemParentTest() {
+    void updateMenuItemLastPositionTest() {
 
-        var dto = given()
+        printWorkspace();
+
+        // 4-2-3 pos 2 -> change parent to 4-1 pos 1
+        var request = new UpdateMenuItemParentRequestDTO()
+                .parentItemId("4-1")
+                .position(3)
+                .modificationCount(0);
+
+        given()
                 .when()
                 .contentType(APPLICATION_JSON)
+                .body(request)
                 .pathParam("id", "4")
-                .get("tree")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(WorkspaceMenuItemStructureDTO.class);
-        assertThat(dto).isNotNull();
-        assertThat(dto.getMenuItems()).isNotNull().isNotEmpty();
-        print(dto.getMenuItems(), "");
+                .pathParam("menuItemId", "4-2-2")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(OK.getStatusCode());
+
+        var dto = printWorkspace();
+
+        // 4-1 -> 4-1-2 pos 2
+        var parent = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-1")).findFirst();
+        assertThat(parent).isPresent();
+        assertThat(parent.get().getPosition()).isEqualTo(0);
+
+        var item = parent.get().getChildren().stream().filter(x -> x.getId().equals("4-2-2")).findFirst();
+        assertThat(item).isPresent();
+        assertThat(item.get().getPosition()).isEqualTo(3);
+    }
+
+    @Test
+    void updateMenuItemMaxPositionTest() {
+
+        printWorkspace();
+
+        // 4-2-3 pos 2 -> change parent to 4-1 pos 1
+        var request = new UpdateMenuItemParentRequestDTO()
+                .parentItemId("4-1")
+                .position(30)
+                .modificationCount(0);
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "4")
+                .pathParam("menuItemId", "4-2-2")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(OK.getStatusCode());
+
+        var dto = printWorkspace();
+
+        // 4-1 -> 4-1-2 pos 2
+        var parent = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-1")).findFirst();
+        assertThat(parent).isPresent();
+        assertThat(parent.get().getPosition()).isEqualTo(0);
+
+        var item = parent.get().getChildren().stream().filter(x -> x.getId().equals("4-2-2")).findFirst();
+        assertThat(item).isPresent();
+        assertThat(item.get().getPosition()).isEqualTo(3);
+    }
+
+    @Test
+    void updateMenuItemParentTest() {
+
+        printWorkspace();
 
         // 4-2-3 pos 2 -> change parent to 4-1 pos 1
         var request = new UpdateMenuItemParentRequestDTO()
@@ -50,17 +104,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .put("{menuItemId}/parentItemId")
                 .then().statusCode(OK.getStatusCode());
 
-        dto = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "4")
-                .get("tree")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(WorkspaceMenuItemStructureDTO.class);
-        assertThat(dto).isNotNull();
-        assertThat(dto.getMenuItems()).isNotNull().isNotEmpty();
-        print(dto.getMenuItems(), "");
+        var dto = printWorkspace();
 
         // 4-1 -> 4-1-2 pos 2
         var parent = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-1")).findFirst();
@@ -75,17 +119,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
     @Test
     void updateMenuItemParentToNullTest() {
 
-        var dto = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "4")
-                .get("tree")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(WorkspaceMenuItemStructureDTO.class);
-        assertThat(dto).isNotNull();
-        assertThat(dto.getMenuItems()).isNotNull().isNotEmpty();
-        print(dto.getMenuItems(), "");
+        printWorkspace();
 
         // 4-2-3 pos 2 -> change parent to null pos 0
         var request = new UpdateMenuItemParentRequestDTO()
@@ -102,7 +136,37 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .put("{menuItemId}/parentItemId")
                 .then().statusCode(OK.getStatusCode());
 
-        dto = given()
+        var dto = printWorkspace();
+
+        // null<root> -> 4-1-2 pos 2
+        var item = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-2-2")).findFirst();
+        assertThat(item).isPresent();
+        assertThat(item.get().getPosition()).isEqualTo(0);
+    }
+
+    @Test
+    void updateMenuItemParentToMinusPositionTest() {
+
+        printWorkspace();
+
+        // 4-2-3 pos 2 -> change parent to null pos 0
+        var request = new UpdateMenuItemParentRequestDTO()
+                .parentItemId(null)
+                .position(-10)
+                .modificationCount(0);
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("id", "4")
+                .pathParam("menuItemId", "4-2-2")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(BAD_REQUEST.getStatusCode());
+    }
+
+    public WorkspaceMenuItemStructureDTO printWorkspace() {
+        var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "4")
@@ -113,11 +177,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
         assertThat(dto).isNotNull();
         assertThat(dto.getMenuItems()).isNotNull().isNotEmpty();
         print(dto.getMenuItems(), "");
-
-        // null<root> -> 4-1-2 pos 2
-        var item = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-2-2")).findFirst();
-        assertThat(item).isPresent();
-        assertThat(item.get().getPosition()).isEqualTo(0);
+        return dto;
     }
 
     private void print(List<WorkspaceMenuItemDTO> items, String prefix) {

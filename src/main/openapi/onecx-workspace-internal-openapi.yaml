@@ -1016,6 +1016,7 @@ components:
           format: int32
           type: integer
         position:
+          minimum: 0
           format: int32
           type: integer
         parentItemId:
@@ -1041,6 +1042,7 @@ components:
         disabled:
           type: boolean
         position:
+          minimum: 0
           format: int32
           type: integer
         badge:

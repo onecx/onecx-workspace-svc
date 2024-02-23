@@ -29,10 +29,10 @@ import lombok.Setter;
 })
 @NamedEntityGraph(name = MenuItem.MENU_ITEM_WORKSPACE_AND_TRANSLATIONS, attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("workspace") })
-@NamedEntityGraph(name = "MenuItem.loadById", includeAllAttributes = true, attributeNodes = { @NamedAttributeNode("i18n"),
+@NamedEntityGraph(name = "MenuItem.loadById", attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("children"), @NamedAttributeNode("workspace") })
-@NamedEntityGraph(name = "MenuItem.loadChildren", includeAllAttributes = true, attributeNodes = {
-        @NamedAttributeNode("children") })
+@NamedEntityGraph(name = "MenuItem.loadChildren", attributeNodes = { @NamedAttributeNode("i18n"),
+        @NamedAttributeNode("children"), @NamedAttributeNode("workspace"), @NamedAttributeNode("parent") })
 @SuppressWarnings("squid:S2160")
 public class MenuItem extends TraceableEntity {
 

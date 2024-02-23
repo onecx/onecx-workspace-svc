@@ -171,7 +171,17 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
 
             // update children position in new parent
             if (changeParent || newPosition != oldPosition) {
-                updatePosition(menuItem.getId(), newParentId, newPosition, 1);
+
+                // check position,
+                int count = countChildren(newParentId);
+
+                // over the last position
+                if (count > newPosition) {
+                    updatePosition(menuItem.getId(), newParentId, newPosition, 1);
+                } else if (count < newPosition) {
+                    newPosition = count;
+                    menuItem.setPosition(newPosition);
+                }
             }
 
             // update menu item
@@ -181,6 +191,20 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         } catch (Exception e) {
             throw new DAOException(MenuItemDAO.ErrorKeys.ERROR_UPDATE_MENU_ITEM, e, entityName);
         }
+    }
+
+    private int countChildren(String parentId) {
+        var cb = getEntityManager().getCriteriaBuilder();
+        var cq = cb.createQuery(Long.class);
+        var root = cq.from(MenuItem.class);
+        cq.select(cb.count(root));
+        if (parentId == null) {
+            cq.where(cb.isNull(root.get(MenuItem_.PARENT_ID)));
+        } else {
+            cq.where(cb.equal(root.get(MenuItem_.PARENT_ID), parentId));
+        }
+        var result = getEntityManager().createQuery(cq).getSingleResult();
+        return result.intValue();
     }
 
     private void updatePosition(String menuId, String parentId, int position, int sum) {
