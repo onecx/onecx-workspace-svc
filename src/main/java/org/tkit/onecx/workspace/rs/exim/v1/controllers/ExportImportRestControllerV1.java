@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
@@ -47,7 +48,11 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         if (workspace == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        var menu = menuItemDAO.loadAllMenuItemsByWorkspace(workspace.getId());
+
+        var criteria = new MenuItemLoadCriteria();
+        criteria.setWorkspaceId(workspace.getId());
+
+        var menu = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
         return Response.ok(mapper.mapTree(menu)).build();
     }
 
@@ -73,7 +78,10 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         if (workspace == null) {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
-        var menu = menuItemDAO.loadAllMenuItemsByWorkspace(workspace.getId());
+
+        var criteria = new MenuItemLoadCriteria();
+        criteria.setWorkspaceId(workspace.getId());
+        var menu = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
 
         ImportMenuResponseDTOV1 responseDTOV1 = new ImportMenuResponseDTOV1();
         if (!menu.isEmpty()) {

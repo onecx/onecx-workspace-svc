@@ -1,13 +1,12 @@
 package org.tkit.onecx.workspace.rs.internal.mappers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mapstruct.*;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -15,15 +14,22 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
-public abstract class MenuItemMapper {
+public interface MenuItemMapper {
 
-    public MenuItem update(MenuItem menu, UpdateMenuItemParentRequestDTO dto) {
+    MenuItemLoadCriteria map(MenuStructureSearchCriteriaDTO dto);
+
+    default MenuItem update(MenuItem menu, UpdateMenuItemParentRequestDTO dto) {
         menu.setModificationCount(dto.getModificationCount());
         menu.setPosition(dto.getPosition());
         return menu;
     }
 
-    public abstract List<MenuItemDTO> map(Stream<MenuItem> items);
+    default MenuItem create(CreateMenuItemDTO dto, Workspace workspace, MenuItem parentItem) {
+        var result = create(dto);
+        result.setWorkspace(workspace);
+        result.setParent(parentItem);
+        return result;
+    }
 
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
@@ -40,7 +46,7 @@ public abstract class MenuItemMapper {
     @Mapping(target = "applicationId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "parentId", ignore = true)
-    public abstract MenuItem create(CreateMenuItemDTO dto);
+    MenuItem create(CreateMenuItemDTO dto);
 
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
@@ -56,30 +62,14 @@ public abstract class MenuItemMapper {
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "parentId", ignore = true)
-    public abstract void update(UpdateMenuItemRequestDTO menuItemDetailsDto, @MappingTarget MenuItem entity);
-
-    public abstract List<MenuItemDTO> mapList(List<MenuItem> items);
+    void update(UpdateMenuItemRequestDTO menuItemDetailsDto, @MappingTarget MenuItem entity);
 
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "parentItemId", source = "parent.id")
-    public abstract MenuItemDTO map(MenuItem item);
+    MenuItemDTO map(MenuItem item);
 
-    public List<String> mapStringToList(String value) {
-        if (value == null || value.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return Arrays.asList(value.split(","));
-    }
-
-    public String mapListToString(List<String> list) {
-        if (list == null || list.isEmpty()) {
-            return null;
-        }
-        return String.join(",", list);
-    }
-
-    public WorkspaceMenuItemStructureDTO mapTree(Collection<MenuItem> entities) {
-        WorkspaceMenuItemStructureDTO dto = new WorkspaceMenuItemStructureDTO();
+    default MenuItemStructureDTO mapTree(Collection<MenuItem> entities) {
+        MenuItemStructureDTO dto = new MenuItemStructureDTO();
         if (entities.isEmpty()) {
             dto.setMenuItems(new ArrayList<>());
             return dto;
@@ -93,14 +83,14 @@ public abstract class MenuItemMapper {
         return dto;
     }
 
-    public abstract List<WorkspaceMenuItemDTO> mapCollection(Collection<MenuItem> entities);
+    List<WorkspaceMenuItemDTO> mapCollection(Collection<MenuItem> entities);
 
     @Mapping(target = "parentItemId", source = "parent.id")
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeChildrenItem", ignore = true)
-    public abstract WorkspaceMenuItemDTO mapTreeItem(MenuItem entity);
+    WorkspaceMenuItemDTO mapTreeItem(MenuItem entity);
 
-    public void recursiveMappingTreeStructure(List<WorkspaceMenuItemDTO> items, Workspace workspace, MenuItem parent,
+    default void recursiveMappingTreeStructure(List<WorkspaceMenuItemDTO> items, Workspace workspace, MenuItem parent,
             List<MenuItem> mappedItems) {
 
         int position = 0;
@@ -131,9 +121,9 @@ public abstract class MenuItemMapper {
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "parentId", ignore = true)
-    public abstract MenuItem mapMenu(WorkspaceMenuItemDTO menuItemStructureDto);
+    MenuItem mapMenu(WorkspaceMenuItemDTO menuItemStructureDto);
 
-    public void updateMenu(MenuItem menuItem, int position, Workspace workspace,
+    default void updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent) {
         menuItem.setWorkspace(workspace);
         menuItem.setPosition(position);

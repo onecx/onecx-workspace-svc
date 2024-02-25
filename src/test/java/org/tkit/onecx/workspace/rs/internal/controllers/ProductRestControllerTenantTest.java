@@ -25,6 +25,7 @@ class ProductRestControllerTenantTest extends AbstractTest {
     @Test
     void createProductInWorkspaceTest() {
         var request = new CreateProductRequestDTO();
+        request.setWorkspaceId("11-111");
         request.setProductName("testProduct");
         request.setBaseUrl("/test");
         var mfe = new CreateMicrofrontendDTO();
@@ -41,7 +42,6 @@ class ProductRestControllerTenantTest extends AbstractTest {
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org2"))
                 .post()
                 .then()
@@ -55,7 +55,6 @@ class ProductRestControllerTenantTest extends AbstractTest {
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .post()
                 .then()
@@ -72,7 +71,6 @@ class ProductRestControllerTenantTest extends AbstractTest {
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .post()
                 .then()
@@ -87,7 +85,6 @@ class ProductRestControllerTenantTest extends AbstractTest {
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .post()
                 .then()
@@ -104,32 +101,33 @@ class ProductRestControllerTenantTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org2"))
                 .pathParam("productId", "5678")
                 .delete("{productId}")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
+        var criteria = new ProductSearchCriteriaDTO()
+                .workspaceId("11-111");
+
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .body(criteria)
                 .header(APM_HEADER_PARAM, createToken("org1"))
-                .get()
+                .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(new TypeRef<List<ProductDTO>>() {
-                });
+                .extract().as(ProductPageResultDTO.class);
 
-        assertThat(dto).isNotNull().isNotEmpty().hasSize(2);
-        assertThat(dto.get(0).getMicrofrontends()).isNotEmpty();
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotEmpty().hasSize(2);
+        assertThat(dto.getStream().get(0).getMicrofrontends()).isNotEmpty();
 
         // delete with correct tenant
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .pathParam("productId", "5678")
                 .delete("{productId}")
@@ -139,16 +137,16 @@ class ProductRestControllerTenantTest extends AbstractTest {
         dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
+                .body(criteria)
                 .header(APM_HEADER_PARAM, createToken("org1"))
-                .get()
+                .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(new TypeRef<List<ProductDTO>>() {
-                });
+                .extract().as(ProductPageResultDTO.class);
 
-        assertThat(dto).isNotNull().isNotEmpty().hasSize(1);
-        assertThat(dto.get(0).getMicrofrontends()).isNotEmpty();
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotEmpty().hasSize(1);
+        assertThat(dto.getStream().get(0).getMicrofrontends()).isNotEmpty();
     }
 
     @Test

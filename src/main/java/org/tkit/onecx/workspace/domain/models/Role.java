@@ -29,6 +29,9 @@ public class Role extends TraceableEntity {
     @JoinColumn(name = "WORKSPACE_GUID")
     private Workspace workspace;
 
+    @Column(name = "WORKSPACE_GUID", insertable = false, updatable = false)
+    private String workspaceId;
+
     /**
      * The role name.
      */
@@ -41,4 +44,8 @@ public class Role extends TraceableEntity {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    @PostPersist
+    void postPersist() {
+        workspaceId = workspace.getId();
+    }
 }

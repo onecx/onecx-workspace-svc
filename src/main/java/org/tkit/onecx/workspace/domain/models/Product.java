@@ -37,8 +37,16 @@ public class Product extends TraceableEntity {
     @JoinColumn(name = "WORKSPACE_GUID")
     private Workspace workspace;
 
+    @Column(name = "WORKSPACE_GUID", insertable = false, updatable = false)
+    private String workspaceId;
+
     @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "PRODUCT_GUID")
     private List<Microfrontend> microfrontends;
+
+    @PostPersist
+    void postPersist() {
+        workspaceId = workspace.getId();
+    }
 
 }

@@ -41,12 +41,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workspace'
-  /v1/workspaces/{name}/products:
+  /v1/workspaces/{name}/load:
     get:
       tags:
         - workspaceExternal
-      description: Find all products belonging to a workspace
-      operationId: getWorkspaceProducts
+      description: Load workspace references to a workspace
+      operationId: loadWorkspaceByName
       parameters:
         - $ref: '#/components/parameters/name'
       responses:
@@ -55,20 +55,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/WorkspaceLoad'
         "404":
           description: Not found
 components:
   schemas:
+    WorkspaceLoad:
+      type: object
+      properties:
+        name:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
     Workspace:
       required:
         - name
       type: object
       properties:
-        id:
-          type: string
         name:
           type: string
         description:
@@ -174,8 +179,6 @@ components:
     Product:
       type: object
       properties:
-        id:
-          type: string
         productName:
           type: string
         baseUrl:
@@ -188,8 +191,6 @@ components:
     Microfrontend:
       type: object
       properties:
-        id:
-          type: string
         mfeId:
           type: string
         basePath:

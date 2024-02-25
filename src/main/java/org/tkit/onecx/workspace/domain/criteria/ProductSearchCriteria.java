@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AssignmentSearchCriteria {
+public class ProductSearchCriteria {
     private String workspaceId;
-    private String menuItemId;
+    private String productName;
     private Integer pageNumber;
     private Integer pageSize;
 }

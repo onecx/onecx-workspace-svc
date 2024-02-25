@@ -13,6 +13,7 @@ import org.apache.commons.text.StringSubstitutor;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
@@ -54,7 +55,10 @@ public class TkitPortalRestController implements TkitPortalApi {
         if (workspace == null) {
             return Response.ok(mapper.mapToEmptyTree()).build();
         }
-        var menuItems = menuItemDAO.loadAllMenuItemsByWorkspace(workspace.getId());
+
+        var criteria = new MenuItemLoadCriteria();
+        criteria.setWorkspaceId(workspace.getId());
+        var menuItems = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
 
         if (interpolate != null && interpolate) {
             for (MenuItem item : menuItems) {

@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.rs.legacy.mappers.PortalLegacyMapper;
@@ -43,7 +44,10 @@ public class PortalLegacyRestController implements PortalLegacyApi {
         if (workspace == null) {
             return Response.ok(mapper.mapToEmptyTree()).build();
         }
-        var items = dao.loadAllMenuItemsByWorkspace(workspace.getId());
+
+        var criteria = new MenuItemLoadCriteria();
+        criteria.setWorkspaceId(workspace.getId());
+        var items = dao.loadAllMenuItemsByCriteria(criteria);
         return Response.ok(mapper.mapToTree(items, workspace.getName())).build();
     }
 

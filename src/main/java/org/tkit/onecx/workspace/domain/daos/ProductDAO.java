@@ -1,31 +1,44 @@
 package org.tkit.onecx.workspace.domain.daos;
 
+import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
-import org.tkit.onecx.workspace.domain.models.MenuItem_;
-import org.tkit.onecx.workspace.domain.models.Product;
-import org.tkit.onecx.workspace.domain.models.Product_;
+import org.tkit.onecx.workspace.domain.criteria.ProductSearchCriteria;
+import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
+import org.tkit.quarkus.jpa.daos.Page;
+import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
 @ApplicationScoped
 public class ProductDAO extends AbstractDAO<Product> {
 
-    public List<Product> getProductsForWorkspaceId(String id) {
+    @Transactional(Transactional.TxType.NOT_SUPPORTED)
+    public PageResult<Product> findByCriteria(ProductSearchCriteria criteria) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(Product.class);
             var root = cq.from(Product.class);
 
-            cq.where(cb.equal(root.get(Product_.WORKSPACE).get(TraceableEntity_.ID), id));
-            return this.getEntityManager().createQuery(cq).getResultList();
+            List<Predicate> predicates = new ArrayList<>();
+            addSearchStringPredicate(predicates, cb, root.get(Product_.workspaceId), criteria.getWorkspaceId());
+            addSearchStringPredicate(predicates, cb, root.get(Product_.PRODUCT_NAME), criteria.getProductName());
+
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[] {}));
+            }
+
+            return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
-            throw this.handleConstraint(ex, ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID);
+            throw new DAOException(ErrorKeys.ERROR_FIND_PRODUCTS_BY_CRITERIA, ex);
         }
     }
 
@@ -79,7 +92,7 @@ public class ProductDAO extends AbstractDAO<Product> {
 
         ERROR_DELETE_PRODUCT_ID,
 
-        ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID,
+        ERROR_FIND_PRODUCTS_BY_CRITERIA,
 
     }
 }

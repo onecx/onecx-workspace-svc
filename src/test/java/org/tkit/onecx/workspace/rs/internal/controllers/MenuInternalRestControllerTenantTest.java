@@ -224,7 +224,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
+                .extract().body().as(MenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).isEmpty();
@@ -236,7 +236,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
+                .extract().body().as(MenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(5);

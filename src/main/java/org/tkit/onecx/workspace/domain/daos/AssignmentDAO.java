@@ -1,10 +1,11 @@
 package org.tkit.onecx.workspace.domain.daos;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.criteria.AssignmentSearchCriteria;
@@ -17,6 +18,7 @@ import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
+import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 @ApplicationScoped
 public class AssignmentDAO extends AbstractDAO<Assignment> {
@@ -44,12 +46,11 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cq = cb.createQuery(Assignment.class);
             var root = cq.from(Assignment.class);
 
-            if (criteria.getMenuItemId() != null) {
-                List<String> filteredAppIds = Arrays.stream(criteria.getMenuItemId()).filter(s -> !s.isBlank()).toList();
-                if (!filteredAppIds.isEmpty()) {
-                    cq.where(root.get(Assignment_.menuItem).get(MenuItem_.ID).in(filteredAppIds));
-                }
-            }
+            List<Predicate> predicates = new ArrayList<>();
+            QueryCriteriaUtil.addSearchStringPredicate(predicates, cb, root.get(Assignment_.menuItemId),
+                    criteria.getMenuItemId());
+            QueryCriteriaUtil.addSearchStringPredicate(predicates, cb,
+                    root.get(Assignment_.menuItem).get(MenuItem_.workspaceId), criteria.getWorkspaceId());
 
             cq.orderBy(cb.asc(root.get(AbstractTraceableEntity_.creationDate)));
 
@@ -61,7 +62,9 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
     public enum ErrorKeys {
 
+        ERROR_FIND_ASSIGNMENT_BY_CRITERIA,
+
         FIND_ENTITY_BY_ID_FAILED,
-        ERROR_FIND_ASSIGNMENT_BY_CRITERIA;
+
     }
 }

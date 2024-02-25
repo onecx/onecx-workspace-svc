@@ -5,7 +5,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 
-import org.tkit.onecx.workspace.domain.daos.ProductDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.rs.external.v1.mappers.WorkspaceMapper;
 import org.tkit.quarkus.log.cdi.LogService;
@@ -24,17 +23,14 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     @Inject
     WorkspaceMapper mapper;
 
-    @Inject
-    ProductDAO productDAO;
-
     @Override
-    public Response getWorkspaceProducts(String name) {
+    public Response loadWorkspaceByName(String name) {
         var item = workspaceDAO.findByName(name);
         if (item == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        var result = productDAO.getProductsForWorkspaceId(item.getId());
-        return Response.ok(mapper.map(result)).build();
+        item = workspaceDAO.loadById(item.getId());
+        return Response.ok(mapper.load(item)).build();
     }
 
     @Override

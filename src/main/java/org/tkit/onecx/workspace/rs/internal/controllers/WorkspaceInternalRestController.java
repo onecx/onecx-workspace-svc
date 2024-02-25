@@ -21,10 +21,7 @@ import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.internal.WorkspaceInternalApi;
-import gen.org.tkit.onecx.workspace.rs.internal.model.CreateWorkspaceRequestDTO;
-import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
-import gen.org.tkit.onecx.workspace.rs.internal.model.UpdateWorkspaceRequestDTO;
-import gen.org.tkit.onecx.workspace.rs.internal.model.WorkspaceSearchCriteriaDTO;
+import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 
 @LogService
 @ApplicationScoped
@@ -79,7 +76,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
-    public Response getWorkspaceByName(String name) {
+    public Response findWorkspaceByName(String name) {
         var item = dao.findByName(name);
         if (item == null) {
             return Response.status(Response.Status.NOT_FOUND).build();

@@ -25,6 +25,7 @@ class ProductRestControllerTest extends AbstractTest {
     @Test
     void createProductInWorkspaceTest() {
         var request = new CreateProductRequestDTO();
+        request.setWorkspaceId("does-not-exists");
         request.setProductName("testProduct");
         request.setBaseUrl("/test");
         var mfe = new CreateMicrofrontendDTO();
@@ -41,7 +42,6 @@ class ProductRestControllerTest extends AbstractTest {
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "does-not-exists")
                 .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -50,11 +50,11 @@ class ProductRestControllerTest extends AbstractTest {
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
 
+        request.setWorkspaceId("11-111");
         var dto = given()
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .post()
                 .then()
                 .statusCode(CREATED.getStatusCode())
@@ -85,7 +85,6 @@ class ProductRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .pathParam("productId", "5678")
                 .delete("{productId}")
                 .then()
@@ -94,24 +93,26 @@ class ProductRestControllerTest extends AbstractTest {
         given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
                 .pathParam("productId", "5678")
                 .delete("{productId}")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
+        var criteria = new ProductSearchCriteriaDTO()
+                .workspaceId("11-111");
+
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
-                .get()
+                .body(criteria)
+                .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(new TypeRef<List<ProductDTO>>() {
-                });
+                .extract().as(ProductPageResultDTO.class);
 
-        assertThat(dto).isNotNull().isNotEmpty().hasSize(1);
-        assertThat(dto.get(0).getMicrofrontends()).isNotEmpty();
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotEmpty().hasSize(1);
+        assertThat(dto.getStream().get(0).getMicrofrontends()).isNotEmpty();
     }
 
     @Test

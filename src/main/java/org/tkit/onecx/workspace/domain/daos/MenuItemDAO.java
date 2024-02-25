@@ -1,6 +1,7 @@
 package org.tkit.onecx.workspace.domain.daos;
 
 import static org.tkit.onecx.workspace.domain.models.MenuItem.*;
+import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
+import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
@@ -100,28 +102,26 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         }
     }
 
-    /**
-     * This method fetches all menuItems assigned to a workspace with
-     *
-     * @param id - provided as a param and
-     *
-     * @return List of the menu items
-     */
-    public List<MenuItem> loadAllMenuItemsByWorkspace(String id) {
-
+    public List<MenuItem> loadAllMenuItemsByCriteria(MenuItemLoadCriteria criteria) {
         try {
             var cb = getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(MenuItem.class);
             var root = cq.from(MenuItem.class);
 
-            cq.where(cb.equal(root.get(MenuItem_.WORKSPACE).get(Workspace_.ID), id));
+            List<Predicate> predicates = new ArrayList<>();
+            addSearchStringPredicate(predicates, cb, root.get(MenuItem_.WORKSPACE).get(Workspace_.ID),
+                    criteria.getWorkspaceId());
+
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[] {}));
+            }
 
             return getEntityManager()
                     .createQuery(cq)
                     .setHint(HINT_LOAD_GRAPH, this.getEntityManager().getEntityGraph(MENU_ITEM_WORKSPACE_AND_TRANSLATIONS))
                     .getResultList();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE, ex);
+            throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA, ex);
         }
     }
 
@@ -235,7 +235,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE,
-        ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE,
+        ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA,
 
         ERROR_LOAD_ALL_CHILDREN,
 

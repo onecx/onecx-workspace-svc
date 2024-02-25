@@ -7,7 +7,6 @@ import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -17,13 +16,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.org.tkit.onecx.workspace.rs.external.v1.model.ProductDTOV1;
-import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceDTOV1;
-import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspacePageResultDTOV1;
-import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceSearchCriteriaDTOV1;
+import gen.org.tkit.onecx.workspace.rs.external.v1.model.*;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceExternalV1RestController.class)
@@ -113,7 +108,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "does-not-exist")
-                .get("/{name}/products")
+                .get("/{name}/load")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -122,14 +117,14 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "test01")
-                .get("/{name}/products")
+                .get("/{name}/load")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(new TypeRef<List<ProductDTOV1>>() {
-                });
+                .extract().as(WorkspaceLoadDTOV1.class);
 
-        assertThat(dto).isNotNull().isNotEmpty().hasSize(2);
-        assertThat(dto.get(0).getProductName()).isNotEmpty();
-        assertThat(dto.get(1).getProductName()).isNotEmpty();
+        assertThat(dto).isNotNull();
+        assertThat(dto.getProducts()).isNotNull().isNotEmpty().hasSize(2);
+        assertThat(dto.getProducts().get(0).getProductName()).isNotEmpty();
+        assertThat(dto.getProducts().get(1).getProductName()).isNotEmpty();
     }
 }

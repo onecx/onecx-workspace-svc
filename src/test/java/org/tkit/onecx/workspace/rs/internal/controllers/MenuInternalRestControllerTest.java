@@ -203,7 +203,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
+                .extract().body().as(MenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(5);
@@ -229,7 +229,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .pathParam("id", "does-not-exists")
                 .get("/tree")
                 .then().statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
+                .extract().body().as(MenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).isEmpty();
@@ -585,7 +585,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void uploadMenuStructureNoMenuItemsTest() {
 
-        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+        var menuStructureListDTO = new MenuItemStructureDTO();
         menuStructureListDTO.setMenuItems(null);
 
         var error = given()
@@ -600,7 +600,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo("CONSTRAINT_VIOLATIONS");
 
-        menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+        menuStructureListDTO = new MenuItemStructureDTO();
         menuStructureListDTO.setMenuItems(new ArrayList<>());
 
         error = given()
@@ -619,7 +619,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void uploadMenuStructurePortalDoesNotExistsTest() {
 
-        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+        var menuStructureListDTO = new MenuItemStructureDTO();
         var menuItemStructureDTO = new WorkspaceMenuItemDTO();
 
         menuItemStructureDTO.setKey("Test menu");
@@ -645,7 +645,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void uploadMenuStructureTest() {
 
-        var menuStructureListDTO = new WorkspaceMenuItemStructureDTO();
+        var menuStructureListDTO = new MenuItemStructureDTO();
         var menuItemStructureDTO = new WorkspaceMenuItemDTO();
 
         menuItemStructureDTO.setKey("Test menu");
@@ -687,7 +687,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .get("/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().body().as(WorkspaceMenuItemStructureDTO.class);
+                .extract().body().as(MenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(1);

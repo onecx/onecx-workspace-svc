@@ -11,8 +11,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.criteria.RoleSearchCriteria;
-import org.tkit.onecx.workspace.domain.models.Role;
-import org.tkit.onecx.workspace.domain.models.Role_;
+import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
@@ -46,6 +45,7 @@ public class RoleDAO extends AbstractDAO<Role> {
             var root = cq.from(Role.class);
 
             List<Predicate> predicates = new ArrayList<>();
+            addSearchStringPredicate(predicates, cb, root.get(Role_.workspaceId), criteria.getWorkspaceId());
             addSearchStringPredicate(predicates, cb, root.get(Role_.name), criteria.getName());
             addSearchStringPredicate(predicates, cb, root.get(Role_.description), criteria.getDescription());
 
@@ -61,7 +61,8 @@ public class RoleDAO extends AbstractDAO<Role> {
 
     public enum ErrorKeys {
 
+        ERROR_FIND_ROLE_BY_CRITERIA,
         FIND_ENTITY_BY_ID_FAILED,
-        ERROR_FIND_ROLE_BY_CRITERIA;
+
     }
 }

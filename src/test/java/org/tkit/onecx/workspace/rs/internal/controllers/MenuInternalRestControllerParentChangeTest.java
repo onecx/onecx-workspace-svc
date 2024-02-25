@@ -165,7 +165,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .then().statusCode(BAD_REQUEST.getStatusCode());
     }
 
-    public WorkspaceMenuItemStructureDTO printWorkspace() {
+    public MenuItemStructureDTO printWorkspace() {
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
@@ -173,7 +173,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .get("tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(WorkspaceMenuItemStructureDTO.class);
+                .extract().as(MenuItemStructureDTO.class);
         assertThat(dto).isNotNull();
         assertThat(dto.getMenuItems()).isNotNull().isNotEmpty();
         print(dto.getMenuItems(), "");

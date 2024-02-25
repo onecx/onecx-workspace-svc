@@ -5,9 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AssignmentSearchCriteria {
+public class MenuItemLoadCriteria {
+
     private String workspaceId;
-    private String menuItemId;
-    private Integer pageNumber;
-    private Integer pageSize;
 }
