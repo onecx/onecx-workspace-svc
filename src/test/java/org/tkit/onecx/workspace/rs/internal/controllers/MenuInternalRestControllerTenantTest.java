@@ -277,6 +277,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
     void updateMenuItemTest() {
         var request = new UpdateMenuItemRequestDTO();
         request.setKey("Test menu");
+        request.position(0);
         request.setDescription("New test menu description");
         request.setDisabled(false);
         request.setParentItemId("44-1");

@@ -379,6 +379,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void updateMenuItemDoesNotUpdateParentTest() {
 
         var request = new UpdateMenuItemRequestDTO();
+        request.position(1);
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId("44-2");
@@ -421,6 +422,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void updateMenuItemParentSetChildAsParentTest() {
 
         var request = new UpdateMenuItemRequestDTO();
+        request.position(1);
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId("44-6");
@@ -444,6 +446,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     void updateMenuItemParentSetToMenuItemTest() {
 
         var request = new UpdateMenuItemRequestDTO();
+        request.position(1);
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId("44-2");
@@ -476,6 +479,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @MethodSource("inputParams")
     void updateMenuItemErrors(String menuItemId, String parentItemId) {
         var request = new UpdateMenuItemRequestDTO();
+        request.position(1);
         request.setKey("Test menu");
         request.setDisabled(false);
         request.setParentItemId(parentItemId);
@@ -494,6 +498,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void updateMenuItemTest() {
         var request = new UpdateMenuItemRequestDTO();
+        request.position(1);
         request.setKey("Test menu");
         request.setDescription("New test menu description");
         request.setDisabled(false);
@@ -543,6 +548,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void updateMenuItemNotExistsTest() {
         var request = new UpdateMenuItemRequestDTO();
+        request.position(1);
         request.setKey("Test menu");
         request.setDescription("New test menu description");
         request.setDisabled(false);

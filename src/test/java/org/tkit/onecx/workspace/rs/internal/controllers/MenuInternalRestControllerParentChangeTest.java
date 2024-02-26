@@ -114,6 +114,24 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
     }
 
     @Test
+    void updateMenuItemParentNullToNullTest() {
+
+        // 4-2-3 pos 2 -> change parent to null pos 0
+        var request = new UpdateMenuItemParentRequestDTO()
+                .parentItemId(null)
+                .position(0)
+                .modificationCount(0);
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .pathParam("menuItemId", "4-3")
+                .put("{menuItemId}/parentItemId")
+                .then().statusCode(OK.getStatusCode());
+    }
+
+    @Test
     void updateMenuItemParentToNullTest() {
 
         printWorkspace();

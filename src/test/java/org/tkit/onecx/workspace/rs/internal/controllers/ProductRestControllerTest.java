@@ -78,6 +78,16 @@ class ProductRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void getProductDoesNotExists() {
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("does-not-exists")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
     void deleteProductByIdTest() {
         given()
                 .when()
@@ -109,6 +119,40 @@ class ProductRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getStream()).isNotEmpty().hasSize(1);
+    }
+
+    @Test
+    void getProductsByNameTest() {
+
+        var criteria = new ProductSearchCriteriaDTO()
+                .productName("does-not-exists");
+
+        // not existing product
+        var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ProductPageResultDTO.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStream()).isNotNull().isEmpty();
+
+        criteria.productName("onecx-core");
+
+        response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ProductPageResultDTO.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStream()).isNotNull().isNotEmpty();
     }
 
     @Test
@@ -172,9 +216,6 @@ class ProductRestControllerTest extends AbstractTest {
                 .put("{productId}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
-
-        var criteria = new ProductSearchCriteriaDTO()
-                .workspaceId("11-111");
 
         var product = given()
                 .when()

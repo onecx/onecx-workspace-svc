@@ -1,5 +1,7 @@
 package org.tkit.onecx.workspace.domain.daos;
 
+import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class ProductDAO extends AbstractDAO<Product> {
             if (criteria.getWorkspaceId() != null) {
                 predicates.add(cb.equal(root.get(Product_.workspaceId), criteria.getWorkspaceId()));
             }
-            //            addSearchStringPredicate(predicates, cb, root.get(Product_.PRODUCT_NAME), criteria.getProductName());
+            addSearchStringPredicate(predicates, cb, root.get(Product_.PRODUCT_NAME), criteria.getProductName());
 
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));

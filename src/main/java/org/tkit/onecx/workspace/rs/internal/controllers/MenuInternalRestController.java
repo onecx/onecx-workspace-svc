@@ -131,7 +131,7 @@ public class MenuInternalRestController implements MenuInternalApi {
         var oldPosition = menuItem.getPosition();
         var oldParentId = menuItem.getParentId();
         var newParentId = menuItemDTO.getParentItemId();
-        var newPosition = menuItemDTO.getPosition() == null ? oldPosition : menuItemDTO.getPosition();
+        var newPosition = menuItemDTO.getPosition();
 
         mapper.update(menuItemDTO, menuItem);
         var changeParent = updateMenuItemParent(menuItem, menuItemDTO.getParentItemId());

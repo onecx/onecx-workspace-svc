@@ -24,4 +24,5 @@ public class AssignmentRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }
+
 }
