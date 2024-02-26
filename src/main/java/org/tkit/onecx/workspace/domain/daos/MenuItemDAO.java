@@ -1,7 +1,6 @@
 package org.tkit.onecx.workspace.domain.daos;
 
 import static org.tkit.onecx.workspace.domain.models.MenuItem.*;
-import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +12,11 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemSearchCriteria;
 import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
+import org.tkit.quarkus.jpa.daos.Page;
+import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
@@ -40,25 +42,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         }
     }
 
-    @Transactional
-    public void deleteAllMenuItemsByWorkspace(String id) {
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = this.criteriaQuery();
-            var root = cq.from(MenuItem.class);
-
-            cq.where(cb.and(
-                    cb.equal(root.get(MenuItem_.WORKSPACE).get(Workspace_.ID), id),
-                    cb.isNull(root.get(MenuItem_.PARENT))));
-
-            var items = getEntityManager().createQuery(cq).getResultList();
-            delete(items);
-
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE, ex);
-        }
-    }
-
     /**
      * This method delete all menu items by workspace id.
      *
@@ -68,16 +51,11 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
     public void deleteAllMenuItemsByWorkspaceId(String id) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = this.criteriaQuery();
+            var cq = this.deleteQuery();
             var root = cq.from(MenuItem.class);
 
-            cq.where(cb.and(
-                    cb.equal(root.get(MenuItem_.WORKSPACE).get(TraceableEntity_.ID), id),
-                    cb.isNull(root.get(MenuItem_.PARENT))));
-
-            var items = getEntityManager().createQuery(cq).getResultList();
-            delete(items);
-
+            cq.where(cb.equal(root.get(MenuItem_.WORKSPACE).get(TraceableEntity_.ID), id));
+            getEntityManager().createQuery(cq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID, ex);
         }
@@ -109,11 +87,12 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             var root = cq.from(MenuItem.class);
 
             List<Predicate> predicates = new ArrayList<>();
-            addSearchStringPredicate(predicates, cb, root.get(MenuItem_.WORKSPACE).get(Workspace_.ID),
-                    criteria.getWorkspaceId());
+            if (criteria.getWorkspaceId() != null) {
+                predicates.add(cb.equal(root.get(MenuItem_.WORKSPACE_ID), criteria.getWorkspaceId()));
+            }
 
             if (!predicates.isEmpty()) {
-                cq.where(predicates.toArray(new Predicate[] {}));
+                cq.where(cb.and(predicates.toArray(new Predicate[] {})));
             }
 
             return getEntityManager()
@@ -122,6 +101,27 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
                     .getResultList();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA, ex);
+        }
+    }
+
+    public PageResult<MenuItem> findByCriteria(MenuItemSearchCriteria criteria) {
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(MenuItem.class);
+            var root = cq.from(MenuItem.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+            if (criteria.getWorkspaceId() != null) {
+                predicates.add(cb.equal(root.get(MenuItem_.WORKSPACE_ID), criteria.getWorkspaceId()));
+            }
+
+            if (!predicates.isEmpty()) {
+                cq.where(cb.and(predicates.toArray(new Predicate[] {})));
+            }
+
+            return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_MENU_ITEMS_BY_CRITERIA, ex);
         }
     }
 
@@ -234,8 +234,10 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         ERROR_LOAD_MENU_BY_ID_AND_KEY,
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
-        ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE,
+
         ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA,
+
+        ERROR_FIND_MENU_ITEMS_BY_CRITERIA,
 
         ERROR_LOAD_ALL_CHILDREN,
 

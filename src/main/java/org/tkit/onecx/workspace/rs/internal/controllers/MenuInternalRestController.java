@@ -15,6 +15,7 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
@@ -46,9 +47,12 @@ public class MenuInternalRestController implements MenuInternalApi {
     @Inject
     WorkspaceDAO workspaceDAO;
 
+    @Inject
+    AssignmentDAO assignmentDAO;
+
     @Override
     public Response createMenuItem(CreateMenuItemDTO menuItemDTO) {
-        var workspace = workspaceDAO.getReference(menuItemDTO.getWorkspaceId());
+        var workspace = workspaceDAO.findById(menuItemDTO.getWorkspaceId());
 
         if (workspace == null) {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
@@ -56,7 +60,7 @@ public class MenuInternalRestController implements MenuInternalApi {
 
         MenuItem parentItem = null;
         if (menuItemDTO.getParentItemId() != null) {
-            parentItem = dao.getReference(menuItemDTO.getParentItemId());
+            parentItem = dao.findById(menuItemDTO.getParentItemId());
             if (parentItem == null) {
                 throw new ConstraintException("Parent menu item does not exist", MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST,
                         null);
@@ -78,13 +82,17 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @Override
+    @Transactional
     public Response deleteAllMenuItemsForWorkspace(String id) {
-        dao.deleteAllMenuItemsByWorkspace(id);
+        assignmentDAO.deleteAllByWorkspaceId(id);
+        dao.deleteAllMenuItemsByWorkspaceId(id);
         return Response.noContent().build();
     }
 
     @Override
+    @Transactional
     public Response deleteMenuItemById(String menuItemId) {
+        assignmentDAO.deleteAllByMenuId(menuItemId);
         dao.deleteQueryById(menuItemId);
         return Response.noContent().build();
     }
@@ -106,16 +114,18 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @Override
+    public Response searchMenuItemsByCriteria(MenuItemSearchCriteriaDTO menuItemSearchCriteriaDTO) {
+        var criteria = mapper.map(menuItemSearchCriteriaDTO);
+        var result = dao.findByCriteria(criteria);
+        return Response.ok(mapper.mapPage(result)).build();
+    }
+
+    @Override
     public Response updateMenuItem(String menuItemId, UpdateMenuItemRequestDTO menuItemDTO) {
 
         var menuItem = dao.loadAllChildren(menuItemId);
         if (menuItem == null) {
             return Response.status(NOT_FOUND).build();
-        }
-
-        if (!menuItem.getWorkspaceId().equals(menuItemDTO.getWorkspaceId())) {
-            throw new ConstraintException("Menu item does have different workspace",
-                    MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
         }
 
         var oldPosition = menuItem.getPosition();
@@ -181,12 +191,6 @@ public class MenuInternalRestController implements MenuInternalApi {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        // checking if menu item is in correct workspace
-        if (!menuItem.getWorkspaceId().equals(updateMenuItemParentRequestDTO.getWorkspaceId())) {
-            throw new ConstraintException("Menu item does have different workspace",
-                    MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
-        }
-
         var oldPosition = menuItem.getPosition();
         var oldParentId = menuItem.getParentId();
         var newParentId = updateMenuItemParentRequestDTO.getParentItemId();
@@ -209,7 +213,7 @@ public class MenuInternalRestController implements MenuInternalApi {
 
     @Override
     public Response uploadMenuStructure(MenuItemStructureDTO menuItemStructureDTO) {
-        var workspace = workspaceDAO.getReference(menuItemStructureDTO.getWorkspaceId());
+        var workspace = workspaceDAO.findById(menuItemStructureDTO.getWorkspaceId());
         if (workspace == null) {
             throw new ConstraintException("Given workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
@@ -217,7 +221,7 @@ public class MenuInternalRestController implements MenuInternalApi {
         List<MenuItem> items = new LinkedList<>();
         mapper.recursiveMappingTreeStructure(menuItemStructureDTO.getMenuItems(), workspace, null, items);
 
-        dao.deleteAllMenuItemsByWorkspace(menuItemStructureDTO.getWorkspaceId());
+        dao.deleteAllMenuItemsByWorkspaceId(menuItemStructureDTO.getWorkspaceId());
         dao.create(items);
         return Response.noContent().build();
     }

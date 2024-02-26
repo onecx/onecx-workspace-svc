@@ -35,7 +35,6 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "4")
                 .pathParam("menuItemId", "4-2-2")
                 .put("{menuItemId}/parentItemId")
                 .then().statusCode(OK.getStatusCode());
@@ -67,7 +66,6 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "4")
                 .pathParam("menuItemId", "4-2-2")
                 .put("{menuItemId}/parentItemId")
                 .then().statusCode(OK.getStatusCode());
@@ -99,7 +97,6 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "4")
                 .pathParam("menuItemId", "4-2-2")
                 .put("{menuItemId}/parentItemId")
                 .then().statusCode(OK.getStatusCode());
@@ -131,7 +128,6 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "4")
                 .pathParam("menuItemId", "4-2-2")
                 .put("{menuItemId}/parentItemId")
                 .then().statusCode(OK.getStatusCode());
@@ -159,18 +155,20 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("id", "4")
                 .pathParam("menuItemId", "4-2-2")
                 .put("{menuItemId}/parentItemId")
                 .then().statusCode(BAD_REQUEST.getStatusCode());
     }
 
     public MenuItemStructureDTO printWorkspace() {
+
+        var criteria = new MenuStructureSearchCriteriaDTO().workspaceId("4");
+
         var dto = given()
                 .when()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "4")
-                .get("tree")
+                .body(criteria)
+                .post("tree")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(MenuItemStructureDTO.class);

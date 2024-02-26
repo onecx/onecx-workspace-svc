@@ -52,10 +52,10 @@ public class WorkspaceImportService {
             ApplicationContext.start(ctx);
 
             // clean data
+            assignmentDAO.deleteAll();
             roleDAO.deleteAll();
             productDAO.deleteAll();
             menuItemDAO.deleteAll();
-            assignmentDAO.deleteAll();
             workspaceDAO.deleteAll();
         } finally {
             ApplicationContext.close();

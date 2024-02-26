@@ -73,7 +73,7 @@ public class RoleInternalRestController implements RoleInternalApi {
 
     @Override
     public Response createRole(CreateRoleRequestDTO createRoleRequestDTO) {
-        var workspace = workspaceDAO.getReference(createRoleRequestDTO.getWorkspaceId());
+        var workspace = workspaceDAO.findById(createRoleRequestDTO.getWorkspaceId());
         if (workspace == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

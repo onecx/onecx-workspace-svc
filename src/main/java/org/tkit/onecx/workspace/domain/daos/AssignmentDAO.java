@@ -60,7 +60,37 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         }
     }
 
+    @Transactional
+    public void deleteAllByWorkspaceId(String id) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = this.deleteQuery();
+            var root = cq.from(Assignment.class);
+            cq.where(cb.equal(root.get(Assignment_.MENU_ITEM).get(MenuItem_.WORKSPACE_ID), id));
+            getEntityManager().createQuery(cq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_ITEMS_BY_WORKSPACE_ID, ex);
+        }
+    }
+
+    @Transactional
+    public void deleteAllByMenuId(String id) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = this.deleteQuery();
+            var root = cq.from(Assignment.class);
+            cq.where(cb.equal(root.get(Assignment_.MENU_ITEM_ID), id));
+            getEntityManager().createQuery(cq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_ITEMS_BY_MENU_ID, ex);
+        }
+    }
+
     public enum ErrorKeys {
+
+        ERROR_DELETE_ITEMS_BY_MENU_ID,
+
+        ERROR_DELETE_ITEMS_BY_WORKSPACE_ID,
 
         ERROR_FIND_ASSIGNMENT_BY_CRITERIA,
 

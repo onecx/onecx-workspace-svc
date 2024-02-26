@@ -20,7 +20,6 @@ public class AssignmentRestControllerTest extends AbstractTest {
     void getNotFoundAssignment() {
         given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-222")
                 .get("does-not-exists")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());

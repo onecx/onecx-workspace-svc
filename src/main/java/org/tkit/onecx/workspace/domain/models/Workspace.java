@@ -69,7 +69,7 @@ public class Workspace extends TraceableEntity {
     private Set<SubjectLink> subjectLink = new HashSet<>();
 
     @Column(name = "ROLES")
-    @OneToMany(mappedBy = "workspace", fetch = LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
     private List<Role> roles;
 
     @ElementCollection(fetch = LAZY)
@@ -80,7 +80,7 @@ public class Workspace extends TraceableEntity {
     @Column(name = "LOGO_URL")
     private String logoUrl;
 
-    @OneToMany(mappedBy = "workspace", fetch = LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
     private List<Product> products;
 
 }

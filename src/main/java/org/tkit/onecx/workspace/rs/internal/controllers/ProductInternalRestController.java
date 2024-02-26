@@ -48,7 +48,7 @@ public class ProductInternalRestController implements ProductInternalApi {
 
     @Override
     public Response createProduct(CreateProductRequestDTO createProductRequestDTO) {
-        var workspace = workspaceDAO.getReference(createProductRequestDTO.getWorkspaceId());
+        var workspace = workspaceDAO.findById(createProductRequestDTO.getWorkspaceId());
         if (workspace == null) {
             throw new ConstraintException("Product does not exist",
                     ProductInternalRestController.ProductErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
@@ -69,8 +69,19 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @Override
+    public Response getProductById(String productId) {
+        var product = dao.findById(productId);
+        if (product == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(mapper.map(product)).build();
+    }
+
+    @Override
     public Response searchProducts(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
         var criteria = mapper.map(productSearchCriteriaDTO);
+        var result1 = dao.findByCriteria(criteria);
+        var items = result1.getStream().toList();
         var result = dao.findByCriteria(criteria);
         return Response.ok(mapper.mapPage(result)).build();
     }

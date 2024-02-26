@@ -11,12 +11,11 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
-import org.tkit.onecx.workspace.domain.daos.ProductDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
+import org.tkit.onecx.workspace.rs.internal.services.WorkspaceService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -38,10 +37,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     WorkspaceDAO dao;
 
     @Inject
-    MenuItemDAO menuDao;
-
-    @Inject
-    ProductDAO productDAO;
+    WorkspaceService service;
 
     @Context
     UriInfo uriInfo;
@@ -57,12 +53,13 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
+    @Transactional
     public Response deleteWorkspace(String id) {
-        // delete menu before deleting workspace
-        menuDao.deleteAllMenuItemsByWorkspaceId(id);
-        productDAO.deleteProductByWorkspaceId(id);
-
-        dao.deleteQueryById(id);
+        var workspace = dao.findById(id);
+        if (workspace == null) {
+            return Response.noContent().build();
+        }
+        service.deleteWorkspace(workspace);
         return Response.noContent().build();
     }
 
