@@ -28,6 +28,12 @@ class MenuItemDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.updateMenuItem(null, null, 0, null, 0, true),
+                MenuItemDAO.ErrorKeys.ERROR_UPDATE_MENU_ITEM);
+        methodExceptionTests(() -> dao.loadAllMenuItemsByCriteria(null),
+                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA);
+        methodExceptionTests(() -> dao.findByCriteria(null),
+                MenuItemDAO.ErrorKeys.ERROR_FIND_MENU_ITEMS_BY_CRITERIA);
         methodExceptionTests(() -> dao.loadAllChildren(null),
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_CHILDREN);
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceId(null),

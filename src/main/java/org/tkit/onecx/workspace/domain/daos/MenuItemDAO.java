@@ -87,13 +87,8 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             var root = cq.from(MenuItem.class);
 
             List<Predicate> predicates = new ArrayList<>();
-            if (criteria.getWorkspaceId() != null) {
-                predicates.add(cb.equal(root.get(MenuItem_.WORKSPACE_ID), criteria.getWorkspaceId()));
-            }
-
-            if (!predicates.isEmpty()) {
-                cq.where(cb.and(predicates.toArray(new Predicate[] {})));
-            }
+            predicates.add(cb.equal(root.get(MenuItem_.WORKSPACE_ID), criteria.getWorkspaceId()));
+            cq.where(cb.and(predicates.toArray(new Predicate[] {})));
 
             return getEntityManager()
                     .createQuery(cq)
@@ -111,7 +106,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             var root = cq.from(MenuItem.class);
 
             List<Predicate> predicates = new ArrayList<>();
-            if (criteria.getWorkspaceId() != null) {
+            if (criteria.getWorkspaceId() != null && !criteria.getWorkspaceId().isBlank()) {
                 predicates.add(cb.equal(root.get(MenuItem_.WORKSPACE_ID), criteria.getWorkspaceId()));
             }
 

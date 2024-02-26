@@ -158,11 +158,30 @@ class ProductRestControllerTest extends AbstractTest {
     @Test
     void getProductsForWorkspaceIdTest() {
 
-        var criteria = new ProductSearchCriteriaDTO()
-                .workspaceId("does-not-exists");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("/search")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode());
+
+        var criteria = new ProductSearchCriteriaDTO();
 
         // not existing product
         var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ProductPageResultDTO.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStream()).isNotNull().isNotEmpty().hasSize(2);
+
+        criteria.workspaceId("does-not-exists");
+        response = given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)

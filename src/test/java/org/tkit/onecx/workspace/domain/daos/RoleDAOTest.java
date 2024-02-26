@@ -28,6 +28,8 @@ class RoleDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.loadById(null),
+                RoleDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 RoleDAO.ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA);
         methodExceptionTests(() -> dao.findById(null),

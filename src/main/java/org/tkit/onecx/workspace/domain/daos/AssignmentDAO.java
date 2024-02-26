@@ -18,7 +18,6 @@ import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
-import org.tkit.quarkus.jpa.utils.QueryCriteriaUtil;
 
 @ApplicationScoped
 public class AssignmentDAO extends AbstractDAO<Assignment> {
@@ -47,10 +46,16 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var root = cq.from(Assignment.class);
 
             List<Predicate> predicates = new ArrayList<>();
-            QueryCriteriaUtil.addSearchStringPredicate(predicates, cb, root.get(Assignment_.menuItemId),
-                    criteria.getMenuItemId());
-            QueryCriteriaUtil.addSearchStringPredicate(predicates, cb,
-                    root.get(Assignment_.menuItem).get(MenuItem_.workspaceId), criteria.getWorkspaceId());
+            if (criteria.getMenuItemId() != null && !criteria.getMenuItemId().isBlank()) {
+                predicates.add(cb.equal(root.get(Assignment_.menuItemId), criteria.getMenuItemId()));
+            }
+            if (criteria.getWorkspaceId() != null && !criteria.getWorkspaceId().isBlank()) {
+                predicates.add(cb.equal(root.get(Assignment_.menuItem).get(MenuItem_.workspaceId), criteria.getWorkspaceId()));
+            }
+
+            if (!predicates.isEmpty()) {
+                cq.where(predicates.toArray(new Predicate[] {}));
+            }
 
             cq.orderBy(cb.asc(root.get(AbstractTraceableEntity_.creationDate)));
 

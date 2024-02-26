@@ -61,18 +61,6 @@ public class ProductDAO extends AbstractDAO<Product> {
         }
     }
 
-    @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
-    public void deleteProductByWorkspaceId(String workspaceId) {
-        var cb = this.getEntityManager().getCriteriaBuilder();
-        var cq = cb.createQuery(Product.class);
-        var root = cq.from(Product.class);
-
-        cq.where(cb.equal(root.get(MenuItem_.WORKSPACE).get(TraceableEntity_.ID), workspaceId));
-
-        var products = this.getEntityManager().createQuery(cq).getResultList();
-        delete(products);
-    }
-
     public Product loadById(Object id) throws DAOException {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();

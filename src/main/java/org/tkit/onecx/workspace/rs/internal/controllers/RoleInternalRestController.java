@@ -61,7 +61,7 @@ public class RoleInternalRestController implements RoleInternalApi {
 
     @Override
     public Response updateWorkspaceRole(String roleId, UpdateRoleRequestDTO updateRoleRequestDTO) {
-        var role = dao.findById(roleId);
+        var role = dao.loadById(roleId);
         if (role == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

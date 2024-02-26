@@ -18,8 +18,11 @@ import lombok.Setter;
 }, indexes = {
         @Index(name = "ROLE_NAME", columnList = "NAME")
 })
+@NamedEntityGraph(name = Role.ROLE_LOAD, attributeNodes = { @NamedAttributeNode("workspace") })
 @SuppressWarnings("java:S2160")
 public class Role extends TraceableEntity {
+
+    public static final String ROLE_LOAD = "Role.load";
 
     @TenantId
     @Column(name = "TENANT_ID")

@@ -3,24 +3,33 @@ package org.tkit.onecx.workspace.rs.internal.controllers;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
+import org.jboss.resteasy.reactive.RestResponse;
+import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.RoleDAO;
 import org.tkit.onecx.workspace.rs.internal.mappers.AssignmentMapper;
+import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
+import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.internal.AssignmentInternalApi;
 import gen.org.tkit.onecx.workspace.rs.internal.model.AssignmentSearchCriteriaDTO;
 import gen.org.tkit.onecx.workspace.rs.internal.model.CreateAssignmentRequestDTO;
+import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
 
 @LogService
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
 public class AssignmentInternalRestController implements AssignmentInternalApi {
+
+    @Inject
+    InternalExceptionMapper exceptionMapper;
 
     @Inject
     AssignmentDAO dao;
@@ -77,4 +86,15 @@ public class AssignmentInternalRestController implements AssignmentInternalApi {
         var result = dao.findByCriteria(criteria);
         return Response.ok(mapper.map(result)).build();
     }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
+        return exceptionMapper.constraint(ex);
+    }
+
+    @ServerExceptionMapper
+    public RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ex) {
+        return exceptionMapper.exception(ex);
+    }
+
 }

@@ -45,7 +45,9 @@ public class RoleDAO extends AbstractDAO<Role> {
             var root = cq.from(Role.class);
 
             List<Predicate> predicates = new ArrayList<>();
-            addSearchStringPredicate(predicates, cb, root.get(Role_.workspaceId), criteria.getWorkspaceId());
+            if (criteria.getWorkspaceId() != null && !criteria.getWorkspaceId().isBlank()) {
+                predicates.add(cb.equal(root.get(Role_.workspaceId), criteria.getWorkspaceId()));
+            }
             addSearchStringPredicate(predicates, cb, root.get(Role_.name), criteria.getName());
             addSearchStringPredicate(predicates, cb, root.get(Role_.description), criteria.getDescription());
 
@@ -59,10 +61,28 @@ public class RoleDAO extends AbstractDAO<Role> {
         }
     }
 
+    public Role loadById(Object id) throws DAOException {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Role.class);
+            var root = cq.from(Role.class);
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
+            return this.getEntityManager()
+                    .createQuery(cq)
+                    .setHint(HINT_LOAD_GRAPH, this.getEntityManager().getEntityGraph(Role.ROLE_LOAD))
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception e) {
+            throw new DAOException(ErrorKeys.LOAD_ENTITY_BY_ID_FAILED, e, entityName, id);
+        }
+    }
+
     public enum ErrorKeys {
 
         ERROR_FIND_ROLE_BY_CRITERIA,
         FIND_ENTITY_BY_ID_FAILED,
 
+        LOAD_ENTITY_BY_ID_FAILED,
     }
 }

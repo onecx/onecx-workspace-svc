@@ -46,6 +46,32 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(13);
+
+        criteria.setWorkspaceId("       ");
+        dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(MenuItemPageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(19);
+
+        criteria.setWorkspaceId(null);
+        dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(MenuItemPageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(19);
     }
 
     @Test

@@ -28,6 +28,10 @@ class AssignmentDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.deleteAllByWorkspaceId(null),
+                AssignmentDAO.ErrorKeys.ERROR_DELETE_ITEMS_BY_WORKSPACE_ID);
+        methodExceptionTests(() -> dao.deleteAllByMenuId(null),
+                AssignmentDAO.ErrorKeys.ERROR_DELETE_ITEMS_BY_MENU_ID);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA);
         methodExceptionTests(() -> dao.findById(null),
