@@ -1,0 +1,118 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-workspace internal service
+  version: 1.0.0
+servers:
+  - url: "http://onecx-workspace:8080"
+tags:
+  - name: userMenuInternal
+paths:
+  /internal/user/{workspaceName}/menu:
+    post:
+      tags:
+        - userMenuInternal
+      description: Get menu for the user
+      operationId: getUserMenu
+      parameters:
+        - name: workspaceName
+          in: path
+          description: Workspace name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWorkspaceMenuRequest'
+      responses:
+        200:
+          description: Permission updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWorkspaceMenuStructure'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+  schemas:
+    UserWorkspaceMenuRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+    UserWorkspaceMenuStructure:
+      type: object
+      properties:
+        workspaceName:
+            type: string
+        menu:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/UserWorkspaceMenuItem'
+    UserWorkspaceMenuItem:
+      type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        applicationId:
+          type: string
+        position:
+          format: int32
+          type: integer
+        badge:
+          type: string
+        external:
+          type: boolean
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserWorkspaceMenuItem'
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string

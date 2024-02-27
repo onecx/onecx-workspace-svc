@@ -9,9 +9,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.criteria.AssignmentSearchCriteria;
-import org.tkit.onecx.workspace.domain.models.Assignment;
-import org.tkit.onecx.workspace.domain.models.Assignment_;
-import org.tkit.onecx.workspace.domain.models.MenuItem_;
+import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
@@ -21,6 +19,22 @@ import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
 @ApplicationScoped
 public class AssignmentDAO extends AbstractDAO<Assignment> {
+
+    public List<AssignmentMenu> findMenuItemIdForUser(String workspaceId, List<String> roles) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(AssignmentMenu.class);
+            var root = cq.from(Assignment.class);
+
+            cq.select(cb.construct(AssignmentMenu.class, root.get(Assignment_.MENU_ITEM_ID),
+                    root.get(Assignment_.ROLE).get(Role_.NAME)));
+            cq.where(cb.equal(root.get(Assignment_.ROLE).get(Role_.WORKSPACE_ID), workspaceId));
+
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_MENU_ID_FOR_USER, ex);
+        }
+    }
 
     // https://hibernate.atlassian.net/browse/HHH-16830#icft=HHH-16830
     @Override
@@ -92,6 +106,8 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
     }
 
     public enum ErrorKeys {
+
+        ERROR_FIND_MENU_ID_FOR_USER,
 
         ERROR_DELETE_ITEMS_BY_MENU_ID,
 

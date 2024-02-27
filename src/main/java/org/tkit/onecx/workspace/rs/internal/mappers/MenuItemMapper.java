@@ -87,7 +87,7 @@ public interface MenuItemMapper {
 
         var parentChildrenMap = entities.stream()
                 .collect(Collectors
-                        .groupingBy(menuItem -> menuItem.getParent() == null ? "TOP" : menuItem.getParent().getKey()));
+                        .groupingBy(menuItem -> menuItem.getParent() == null ? "TOP" : menuItem.getParent().getId()));
 
         dto.setMenuItems(parentChildrenMap.get("TOP").stream().map(this::mapTreeItem).toList());
         return dto;
