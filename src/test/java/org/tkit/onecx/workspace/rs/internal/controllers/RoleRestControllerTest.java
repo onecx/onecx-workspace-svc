@@ -19,7 +19,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(RoleInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class RoleRestControllerTest extends AbstractTest {
+class RoleRestControllerTest extends AbstractTest {
 
     @Test
     void createNewRoleTest() {

@@ -19,7 +19,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(AssignmentInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-public class AssignmentRestControllerTest extends AbstractTest {
+class AssignmentRestControllerTest extends AbstractTest {
 
     @Test
     void createAssignment() {
@@ -179,8 +179,8 @@ public class AssignmentRestControllerTest extends AbstractTest {
                 .as(AssignmentPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(0);
-        assertThat(data.getStream()).isNotNull().hasSize(0);
+        assertThat(data.getTotalElements()).isZero();
+        assertThat(data.getStream()).isNotNull().isEmpty();
 
         var criteria2 = new AssignmentSearchCriteriaDTO();
 
@@ -215,8 +215,8 @@ public class AssignmentRestControllerTest extends AbstractTest {
                 .as(AssignmentPageResultDTO.class);
 
         assertThat(multipleAppIdsResult).isNotNull();
-        assertThat(multipleAppIdsResult.getTotalElements()).isEqualTo(0);
-        assertThat(multipleAppIdsResult.getStream()).isNotNull().hasSize(0);
+        assertThat(multipleAppIdsResult.getTotalElements()).isZero();
+        assertThat(multipleAppIdsResult.getStream()).isNotNull().isEmpty();
 
     }
 

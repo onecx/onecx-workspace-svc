@@ -3,5 +3,5 @@ package org.tkit.onecx.workspace.rs.internal.controllers;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-public class AssignmentRestControllerTestIT extends AssignmentRestControllerTest {
+class AssignmentRestControllerTestIT extends AssignmentRestControllerTest {
 }

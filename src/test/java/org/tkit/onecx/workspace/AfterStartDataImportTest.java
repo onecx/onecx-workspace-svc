@@ -33,7 +33,7 @@ class AfterStartDataImportTest extends AbstractTest {
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(4);
         var map = w.getRoles().stream().collect(Collectors.toMap(Role::getName, x -> x));
 
-        assertThat(map.keySet()).containsOnly("role1", "role2", "roleA", "roleB");
+        assertThat(map).containsOnlyKeys("role1", "role2", "roleA", "roleB");
     }
 
 }

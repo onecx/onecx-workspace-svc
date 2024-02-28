@@ -4,10 +4,15 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
@@ -20,46 +25,23 @@ import io.quarkus.test.junit.QuarkusTest;
 @WithDBData(value = "data/testdata-parent-change.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 class MenuInternalRestControllerParentChangeTest extends AbstractTest {
 
-    @Test
-    void updateMenuItemLastPositionTest() {
-
-        printWorkspace();
-
-        // 4-2-3 pos 2 -> change parent to 4-1 pos 1
-        var request = new UpdateMenuItemParentRequestDTO()
-                .parentItemId("4-1")
-                .position(3)
-                .modificationCount(0);
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .pathParam("menuItemId", "4-2-2")
-                .put("{menuItemId}/parentItemId")
-                .then().statusCode(OK.getStatusCode());
-
-        var dto = printWorkspace();
-
-        // 4-1 -> 4-1-2 pos 2
-        var parent = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-1")).findFirst();
-        assertThat(parent).isPresent();
-        assertThat(parent.get().getPosition()).isEqualTo(0);
-
-        var item = parent.get().getChildren().stream().filter(x -> x.getId().equals("4-2-2")).findFirst();
-        assertThat(item).isPresent();
-        assertThat(item.get().getPosition()).isEqualTo(3);
+    private static Stream<Arguments> menuPosition() {
+        return Stream.of(
+                arguments(3, 3),
+                arguments(30, 3),
+                arguments(1, 1));
     }
 
-    @Test
-    void updateMenuItemMaxPositionTest() {
+    @ParameterizedTest
+    @MethodSource("menuPosition")
+    void updateMenuItemLastPositionTest(int position, int result) {
 
         printWorkspace();
 
         // 4-2-3 pos 2 -> change parent to 4-1 pos 1
         var request = new UpdateMenuItemParentRequestDTO()
                 .parentItemId("4-1")
-                .position(30)
+                .position(position)
                 .modificationCount(0);
 
         given()
@@ -75,42 +57,11 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
         // 4-1 -> 4-1-2 pos 2
         var parent = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-1")).findFirst();
         assertThat(parent).isPresent();
-        assertThat(parent.get().getPosition()).isEqualTo(0);
+        assertThat(parent.get().getPosition()).isZero();
 
         var item = parent.get().getChildren().stream().filter(x -> x.getId().equals("4-2-2")).findFirst();
         assertThat(item).isPresent();
-        assertThat(item.get().getPosition()).isEqualTo(3);
-    }
-
-    @Test
-    void updateMenuItemParentTest() {
-
-        printWorkspace();
-
-        // 4-2-3 pos 2 -> change parent to 4-1 pos 1
-        var request = new UpdateMenuItemParentRequestDTO()
-                .parentItemId("4-1")
-                .position(1)
-                .modificationCount(0);
-
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(request)
-                .pathParam("menuItemId", "4-2-2")
-                .put("{menuItemId}/parentItemId")
-                .then().statusCode(OK.getStatusCode());
-
-        var dto = printWorkspace();
-
-        // 4-1 -> 4-1-2 pos 2
-        var parent = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-1")).findFirst();
-        assertThat(parent).isPresent();
-        assertThat(parent.get().getPosition()).isEqualTo(0);
-
-        var item = parent.get().getChildren().stream().filter(x -> x.getId().equals("4-2-2")).findFirst();
-        assertThat(item).isPresent();
-        assertThat(item.get().getPosition()).isEqualTo(1);
+        assertThat(item.get().getPosition()).isEqualTo(result);
     }
 
     @Test
@@ -173,7 +124,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
         // null<root> -> 4-1-2 pos 2
         var item = dto.getMenuItems().stream().filter(x -> x.getId().equals("4-2-2")).findFirst();
         assertThat(item).isPresent();
-        assertThat(item.get().getPosition()).isEqualTo(0);
+        assertThat(item.get().getPosition()).isZero();
     }
 
     @Test

@@ -102,7 +102,7 @@ public interface ExportImportMapperV1 {
 
     default List<EximWorkspaceMenuItemDTOV1> children(Set<MenuItem> set, Map<String, Set<String>> roles) {
         if (set == null) {
-            return null;
+            return List.of();
         }
         List<EximWorkspaceMenuItemDTOV1> list = new ArrayList<>(set.size());
         for (MenuItem item : set) {

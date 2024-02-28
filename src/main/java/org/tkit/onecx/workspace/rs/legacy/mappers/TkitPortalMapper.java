@@ -67,7 +67,7 @@ public interface TkitPortalMapper {
     MenuItem.Scope map(ScopeDTO scope);
 
     default List<TkitMenuItemStructureDTO> mapToEmptyTree() {
-        return new ArrayList<TkitMenuItemStructureDTO>();
+        return new ArrayList<>();
     }
 
     default List<TkitMenuItemStructureDTO> mapToTree(List<MenuItem> menuItems, String portalId) {

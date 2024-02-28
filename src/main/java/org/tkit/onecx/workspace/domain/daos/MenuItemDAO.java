@@ -18,6 +18,7 @@ import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
+import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
 @ApplicationScoped
@@ -31,7 +32,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             var root = cq.from(MenuItem.class);
 
             cq.where(cb.and(
-                    cb.equal(root.get(MenuItem_.WORKSPACE).get(Workspace_.ID), workspaceId),
+                    cb.equal(root.get(MenuItem_.WORKSPACE).get(TraceableEntity_.ID), workspaceId),
                     cb.equal(root.get(MenuItem_.APPLICATION_ID), appId)));
 
             var items = getEntityManager().createQuery(cq).getResultList();
@@ -127,7 +128,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             var cq = cb.createQuery(MenuItem.class);
             var root = cq.from(MenuItem.class);
 
-            cq.where(cb.equal(root.get(MenuItem_.ID), id));
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
 
             return getEntityManager()
                     .createQuery(cq)
@@ -209,7 +210,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.greaterThanOrEqualTo(root.get(MenuItem_.POSITION), position));
-        predicates.add(cb.notEqual(root.get(MenuItem_.ID), menuId));
+        predicates.add(cb.notEqual(root.get(TraceableEntity_.ID), menuId));
         if (parentId == null) {
             predicates.add(cb.isNull(root.get(MenuItem_.PARENT_ID)));
         } else {
@@ -217,7 +218,8 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         }
 
         uq.set(MenuItem_.POSITION, cb.sum(root.get(MenuItem_.POSITION), sum))
-                .set(MenuItem_.MODIFICATION_COUNT, cb.sum(root.get(MenuItem_.MODIFICATION_COUNT), 1))
+                .set(AbstractTraceableEntity_.MODIFICATION_COUNT,
+                        cb.sum(root.get(AbstractTraceableEntity_.MODIFICATION_COUNT), 1))
                 .where(cb.and(predicates.toArray(new Predicate[0])));
 
         this.getEntityManager().createQuery(uq).executeUpdate();
