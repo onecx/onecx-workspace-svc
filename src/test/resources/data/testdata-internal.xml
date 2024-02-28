@@ -24,6 +24,8 @@
 	<MENU_ITEM guid="33-11" optlock="0" disabled="FALSE" key="PORTAL_CHILD_6" name="Portal Child 6" external="FALSE"  pos="0" scope="WORKSPACE" url="" parent="33-2" workspace="11-111" application_id="" tenant_id="tenant-100"/>
 	<MENU_ITEM guid="33-12" optlock="0" disabled="FALSE" key="PORTAL_CHILD_7" name="Portal Child 7" external="FALSE"  pos="0" scope="WORKSPACE" url="" parent="33-11" workspace="11-111" application_id="" tenant_id="tenant-100"/>
 	<MENU_ITEM guid="33-13" optlock="0" disabled="FALSE" key="PORTAL_CHILD_8" name="Portal Child 8" external="FALSE"  pos="0" scope="WORKSPACE" url="" parent="33-12" workspace="11-111" application_id="" tenant_id="tenant-100"/>
+	<MENU_ITEM_I18N menuitem_guid="33-13" language="de" i18n="DE translation"  />
+	<MENU_ITEM_I18N menuitem_guid="33-13" language="en" i18n="EN translation"  />
 	<MENU_ITEM guid="44-1" optlock="0"  badge="" description="" disabled="FALSE" key="PORTAL_MAIN_MENU" name="Main Menu" external="FALSE"  pos="0" scope="WORKSPACE" url=""  workspace="11-222" application_id="" tenant_id="tenant-100"/>
 	<MENU_ITEM guid="44-2" optlock="0"  badge="" description="" disabled="FALSE" key="PORTAL_ADMIN_MENU" name="Admin Menu" external="FALSE"  pos="0" scope="WORKSPACE" url=""  workspace="11-222" application_id="" tenant_id="tenant-100"/>
 	<MENU_ITEM guid="44-3" optlock="0"  badge="" description="" disabled="FALSE" key="PORTAL_USER_MENU" name="User Menu" external="FALSE"  pos="0" scope="WORKSPACE" url="" workspace="11-222" application_id="" tenant_id="tenant-100"/>
