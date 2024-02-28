@@ -13,6 +13,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.workspace.domain.daos.RoleDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
+import org.tkit.onecx.workspace.domain.services.RoleService;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.RoleMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
@@ -44,9 +45,12 @@ public class RoleInternalRestController implements RoleInternalApi {
     @Inject
     WorkspaceDAO workspaceDAO;
 
+    @Inject
+    RoleService roleService;
+
     @Override
     public Response deleteWorkspaceRole(String roleId) {
-        dao.deleteQueryById(roleId);
+        roleService.deleteRole(roleId);
         return Response.noContent().build();
     }
 

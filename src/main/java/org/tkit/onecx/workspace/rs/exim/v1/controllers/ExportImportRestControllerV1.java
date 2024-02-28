@@ -89,58 +89,31 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
-    @Transactional
     public Response importMenu(String name, MenuSnapshotDTOV1 menuSnapshotDTOV1) {
         var workspace = dao.findByName(name);
         if (workspace == null) {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
 
-        List<MenuItem> items = new LinkedList<>();
-        Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(menuSnapshotDTOV1.getMenu().getMenuItems(),
-                workspace, null, items);
-        var roleNames = menuRoles.values().stream().flatMap(Collection::stream).collect(toSet());
+        var status = ImportResponseStatusDTOV1.SKIPPED;
 
-        Map<String, Role> tmp = new HashMap<>();
-        List<Role> roles = new ArrayList<>();
-        if (!roleNames.isEmpty()) {
+        if (menuSnapshotDTOV1.getMenu().getMenuItems() != null && !menuSnapshotDTOV1.getMenu().getMenuItems().isEmpty()) {
 
-            // check for existing roles
-            var existingRoleNames = roleDAO.findRolesByWorkspaceAndNames(workspace.getId(), roleNames);
-            if (!existingRoleNames.isEmpty()) {
-                tmp = existingRoleNames.stream().collect(toMap(Role::getName, role -> role));
-                roleNames.removeAll(tmp.keySet());
-            }
+            // convert menu dto to menu item object
+            List<MenuItem> items = new LinkedList<>();
+            Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(
+                    menuSnapshotDTOV1.getMenu().getMenuItems(),
+                    workspace, null, items);
 
-            // create new roles
-            for (String rn : roleNames) {
-                Role r = new Role();
-                r.setWorkspace(workspace);
-                r.setName(rn);
-                tmp.put(rn, r);
-                roles.add(r);
-            }
+            // validate menu items, roles and assignments
+            var request = menuService.importMenuItems(workspace, items, menuRoles);
+
+            // execute update in database
+            var deleted = menuService.importMenuItemsForWorkspace(request);
+
+            // create or update only?
+            status = deleted == 0 ? ImportResponseStatusDTOV1.CREATED : ImportResponseStatusDTOV1.UPDATED;
         }
-
-        List<Assignment> assignments = new ArrayList<>();
-        for (MenuItem menuItem : items) {
-            var mr = menuRoles.get(menuItem.getId());
-            if (mr != null) {
-
-                for (String roleName : mr) {
-                    var role = tmp.get(roleName);
-
-                    var assignment = new Assignment();
-                    assignment.setMenuItem(menuItem);
-                    assignment.setRole(role);
-                    assignments.add(assignment);
-                }
-            }
-        }
-
-        var deleted = menuService.importMenuItems(workspace.getId(), items, roles, assignments);
-
-        var status = deleted == 0 ? ImportResponseStatusDTOV1.CREATED : ImportResponseStatusDTOV1.UPDATED;
 
         return Response.ok(mapper.create(menuSnapshotDTOV1.getId(), status)).build();
     }

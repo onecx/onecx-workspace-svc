@@ -105,8 +105,22 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         }
     }
 
+    @Transactional
+    public void deleteAllByRoleId(String id) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = this.deleteQuery();
+            var root = cq.from(Assignment.class);
+            cq.where(cb.equal(root.get(Assignment_.ROLE_ID), id));
+            getEntityManager().createQuery(cq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_ITEMS_BY_ROLE_ID, ex);
+        }
+    }
+
     public enum ErrorKeys {
 
+        ERROR_DELETE_ITEMS_BY_ROLE_ID,
         ERROR_FIND_MENU_ID_FOR_USER,
 
         ERROR_DELETE_ITEMS_BY_MENU_ID,

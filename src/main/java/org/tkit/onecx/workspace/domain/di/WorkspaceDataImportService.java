@@ -1,10 +1,5 @@
 package org.tkit.onecx.workspace.domain.di;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toCollection;
-
-import java.util.ArrayList;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
@@ -16,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gen.org.tkit.onecx.workspace.di.workspace.v1.model.ImportRequestDTOV1;
 import gen.org.tkit.onecx.workspace.di.workspace.v1.model.WorkspaceDataImportDTOV1;
-import gen.org.tkit.onecx.workspace.di.workspace.v1.model.WorkspaceImportDTOV1;
 
 @DataImport("workspace")
 public class WorkspaceDataImportService implements DataImportService {
@@ -48,8 +42,7 @@ public class WorkspaceDataImportService implements DataImportService {
         if (data == null || data.getRequests() == null) {
             return;
         }
-        var tenantIds = data.getRequests().stream().map(ImportRequestDTOV1::getWorkspace)
-                .collect(groupingBy(WorkspaceImportDTOV1::getTenantId, toCollection(ArrayList::new))).keySet();
+        var tenantIds = data.getRequests().stream().map(ImportRequestDTOV1::getTenantId).toList();
 
         for (var tenantId : tenantIds) {
             try {
@@ -79,4 +72,5 @@ public class WorkspaceDataImportService implements DataImportService {
             super(message, ex);
         }
     }
+
 }

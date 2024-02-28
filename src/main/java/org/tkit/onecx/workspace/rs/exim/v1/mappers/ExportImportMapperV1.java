@@ -111,7 +111,6 @@ public interface ExportImportMapperV1 {
         return list;
     }
 
-    @Named("menu-roles")
     default EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem, Map<String, Set<String>> roles) {
         var menu = map(menuItem);
         if (menu == null) {

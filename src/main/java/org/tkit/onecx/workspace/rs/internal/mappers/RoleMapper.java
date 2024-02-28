@@ -15,7 +15,7 @@ import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 public interface RoleMapper {
 
     @Mapping(target = "removeStreamItem", ignore = true)
-    public abstract RolePageResultDTO mapPage(PageResult<Role> page);
+    RolePageResultDTO mapPage(PageResult<Role> page);
 
     RoleSearchCriteria map(RoleSearchCriteriaDTO dto);
 

@@ -1,12 +1,15 @@
 {
   "requests": [
     {
+      "tenantId": "tenant-100",
       "menuItems": [
         {
           "id": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+          "roles": [ "role1" , "roleA" ],
           "children": [
             {
               "id": "3ee3b5cb-1757-4a8b-b83f-cadee6b3c30a",
+              "roles": [ "role1" , "role2" ],
               "applicationId": "portal-welcome-ui",
               "badge": "home",
               "children": [],
@@ -27,6 +30,7 @@
             {
               "id": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
               "applicationId": "announcement-help-management-ui",
+              "roles": [ "roleB" ],
               "badge": "calendar-plus",
               "children": [
                 {
@@ -358,7 +362,6 @@
       "workspace": {
         "baseUrl": "/admin",
         "companyName": "Company",
-        "tenantId": "tenant-100",
         "description": "Portal zur Administration von Portalen",
         "footerLabel": "Admin Portal",
         "homePage": "/admin",
@@ -384,10 +387,21 @@
             ]
           }
         ],
-        "themeName": "Theme1"
+        "themeName": "Theme1",
+        "roles": [
+          {
+            "name": "role1",
+            "description": "role1"
+          },
+          {
+            "name": "role2",
+            "description": "role2"
+          }
+        ]
       }
     },
     {
+      "tenantId": "default",
       "menuItems": [
         {
           "children": [
@@ -412,10 +426,9 @@
           ]
         }
       ],
-        "workspace": {
+      "workspace": {
           "baseUrl": "/tkom",
           "companyName": "Company2",
-          "tenantId": "default",
           "description": "Portal zur Core von Portalen",
           "footerLabel": "Core Portal",
           "homePage": "/tkom",

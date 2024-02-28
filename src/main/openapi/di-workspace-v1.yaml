@@ -31,6 +31,9 @@ components:
         - workspace
       type: object
       properties:
+        tenantId:
+          description: tenant id
+          type: string
         workspace:
           $ref: '#/components/schemas/WorkspaceImport'
         menuItems:
@@ -60,6 +63,11 @@ components:
           type: object
           additionalProperties:
             type: string
+        roles:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         children:
           type: array
           items:
@@ -74,10 +82,6 @@ components:
           description: Name of the workspace that should be created/updated
           minLength: 1
           type: string
-        tenantId:
-          description: "TenantId which will be set to Workspace, when superAdmin Role\
-            \ is assigned"
-          type: string
         themeName:
           description: Theme name provided in a case when themeImportData is empty
           type: string
@@ -91,6 +95,10 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceRole'
         phoneNumber:
           type: string
         rssFeedUrl:
@@ -120,16 +128,19 @@ components:
             type: string
         logoUrl:
           type: string
-    OffsetDateTime:
-      format: date-time
-      type: string
-      example: 2022-03-10T12:15:50-04:00
     SubjectLink:
       type: object
       properties:
         label:
           type: string
         url:
+          type: string
+    WorkspaceRole:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
           type: string
     WorkspaceAddress:
       type: object

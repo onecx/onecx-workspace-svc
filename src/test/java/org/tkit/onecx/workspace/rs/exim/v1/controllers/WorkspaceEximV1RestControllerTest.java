@@ -239,6 +239,41 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     }
 
     @Test
+    void importMenuByWorkspaceIdEmptyListTest() {
+
+        var snapshot = new MenuSnapshotDTOV1()
+                .id("test-import-1")
+                .created(OffsetDateTime.now())
+                .menu(new EximMenuStructureDTOV1());
+
+        var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("/test01/menu/import")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ImportMenuResponseDTOV1.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(ImportResponseStatusDTOV1.SKIPPED);
+
+        snapshot.getMenu().menuItems(new ArrayList<>());
+
+        response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("/test01/menu/import")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ImportMenuResponseDTOV1.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(ImportResponseStatusDTOV1.SKIPPED);
+    }
+
+    @Test
     void importMenuByWorkspaceIdTest() {
 
         // children of key2
