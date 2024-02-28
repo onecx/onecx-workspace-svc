@@ -8,7 +8,7 @@ import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 
 @ApplicationScoped
-public class WorkspaceService {
+public class git WorkspaceService {
 
     @Inject
     WorkspaceDAO workspaceDAO;
