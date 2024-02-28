@@ -20,7 +20,7 @@ import org.tkit.quarkus.jpa.models.TraceableEntity_;
 @ApplicationScoped
 public class AssignmentDAO extends AbstractDAO<Assignment> {
 
-    public List<AssignmentMenu> findMenuItemIdForUser(String workspaceId, List<String> roles) {
+    public List<AssignmentMenu> findAssignmentMenuForWorkspace(String workspaceId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = cb.createQuery(AssignmentMenu.class);

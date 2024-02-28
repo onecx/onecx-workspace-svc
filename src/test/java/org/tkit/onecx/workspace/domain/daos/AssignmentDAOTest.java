@@ -28,7 +28,7 @@ class AssignmentDAOTest {
 
     @Test
     void methodExceptionTests() {
-        methodExceptionTests(() -> dao.findMenuItemIdForUser(null, null),
+        methodExceptionTests(() -> dao.findAssignmentMenuForWorkspace(null),
                 AssignmentDAO.ErrorKeys.ERROR_FIND_MENU_ID_FOR_USER);
         methodExceptionTests(() -> dao.deleteAllByWorkspaceId(null),
                 AssignmentDAO.ErrorKeys.ERROR_DELETE_ITEMS_BY_WORKSPACE_ID);

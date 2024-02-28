@@ -62,7 +62,7 @@ public class UserMenuInternalController implements UserMenuInternalApi {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        List<AssignmentMenu> assignmentRecords = assignmentDAO.findMenuItemIdForUser(workspace.getId(), roles);
+        List<AssignmentMenu> assignmentRecords = assignmentDAO.findAssignmentMenuForWorkspace(workspace.getId());
         if (assignmentRecords.isEmpty()) {
             return Response.ok(mapper.empty(workspaceName)).build();
         }

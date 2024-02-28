@@ -235,6 +235,9 @@ components:
             $ref: '#/components/schemas/EximWorkspaceMenuItem'
     EximWorkspaceMenuItem:
       type: object
+      required:
+        - key
+        - position
       properties:
         key:
           type: string
