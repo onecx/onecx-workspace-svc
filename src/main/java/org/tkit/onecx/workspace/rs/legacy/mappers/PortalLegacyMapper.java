@@ -8,7 +8,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ValueMapping;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
-import org.tkit.onecx.workspace.domain.models.enums.Scope;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuItemStructureDTO;
@@ -18,7 +17,11 @@ import gen.org.tkit.onecx.workspace.rs.legacy.model.ScopeDTO;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface PortalLegacyMapper {
 
-    default List<MenuItemStructureDTO> mapToTree(List<MenuItem> menuItems) {
+    default List<MenuItemStructureDTO> mapToEmptyTree() {
+        return new ArrayList<>();
+    }
+
+    default List<MenuItemStructureDTO> mapToTree(List<MenuItem> menuItems, String portalId) {
         List<MenuItemStructureDTO> result = new ArrayList<>();
         if (menuItems == null) {
             return result;
@@ -26,6 +29,7 @@ public interface PortalLegacyMapper {
 
         // create map of <id, menuItem>
         var map = menuItems.stream().map(this::mapWithEmptyChildren)
+                .map(item -> item.portalId(portalId))
                 .collect(Collectors.toMap(MenuItemStructureDTO::getId, x -> x));
 
         // loop over all menu items, add parent or child in result tree
@@ -41,18 +45,18 @@ public interface PortalLegacyMapper {
         return result;
     }
 
-    @Mapping(target = "portalExit", source = "workspaceExit")
+    @Mapping(target = "portalExit", source = "external")
     @Mapping(target = "parentItemId", source = "parent.id")
-    @Mapping(target = "portalId", source = "workspaceName")
     @Mapping(target = "parentKey", source = "parent.id")
     @Mapping(target = "version", source = "modificationCount")
     @Mapping(target = "removeChildrenItem", ignore = true)
     @Mapping(target = "removeI18nItem", ignore = true)
+    @Mapping(target = "portalId", ignore = true)
     @Mapping(target = "children", ignore = true)
     MenuItemStructureDTO mapWithEmptyChildren(MenuItem entity);
 
     @ValueMapping(target = "PORTAL", source = "WORKSPACE")
-    ScopeDTO map(Scope scope);
+    ScopeDTO map(MenuItem.Scope scope);
 
     @Mapping(target = "removeParametersItem", ignore = true)
     @Mapping(target = "namedParameters", ignore = true)

@@ -28,18 +28,14 @@ class WorkspaceDAOTest {
 
     @Test
     void methodExceptionTests() {
-        methodExceptionTests(() -> dao.loadByWorkspaceName(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
+        methodExceptionTests(() -> dao.loadById(null),
+                WorkspaceDAO.ErrorKeys.ERROR_LOAD_WORKSPACE);
         methodExceptionTests(() -> dao.findBySearchCriteria(null),
                 WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_CRITERIA);
-        methodExceptionTests(() -> dao.findByWorkspaceName(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
         methodExceptionTests(() -> dao.findById(null),
                 WorkspaceDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
-        methodExceptionTests(() -> dao.findByWorkspaceNames(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
-        methodExceptionTests(() -> dao.getAllWorkspaceNames(),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_NAME);
+        methodExceptionTests(() -> dao.findByName(null),
+                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_BY_NAME);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

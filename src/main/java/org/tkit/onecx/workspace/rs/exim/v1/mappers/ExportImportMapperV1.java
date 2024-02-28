@@ -2,11 +2,10 @@ package org.tkit.onecx.workspace.rs.exim.v1.mappers;
 
 import java.time.OffsetDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
+import org.tkit.onecx.workspace.domain.models.Role;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
@@ -14,6 +13,9 @@ import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ExportImportMapperV1 {
+
+    ImportMenuResponseDTOV1 create(String id, ImportResponseStatusDTOV1 status);
+
     default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces) {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         snapshot.setCreated(OffsetDateTime.now());
@@ -38,17 +40,41 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "imageUrl", source = "imageUrls")
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
 
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
+    @Mapping(target = "workspace", ignore = true)
+    Role create(EximWorkspaceRoleDTOV1 dto);
+
+    @AfterMapping
+    default void afterWorkspace(EximWorkspaceDTOV1 dto, @MappingTarget Workspace workspace) {
+        if (workspace == null) {
+            return;
+        }
+        if (workspace.getRoles() == null) {
+            return;
+        }
+        workspace.getRoles().forEach(r -> r.setWorkspace(workspace));
+    }
+
     @Mapping(target = "removeWorkspacesItem", ignore = true)
     @Mapping(target = "id", source = "request.id")
     @Mapping(target = "workspaces", source = "workspaces")
     ImportWorkspaceResponseDTOV1 create(WorkspaceSnapshotDTOV1 request,
             Map<String, ImportResponseStatusDTOV1> workspaces);
 
-    @Mapping(target = "removeWorkspaceRolesItem", ignore = true)
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
     @Mapping(target = "subjectLinks", source = "subjectLink")
     @Mapping(target = "imageUrls", source = "imageUrl")
+    @Mapping(target = "removeRolesItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
 
     default MenuSnapshotDTOV1 create(List<MenuItem> menuStructure) {
@@ -69,54 +95,101 @@ public interface ExportImportMapperV1 {
 
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeChildrenItem", ignore = true)
+    @Mapping(target = "removeRolesItem", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "children", ignore = true)
     EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem);
 
+    default List<EximWorkspaceMenuItemDTOV1> children(Set<MenuItem> set, Map<String, Set<String>> roles) {
+        if (set == null) {
+            return List.of();
+        }
+        List<EximWorkspaceMenuItemDTOV1> list = new ArrayList<>(set.size());
+        for (MenuItem item : set) {
+            list.add(map(item, roles));
+        }
+        return list;
+    }
+
+    default EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem, Map<String, Set<String>> roles) {
+        var menu = map(menuItem);
+        if (menu == null) {
+            return null;
+        }
+
+        var r = roles.get(menuItem.getId());
+        if (r != null) {
+            menu.setRoles(r);
+        }
+
+        menu.setChildren(children(menuItem.getChildren(), roles));
+        return menu;
+    }
+
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
     @Mapping(target = "parent.id", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
-    @Mapping(target = "permission", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "parentId", ignore = true)
     MenuItem map(EximWorkspaceMenuItemDTOV1 eximWorkspaceMenuItemDTOV1);
 
-    default void recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace, MenuItem parent,
+    default Map<String, Set<String>> recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace,
+            MenuItem parent,
             List<MenuItem> mappedItems) {
-        int position = 0;
+
+        if (items == null || items.isEmpty()) {
+            return Map.of();
+        }
+
+        List<MenuItem> result = new ArrayList<>();
+        Map<String, Set<String>> roles = new HashMap<>();
+
         for (EximWorkspaceMenuItemDTOV1 item : items) {
             if (item != null) {
                 MenuItem menu = map(item);
-                updateMenu(menu, position, workspace, parent);
-                mappedItems.add(menu);
-                position++;
+                menu.setWorkspace(workspace);
+                menu.setParent(parent);
+                result.add(menu);
 
-                if (item.getChildren() == null || item.getChildren().isEmpty()) {
-                    continue;
+                if (item.getRoles() != null) {
+                    roles.put(menu.getId(), item.getRoles());
                 }
+                roles.putAll(recursiveMappingTreeStructure(item.getChildren(), workspace, menu, mappedItems));
+            }
+        }
 
-                recursiveMappingTreeStructure(item.getChildren(), workspace, menu, mappedItems);
+        // update position in the current list
+        updatePosition(result);
+
+        mappedItems.addAll(result);
+
+        return roles;
+    }
+
+    default void updatePosition(List<MenuItem> items) {
+        Map<Integer, Set<MenuItem>> pos = new TreeMap<>();
+        items.forEach(c -> pos.computeIfAbsent(c.getPosition(), k -> new HashSet<>()).add(c));
+
+        int index = 0;
+        for (Map.Entry<Integer, Set<MenuItem>> entry : pos.entrySet()) {
+            for (MenuItem m : entry.getValue()) {
+                m.setPosition(index);
+                index = index + 1;
             }
         }
     }
 
-    default MenuItem updateMenu(MenuItem menuItem, int position, Workspace workspace,
-            MenuItem parent) {
-        menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getName());
-        menuItem.setPosition(position);
-        menuItem.setParent(parent);
-        return menuItem;
-    }
-
-    default MenuSnapshotDTOV1 mapTree(Collection<MenuItem> entities) {
+    default MenuSnapshotDTOV1 mapTree(Collection<MenuItem> entities, Map<String, Set<String>> roles) {
         MenuSnapshotDTOV1 dto = new MenuSnapshotDTOV1();
         dto.setCreated(OffsetDateTime.now());
         dto.setId(UUID.randomUUID().toString());
@@ -125,26 +198,11 @@ public interface ExportImportMapperV1 {
             return dto;
         }
 
-        var parentChildrenMap = entities.stream()
-                .collect(Collectors
-                        .groupingBy(menuItem -> menuItem.getParent() == null ? "TOP" : menuItem.getParent().getKey()));
+        var parents = entities.stream().filter(m -> m.getParentId() == null).map(m -> map(m, roles)).toList();
+
         dto.setMenu(new EximMenuStructureDTOV1());
-        dto.getMenu().setMenuItems(parentChildrenMap.get("TOP").stream().map(this::map).toList());
+        dto.getMenu().setMenuItems(parents);
         return dto;
     }
 
-    default Set<String> map(String roles) {
-        if (roles != null && !roles.isBlank()) {
-            String[] values = roles.split(",");
-            return new HashSet<>(Arrays.asList(values));
-        } else
-            return new HashSet<>();
-    }
-
-    default String map(Set<String> roles) {
-        if (roles != null && !roles.isEmpty()) {
-            return roles.stream().map(Object::toString).collect(Collectors.joining(","));
-        } else
-            return "";
-    }
 }

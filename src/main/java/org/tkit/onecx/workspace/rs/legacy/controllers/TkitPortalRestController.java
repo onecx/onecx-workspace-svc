@@ -13,6 +13,7 @@ import org.apache.commons.text.StringSubstitutor;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
@@ -50,7 +51,14 @@ public class TkitPortalRestController implements TkitPortalApi {
 
     @Override
     public Response getMenuStructureForTkitPortalName(String portalName, Boolean interpolate) {
-        var menuItems = menuItemDAO.loadAllMenuItemsByWorkspaceName(portalName);
+        var workspace = workspaceDAO.findByName(portalName);
+        if (workspace == null) {
+            return Response.ok(mapper.mapToEmptyTree()).build();
+        }
+
+        var criteria = new MenuItemLoadCriteria();
+        criteria.setWorkspaceId(workspace.getId());
+        var menuItems = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
 
         if (interpolate != null && interpolate) {
             for (MenuItem item : menuItems) {
@@ -60,11 +68,10 @@ public class TkitPortalRestController implements TkitPortalApi {
             }
         }
 
-        return Response.ok(mapper.mapToTree(menuItems)).build();
+        return Response.ok(mapper.mapToTree(menuItems, workspace.getName())).build();
     }
 
     @Override
-    @Transactional
     public Response submitMenuRegistrationRequest(String portalName, String appId,
             MenuRegistrationRequestDTO menuRegistrationRequestDTO) {
         MenuRegistrationResponseDTO response = new MenuRegistrationResponseDTO();
@@ -78,16 +85,16 @@ public class TkitPortalRestController implements TkitPortalApi {
         }
 
         try {
-            var workspace = workspaceDAO.findByWorkspaceName(portalName);
-            if (workspace == null) {
-                throw new ConstraintException("Workspace not found", ErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
-            }
-
             if (menuRegistrationRequestDTO.getMenuItems() == null || menuRegistrationRequestDTO.getMenuItems().isEmpty()) {
                 throw new ConstraintException("Menu items are empty", ErrorKeys.MENU_ITEMS_EMPTY, null);
             }
 
-            // In the old structure just a sub part of the menu was send so we need to find the parent menu item if defined
+            var workspace = workspaceDAO.findByName(portalName);
+            if (workspace == null) {
+                throw new ConstraintException("Workspace not found", ErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
+            }
+
+            // In the old structure just a sub part of the menu was sent, so we need to find the parent menu item if defined
             var parentKey = menuRegistrationRequestDTO.getMenuItems().get(0).getParentKey();
             MenuItem parent = null;
             if (parentKey != null) {
@@ -97,7 +104,7 @@ public class TkitPortalRestController implements TkitPortalApi {
             List<MenuItem> items = new LinkedList<>();
             mapper.recursiveMappingTreeStructure(menuRegistrationRequestDTO.getMenuItems(), workspace, parent, appId, items);
 
-            menuItemDAO.deleteAllMenuItemsByWorkspaceNameAndAppId(portalName, appId);
+            menuItemDAO.deleteAllMenuItemsByWorkspaceAndAppId(workspace.getId(), appId);
             menuItemDAO.create(items);
 
             response.setApplied(true);

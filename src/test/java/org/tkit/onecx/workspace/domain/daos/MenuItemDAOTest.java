@@ -28,21 +28,23 @@ class MenuItemDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.updateMenuItem(null, null, 0, null, 0, true),
+                MenuItemDAO.ErrorKeys.ERROR_UPDATE_MENU_ITEM);
+        methodExceptionTests(() -> dao.loadAllMenuItemsByCriteria(null),
+                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA);
+        methodExceptionTests(() -> dao.findByCriteria(null),
+                MenuItemDAO.ErrorKeys.ERROR_FIND_MENU_ITEMS_BY_CRITERIA);
+        methodExceptionTests(() -> dao.loadAllChildren(null),
+                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_CHILDREN);
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceId(null),
                 MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID);
-        methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceName(null),
-                MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME);
-        methodExceptionTests(() -> dao.updateMenuItems(null, null, null), MenuItemDAO.ErrorKeys.ERROR_UPDATE_MENU_ITEMS);
-        methodExceptionTests(() -> dao.loadAllMenuItemsByWorkspaceName(null),
-                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME);
-        methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceNameAndAppId(null, null),
+        methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceAndAppId(null, null),
                 MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID);
         methodExceptionTests(() -> dao.loadMenuItemByWorkspaceAndKey(null, null),
-                MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACE_NAME);
+                MenuItemDAO.ErrorKeys.ERROR_LOAD_MENU_BY_ID_AND_KEY);
         methodExceptionTests(() -> dao.findById(null),
                 MenuItemDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
-        methodExceptionTests(() -> dao.loadById(null),
-                MenuItemDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED);
+
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

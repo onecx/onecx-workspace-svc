@@ -18,9 +18,9 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
+import org.tkit.onecx.workspace.domain.services.MenuService;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.MenuItemMapper;
-import org.tkit.onecx.workspace.rs.internal.services.MenuItemService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -48,12 +48,11 @@ public class MenuInternalRestController implements MenuInternalApi {
     WorkspaceDAO workspaceDAO;
 
     @Inject
-    MenuItemService menuItemService;
+    MenuService menuService;
 
     @Override
-    @Transactional
-    public Response createMenuItemForWorkspace(String name, CreateMenuItemDTO menuItemDTO) {
-        var workspace = workspaceDAO.findByWorkspaceName(name);
+    public Response createMenuItem(CreateMenuItemDTO menuItemDTO) {
+        var workspace = workspaceDAO.findById(menuItemDTO.getWorkspaceId());
 
         if (workspace == null) {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
@@ -61,25 +60,20 @@ public class MenuInternalRestController implements MenuInternalApi {
 
         MenuItem parentItem = null;
         if (menuItemDTO.getParentItemId() != null) {
-
             parentItem = dao.findById(menuItemDTO.getParentItemId());
-
             if (parentItem == null) {
                 throw new ConstraintException("Parent menu item does not exist", MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST,
                         null);
-            } else {
-                // check if parent's portal and child's portal are the same
-                if (!parentItem.getWorkspace().getName().equals(name)) {
-                    throw new ConstraintException("Parent menu item and menu item does not have the same workspace",
-                            MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
-                }
+            }
+
+            // check if parent's portal and child's portal are the same
+            if (!workspace.getId().equals(parentItem.getWorkspaceId())) {
+                throw new ConstraintException("Parent menu item and menu item does not have the same workspace",
+                        MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
             }
         }
 
-        var menuItem = mapper.create(menuItemDTO);
-        menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getName());
-        menuItem.setParent(parentItem);
+        var menuItem = mapper.create(menuItemDTO, workspace, parentItem);
         menuItem = dao.create(menuItem);
 
         return Response
@@ -89,111 +83,130 @@ public class MenuInternalRestController implements MenuInternalApi {
 
     @Override
     @Transactional
-    public Response deleteAllMenuItemsForWorkspace(String name) {
-        dao.deleteAllMenuItemsByWorkspaceName(name);
-
+    public Response deleteAllMenuItemsForWorkspace(String id) {
+        menuService.deleteAllMenuItemsForWorkspace(id);
         return Response.noContent().build();
     }
 
     @Override
     @Transactional
-    public Response deleteMenuItemById(String id, String menuItemId) {
-        dao.deleteQueryById(menuItemId);
-
+    public Response deleteMenuItemById(String menuItemId) {
+        menuService.deleteMenuItem(menuItemId);
         return Response.noContent().build();
     }
 
     @Override
-    public Response getMenuItemById(String id, String menuItemId) {
+    public Response getMenuItemById(String menuItemId) {
         var result = dao.findById(menuItemId);
-
+        if (result == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
         return Response.ok(mapper.map(result)).build();
     }
 
     @Override
-    public Response getMenuItemsForWorkspaceName(String name) {
-        var result = dao.loadAllMenuItemsByWorkspaceName(name);
-
-        return Response.ok(mapper.mapList(result)).build();
-    }
-
-    @Override
-    public Response getMenuStructureForWorkspaceName(String name) {
-        var result = dao.loadAllMenuItemsByWorkspaceName(name);
-
+    public Response getMenuStructure(MenuStructureSearchCriteriaDTO menuStructureSearchCriteriaDTO) {
+        var criteria = mapper.map(menuStructureSearchCriteriaDTO);
+        var result = dao.loadAllMenuItemsByCriteria(criteria);
         return Response.ok(mapper.mapTree(result)).build();
     }
 
     @Override
-    public Response patchMenuItems(String id, UpdateMenuItemsRequestDTO updateMenuItemsRequestDTO) {
-        // list of IDs
-        List<Object> ids = new ArrayList<>(updateMenuItemsRequestDTO.getItems().keySet());
-        if (ids.isEmpty()) {
-            return Response.status(NOT_FOUND).build();
-        }
-        // load menu items
-        var items = dao.findByIds(ids).toList();
-        if (items.isEmpty()) {
-            return Response.status(NOT_FOUND).build();
-        }
-
-        if (items.size() != ids.size()) {
-            return Response.status(NOT_FOUND).entity("Menu Items specified in request body do not exist in db").build();
-        }
-
-        List<MenuItem> toUpdate = new ArrayList<>();
-        for (Map.Entry<String, UpdateMenuItemRequestDTO> entry : updateMenuItemsRequestDTO.getItems().entrySet()) {
-            var menuItem = update(entry.getKey(), entry.getValue());
-            toUpdate.add(menuItem);
-        }
-
-        var result = dao.update(toUpdate);
-        return Response.ok(mapper.map(result)).build();
+    public Response searchMenuItemsByCriteria(MenuItemSearchCriteriaDTO menuItemSearchCriteriaDTO) {
+        var criteria = mapper.map(menuItemSearchCriteriaDTO);
+        var result = dao.findByCriteria(criteria);
+        return Response.ok(mapper.mapPage(result)).build();
     }
 
     @Override
-    public Response updateMenuItem(String id, String menuItemId, UpdateMenuItemRequestDTO menuItemDTO) {
-        var menuItem = update(menuItemId, menuItemDTO);
+    public Response updateMenuItem(String menuItemId, UpdateMenuItemRequestDTO menuItemDTO) {
+
+        var menuItem = dao.loadAllChildren(menuItemId);
         if (menuItem == null) {
             return Response.status(NOT_FOUND).build();
         }
-        menuItem = dao.update(menuItem);
+
+        var oldPosition = menuItem.getPosition();
+        var oldParentId = menuItem.getParentId();
+        var newParentId = menuItemDTO.getParentItemId();
+        var newPosition = menuItemDTO.getPosition();
+
+        mapper.update(menuItemDTO, menuItem);
+        var changeParent = updateMenuItemParent(menuItem, menuItemDTO.getParentItemId());
+        menuItem = dao.updateMenuItem(menuItem, oldParentId, oldPosition, newParentId, newPosition, changeParent);
+
         return Response.ok(mapper.map(menuItem)).build();
     }
 
-    private MenuItem update(String menuItemId, UpdateMenuItemRequestDTO menuItemDTO) {
-        var result = menuItemService.updateMenuItem(menuItemId, menuItemDTO.getParentItemId());
-        if (result == null) {
-            return null;
+    private boolean updateMenuItemParent(MenuItem menuItem, String parentItemId) {
+        if (parentItemId == null) {
+            boolean result = menuItem.getParentId() != null;
+            menuItem.setParent(null);
+            return result;
         }
-        var menuItem = result.getMenuItem();
-        mapper.update(menuItemDTO, menuItem);
-        if (result.isParentChange()) {
-            menuItem.setParent(result.getParent());
+        // checking if request parent id is the same as current id
+        if (menuItem.getId().equals(parentItemId)) {
+            throw new ConstraintException("Menu Item " + menuItem.getId() + " id and parentItem id are the same",
+                    MenuItemErrorKeys.PARENT_MENU_SAME_AS_MENU_ITEM, null);
         }
-        return menuItem;
+
+        if (parentItemId.equals(menuItem.getParentId())) {
+            return false;
+        }
+
+        // load and check parent
+        var parentItem = dao.findById(parentItemId);
+        if (parentItem == null) {
+            throw new ConstraintException("Parent menu item does not exist",
+                    MenuItemErrorKeys.PARENT_MENU_DOES_NOT_EXIST,
+                    null);
+        }
+
+        // checking if parent menu item is in correct workspace
+        if (!parentItem.getWorkspaceId().equals(menuItem.getWorkspaceId())) {
+            throw new ConstraintException("Menu item does have different workspace",
+                    MenuItemErrorKeys.WORKSPACE_DIFFERENT, null);
+        }
+
+        // check for cycle
+        var children = children(menuItem, new HashSet<>());
+        if (children.contains(parentItem.getId())) {
+            throw new ConstraintException(
+                    "One of the items try to set one of its children to the new parent. Cycle dependency can not be created in tree structure",
+                    MenuItemErrorKeys.CYCLE_DEPENDENCY, null);
+        }
+
+        menuItem.setParent(parentItem);
+        return true;
     }
 
     @Override
-    @Transactional
-    public Response uploadMenuStructureForWorkspaceName(String name, WorkspaceMenuItemStructureDTO menuItemStructureDTO) {
-        var workspace = workspaceDAO.findByWorkspaceName(name);
-        if (workspace == null) {
-            throw new ConstraintException("Given workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
+    public Response updateMenuItemParent(String menuItemId,
+            UpdateMenuItemParentRequestDTO updateMenuItemParentRequestDTO) {
+
+        var menuItem = dao.loadAllChildren(menuItemId);
+        if (menuItem == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        if (menuItemStructureDTO.getMenuItems() == null || menuItemStructureDTO.getMenuItems().isEmpty()) {
-            throw new ConstraintException("menuItems cannot be null", MenuItemErrorKeys.MENU_ITEMS_NULL, null);
-        }
+        var oldPosition = menuItem.getPosition();
+        var oldParentId = menuItem.getParentId();
+        var newParentId = updateMenuItemParentRequestDTO.getParentItemId();
+        var newPosition = updateMenuItemParentRequestDTO.getPosition();
 
-        List<MenuItem> items = new LinkedList<>();
-        mapper.recursiveMappingTreeStructure(menuItemStructureDTO.getMenuItems(), workspace, null, items);
+        menuItem = mapper.update(menuItem, updateMenuItemParentRequestDTO);
+        var changeParent = updateMenuItemParent(menuItem, updateMenuItemParentRequestDTO.getParentItemId());
+        menuItem = dao.updateMenuItem(menuItem, oldParentId, oldPosition, newParentId, newPosition, changeParent);
 
-        dao.deleteAllMenuItemsByWorkspaceName(name);
-        dao.create(items);
+        return Response.ok(mapper.map(menuItem)).build();
+    }
 
-        return Response.noContent().build();
-
+    private Set<String> children(MenuItem menuItem, Set<String> result) {
+        menuItem.getChildren().forEach(c -> {
+            result.add(c.getId());
+            children(c, result);
+        });
+        return result;
     }
 
     @ServerExceptionMapper
@@ -212,12 +225,13 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     enum MenuItemErrorKeys {
+
+        PARENT_MENU_SAME_AS_MENU_ITEM,
+        CYCLE_DEPENDENCY,
         WORKSPACE_DOES_NOT_EXIST,
         PARENT_MENU_DOES_NOT_EXIST,
 
-        WORKSPACE_DIFFERENT,
-
-        MENU_ITEMS_NULL,
+        WORKSPACE_DIFFERENT
 
     }
 }

@@ -40,13 +40,13 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
 
     @Test
     void importDataTest() {
-        Workspace workspace = dao.loadByWorkspaceName("test01");
+        Workspace workspace = dao.loadById("11-111");
         Assertions.assertNotNull(workspace);
         Assertions.assertNotNull(workspace.getProducts());
         Assertions.assertNotNull(workspace.getProducts().get(0).getMicrofrontends());
 
         // test not existing workspace
-        workspace = dao.loadByWorkspaceName("does-not-exist");
+        workspace = dao.loadById("does-not-exist");
         Assertions.assertNull(workspace);
 
         Stream<Workspace> result = dao.findAll();
@@ -72,7 +72,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
                     importRequest.setWorkspace(workspace);
                     workspace.setName("test1");
                     workspace.setBaseUrl("baseurl");
-                    workspace.setTenantId("tenant-100");
+                    importRequest.setTenantId("tenant-100");
                     importRequest.setMenuItems(null);
                     return mapper.writeValueAsBytes(data);
                 } catch (Exception ex) {
@@ -103,7 +103,7 @@ class WorkspaceDataImportServiceTest extends AbstractTest {
                     WorkspaceImportDTOV1 workspace = new WorkspaceImportDTOV1();
                     importRequest.setWorkspace(workspace);
                     workspace.setName("test1");
-                    workspace.setTenantId("tenant-100");
+                    importRequest.setTenantId("tenant-100");
                     workspace.setBaseUrl("baseurl");
                     importRequest.setMenuItems(new ArrayList<>());
                     return mapper.writeValueAsBytes(data);

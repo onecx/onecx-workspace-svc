@@ -18,6 +18,7 @@ import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
 @TestHTTPEndpoint(PortalLegacyRestController.class)
+@WithDBData(value = "data/testdata-legacy.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 class PortalLegacyRestControllerTenantTest extends AbstractTest {
 
     @Test
@@ -38,7 +39,6 @@ class PortalLegacyRestControllerTenantTest extends AbstractTest {
     }
 
     @Test
-    @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
     void getMenuStructureForPortalNameTest() {
 
         var data = given()
@@ -56,7 +56,6 @@ class PortalLegacyRestControllerTenantTest extends AbstractTest {
     }
 
     @Test
-    @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
     void getMenuStructureForPortalNameAndAppTest() {
 
         var data = given()
@@ -75,7 +74,6 @@ class PortalLegacyRestControllerTenantTest extends AbstractTest {
     }
 
     @Test
-    @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
     void getMenuStructureForPortalNameAndAppDifferentTenantTest() {
 
         var data = given()

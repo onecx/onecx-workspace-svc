@@ -9,7 +9,34 @@ tags:
   - name: workspaceInternal
   - name: menuInternal
   - name: productInternal
+  - name: roleInternal
+  - name: assignmentInternal
 paths:
+  /internal/workspaces/search:
+    post:
+      tags:
+        - workspaceInternal
+      description: Search for workspaces by search criteria
+      operationId: searchWorkspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSearchCriteria'
+      responses:
+        "200":
+          description: Corresponding workspaces
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspacePageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/workspaces:
     post:
       tags:
@@ -41,31 +68,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/workspaces/search:
-    post:
+  /internal/workspaces/search/{name}:
+    get:
       tags:
         - workspaceInternal
-      description: Search for workspaces by search criteria
-      operationId: searchWorkspace
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WorkspaceSearchCriteria'
+      description: Return workspace by name
+      operationId: findWorkspaceByName
+      parameters:
+        - $ref: '#/components/parameters/name'
       responses:
         "200":
-          description: Corresponding workspaces
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WorkspacePageResult'
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
+                $ref: '#/components/schemas/WorkspaceAbstract'
+        "404":
+          description: Not found
   /internal/workspaces/{id}:
     get:
       tags:
@@ -97,7 +116,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateWorkspaceRequest'
       responses:
-        "200":
+        200:
           description: Workspaces updated
           content:
             application/json:
@@ -127,77 +146,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/workspaces/name/{name}:
-    get:
-      tags:
-        - workspaceInternal
-      description: Return workspace by name
-      operationId: findWorkspaceByName
-      parameters:
-        - $ref: '#/components/parameters/name'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Workspace'
-        "404":
-          description: Not found
-  /internal/workspaces/{name}/menuItems:
-    get:
+  /internal/menuItems/workspace/{id}:
+    delete:
       tags:
         - menuInternal
-      description: Find all menu items belonging to a workspace
-      operationId: getMenuItemsForWorkspaceName
+      description: Delete all menu items in workspace
+      operationId: deleteAllMenuItemsForWorkspace
       parameters:
-        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/id'
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MenuItem'
-    patch:
-      tags:
-        - menuInternal
-      description: Bulk update menu Items
-      operationId: patchMenuItems
-      parameters:
-        - $ref: '#/components/parameters/name'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateMenuItemsRequest'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MenuItem'
+        "204":
+          description: No content
         "400":
           description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        "404":
-          description: Menu items not found
+  /internal/menuItems:
     post:
       tags:
         - menuInternal
       description: Add a new menu item to workspace menu
-      operationId: createMenuItemForWorkspace
-      parameters:
-        - $ref: '#/components/parameters/name'
+      operationId: createMenuItem
       requestBody:
         required: true
         content:
@@ -223,70 +194,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-    delete:
+  /internal/menuItems/search:
+    post:
       tags:
         - menuInternal
-      description: Delete all menu items in workspace
-      operationId: deleteAllMenuItemsForWorkspace
-      parameters:
-        - $ref: '#/components/parameters/name'
+      description: Search for menu items by search criteria
+      operationId: searchMenuItemsByCriteria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuItemSearchCriteria'
       responses:
-        "204":
-          description: No content
+        "200":
+          description: Corresponding menu items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItemPageResult'
         "400":
           description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/workspaces/{name}/menuItems/tree:
-    get:
+  /internal/menuItems/tree:
+    post:
       tags:
         - menuInternal
       description: Fetch the menuItems of the workspace in the tree structure
-      operationId: getMenuStructureForWorkspaceName
-      parameters:
-        - $ref: '#/components/parameters/name'
+      operationId: getMenuStructure
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuStructureSearchCriteria'
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WorkspaceMenuItemStructure'
+                $ref: '#/components/schemas/MenuItemStructure'
         "404":
           description: Not found
-  /internal/workspaces/{name}/menuItems/tree/upload:
-    post:
-      tags:
-        - menuInternal
-      description: Upload the menu structure for workspace
-      operationId: uploadMenuStructureForWorkspaceName
-      parameters:
-        - $ref: '#/components/parameters/name'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/WorkspaceMenuItemStructure'
-      responses:
-        "201":
-          description: New workspace created
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/workspaces/{name}/menuItems/{menuItemId}:
+  /internal/menuItems/{menuItemId}:
     get:
       tags:
         - menuInternal
       description: Retrieve menu item detail info
       operationId: getMenuItemById
       parameters:
-        - $ref: '#/components/parameters/name'
         - $ref: '#/components/parameters/menuItemId'
       responses:
         "200":
@@ -303,7 +263,6 @@ paths:
       description: Delete a menuItem by the workspace id and the menuItemId
       operationId: deleteMenuItemById
       parameters:
-        - $ref: '#/components/parameters/name'
         - $ref: '#/components/parameters/menuItemId'
       responses:
         "204":
@@ -320,7 +279,6 @@ paths:
       description: Update an existing menu item
       operationId: updateMenuItem
       parameters:
-        - $ref: '#/components/parameters/name'
         - $ref: '#/components/parameters/menuItemId'
       requestBody:
         required: true
@@ -343,14 +301,41 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
           description: Menu item not found
-  /internal/workspaces/{id}/products:
+  /internal/menuItems/{menuItemId}/parentItemId:
+    put:
+      tags:
+        - menuInternal
+      description: Update an existing menu item parent
+      operationId: updateMenuItemParent
+      parameters:
+        - $ref: '#/components/parameters/menuItemId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMenuItemParentRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Menu item not found
+  /internal/products:
     post:
       tags:
         - productInternal
-      description: Create/Register new product to workspace
-      operationId: createProductInWorkspace
-      parameters:
-        - $ref: '#/components/parameters/id'
+      description: Create/Register new product
+      operationId: createProduct
       requestBody:
         required: true
         content:
@@ -376,32 +361,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-    get:
+  /internal/products/search:
+    post:
       tags:
         - productInternal
-      description: Find all products belonging to a workspace
-      operationId: getProductsForWorkspaceId
-      parameters:
-        - $ref: '#/components/parameters/id'
+      description: Search for products by search criteria
+      operationId: searchProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSearchCriteria'
       responses:
         "200":
-          description: OK
+          description: Corresponding assignments
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Product'
-        "404":
-          description: Not found
-  /internal/workspaces/{id}/products/{productId}:
+                $ref: '#/components/schemas/ProductPageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/products/{productId}:
+    get:
+      tags:
+        - productInternal
+      description: Get a product by the productId
+      operationId: getProductById
+      parameters:
+        - $ref: '#/components/parameters/productId'
+      responses:
+        200:
+          description: Corresponding product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          description: Product not found
     delete:
       tags:
         - productInternal
-      description: Delete a product by the workspace id and the productId
+      description: Delete a product by the productId
       operationId: deleteProductById
       parameters:
-        - $ref: '#/components/parameters/id'
         - $ref: '#/components/parameters/productId'
       responses:
         "204":
@@ -418,7 +425,6 @@ paths:
       description: Update product and MFEs
       operationId: updateProductById
       parameters:
-        - $ref: '#/components/parameters/id'
         - $ref: '#/components/parameters/productId'
       requestBody:
         required: true
@@ -441,8 +447,456 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
           description: Product not found
+  /internal/roles/search:
+    post:
+      tags:
+        - roleInternal
+      description: Search for roles by search criteria
+      operationId: searchRoles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleSearchCriteria'
+      responses:
+        "200":
+          description: Corresponding assignments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/roles:
+    post:
+      tags:
+        - roleInternal
+      description: Create new role
+      operationId: createRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleRequest'
+      responses:
+        "201":
+          description: New role created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/roles/{roleId}:
+    get:
+      tags:
+        - roleInternal
+      description: Retrieve workspace role
+      operationId: getWorkspaceRole
+      parameters:
+        - $ref: '#/components/parameters/roleId'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        404:
+          description: Role not found
+    put:
+      tags:
+        - roleInternal
+      description: Update workspace role
+      operationId: updateWorkspaceRole
+      parameters:
+        - $ref: '#/components/parameters/roleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        404:
+          description: Workspace role not found
+    delete:
+      tags:
+        - roleInternal
+      description: Delete workspace role by ID
+      operationId: deleteWorkspaceRole
+      parameters:
+        - $ref: '#/components/parameters/roleId'
+      responses:
+        204:
+          description: No Content
+        400:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments/search:
+    post:
+      tags:
+        - assignmentInternal
+      description: Search for assignments by search criteria
+      operationId: searchAssignments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentSearchCriteria'
+      responses:
+        "200":
+          description: Corresponding assignments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignmentPageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments:
+    post:
+      tags:
+        - assignmentInternal
+      description: Create new Assignment
+      operationId: createAssignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAssignmentRequest'
+      responses:
+        "201":
+          description: New workspace created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/assignments/{assignmentId}:
+    get:
+      tags:
+        - assignmentInternal
+      description: Get assignment
+      operationId: getAssignment
+      parameters:
+        - $ref: '#/components/parameters/assignmentId'
+      responses:
+        200:
+          description: Get assignment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+        404:
+          description: Assignment not found
+    delete:
+      tags:
+        - assignmentInternal
+      description: Delete assignment
+      operationId: deleteAssignment
+      parameters:
+        - $ref: '#/components/parameters/assignmentId'
+      responses:
+        204:
+          description: Assignment deleted
 components:
   schemas:
+    MenuStructureSearchCriteria:
+      type: object
+      required:
+        - workspaceId
+      properties:
+        workspaceId:
+          type: string
+    MenuItemSearchCriteria:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    MenuItemPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItemResult'
+    ProductSearchCriteria:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        productName:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    ProductPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductResult'
+    ProductResult:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        productName:
+          type: string
+        baseUrl:
+          type: string
+    RoleSearchCriteria:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        workspaceId:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    AssignmentSearchCriteria:
+      type: object
+      properties:
+        workspaceId:
+          type: string
+        menuItemId:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    AssignmentPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+    CreateRoleRequest:
+      type: object
+      required:
+        - workspaceId
+      properties:
+        workspaceId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    UpdateRoleRequest:
+      type: object
+      required:
+        - modificationCount
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        modificationCount:
+          format: int32
+          type: integer
+    RolePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    CreateAssignmentRequest:
+      type: object
+      required:
+        - roleId
+        - menuItemId
+      properties:
+        roleId:
+          type: string
+        menuItemId:
+          type: string
+    Assignment:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        roleId:
+          type: string
+        menuItemId:
+          type: string
+        workspaceId:
+          type: string
     WorkspaceSearchCriteria:
       type: object
       properties:
@@ -458,7 +912,7 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
           type: integer
     WorkspacePageResult:
       type: object
@@ -503,11 +957,6 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
         logoUrl:
           type: string
         address:
@@ -550,11 +999,6 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
         logoUrl:
           type: string
         address:
@@ -606,11 +1050,6 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
         logoUrl:
           type: string
         address:
@@ -629,8 +1068,11 @@ components:
     WorkspaceAbstract:
       required:
         - name
+        - id
       type: object
       properties:
+        id:
+          type: string
         name:
           type: string
         description:
@@ -661,11 +1103,17 @@ components:
           type: string
         url:
           type: string
-    WorkspaceMenuItemStructure:
+    MenuItemStructure:
       type: object
+      required:
+        - menuItems
+        - workspaceId
       properties:
+        workspaceId:
+          type: string
         menuItems:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/WorkspaceMenuItem'
     WorkspaceMenuItem:
@@ -692,8 +1140,6 @@ components:
           type: string
         url:
           type: string
-        workspaceName:
-          type: string
         applicationId:
           type: string
         disabled:
@@ -701,13 +1147,11 @@ components:
         position:
           format: int32
           type: integer
-        permission:
-          type: string
         badge:
           type: string
         scope:
           $ref: '#/components/schemas/Scope'
-        workspaceExit:
+        external:
           type: boolean
         parentItemId:
           type: string
@@ -719,22 +1163,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WorkspaceMenuItem'
-    UpdateMenuItemsRequest:
+    UpdateMenuItemParentRequest:
       type: object
       required:
-        - items
+        - modificationCount
+        - position
       properties:
-        items:
-          $ref: '#/components/schemas/UpdateMenuItemsRequestData'
-    UpdateMenuItemsRequestData:
-      type: object
-      nullable: false
-      additionalProperties:
-        $ref: '#/components/schemas/UpdateMenuItemRequest'
+        modificationCount:
+          format: int32
+          type: integer
+        position:
+          minimum: 0
+          format: int32
+          type: integer
+        parentItemId:
+          type: string
     UpdateMenuItemRequest:
       type: object
       required:
         - modificationCount
+        - position
       properties:
         modificationCount:
           format: int32
@@ -747,7 +1195,51 @@ components:
           type: string
         url:
           type: string
-        workspaceName:
+        applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          minimum: 0
+          format: int32
+          type: integer
+        badge:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        external:
+          type: boolean
+        parentItemId:
+          type: string
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+    MenuItemResult:
+      type: object
+      required:
+        - modificationCount
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
           type: string
         applicationId:
           type: string
@@ -756,20 +1248,14 @@ components:
         position:
           format: int32
           type: integer
-        permission:
-          type: string
         badge:
           type: string
         scope:
           $ref: '#/components/schemas/Scope'
-        workspaceExit:
+        external:
           type: boolean
         parentItemId:
           type: string
-        i18n:
-          type: object
-          additionalProperties:
-            type: string
     MenuItem:
       type: object
       required:
@@ -796,8 +1282,6 @@ components:
           type: string
         url:
           type: string
-        workspaceName:
-          type: string
         applicationId:
           type: string
         disabled:
@@ -805,13 +1289,11 @@ components:
         position:
           format: int32
           type: integer
-        permission:
-          type: string
         badge:
           type: string
         scope:
           $ref: '#/components/schemas/Scope'
-        workspaceExit:
+        external:
           type: boolean
         parentItemId:
           type: string
@@ -821,7 +1303,11 @@ components:
             type: string
     CreateMenuItem:
       type: object
+      required:
+        - workspaceId
       properties:
+        workspaceId:
+          type: string
         key:
           type: string
         name:
@@ -835,13 +1321,11 @@ components:
         position:
           format: int32
           type: integer
-        permission:
-          type: string
         badge:
           type: string
         scope:
           $ref: '#/components/schemas/Scope'
-        workspaceExit:
+        external:
           type: boolean
         parentItemId:
           type: string
@@ -892,8 +1376,11 @@ components:
       required:
         - productName
         - baseUrl
+        - workspaceId
       type: object
       properties:
+        workspaceId:
+          type: string
         productName:
           type: string
         baseUrl:
@@ -972,22 +1459,18 @@ components:
         basePath:
           type: string
   parameters:
-    pageNumber:
-      in: query
-      name: pageNumber
-      required: false
+    assignmentId:
+      in: path
+      name: assignmentId
+      required: true
       schema:
-        type: integer
-        format: int32
-        default: 0
-    pageSize:
-      in: query
-      name: pageSize
-      required: false
+        type: string
+    roleId:
+      in: path
+      name: roleId
+      required: true
       schema:
-        type: integer
-        format: int32
-        default: 100
+        type: string
     id:
       in: path
       name: id

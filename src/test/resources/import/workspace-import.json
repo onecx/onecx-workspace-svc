@@ -1,12 +1,15 @@
 {
   "requests": [
     {
+      "tenantId": "tenant-100",
       "menuItems": [
         {
           "id": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
+          "roles": [ "role1" , "roleA" ],
           "children": [
             {
               "id": "3ee3b5cb-1757-4a8b-b83f-cadee6b3c30a",
+              "roles": [ "role1" , "role2" ],
               "applicationId": "portal-welcome-ui",
               "badge": "home",
               "children": [],
@@ -19,7 +22,7 @@
               "name": "Welcome Page",
               "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
               "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
-              "workspaceExit": false,
+              "external": false,
               "position": 0,
               "scope": "WORKSPACE",
               "url": "/admin/"
@@ -27,6 +30,7 @@
             {
               "id": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
               "applicationId": "announcement-help-management-ui",
+              "roles": [ "roleB" ],
               "badge": "calendar-plus",
               "children": [
                 {
@@ -43,7 +47,7 @@
                   "name": "Announcements",
                   "parentItemId": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
                   "parentKey": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
-                  "workspaceExit": false,
+                  "external": false,
                   "position": 0,
                   "scope": "WORKSPACE",
                   "url": "/admin/ah-mgmt/announcements"
@@ -62,7 +66,7 @@
                   "name": "Help Items",
                   "parentItemId": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
                   "parentKey": "156a8cff-f341-47bf-a1fc-dede091ee7c0",
-                  "workspaceExit": false,
+                  "external": false,
                   "position": 0,
                   "scope": "WORKSPACE",
                   "url": "/admin/ah-mgmt/helpitems/"
@@ -78,7 +82,7 @@
               "name": "Announcement & Help Management",
               "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
               "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
-              "workspaceExit": false,
+              "external": false,
               "position": 6,
               "scope": "WORKSPACE",
               "url": "/admin/ah-mgmt/"
@@ -102,7 +106,7 @@
                   "name": "Menu Management",
                   "parentItemId": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
                   "parentKey": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
-                  "workspaceExit": false,
+                  "external": false,
                   "position": 3,
                   "scope": "WORKSPACE",
                   "url": "/admin/portal-mgmt/menu/"
@@ -121,7 +125,7 @@
                   "name": "Theme Management",
                   "parentItemId": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
                   "parentKey": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
-                  "workspaceExit": false,
+                  "external": false,
                   "position": 0,
                   "scope": "WORKSPACE",
                   "url": "/admin/portal-mgmt/theme/"
@@ -140,7 +144,7 @@
                   "name": "Portal Management",
                   "parentItemId": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
                   "parentKey": "3c94b43b-3fdf-4ed6-89c5-6e6e215a022a",
-                  "workspaceExit": false,
+                  "external": false,
                   "position": 2,
                   "scope": "WORKSPACE",
                   "url": "/admin/portal-mgmt/portal/"
@@ -155,7 +159,7 @@
               "name": "Portal",
               "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
               "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
-              "workspaceExit": false,
+              "external": false,
               "position": 2,
               "scope": "WORKSPACE",
               "url": ""
@@ -174,7 +178,7 @@
               "name": "MFE Config",
               "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
               "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
-              "workspaceExit": false,
+              "external": false,
               "position": 98,
               "scope": "WORKSPACE",
               "url": "/admin/config/"
@@ -184,7 +188,7 @@
           "i18n": {},
           "key": "PORTAL_MAIN_MENU",
           "name": "Main Menu",
-          "workspaceExit": false,
+          "external": false,
           "position": 0,
           "scope": "WORKSPACE"
         },
@@ -205,7 +209,7 @@
               "name": "Personal Info",
               "parentItemId": "92037049-3b2a-4539-bb06-61b5e441474c",
               "parentKey": "92037049-3b2a-4539-bb06-61b5e441474c",
-              "workspaceExit": false,
+              "external": false,
               "position": 1,
               "scope": "WORKSPACE",
               "url": "/admin/account/profile"
@@ -224,7 +228,7 @@
               "name": "Account Settings",
               "parentItemId": "92037049-3b2a-4539-bb06-61b5e441474c",
               "parentKey": "92037049-3b2a-4539-bb06-61b5e441474c",
-              "workspaceExit": false,
+              "external": false,
               "position": 2,
               "scope": "WORKSPACE",
               "url": "/admin/account/settings"
@@ -243,7 +247,7 @@
               "name": "Change Password",
               "parentItemId": "92037049-3b2a-4539-bb06-61b5e441474c",
               "parentKey": "92037049-3b2a-4539-bb06-61b5e441474c",
-              "workspaceExit": false,
+              "external": false,
               "position": 3,
               "scope": "WORKSPACE",
               "url": "/admin/account/change-password"
@@ -262,7 +266,7 @@
               "name": "Roles & Permissions",
               "parentItemId": "92037049-3b2a-4539-bb06-61b5e441474c",
               "parentKey": "92037049-3b2a-4539-bb06-61b5e441474c",
-              "workspaceExit": false,
+              "external": false,
               "position": 4,
               "scope": "WORKSPACE",
               "url": "/admin/account/roles-and-perms"
@@ -272,7 +276,7 @@
           "i18n": {},
           "key": "USER_PROFILE_MENU",
           "name": "User Profile Menu",
-          "workspaceExit": false,
+          "external": false,
           "position": 5,
           "scope": "WORKSPACE"
         },
@@ -283,7 +287,7 @@
           "i18n": {},
           "key": "PORTAL_ADMIN_MENU",
           "name": "Admin Menu",
-          "workspaceExit": false,
+          "external": false,
           "position": 2,
           "scope": "WORKSPACE"
         },
@@ -293,7 +297,7 @@
           "i18n": {},
           "key": "PORTAL_FOOTER_MENU",
           "name": "Footer Menu",
-          "workspaceExit": false,
+          "external": false,
           "position": 2,
           "scope": "WORKSPACE",
           "children": [
@@ -308,7 +312,7 @@
               "name": "Contact",
               "parentItemId": "2bc91211-95df-4d2d-b56d-b9ece916d956",
               "parentKey": "PORTAL_FOOTER_MENU",
-              "workspaceExit": false,
+              "external": false,
               "position": 1,
               "scope": "WORKSPACE",
               "url": "/contact"
@@ -324,7 +328,7 @@
               "name": "Impressum",
               "parentItemId": "2bc91211-95df-4d2d-b56d-b9ece916d956",
               "parentKey": "PORTAL_FOOTER_MENU",
-              "workspaceExit": false,
+              "external": false,
               "position": 2,
               "scope": "WORKSPACE",
               "url": "/Impressum"
@@ -338,7 +342,7 @@
           "i18n": {},
           "key": "PORTAL_EXTERNAL_NAV",
           "name": "External Navigation Menu",
-          "workspaceExit": false,
+          "external": false,
           "position": 4,
           "scope": "WORKSPACE"
         },
@@ -349,7 +353,7 @@
           "i18n": {},
           "key": "PORTAL_MENU_HOME",
           "name": "Home Menu",
-          "workspaceExit": false,
+          "external": false,
           "position": 0,
           "scope": "WORKSPACE",
           "url": "/admin/"
@@ -358,7 +362,6 @@
       "workspace": {
         "baseUrl": "/admin",
         "companyName": "Company",
-        "tenantId": "tenant-100",
         "description": "Portal zur Administration von Portalen",
         "footerLabel": "Admin Portal",
         "homePage": "/admin",
@@ -384,10 +387,21 @@
             ]
           }
         ],
-        "themeName": "Theme1"
+        "themeName": "Theme1",
+        "roles": [
+          {
+            "name": "role1",
+            "description": "role1"
+          },
+          {
+            "name": "role2",
+            "description": "role2"
+          }
+        ]
       }
     },
     {
+      "tenantId": "default",
       "menuItems": [
         {
           "children": [
@@ -404,7 +418,7 @@
               "name": "Welcome Page",
               "parentItemId": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
               "parentKey": "b6da299d-f7da-4ba9-89c6-cdb976a998ab",
-              "workspaceExit": false,
+              "external": false,
               "position": 0,
               "scope": "WORKSPACE",
               "url": "/tkom/"
@@ -412,10 +426,9 @@
           ]
         }
       ],
-        "workspace": {
+      "workspace": {
           "baseUrl": "/tkom",
           "companyName": "Company2",
-          "tenantId": "default",
           "description": "Portal zur Core von Portalen",
           "footerLabel": "Core Portal",
           "homePage": "/tkom",

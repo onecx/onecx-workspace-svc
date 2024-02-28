@@ -1,26 +1,48 @@
 package org.tkit.onecx.workspace.rs.internal.mappers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.mapstruct.*;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemSearchCriteria;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
-public abstract class MenuItemMapper {
+public interface MenuItemMapper {
 
-    public abstract List<MenuItemDTO> map(Stream<MenuItem> items);
+    @Mapping(target = "removeStreamItem", ignore = true)
+    MenuItemPageResultDTO mapPage(PageResult<MenuItem> page);
 
-    @Mapping(target = "workspaceName", ignore = true)
+    @Mapping(target = "parentItemId", source = "parentId")
+    MenuItemResultDTO mapPageItem(MenuItem item);
+
+    MenuItemLoadCriteria map(MenuStructureSearchCriteriaDTO dto);
+
+    MenuItemSearchCriteria map(MenuItemSearchCriteriaDTO dto);
+
+    default MenuItem update(MenuItem menu, UpdateMenuItemParentRequestDTO dto) {
+        menu.setModificationCount(dto.getModificationCount());
+        menu.setPosition(dto.getPosition());
+        return menu;
+    }
+
+    default MenuItem create(CreateMenuItemDTO dto, Workspace workspace, MenuItem parentItem) {
+        var result = create(dto);
+        result.setWorkspace(workspace);
+        result.setParent(parentItem);
+        return result;
+    }
+
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
@@ -33,46 +55,31 @@ public abstract class MenuItemMapper {
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "applicationId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    public abstract MenuItem create(CreateMenuItemDTO dto);
+    @Mapping(target = "parentId", ignore = true)
+    MenuItem create(CreateMenuItemDTO dto);
 
     @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
-    @Mapping(target = "permission", ignore = true)
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    public abstract void update(UpdateMenuItemRequestDTO menuItemDetailsDto, @MappingTarget MenuItem entity);
-
-    public abstract List<MenuItemDTO> mapList(List<MenuItem> items);
+    @Mapping(target = "parentId", ignore = true)
+    void update(UpdateMenuItemRequestDTO menuItemDetailsDto, @MappingTarget MenuItem entity);
 
     @Mapping(target = "removeI18nItem", ignore = true)
-    @Mapping(target = "parentItemId", source = "parent.id")
-    public abstract MenuItemDTO map(MenuItem item);
+    @Mapping(target = "parentItemId", source = "parentId")
+    MenuItemDTO map(MenuItem item);
 
-    public List<String> mapStringToList(String value) {
-        if (value == null || value.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return Arrays.asList(value.split(","));
-    }
-
-    public String mapListToString(List<String> list) {
-        if (list == null || list.isEmpty()) {
-            return null;
-        }
-        return String.join(",", list);
-    }
-
-    public WorkspaceMenuItemStructureDTO mapTree(Collection<MenuItem> entities) {
-        WorkspaceMenuItemStructureDTO dto = new WorkspaceMenuItemStructureDTO();
+    default MenuItemStructureDTO mapTree(Collection<MenuItem> entities) {
+        MenuItemStructureDTO dto = new MenuItemStructureDTO();
         if (entities.isEmpty()) {
             dto.setMenuItems(new ArrayList<>());
             return dto;
@@ -80,20 +87,20 @@ public abstract class MenuItemMapper {
 
         var parentChildrenMap = entities.stream()
                 .collect(Collectors
-                        .groupingBy(menuItem -> menuItem.getParent() == null ? "TOP" : menuItem.getParent().getKey()));
+                        .groupingBy(menuItem -> menuItem.getParent() == null ? "TOP" : menuItem.getParent().getId()));
 
         dto.setMenuItems(parentChildrenMap.get("TOP").stream().map(this::mapTreeItem).toList());
         return dto;
     }
 
-    public abstract List<WorkspaceMenuItemDTO> mapCollection(Collection<MenuItem> entities);
+    List<WorkspaceMenuItemDTO> mapCollection(Collection<MenuItem> entities);
 
     @Mapping(target = "parentItemId", source = "parent.id")
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeChildrenItem", ignore = true)
-    public abstract WorkspaceMenuItemDTO mapTreeItem(MenuItem entity);
+    WorkspaceMenuItemDTO mapTreeItem(MenuItem entity);
 
-    public void recursiveMappingTreeStructure(List<WorkspaceMenuItemDTO> items, Workspace workspace, MenuItem parent,
+    default void recursiveMappingTreeStructure(List<WorkspaceMenuItemDTO> items, Workspace workspace, MenuItem parent,
             List<MenuItem> mappedItems) {
 
         int position = 0;
@@ -114,22 +121,21 @@ public abstract class MenuItemMapper {
     }
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workspaceName", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
     @Mapping(target = "parent.id", source = "parentItemId")
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
-    @Mapping(target = "permission", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "scope", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    public abstract MenuItem mapMenu(WorkspaceMenuItemDTO menuItemStructureDto);
+    @Mapping(target = "parentId", ignore = true)
+    MenuItem mapMenu(WorkspaceMenuItemDTO menuItemStructureDto);
 
-    public void updateMenu(MenuItem menuItem, int position, Workspace workspace,
+    default void updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent) {
         menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getName());
         menuItem.setPosition(position);
         menuItem.setParent(parent);
     }

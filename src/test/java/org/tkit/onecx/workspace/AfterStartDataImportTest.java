@@ -2,12 +2,14 @@ package org.tkit.onecx.workspace;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
+import org.tkit.onecx.workspace.domain.models.Role;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.test.AbstractTest;
 
@@ -23,10 +25,15 @@ class AfterStartDataImportTest extends AbstractTest {
     void importDataFromFileTest() {
         Stream<Workspace> result = workspaceDAO.findAll();
         var resultList = result.toList();
-        assertThat(resultList).hasSize(1);
-        assertThat(resultList.get(0).getName()).isEqualTo("ADMIN");
-        assertThat(resultList.get(0).getTenantId()).isEqualTo("tenant-100");
+        assertThat(resultList).isNotNull().hasSize(1);
+        var w = resultList.get(0);
+        assertThat(w.getName()).isEqualTo("ADMIN");
+        assertThat(w.getTenantId()).isEqualTo("tenant-100");
 
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(4);
+        var map = w.getRoles().stream().collect(Collectors.toMap(Role::getName, x -> x));
+
+        assertThat(map).containsOnlyKeys("role1", "role2", "roleA", "roleB");
     }
 
 }

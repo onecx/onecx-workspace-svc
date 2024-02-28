@@ -23,6 +23,7 @@ import org.tkit.quarkus.log.cdi.LogService;
 import gen.org.tkit.onecx.workspace.rs.internal.ProductInternalApi;
 import gen.org.tkit.onecx.workspace.rs.internal.model.CreateProductRequestDTO;
 import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
+import gen.org.tkit.onecx.workspace.rs.internal.model.ProductSearchCriteriaDTO;
 import gen.org.tkit.onecx.workspace.rs.internal.model.UpdateProductRequestDTO;
 
 @LogService
@@ -46,15 +47,13 @@ public class ProductInternalRestController implements ProductInternalApi {
     WorkspaceDAO workspaceDAO;
 
     @Override
-    @Transactional
-    public Response createProductInWorkspace(String id, CreateProductRequestDTO createProductRequestDTO) {
-        var workspace = workspaceDAO.findById(id);
+    public Response createProduct(CreateProductRequestDTO createProductRequestDTO) {
+        var workspace = workspaceDAO.findById(createProductRequestDTO.getWorkspaceId());
         if (workspace == null) {
-            throw new ConstraintException("Workspace does not exist",
+            throw new ConstraintException("Product does not exist",
                     ProductInternalRestController.ProductErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
-        var product = mapper.create(createProductRequestDTO);
-        product.setWorkspace(workspace);
+        var product = mapper.create(createProductRequestDTO, workspace);
         product = dao.create(product);
 
         return Response
@@ -64,21 +63,29 @@ public class ProductInternalRestController implements ProductInternalApi {
     }
 
     @Override
-    @Transactional
-    public Response deleteProductById(String id, String productId) {
+    public Response deleteProductById(String productId) {
         dao.deleteProduct(productId);
-
         return Response.noContent().build();
     }
 
     @Override
-    public Response getProductsForWorkspaceId(String id) {
-        var result = dao.getProductsForWorkspaceId(id);
-        return Response.ok(mapper.map(result)).build();
+    public Response getProductById(String productId) {
+        var product = dao.findById(productId);
+        if (product == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(mapper.map(product)).build();
     }
 
     @Override
-    public Response updateProductById(String id, String productId, UpdateProductRequestDTO updateProductRequestDTO) {
+    public Response searchProducts(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
+        var criteria = mapper.map(productSearchCriteriaDTO);
+        var result = dao.findByCriteria(criteria);
+        return Response.ok(mapper.mapPage(result)).build();
+    }
+
+    @Override
+    public Response updateProductById(String productId, UpdateProductRequestDTO updateProductRequestDTO) {
         var product = dao.loadById(productId);
         if (product == null) {
             return Response.status(NOT_FOUND).build();

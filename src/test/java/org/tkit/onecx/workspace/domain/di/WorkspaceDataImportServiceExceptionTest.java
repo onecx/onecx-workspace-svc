@@ -62,7 +62,7 @@ class WorkspaceDataImportServiceExceptionTest extends AbstractTest {
                     importRequest.setWorkspace(workspace);
                     workspace.setName("test1");
                     workspace.setBaseUrl("baseurl");
-                    workspace.setTenantId("tenant-100");
+                    importRequest.setTenantId("tenant-100");
                     return mapper.writeValueAsBytes(data);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
@@ -86,7 +86,7 @@ class WorkspaceDataImportServiceExceptionTest extends AbstractTest {
                     ImportRequestDTOV1 importRequest = new ImportRequestDTOV1();
                     data.getRequests().add(importRequest);
                     WorkspaceImportDTOV1 workspace = new WorkspaceImportDTOV1();
-                    workspace.setTenantId("tenant-100");
+                    importRequest.setTenantId("tenant-100");
                     importRequest.setWorkspace(workspace);
                     return mapper.writeValueAsBytes(data);
                 } catch (Exception ex) {

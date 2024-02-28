@@ -1,18 +1,15 @@
 package org.tkit.onecx.workspace.domain.di;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
-import org.tkit.onecx.workspace.domain.daos.ProductDAO;
-import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
+import org.tkit.onecx.workspace.domain.daos.*;
 import org.tkit.onecx.workspace.domain.di.mappers.WorkspaceDataImportMapperV1;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
-import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.onecx.workspace.domain.services.MenuService;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.context.Context;
 
@@ -37,6 +34,15 @@ public class WorkspaceImportService {
     @Inject
     WorkspaceDAO workspaceDAO;
 
+    @Inject
+    RoleDAO roleDAO;
+
+    @Inject
+    AssignmentDAO assignmentDAO;
+
+    @Inject
+    MenuService menuService;
+
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void deleteAll(String tenanId) {
         try {
@@ -44,10 +50,12 @@ public class WorkspaceImportService {
                     .principal("data-import")
                     .tenantId(tenanId)
                     .build();
-            log.info("#### tenant to delete " + tenanId);
+
             ApplicationContext.start(ctx);
 
             // clean data
+            assignmentDAO.deleteAll();
+            roleDAO.deleteAll();
             productDAO.deleteAll();
             menuItemDAO.deleteAll();
             workspaceDAO.deleteAll();
@@ -62,7 +70,7 @@ public class WorkspaceImportService {
         try {
             var ctx = Context.builder()
                     .principal("data-import")
-                    .tenantId(importRequestDTO.getWorkspace().getTenantId())
+                    .tenantId(importRequestDTO.getTenantId())
                     .build();
 
             ApplicationContext.start(ctx);
@@ -72,37 +80,24 @@ public class WorkspaceImportService {
 
             workspace = workspaceDAO.create(workspace);
 
-            if (importRequestDTO.getMenuItems() != null && !importRequestDTO.getMenuItems().isEmpty()) {
-                menuItemDAO.deleteAllMenuItemsByWorkspaceId(workspace.getId());
-                List<MenuItem> menus = new LinkedList<>();
-                recursiveMappingTreeStructure(importRequestDTO.getMenuItems(), workspace, null, menus);
-                menuItemDAO.create(menus);
+            List<MenuItemStructureDTOV1> importMenus = importRequestDTO.getMenuItems();
+            if (importMenus != null && !importMenus.isEmpty()) {
+
+                // convert DTO to menu items
+                List<MenuItem> items = new LinkedList<>();
+                Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(importMenus, workspace, null, items);
+
+                // validate menu, roles, assignments
+                var request = menuService.importMenuItems(workspace, items, menuRoles);
+
+                // execute update in database
+                menuService.importMenuItemsForWorkspace(request);
             }
+
         } finally {
             ApplicationContext.close();
         }
 
     }
 
-    public void recursiveMappingTreeStructure(List<MenuItemStructureDTOV1> items, Workspace workspace, MenuItem parent,
-            List<MenuItem> mappedItems) {
-        int position = 0;
-        for (MenuItemStructureDTOV1 item : items) {
-            if (item != null) {
-                MenuItem menu = mapper.mapMenu(item);
-                menu.setWorkspace(workspace);
-                menu.setWorkspaceName(workspace.getName());
-                menu.setPosition(position);
-                menu.setParent(parent);
-                mappedItems.add(menu);
-                position++;
-
-                if (item.getChildren() == null || item.getChildren().isEmpty()) {
-                    continue;
-                }
-
-                recursiveMappingTreeStructure(item.getChildren(), workspace, menu, mappedItems);
-            }
-        }
-    }
 }

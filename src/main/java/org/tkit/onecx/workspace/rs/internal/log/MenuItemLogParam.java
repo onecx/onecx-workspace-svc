@@ -14,24 +14,16 @@ public class MenuItemLogParam implements LogParam {
     @Override
     public List<Item> getClasses() {
         return List.of(
-                this.item(10, UpdateMenuItemsRequestDTO.class,
-                        x -> {
-                            var items = ((UpdateMenuItemsRequestDTO) x).getItems();
-                            return UpdateMenuItemsRequestDTO.class.getSimpleName() + "["
-                                    + (items != null ? items.size() : "null") + "]";
-                        }),
+                this.item(10, UpdateMenuItemParentRequestDTO.class,
+                        x -> UpdateMenuItemParentRequestDTO.class.getSimpleName() + "["
+                                + ((UpdateMenuItemParentRequestDTO) x).getParentItemId()
+                                + "]"),
                 this.item(10, UpdateMenuItemRequestDTO.class,
                         x -> UpdateMenuItemRequestDTO.class.getSimpleName() + "[" + ((UpdateMenuItemRequestDTO) x).getKey()
-                                + "," + ((UpdateMenuItemRequestDTO) x).getWorkspaceName() + "]"),
+                                + "]"),
                 this.item(10, CreateMenuItemDTO.class,
                         x -> CreateMenuItemDTO.class.getSimpleName() + "[" + ((CreateMenuItemDTO) x).getKey()
-                                + "," + ((CreateMenuItemDTO) x).getUrl() + "]"),
-                this.item(10, WorkspaceMenuItemStructureDTO.class,
-                        x -> WorkspaceMenuItemStructureDTO.class.getSimpleName() + "["
-                                + (((WorkspaceMenuItemStructureDTO) x).getMenuItems() != null
-                                        ? ((WorkspaceMenuItemStructureDTO) x).getMenuItems().size()
-                                        : "null")
-                                + "]")
+                                + "," + ((CreateMenuItemDTO) x).getUrl() + "]")
 
         );
 
