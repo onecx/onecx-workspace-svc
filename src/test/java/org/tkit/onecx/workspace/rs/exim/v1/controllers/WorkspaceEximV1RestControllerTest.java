@@ -34,7 +34,13 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .extract().as(WorkspaceSnapshotDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getWorkspaces().get("test01").getName()).isEqualTo("test01");
+        assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
+        var w = dto.getWorkspaces().get("test01");
+        assertThat(w).isNotNull();
+        assertThat(w.getName()).isEqualTo("test01");
+
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(3)
+                .contains(new EximWorkspaceRoleDTOV1().name("role-1-2").description("d1"));
     }
 
     @Test
@@ -70,9 +76,16 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     @Test
     void importWorkspaceTest() {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
-        EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
-        workspace.setBaseUrl("/someurl");
-        workspace.setName("testWorkspace");
+
+        var roles = new ArrayList<EximWorkspaceRoleDTOV1>();
+        roles.add(new EximWorkspaceRoleDTOV1().name("role1").description("role1"));
+        roles.add(new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+
+        EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
+                .baseUrl("/someurl")
+                .name("testWorkspace")
+                .roles(roles);
+
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("testWorkspace", workspace);
         snapshot.setWorkspaces(map);
@@ -88,6 +101,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(importResponse).isNotNull();
         assertThat(importResponse.getWorkspaces()).containsEntry("testWorkspace", ImportResponseStatusDTOV1.CREATED);
+
     }
 
     @Test

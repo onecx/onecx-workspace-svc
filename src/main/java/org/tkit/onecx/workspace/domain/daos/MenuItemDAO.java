@@ -48,14 +48,14 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
      * @param id - workspace id
      */
     @Transactional
-    public void deleteAllMenuItemsByWorkspaceId(String id) {
+    public int deleteAllMenuItemsByWorkspaceId(String id) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = this.deleteQuery();
             var root = cq.from(MenuItem.class);
 
             cq.where(cb.equal(root.get(MenuItem_.WORKSPACE).get(TraceableEntity_.ID), id));
-            getEntityManager().createQuery(cq).executeUpdate();
+            return getEntityManager().createQuery(cq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID, ex);
         }

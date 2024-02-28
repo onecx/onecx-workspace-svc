@@ -5,7 +5,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -324,75 +323,4 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         assertThat(dto.getName()).isEqualTo("Portal Child 1");
     }
 
-    @Test
-    void uploadMenuStructureTest() {
-
-        var menuStructureListDTO = new MenuItemStructureDTO();
-        var menuItemStructureDTO = new WorkspaceMenuItemDTO();
-
-        menuItemStructureDTO.setKey("Test menu");
-        menuItemStructureDTO.setDisabled(false);
-        menuItemStructureDTO.setParentItemId("44-1");
-        menuItemStructureDTO.setChildren(new ArrayList<>());
-
-        var menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-        menuItemStructureDTO1.setKey("Sub menu");
-        menuItemStructureDTO1.setDisabled(false);
-        menuItemStructureDTO1.setParentItemId("44-1");
-        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-        menuItemStructureDTO1.setKey("Sub menu2");
-        menuItemStructureDTO1.setDisabled(false);
-        menuItemStructureDTO1.setParentItemId("44-1");
-        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-        menuItemStructureDTO1 = new WorkspaceMenuItemDTO();
-        menuItemStructureDTO1.setKey("Sub menu3");
-        menuItemStructureDTO1.setDisabled(false);
-        menuItemStructureDTO1.setParentItemId("44-1");
-        menuItemStructureDTO.addChildrenItem(menuItemStructureDTO1);
-
-        menuStructureListDTO.addMenuItemsItem(menuItemStructureDTO);
-        menuStructureListDTO.workspaceId("11-222");
-
-        //update menu structure with another tenant
-        var error = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(menuStructureListDTO)
-                .header(APM_HEADER_PARAM, createToken("org2"))
-                .put("/tree")
-                .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
-
-        assertThat(error).isNotNull();
-        assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
-
-        // update menu item
-        given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(menuStructureListDTO)
-                .header(APM_HEADER_PARAM, createToken("org1"))
-                .put("/tree")
-                .then()
-                .statusCode(NO_CONTENT.getStatusCode());
-
-        var criteria = new MenuStructureSearchCriteriaDTO()
-                .workspaceId("11-222");
-
-        var data = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("org1"))
-                .body(criteria)
-                .post("/tree")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().body().as(MenuItemStructureDTO.class);
-
-        assertThat(data).isNotNull();
-        assertThat(data.getMenuItems()).hasSize(1);
-        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(4);
-    }
 }

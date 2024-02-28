@@ -173,6 +173,10 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/EximWorkspaceAddress'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximWorkspaceRole'
         subjectLinks:
           uniqueItems: true
           maxItems: 3
@@ -184,6 +188,13 @@ components:
           type: array
           items:
             type: string
+    EximWorkspaceRole:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
     EximWorkspaceAddress:
       type: object
       properties:
@@ -249,6 +260,11 @@ components:
         i18n:
           type: object
           additionalProperties:
+            type: string
+        roles:
+          type: array
+          uniqueItems: true
+          items:
             type: string
         children:
           type: array

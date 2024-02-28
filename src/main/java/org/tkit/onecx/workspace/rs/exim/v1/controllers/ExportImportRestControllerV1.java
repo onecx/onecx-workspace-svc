@@ -19,6 +19,7 @@ import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportExceptionMapperV1;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportMapperV1;
+import org.tkit.onecx.workspace.rs.exim.v1.services.MenuService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
@@ -41,6 +42,9 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
     @Inject
     ExportImportMapperV1 mapper;
+
+    @Inject
+    MenuService menuService;
 
     @Override
     public Response exportMenuByWorkspaceName(String name) {
@@ -79,22 +83,14 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
             throw new ConstraintException("Workspace does not exist", MenuItemErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
         }
 
-        var criteria = new MenuItemLoadCriteria();
-        criteria.setWorkspaceId(workspace.getId());
-        var menu = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
-
-        ImportMenuResponseDTOV1 responseDTOV1 = new ImportMenuResponseDTOV1();
-        if (!menu.isEmpty()) {
-            menuItemDAO.deleteAllMenuItemsByWorkspaceId(workspace.getId());
-            responseDTOV1.setStatus(ImportResponseStatusDTOV1.UPDATED);
-        } else {
-            responseDTOV1.setStatus(ImportResponseStatusDTOV1.CREATED);
-        }
-
         List<MenuItem> items = new LinkedList<>();
         mapper.recursiveMappingTreeStructure(menuSnapshotDTOV1.getMenu().getMenuItems(), workspace, null, items);
-        menuItemDAO.create(items);
-        return Response.ok(responseDTOV1).build();
+
+        var deleted = menuService.importMenuItems(workspace.getId(), items);
+
+        var status = deleted == 0 ? ImportResponseStatusDTOV1.CREATED : ImportResponseStatusDTOV1.UPDATED;
+
+        return Response.ok(mapper.create(menuSnapshotDTOV1.getId(), status)).build();
     }
 
     @Override

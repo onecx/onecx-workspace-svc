@@ -13,4 +13,9 @@
     <MENU_ITEM guid="33-1" optlock="0" disabled="FALSE" key="PORTAL_MAIN_MENU" name="Main Menu" external="FALSE"  pos="0" scope="WORKSPACE" url=""  workspace="11-111" application_id="" tenant_id="tenant-100"/>
     <MENU_ITEM_I18N menuitem_guid="33-1" language="de" i18n="DE translation"  />
     <MENU_ITEM_I18N menuitem_guid="33-1" language="en" i18n="EN translation"  />
+
+    <!-- ROLES -->
+    <ROLE guid="role-1-1" optlock="0" name="role-1-1" description="d1" workspace_guid="11-111" tenant_id="tenant-100" />
+    <ROLE guid="role-1-2" optlock="0" name="role-1-2" description="d1" workspace_guid="11-111" tenant_id="tenant-100" />
+    <ROLE guid="role-1-3" optlock="0" name="role-1-3" description="d1" workspace_guid="11-111" tenant_id="tenant-100" />
 </dataset>

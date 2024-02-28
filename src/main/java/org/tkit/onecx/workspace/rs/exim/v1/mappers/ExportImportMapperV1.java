@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
+import org.tkit.onecx.workspace.domain.models.Role;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
@@ -14,6 +15,9 @@ import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ExportImportMapperV1 {
+
+    ImportMenuResponseDTOV1 create(String id, ImportResponseStatusDTOV1 status);
+
     default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces) {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         snapshot.setCreated(OffsetDateTime.now());
@@ -36,8 +40,20 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "subjectLink", source = "subjectLinks")
     @Mapping(target = "imageUrl", source = "imageUrls")
-    @Mapping(target = "roles", ignore = true)
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
+
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
+    Role create(EximWorkspaceRoleDTOV1 dto);
 
     @Mapping(target = "removeWorkspacesItem", ignore = true)
     @Mapping(target = "id", source = "request.id")
@@ -49,6 +65,7 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "removeImageUrlsItem", ignore = true)
     @Mapping(target = "subjectLinks", source = "subjectLink")
     @Mapping(target = "imageUrls", source = "imageUrl")
+    @Mapping(target = "removeRolesItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
 
     default MenuSnapshotDTOV1 create(List<MenuItem> menuStructure) {
@@ -69,6 +86,8 @@ public interface ExportImportMapperV1 {
 
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeChildrenItem", ignore = true)
+    @Mapping(target = "removeRolesItem", ignore = true)
+    @Mapping(target = "roles", ignore = true)
     EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem);
 
     @Mapping(target = "id", ignore = true)

@@ -67,7 +67,7 @@ public class RoleInternalRestController implements RoleInternalApi {
         }
 
         mapper.update(updateRoleRequestDTO, role);
-        dao.update(role);
+        role = dao.update(role);
         return Response.ok(mapper.map(role)).build();
     }
 

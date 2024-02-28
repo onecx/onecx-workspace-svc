@@ -96,9 +96,9 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
         }
 
         workspaceMapper.update(updateWorkspaceRequestDTO, workspace);
-        dao.update(workspace);
+        workspace = dao.update(workspace);
 
-        return Response.noContent().build();
+        return Response.ok(workspaceMapper.map(workspace)).build();
     }
 
     @ServerExceptionMapper
