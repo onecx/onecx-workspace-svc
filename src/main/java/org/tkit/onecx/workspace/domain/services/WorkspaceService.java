@@ -1,11 +1,9 @@
-package org.tkit.onecx.workspace.rs.internal.services;
+package org.tkit.onecx.workspace.domain.services;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
-import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 
@@ -13,18 +11,14 @@ import org.tkit.onecx.workspace.domain.models.Workspace;
 public class WorkspaceService {
 
     @Inject
-    AssignmentDAO assignmentDAO;
-
-    @Inject
-    MenuItemDAO menuItemDAO;
-
-    @Inject
     WorkspaceDAO workspaceDAO;
+
+    @Inject
+    MenuService menuService;
 
     @Transactional
     public void deleteWorkspace(Workspace workspace) {
-        assignmentDAO.deleteAllByWorkspaceId(workspace.getId());
-        menuItemDAO.deleteAllMenuItemsByWorkspaceId(workspace.getId());
+        menuService.deleteAllMenuItemsForWorkspace(workspace.getId());
         workspaceDAO.delete(workspace);
     }
 }

@@ -20,9 +20,9 @@ import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.RoleDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.*;
+import org.tkit.onecx.workspace.domain.services.MenuService;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportExceptionMapperV1;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportMapperV1;
-import org.tkit.onecx.workspace.rs.exim.v1.services.MenuService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 

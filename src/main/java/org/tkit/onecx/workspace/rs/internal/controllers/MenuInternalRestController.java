@@ -15,10 +15,10 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
+import org.tkit.onecx.workspace.domain.services.MenuService;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.MenuItemMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
@@ -48,7 +48,7 @@ public class MenuInternalRestController implements MenuInternalApi {
     WorkspaceDAO workspaceDAO;
 
     @Inject
-    AssignmentDAO assignmentDAO;
+    MenuService menuService;
 
     @Override
     public Response createMenuItem(CreateMenuItemDTO menuItemDTO) {
@@ -84,16 +84,14 @@ public class MenuInternalRestController implements MenuInternalApi {
     @Override
     @Transactional
     public Response deleteAllMenuItemsForWorkspace(String id) {
-        assignmentDAO.deleteAllByWorkspaceId(id);
-        dao.deleteAllMenuItemsByWorkspaceId(id);
+        menuService.deleteAllMenuItemsForWorkspace(id);
         return Response.noContent().build();
     }
 
     @Override
     @Transactional
     public Response deleteMenuItemById(String menuItemId) {
-        assignmentDAO.deleteAllByMenuId(menuItemId);
-        dao.deleteQueryById(menuItemId);
+        menuService.deleteMenuItem(menuItemId);
         return Response.noContent().build();
     }
 

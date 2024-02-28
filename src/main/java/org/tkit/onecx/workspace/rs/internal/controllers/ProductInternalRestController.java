@@ -80,8 +80,6 @@ public class ProductInternalRestController implements ProductInternalApi {
     @Override
     public Response searchProducts(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
         var criteria = mapper.map(productSearchCriteriaDTO);
-        var result1 = dao.findByCriteria(criteria);
-        var items = result1.getStream().toList();
         var result = dao.findByCriteria(criteria);
         return Response.ok(mapper.mapPage(result)).build();
     }

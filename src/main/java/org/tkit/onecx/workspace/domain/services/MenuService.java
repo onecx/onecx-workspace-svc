@@ -1,4 +1,4 @@
-package org.tkit.onecx.workspace.rs.exim.v1.services;
+package org.tkit.onecx.workspace.domain.services;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Role;
 import org.tkit.quarkus.log.cdi.LogService;
 
+@LogService
 @ApplicationScoped
 public class MenuService {
 
@@ -26,7 +27,6 @@ public class MenuService {
     @Inject
     RoleDAO roleDAO;
 
-    @LogService
     @Transactional
     public int importMenuItems(String workspaceId, List<MenuItem> items, List<Role> roles, List<Assignment> assignments) {
         assignmentDAO.deleteAllByWorkspaceId(workspaceId);
@@ -35,5 +35,17 @@ public class MenuService {
         dao.create(items);
         assignmentDAO.create(assignments);
         return deleted;
+    }
+
+    @Transactional
+    public void deleteMenuItem(String menuItemId) {
+        assignmentDAO.deleteAllByMenuId(menuItemId);
+        dao.deleteQueryById(menuItemId);
+    }
+
+    @Transactional
+    public void deleteAllMenuItemsForWorkspace(String workspaceId) {
+        assignmentDAO.deleteAllByWorkspaceId(workspaceId);
+        dao.deleteAllMenuItemsByWorkspaceId(workspaceId);
     }
 }

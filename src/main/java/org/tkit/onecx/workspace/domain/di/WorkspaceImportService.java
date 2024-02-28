@@ -11,6 +11,7 @@ import org.tkit.onecx.workspace.domain.daos.*;
 import org.tkit.onecx.workspace.domain.di.mappers.WorkspaceDataImportMapperV1;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.onecx.workspace.domain.services.MenuService;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.context.Context;
 
@@ -40,6 +41,9 @@ public class WorkspaceImportService {
 
     @Inject
     AssignmentDAO assignmentDAO;
+
+    @Inject
+    MenuService menuService;
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void deleteAll(String tenanId) {
@@ -79,7 +83,9 @@ public class WorkspaceImportService {
             workspace = workspaceDAO.create(workspace);
 
             if (importRequestDTO.getMenuItems() != null && !importRequestDTO.getMenuItems().isEmpty()) {
-                menuItemDAO.deleteAllMenuItemsByWorkspaceId(workspace.getId());
+
+                menuService.deleteAllMenuItemsForWorkspace(workspace.getId());
+
                 List<MenuItem> menus = new LinkedList<>();
                 recursiveMappingTreeStructure(importRequestDTO.getMenuItems(), workspace, null, menus);
                 menuItemDAO.create(menus);
