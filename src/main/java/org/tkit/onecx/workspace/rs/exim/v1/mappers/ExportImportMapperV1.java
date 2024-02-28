@@ -4,8 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Role;
 import org.tkit.onecx.workspace.domain.models.Workspace;
@@ -51,9 +50,20 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
+    @Mapping(target = "workspace", ignore = true)
     Role create(EximWorkspaceRoleDTOV1 dto);
+
+    @AfterMapping
+    default void afterWorkspace(EximWorkspaceDTOV1 dto, @MappingTarget Workspace workspace) {
+        if (workspace == null) {
+            return;
+        }
+        if (workspace.getRoles() == null) {
+            return;
+        }
+        workspace.getRoles().forEach(r -> r.setWorkspace(workspace));
+    }
 
     @Mapping(target = "removeWorkspacesItem", ignore = true)
     @Mapping(target = "id", source = "request.id")

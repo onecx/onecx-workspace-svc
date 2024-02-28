@@ -69,7 +69,7 @@ public class Workspace extends TraceableEntity {
     private Set<SubjectLink> subjectLink = new HashSet<>();
 
     @Column(name = "ROLES")
-    @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
+    @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
     private List<Role> roles;
 
     @ElementCollection(fetch = LAZY)

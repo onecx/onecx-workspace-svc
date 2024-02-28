@@ -102,6 +102,28 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(importResponse).isNotNull();
         assertThat(importResponse.getWorkspaces()).containsEntry("testWorkspace", ImportResponseStatusDTOV1.CREATED);
 
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
+        request.addNamesItem("testWorkspace");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/export")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
+        var w = dto.getWorkspaces().get("testWorkspace");
+        assertThat(w).isNotNull();
+        assertThat(w.getName()).isEqualTo("testWorkspace");
+
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
+                .containsExactly(
+                        new EximWorkspaceRoleDTOV1().name("role1").description("role1"),
+                        new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+
     }
 
     @Test
