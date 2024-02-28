@@ -249,6 +249,77 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         // root menu
         List<EximWorkspaceMenuItemDTOV1> menuItems = new ArrayList<>();
         menuItems.add(
+                new EximWorkspaceMenuItemDTOV1().key("key1").name("key1").position(0).roles(Set.of("role-1-1", "role-i-2")));
+        menuItems
+                .add(new EximWorkspaceMenuItemDTOV1().key("key2").name("key2").position(1).roles(Set.of("role-i-3", "role-i-2"))
+                        .children(children));
+
+        var snapshot = new MenuSnapshotDTOV1()
+                .id("test-import-1")
+                .created(OffsetDateTime.now())
+                .menu(new EximMenuStructureDTOV1().menuItems(menuItems));
+
+        var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("/test01/menu/import")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ImportMenuResponseDTOV1.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getStatus()).isEqualTo(ImportResponseStatusDTOV1.UPDATED);
+
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/test01/menu/export")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(MenuSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getMenu()).isNotNull();
+        assertThat(dto.getMenu().getMenuItems()).isNotNull().isNotEmpty().hasSize(2);
+
+        var map = dto.getMenu().getMenuItems().stream().collect(Collectors.toMap(EximWorkspaceMenuItemDTOV1::getKey, x -> x));
+
+        var c1 = map.get("key1");
+        assertThat(c1).isNotNull();
+        assertThat(c1.getKey()).isEqualTo("key1");
+        assertThat(c1.getRoles()).isNotNull().isNotEmpty().hasSize(2).containsExactly("role-1-1", "role-i-2");
+
+        var c2 = map.get("key2");
+        assertThat(c2).isNotNull();
+        assertThat(c2.getKey()).isEqualTo("key2");
+        assertThat(c2.getRoles()).isNotNull().isNotEmpty().hasSize(2).containsExactly("role-i-3", "role-i-2");
+        assertThat(c2.getChildren()).isNotNull().isNotEmpty().hasSize(2);
+
+        map = c2.getChildren().stream().collect(Collectors.toMap(EximWorkspaceMenuItemDTOV1::getKey, x -> x));
+
+        var c3 = map.get("key3");
+        assertThat(c3).isNotNull();
+        assertThat(c3.getKey()).isEqualTo("key3");
+        assertThat(c3.getRoles()).isNotNull().isNotEmpty().hasSize(1).containsExactly("role-i-2");
+
+        var c4 = map.get("key4");
+        assertThat(c4).isNotNull();
+        assertThat(c4.getKey()).isEqualTo("key4");
+        assertThat(c4.getRoles()).isNull();
+    }
+
+    @Test
+    void importMenuByWorkspaceIdNewRolesTest() {
+
+        // children of key2
+        List<EximWorkspaceMenuItemDTOV1> children = new ArrayList<>();
+        children.add(new EximWorkspaceMenuItemDTOV1().key("key3").name("key3").position(10).roles(Set.of("role-i-2")));
+        children.add(new EximWorkspaceMenuItemDTOV1().key("key4").name("key4").position(20));
+
+        // root menu
+        List<EximWorkspaceMenuItemDTOV1> menuItems = new ArrayList<>();
+        menuItems.add(
                 new EximWorkspaceMenuItemDTOV1().key("key1").name("key1").position(0).roles(Set.of("role-i-1", "role-i-2")));
         menuItems
                 .add(new EximWorkspaceMenuItemDTOV1().key("key2").name("key2").position(1).roles(Set.of("role-i-3", "role-i-2"))
@@ -270,43 +341,6 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(response).isNotNull();
         assertThat(response.getStatus()).isEqualTo(ImportResponseStatusDTOV1.CREATED);
-
-        var dto = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .get("/test02/menu/export")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuSnapshotDTOV1.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getMenu()).isNotNull();
-        assertThat(dto.getMenu().getMenuItems()).isNotNull().isNotEmpty().hasSize(2);
-
-        var map = dto.getMenu().getMenuItems().stream().collect(Collectors.toMap(EximWorkspaceMenuItemDTOV1::getKey, x -> x));
-
-        var c1 = map.get("key1");
-        assertThat(c1).isNotNull();
-        assertThat(c1.getKey()).isEqualTo("key1");
-        assertThat(c1.getRoles()).isNotNull().isNotEmpty().hasSize(2).containsExactly("role-i-1", "role-i-2");
-
-        var c2 = map.get("key2");
-        assertThat(c2).isNotNull();
-        assertThat(c2.getKey()).isEqualTo("key2");
-        assertThat(c2.getRoles()).isNotNull().isNotEmpty().hasSize(2).containsExactly("role-i-3", "role-i-2");
-        assertThat(c2.getChildren()).isNotNull().isNotEmpty().hasSize(2);
-
-        map = c2.getChildren().stream().collect(Collectors.toMap(EximWorkspaceMenuItemDTOV1::getKey, x -> x));
-
-        var c3 = map.get("key3");
-        assertThat(c3).isNotNull();
-        assertThat(c3.getKey()).isEqualTo("key3");
-        assertThat(c3.getRoles()).isNotNull().isNotEmpty().hasSize(1).containsExactly("role-i-2");
-
-        var c4 = map.get("key4");
-        assertThat(c4).isNotNull();
-        assertThat(c4.getKey()).isEqualTo("key4");
-        assertThat(c4.getRoles()).isNull();
     }
 
     @Test
@@ -331,6 +365,30 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getStatus()).isEqualTo(ImportResponseStatusDTOV1.UPDATED);
+    }
+
+    @Test
+    void importMenuByWorkspaceIdNoRolesMenuTest() {
+        MenuSnapshotDTOV1 snapshot = new MenuSnapshotDTOV1();
+        EximMenuStructureDTOV1 menu = new EximMenuStructureDTOV1();
+        EximWorkspaceMenuItemDTOV1 menuItem = new EximWorkspaceMenuItemDTOV1();
+        List<EximWorkspaceMenuItemDTOV1> menuItems = new ArrayList<>();
+        menuItems.add(menuItem);
+        menuItem.setPosition(0);
+        menuItem.setKey("new-key-1");
+        menu.setMenuItems(menuItems);
+        snapshot.setMenu(menu);
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("/test03/menu/import")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ImportMenuResponseDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStatus()).isEqualTo(ImportResponseStatusDTOV1.CREATED);
     }
 
     @Test
