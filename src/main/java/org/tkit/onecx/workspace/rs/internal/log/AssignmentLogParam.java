@@ -18,9 +18,6 @@ public class AssignmentLogParam implements LogParam {
                         x -> CreateAssignmentRequestDTO.class.getSimpleName() + "["
                                 + ((CreateAssignmentRequestDTO) x).getRoleId() + ","
                                 + ((CreateAssignmentRequestDTO) x).getMenuItemId() + "]"),
-                item(10, UpdateProductRequestDTO.class,
-                        x -> UpdateProductRequestDTO.class.getSimpleName() + "[" + ((UpdateProductRequestDTO) x).getBaseUrl()
-                                + "]"),
                 item(10, AssignmentSearchCriteriaDTO.class, x -> {
                     AssignmentSearchCriteriaDTO d = (AssignmentSearchCriteriaDTO) x;
                     return AssignmentSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + "," + d.getPageSize()
