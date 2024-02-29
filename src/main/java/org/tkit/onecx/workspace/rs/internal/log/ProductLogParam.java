@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.tkit.quarkus.log.cdi.LogParam;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.CreateProductRequestDTO;
+import gen.org.tkit.onecx.workspace.rs.internal.model.ProductSearchCriteriaDTO;
 import gen.org.tkit.onecx.workspace.rs.internal.model.UpdateProductRequestDTO;
 
 @ApplicationScoped
@@ -17,18 +18,14 @@ public class ProductLogParam implements LogParam {
         return List.of(
                 this.item(10, CreateProductRequestDTO.class,
                         x -> CreateProductRequestDTO.class.getSimpleName() + "["
-                                + ((CreateProductRequestDTO) x).getProductName()
-                                + "," + ((CreateProductRequestDTO) x).getBaseUrl() + ","
-                                + (((CreateProductRequestDTO) x).getMicrofrontends() != null
-                                        ? ((CreateProductRequestDTO) x).getMicrofrontends().size()
-                                        : "null")
-                                + "]"),
+                                + ((CreateProductRequestDTO) x).getWorkspaceId() + "]"),
                 this.item(10, UpdateProductRequestDTO.class,
                         x -> UpdateProductRequestDTO.class.getSimpleName() + "[" + ((UpdateProductRequestDTO) x).getBaseUrl()
-                                + ","
-                                + (((UpdateProductRequestDTO) x).getMicrofrontends() != null
-                                        ? ((UpdateProductRequestDTO) x).getMicrofrontends().size()
-                                        : "null")
-                                + "]"));
+                                + "]"),
+                item(10, ProductSearchCriteriaDTO.class, x -> {
+                    ProductSearchCriteriaDTO d = (ProductSearchCriteriaDTO) x;
+                    return ProductSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + "," + d.getPageSize()
+                            + "]";
+                }));
     }
 }
