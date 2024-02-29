@@ -4,8 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import org.tkit.onecx.workspace.domain.daos.ImageDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
-import org.tkit.onecx.workspace.domain.models.Workspace;
 
 @ApplicationScoped
 public class WorkspaceService {
@@ -16,8 +16,16 @@ public class WorkspaceService {
     @Inject
     MenuService menuService;
 
+    @Inject
+    ImageDAO imageDAO;
+
     @Transactional
-    public void deleteWorkspace(Workspace workspace) {
+    public void deleteWorkspace(String id) {
+        var workspace = workspaceDAO.findById(id);
+        if (workspace == null) {
+            return;
+        }
+        imageDAO.deleteQueryByRefId(workspace.getId());
         menuService.deleteAllMenuItemsForWorkspace(workspace.getId());
         workspaceDAO.delete(workspace);
     }

@@ -32,9 +32,6 @@ public class ImageDAO extends AbstractDAO<Image> {
 
     @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
     public void deleteQueryByRefId(String refId) throws DAOException {
-        if (refId == null) {
-            return;
-        }
         try {
             var cq = deleteQuery();
             var root = cq.from(Image.class);

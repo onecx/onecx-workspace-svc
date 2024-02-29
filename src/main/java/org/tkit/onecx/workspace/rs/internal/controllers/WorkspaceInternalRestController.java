@@ -53,13 +53,8 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     }
 
     @Override
-    @Transactional
     public Response deleteWorkspace(String id) {
-        var workspace = dao.findById(id);
-        if (workspace == null) {
-            return Response.noContent().build();
-        }
-        service.deleteWorkspace(workspace);
+        service.deleteWorkspace(id);
         return Response.noContent().build();
     }
 
