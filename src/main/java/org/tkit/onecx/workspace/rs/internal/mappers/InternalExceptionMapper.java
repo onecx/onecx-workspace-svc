@@ -20,33 +20,31 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailInvalidParamDTO;
 import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailParamDTO;
 import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Mapper(uses = { OffsetDateTimeMapper.class })
-public abstract class InternalExceptionMapper {
+public interface InternalExceptionMapper {
 
     @LogService(log = false)
-    public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
+    default RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
         var dto = exception(TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name(), ex.getMessage());
         dto.setInvalidParams(createErrorValidationResponse(ex.getConstraintViolations()));
         return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }
 
     @LogService(log = false)
-    public RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ce) {
+    default RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ce) {
         var e = exception(ce.getMessageKey().name(), ce.getConstraints());
         e.setParams(map(ce.namedParameters));
         return RestResponse.status(Response.Status.BAD_REQUEST, e);
     }
 
     @LogService(log = false)
-    public RestResponse<ProblemDetailResponseDTO> optimisticLock(OptimisticLockException ex) {
+    default RestResponse<ProblemDetailResponseDTO> optimisticLock(OptimisticLockException ex) {
         var dto = exception(TechnicalErrorKeys.OPTIMISTIC_LOCK.name(), ex.getMessage());
         return RestResponse.status(Response.Status.BAD_REQUEST, dto);
     }
 
-    public List<ProblemDetailParamDTO> map(Map<String, Object> params) {
+    default List<ProblemDetailParamDTO> map(Map<String, Object> params) {
         if (params == null) {
             return List.of();
         }
@@ -64,20 +62,20 @@ public abstract class InternalExceptionMapper {
     @Mapping(target = "removeInvalidParamsItem", ignore = true)
     @Mapping(target = "removeParamsItem", ignore = true)
     @Mapping(target = "params", ignore = true)
-    public abstract ProblemDetailResponseDTO exception(String errorCode, String detail);
+    ProblemDetailResponseDTO exception(String errorCode, String detail);
 
-    public abstract List<ProblemDetailInvalidParamDTO> createErrorValidationResponse(
+    List<ProblemDetailInvalidParamDTO> createErrorValidationResponse(
             Set<ConstraintViolation<?>> constraintViolation);
 
     @Mapping(target = "name", source = "propertyPath")
     @Mapping(target = "message", source = "message")
     public abstract ProblemDetailInvalidParamDTO createError(ConstraintViolation<?> constraintViolation);
 
-    public String mapPath(Path path) {
+    default String mapPath(Path path) {
         return path.toString();
     }
 
-    public enum TechnicalErrorKeys {
+    enum TechnicalErrorKeys {
         CONSTRAINT_VIOLATIONS,
         OPTIMISTIC_LOCK
     }

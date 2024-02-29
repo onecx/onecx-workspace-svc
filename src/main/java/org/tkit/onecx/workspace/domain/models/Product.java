@@ -1,6 +1,5 @@
 package org.tkit.onecx.workspace.domain.models;
 
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 import java.util.List;
@@ -37,8 +36,16 @@ public class Product extends TraceableEntity {
     @JoinColumn(name = "WORKSPACE_GUID")
     private Workspace workspace;
 
-    @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "WORKSPACE_GUID", insertable = false, updatable = false)
+    private String workspaceId;
+
+    @OneToMany(fetch = LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "PRODUCT_GUID")
     private List<Microfrontend> microfrontends;
+
+    @PostPersist
+    void postPersist() {
+        workspaceId = workspace.getId();
+    }
 
 }

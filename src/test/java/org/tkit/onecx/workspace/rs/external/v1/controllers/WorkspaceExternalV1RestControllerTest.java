@@ -7,7 +7,6 @@ import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceDTOV1;
-import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspacePageResultDTOV1;
-import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceSearchCriteriaDTOV1;
+import gen.org.tkit.onecx.workspace.rs.external.v1.model.*;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -49,7 +46,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .pathParam("name", "test01")
-                .get("/name/{name}")
+                .get("{name}")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTOV1.class);
@@ -59,28 +56,21 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
     }
 
     @Test
-    void getALlWorkspaceNamesTest() {
-        var names = given()
-                .when()
-                .get()
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(List.class);
-
-        assertThat(names).isNotNull().hasSize(3);
-    }
-
-    @Test
     void getALlWorkspacesByProductNameTest() {
-        var names = given()
+
+        var criteria = new WorkspaceSearchCriteriaDTOV1().productName("onecx-core");
+
+        var dto = given()
                 .when()
-                .pathParam("productName", "onecx-core")
-                .get("/productName/{productName}")
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/search")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(List.class);
+                .extract().as(WorkspacePageResultDTOV1.class);
 
-        assertThat(names).isNotNull().contains("test01").contains("test02").hasSize(2);
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(3);
     }
 
     @Test
@@ -88,7 +78,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         var dto = given()
                 .when()
                 .pathParam("name", "not-found")
-                .get("/name/{name}")
+                .get("{name}")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
 
@@ -109,5 +99,32 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 arguments(criteria2, 0), // different tenant so will not find it
                 arguments(criteria3, 0),
                 arguments(emptyCriteria, 3));
+    }
+
+    @Test
+    void getProductsForWorkspaceNameTest() {
+        // not existing product
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("name", "does-not-exist")
+                .get("/{name}/load")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        // existing product
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("name", "test01")
+                .get("/{name}/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceLoadDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getProducts()).isNotNull().isNotEmpty().hasSize(2);
+        assertThat(dto.getProducts().get(0).getProductName()).isNotEmpty();
+        assertThat(dto.getProducts().get(1).getProductName()).isNotEmpty();
     }
 }

@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ValueMapping;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
-import org.tkit.onecx.workspace.domain.models.enums.Scope;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.legacy.model.RestExceptionDTO;
@@ -38,37 +37,40 @@ public interface TkitPortalMapper {
         }
     }
 
-    @Mapping(target = "workspaceExit", source = "portalExit")
+    @Mapping(target = "external", source = "portalExit")
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "description", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "workspaceName", source = "portalId")
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
     @Mapping(target = "parent.id", source = "parentItemId")
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
-    @Mapping(target = "permission", source = "permissionObject")
+    @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "parentId", ignore = true)
     MenuItem mapMenu(TkitMenuItemStructureDTO menuItemStructureDto);
 
     default void updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent, String applicationId) {
         menuItem.setWorkspace(workspace);
-        menuItem.setWorkspaceName(workspace.getName());
         menuItem.setPosition(position);
         menuItem.setParent(parent);
         menuItem.setApplicationId(applicationId);
     }
 
     @ValueMapping(target = "WORKSPACE", source = "PORTAL")
-    Scope map(ScopeDTO scope);
+    MenuItem.Scope map(ScopeDTO scope);
 
-    default List<TkitMenuItemStructureDTO> mapToTree(List<MenuItem> menuItems) {
+    default List<TkitMenuItemStructureDTO> mapToEmptyTree() {
+        return new ArrayList<>();
+    }
+
+    default List<TkitMenuItemStructureDTO> mapToTree(List<MenuItem> menuItems, String portalId) {
         var result = new ArrayList<TkitMenuItemStructureDTO>();
         if (menuItems == null) {
             return result;
@@ -76,6 +78,7 @@ public interface TkitPortalMapper {
 
         // create map of <id, menuItem>
         var map = menuItems.stream().map(this::mapWithEmptyChildren)
+                .map(item -> item.portalId(portalId))
                 .collect(Collectors.toMap(TkitMenuItemStructureDTO::getGuid, x -> x));
 
         // loop over all menu items, add parent or child in result tree
@@ -91,10 +94,10 @@ public interface TkitPortalMapper {
         return result;
     }
 
-    @Mapping(target = "permissionObject", source = "permission")
-    @Mapping(target = "portalExit", source = "workspaceExit")
+    @Mapping(target = "permissionObject", ignore = true)
+    @Mapping(target = "portalExit", source = "external")
     @Mapping(target = "parentItemId", source = "parent.id")
-    @Mapping(target = "portalId", source = "workspaceName")
+    @Mapping(target = "portalId", ignore = true)
     @Mapping(target = "parentKey", source = "parent.id")
     @Mapping(target = "version", source = "modificationCount")
     @Mapping(target = "removeChildrenItem", ignore = true)
@@ -104,7 +107,7 @@ public interface TkitPortalMapper {
     TkitMenuItemStructureDTO mapWithEmptyChildren(MenuItem entity);
 
     @ValueMapping(target = "PORTAL", source = "WORKSPACE")
-    ScopeDTO map(Scope scope);
+    ScopeDTO map(MenuItem.Scope scope);
 
     @Mapping(target = "removeParametersItem", ignore = true)
     @Mapping(target = "namedParameters", ignore = true)

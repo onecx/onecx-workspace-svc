@@ -1,6 +1,7 @@
 package org.tkit.onecx.workspace.domain.criteria;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +12,11 @@ public class WorkspaceSearchCriteria implements Serializable {
 
     private String name;
 
+    private Set<String> names;
+
     private String themeName;
 
-    private Integer pageNumber;
+    private Integer pageNumber = 0;
 
-    private Integer pageSize;
+    private Integer pageSize = 100;
 }

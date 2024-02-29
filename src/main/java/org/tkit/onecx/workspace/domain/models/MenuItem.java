@@ -11,10 +11,8 @@ import java.util.Map;
 import java.util.Set;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.TenantId;
-import org.tkit.onecx.workspace.domain.models.enums.Scope;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -31,8 +29,10 @@ import lombok.Setter;
 })
 @NamedEntityGraph(name = MenuItem.MENU_ITEM_WORKSPACE_AND_TRANSLATIONS, attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("workspace") })
-@NamedEntityGraph(name = "MenuItem.loadById", includeAllAttributes = true, attributeNodes = { @NamedAttributeNode("i18n"),
+@NamedEntityGraph(name = MenuItem.MENU_ITEM_LOAD_ALL, attributeNodes = { @NamedAttributeNode("i18n"),
         @NamedAttributeNode("children"), @NamedAttributeNode("workspace") })
+@NamedEntityGraph(name = MenuItem.MENU_ITEM_LOAD_CHILDREN, attributeNodes = { @NamedAttributeNode("i18n"),
+        @NamedAttributeNode("children"), @NamedAttributeNode("workspace"), @NamedAttributeNode("parent") })
 @SuppressWarnings("squid:S2160")
 public class MenuItem extends TraceableEntity {
 
@@ -40,13 +40,18 @@ public class MenuItem extends TraceableEntity {
 
     public static final String MENU_ITEM_LOAD_ALL = "MenuItem.loadById";
 
+    public static final String MENU_ITEM_LOAD_CHILDREN = "MenuItem.loadChildren";
+
     @TenantId
     @Column(name = "TENANT_ID")
     private String tenantId;
 
-    @ManyToOne(cascade = { REFRESH }, optional = false)
+    @ManyToOne(cascade = { REFRESH }, optional = false, fetch = LAZY)
     @JoinColumn(name = "WORKSPACE")
     Workspace workspace;
+
+    @Column(name = "WORKSPACE", insertable = false, updatable = false)
+    private String workspaceId;
 
     @Column(name = "KEY")
     private String key;
@@ -60,21 +65,14 @@ public class MenuItem extends TraceableEntity {
     @Column(name = "URL")
     private String url;
 
-    @Column(name = "WORKSPACE_NAME")
-    private String workspaceName;
-
     @Column(name = "APPLICATION_ID")
     private String applicationId;
 
     @Column(name = "DISABLED")
-    @NotNull
     private boolean disabled;
 
     @Column(name = "POS")
     private int position;
-
-    @Column(name = "PERMISSION_OBJECT")
-    private String permission;
 
     @Column(name = "BADGE")
     private String badge;
@@ -83,13 +81,15 @@ public class MenuItem extends TraceableEntity {
     @Enumerated(STRING)
     private Scope scope;
 
-    @Column(name = "WORKSPACE_EXIT")
-    @NotNull
-    private boolean workspaceExit;
+    @Column(name = "EXTERNAL")
+    private boolean external;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "PARENT")
     private MenuItem parent;
+
+    @Column(name = "PARENT", insertable = false, updatable = false)
+    private String parentId;
 
     @OneToMany(fetch = LAZY, cascade = ALL, mappedBy = "parent", orphanRemoval = true)
     @OrderBy("position")
@@ -100,4 +100,19 @@ public class MenuItem extends TraceableEntity {
     @Column(name = "i18n")
     @CollectionTable(name = "MENU_ITEM_I18N")
     private Map<String, String> i18n = new HashMap<>();
+
+    @PostPersist
+    void postPersist() {
+        if (parent != null) {
+            parentId = parent.getId();
+        }
+        workspaceId = workspace.getId();
+    }
+
+    public enum Scope {
+
+        WORKSPACE,
+        APP,
+        PAGE
+    }
 }

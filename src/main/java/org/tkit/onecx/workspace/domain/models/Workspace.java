@@ -18,8 +18,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "WORKSPACE", uniqueConstraints = {
-        @UniqueConstraint(name = "NAME_TENANT_ID", columnNames = { "NAME", "TENANT_ID" }),
-        @UniqueConstraint(name = "WORKSPACE_BASE_URL", columnNames = { "BASE_URL" })
+        @UniqueConstraint(name = "WORKSPACE_NAME_TENANT_ID", columnNames = { "NAME", "TENANT_ID" }),
+        @UniqueConstraint(name = "WORKSPACE_BASE_URL_TENANT_ID", columnNames = { "BASE_URL", "TENANT_ID" })
 })
 @NamedEntityGraph(name = Workspace.WORKSPACE_FULL, attributeNodes = { @NamedAttributeNode("subjectLink"),
         @NamedAttributeNode("imageUrl"), @NamedAttributeNode(value = "products") })
@@ -44,7 +44,7 @@ public class Workspace extends TraceableEntity {
     @Column(name = "HOME_PAGE")
     private String homePage;
 
-    @Column(name = "BASE_URL", unique = true)
+    @Column(name = "BASE_URL", unique = true, nullable = false)
     private String baseUrl;
 
     @Column(name = "COMPANY_NAME")
@@ -68,8 +68,9 @@ public class Workspace extends TraceableEntity {
     @AttributeOverride(name = "url", column = @Column(name = "link_url"))
     private Set<SubjectLink> subjectLink = new HashSet<>();
 
-    @Column(name = "WORKSPACE_ROLES", columnDefinition = "TEXT")
-    private String workspaceRoles;
+    @Column(name = "ROLES")
+    @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    private List<Role> roles;
 
     @ElementCollection(fetch = LAZY)
     @CollectionTable(name = "IMAGE_URL")
@@ -79,7 +80,7 @@ public class Workspace extends TraceableEntity {
     @Column(name = "LOGO_URL")
     private String logoUrl;
 
-    @OneToMany(mappedBy = "workspace", fetch = LAZY)
+    @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
     private List<Product> products;
 
 }

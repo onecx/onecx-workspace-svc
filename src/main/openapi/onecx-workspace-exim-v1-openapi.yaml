@@ -169,15 +169,14 @@ components:
           type: string
         footerLabel:
           type: string
-        workspaceRoles:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
         logoUrl:
           type: string
         address:
           $ref: '#/components/schemas/EximWorkspaceAddress'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximWorkspaceRole'
         subjectLinks:
           uniqueItems: true
           maxItems: 3
@@ -189,6 +188,13 @@ components:
           type: array
           items:
             type: string
+    EximWorkspaceRole:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
     EximWorkspaceAddress:
       type: object
       properties:
@@ -229,6 +235,9 @@ components:
             $ref: '#/components/schemas/EximWorkspaceMenuItem'
     EximWorkspaceMenuItem:
       type: object
+      required:
+        - key
+        - position
       properties:
         key:
           type: string
@@ -238,8 +247,6 @@ components:
           type: string
         url:
           type: string
-        workspaceName:
-          type: string
         applicationId:
           type: string
         disabled:
@@ -247,17 +254,20 @@ components:
         position:
           format: int32
           type: integer
-        permission:
-          type: string
         badge:
           type: string
         scope:
           $ref: '#/components/schemas/EximScope'
-        workspaceExit:
+        external:
           type: boolean
         i18n:
           type: object
           additionalProperties:
+            type: string
+        roles:
+          type: array
+          uniqueItems: true
+          items:
             type: string
         children:
           type: array

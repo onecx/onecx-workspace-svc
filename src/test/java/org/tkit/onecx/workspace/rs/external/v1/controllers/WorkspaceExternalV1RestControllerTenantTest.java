@@ -42,18 +42,10 @@ class WorkspaceExternalV1RestControllerTenantTest extends AbstractTest {
     }
 
     private static Stream<Arguments> criteriaAndResults() {
-        WorkspaceSearchCriteriaDTOV1 criteria1 = new WorkspaceSearchCriteriaDTOV1();
-        criteria1.setThemeName("11-111");
-        WorkspaceSearchCriteriaDTOV1 criteria2 = new WorkspaceSearchCriteriaDTOV1();
-        criteria2.setThemeName("22-222");
-        WorkspaceSearchCriteriaDTOV1 criteria3 = new WorkspaceSearchCriteriaDTOV1();
-        criteria3.setThemeName("does-not-exists");
-        WorkspaceSearchCriteriaDTOV1 emptyCriteria = new WorkspaceSearchCriteriaDTOV1();
-
         return Stream.of(
-                arguments(criteria1, 3, "org1"),
-                arguments(criteria2, 0, "org1"), // different tenant so will not find it
-                arguments(criteria3, 0, "org1"),
-                arguments(emptyCriteria, 3, "org1"));
+                arguments(new WorkspaceSearchCriteriaDTOV1().themeName("11-111"), 3, "org1"),
+                arguments(new WorkspaceSearchCriteriaDTOV1().themeName("22-222"), 0, "org1"), // different tenant so will not find it
+                arguments(new WorkspaceSearchCriteriaDTOV1().themeName("does-not-exists"), 0, "org1"),
+                arguments(new WorkspaceSearchCriteriaDTOV1(), 3, "org1"));
     }
 }

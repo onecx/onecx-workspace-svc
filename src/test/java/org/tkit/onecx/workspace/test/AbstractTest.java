@@ -15,6 +15,7 @@ import org.eclipse.microprofile.jwt.Claims;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import io.quarkus.test.keycloak.client.KeycloakTestClient;
 import io.restassured.config.RestAssuredConfig;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.util.KeyUtils;
@@ -35,6 +36,20 @@ public class AbstractTest {
                             objectMapper.configure(WRITE_DATES_AS_TIMESTAMPS, false);
                             return objectMapper;
                         }));
+    }
+
+    protected static final String USER_ALICE = "alice";
+
+    protected static final String USER_BOB = "bob";
+
+    KeycloakTestClient keycloakClient = new KeycloakTestClient();
+
+    protected String createAccessTokenBearer(String user) {
+        return "Bearer " + createAccessToken(user);
+    }
+
+    protected String createAccessToken(String user) {
+        return keycloakClient.getAccessToken(user);
     }
 
     protected static String createToken(String organizationId) {

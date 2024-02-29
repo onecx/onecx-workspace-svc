@@ -7,7 +7,9 @@ import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
+import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.rs.legacy.mappers.PortalLegacyMapper;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
@@ -26,6 +28,9 @@ public class PortalLegacyRestController implements PortalLegacyApi {
     MenuItemDAO dao;
 
     @Inject
+    WorkspaceDAO workspaceDAO;
+
+    @Inject
     PortalLegacyMapper mapper;
 
     @Override
@@ -35,8 +40,15 @@ public class PortalLegacyRestController implements PortalLegacyApi {
 
     @Override
     public Response getMenuStructureForPortalName(String portalName) {
-        var items = dao.loadAllMenuItemsByWorkspaceName(portalName);
-        return Response.ok(mapper.mapToTree(items)).build();
+        var workspace = workspaceDAO.findByName(portalName);
+        if (workspace == null) {
+            return Response.ok(mapper.mapToEmptyTree()).build();
+        }
+
+        var criteria = new MenuItemLoadCriteria();
+        criteria.setWorkspaceId(workspace.getId());
+        var items = dao.loadAllMenuItemsByCriteria(criteria);
+        return Response.ok(mapper.mapToTree(items, workspace.getName())).build();
     }
 
     @ServerExceptionMapper

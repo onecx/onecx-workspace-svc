@@ -7,8 +7,6 @@ servers:
   - url: "http://onecx-workspace:8080"
 tags:
   - name: workspaceExternal
-  - name: productExternal
-
 paths:
   /v1/workspaces/search:
     post:
@@ -28,7 +26,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspacePageResult'
-  /v1/workspaces/name/{name}:
+  /v1/workspaces/{name}:
     get:
       tags:
         - workspaceExternal
@@ -43,41 +41,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workspace'
-  /v1/workspaces/productName/{productName}:
+  /v1/workspaces/{name}/load:
     get:
       tags:
         - workspaceExternal
-      description: get list of workspace names using this product
-      operationId: getWorkspacesByProductName
-      parameters:
-        - $ref: '#/components/parameters/productName'
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WorkspaceNameList'
-  /v1/workspaces:
-    get:
-      tags:
-        - workspaceExternal
-      description: get list of all workspace names
-      operationId: getAllWorkspaceNames
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WorkspaceNameList'
-
-  /v1/workspaces/{name}/products:
-    get:
-      tags:
-        - productExternal
-      description: Find all products belonging to a workspace
-      operationId: getProducts
+      description: Load workspace references to a workspace
+      operationId: loadWorkspaceByName
       parameters:
         - $ref: '#/components/parameters/name'
       responses:
@@ -86,20 +55,25 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/WorkspaceLoad'
         "404":
           description: Not found
 components:
   schemas:
+    WorkspaceLoad:
+      type: object
+      properties:
+        name:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
     Workspace:
       required:
         - name
       type: object
       properties:
-        id:
-          type: string
         name:
           type: string
         description:
@@ -190,6 +164,8 @@ components:
       properties:
         themeName:
           type: string
+        productName:
+          type: string
         pageNumber:
           format: int32
           description: The number of page.
@@ -198,17 +174,11 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
           type: integer
-    WorkspaceNameList:
-      type: array
-      items:
-        type: string
     Product:
       type: object
       properties:
-        id:
-          type: string
         productName:
           type: string
         baseUrl:
@@ -221,8 +191,6 @@ components:
     Microfrontend:
       type: object
       properties:
-        id:
-          type: string
         mfeId:
           type: string
         basePath:
@@ -231,18 +199,6 @@ components:
     name:
       in: path
       name: name
-      required: true
-      schema:
-        type: string
-    productName:
-      in: path
-      name: productName
-      required: true
-      schema:
-        type: string
-    id:
-      in: path
-      name: id
       required: true
       schema:
         type: string

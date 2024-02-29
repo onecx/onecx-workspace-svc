@@ -28,16 +28,12 @@ class ProductDAOTest {
 
     @Test
     void methodExceptionTests() {
-        methodExceptionTests(() -> dao.getProductsForWorkspaceId(null),
-                ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_ID);
-        methodExceptionTests(() -> dao.getProductsForWorkspaceName(null),
-                ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_WORKSPACE_NAME);
+        methodExceptionTests(() -> dao.findByCriteria(null),
+                ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_CRITERIA);
         methodExceptionTests(() -> dao.loadById(null),
                 ProductDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.deleteProduct(null),
                 ProductDAO.ErrorKeys.ERROR_DELETE_PRODUCT_ID);
-        methodExceptionTests(() -> dao.findByName(null),
-                ProductDAO.ErrorKeys.FIND_ENTITY_BY_NAME_FAILED);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

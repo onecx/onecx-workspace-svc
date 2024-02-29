@@ -11,21 +11,16 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
-import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
-import org.tkit.onecx.workspace.domain.daos.ProductDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.onecx.workspace.domain.services.WorkspaceService;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
-import org.tkit.onecx.workspace.rs.internal.services.WorkspaceService;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.internal.WorkspaceInternalApi;
-import gen.org.tkit.onecx.workspace.rs.internal.model.CreateWorkspaceRequestDTO;
-import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
-import gen.org.tkit.onecx.workspace.rs.internal.model.UpdateWorkspaceRequestDTO;
-import gen.org.tkit.onecx.workspace.rs.internal.model.WorkspaceSearchCriteriaDTO;
+import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 
 @LogService
 @ApplicationScoped
@@ -42,19 +37,12 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     WorkspaceDAO dao;
 
     @Inject
-    MenuItemDAO menuDao;
-
-    @Inject
-    ProductDAO productDAO;
+    WorkspaceService service;
 
     @Context
     UriInfo uriInfo;
 
-    @Inject
-    WorkspaceService workspaceService;
-
     @Override
-    @Transactional
     public Response createWorkspace(CreateWorkspaceRequestDTO createWorkspaceRequestDTO) {
         var workspace = workspaceMapper.create(createWorkspaceRequestDTO);
         workspace = dao.create(workspace);
@@ -67,11 +55,11 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     @Override
     @Transactional
     public Response deleteWorkspace(String id) {
-        // delete menu before deleting workspace
-        menuDao.deleteAllMenuItemsByWorkspaceId(id);
-        productDAO.deleteProductByWorkspaceId(id);
-
-        dao.deleteQueryById(id);
+        var workspace = dao.findById(id);
+        if (workspace == null) {
+            return Response.noContent().build();
+        }
+        service.deleteWorkspace(workspace);
         return Response.noContent().build();
     }
 
@@ -86,7 +74,7 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
 
     @Override
     public Response findWorkspaceByName(String name) {
-        var item = dao.findByWorkspaceName(name);
+        var item = dao.findByName(name);
         if (item == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -107,15 +95,10 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        // update portalItemName for all portal's menu items
-        var newWorkspaceName = updateWorkspaceRequestDTO.getName();
-        var oldWorkspaceName = workspace.getName();
-
         workspaceMapper.update(updateWorkspaceRequestDTO, workspace);
-        var updatedWorkspace = workspaceService.updateWorkspace(!oldWorkspaceName.equals(newWorkspaceName),
-                workspace, oldWorkspaceName, newWorkspaceName, updateWorkspaceRequestDTO.getBaseUrl());
+        workspace = dao.update(workspace);
 
-        return Response.ok().entity(workspaceMapper.map(updatedWorkspace)).build();
+        return Response.ok(workspaceMapper.map(workspace)).build();
     }
 
     @ServerExceptionMapper
