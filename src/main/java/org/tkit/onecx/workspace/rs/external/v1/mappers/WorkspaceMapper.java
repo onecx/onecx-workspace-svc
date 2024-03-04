@@ -1,11 +1,14 @@
 package org.tkit.onecx.workspace.rs.external.v1.mappers;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
 import org.tkit.onecx.workspace.domain.models.Product;
+import org.tkit.onecx.workspace.domain.models.Role;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -28,7 +31,7 @@ public interface WorkspaceMapper {
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTOV1 criteria);
 
     @Mapping(target = "subjectLinks", ignore = true)
-    @Mapping(target = "workspaceRoles", ignore = true)
+    @Mapping(target = "workspaceRoles", source = "roles")
     @Mapping(target = "removeSubjectLinksItem", ignore = true)
     @Mapping(target = "imageUrls", ignore = true)
     @Mapping(target = "removeImageUrlsItem", ignore = true)
@@ -37,4 +40,8 @@ public interface WorkspaceMapper {
 
     @Mapping(target = "removeProductsItem", ignore = true)
     WorkspaceLoadDTOV1 load(Workspace workspace);
+
+    default Set<String> roleMap(List<Role> roles) {
+        return new HashSet<>(roles.stream().map(Role::getName).toList());
+    }
 }
