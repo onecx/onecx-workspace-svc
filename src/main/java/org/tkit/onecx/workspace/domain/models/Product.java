@@ -29,6 +29,9 @@ public class Product extends TraceableEntity {
     @Column(name = "PRODUCT_NAME")
     private String productName;
 
+    @Column(name = "DISPLAY_NAME")
+    private String displayName;
+
     @Column(name = "BASE_URL", unique = true)
     private String baseUrl;
 
