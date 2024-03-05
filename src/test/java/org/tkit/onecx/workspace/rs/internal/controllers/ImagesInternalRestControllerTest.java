@@ -280,4 +280,43 @@ public class ImagesInternalRestControllerTest extends AbstractTest {
                 "uploadImage.contentLength: must be less than or equal to 110000");
 
     }
+
+    @Test
+    void deleteImage() {
+
+        var refId = "workspaceDeleteTest";
+        var refType = RefTypeDTO.LOGO;
+
+        given()
+                .pathParam("refId", refId)
+                .pathParam("refType", refType)
+                .when()
+                .body(FILE)
+                .contentType(MEDIA_TYPE_IMAGE_PNG)
+                .post()
+                .then()
+                .statusCode(CREATED.getStatusCode())
+                .extract()
+                .body().as(ImageInfoDTO.class);
+
+        var res = given()
+                .pathParam("refId", refId)
+                .pathParam("refType", refType)
+                .when()
+                .body(FILE)
+                .contentType(MEDIA_TYPE_IMAGE_PNG)
+                .delete()
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        Assertions.assertNotNull(res);
+
+        given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("refId", refId)
+                .pathParam("refType", refType)
+                .get()
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
 }

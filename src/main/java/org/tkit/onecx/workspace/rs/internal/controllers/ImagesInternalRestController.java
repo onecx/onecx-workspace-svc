@@ -89,6 +89,13 @@ public class ImagesInternalRestController implements ImagesInternalApi {
                 .build();
     }
 
+    @Override
+    public Response deleteImage(String refId, RefTypeDTO refType) {
+        imageDAO.deleteQueryByRefIdAndRefType(refId, refType);
+
+        return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ex) {
         return exceptionMapper.exception(ex);
