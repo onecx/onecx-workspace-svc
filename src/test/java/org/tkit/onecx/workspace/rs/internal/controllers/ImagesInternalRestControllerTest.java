@@ -281,7 +281,6 @@ public class ImagesInternalRestControllerTest extends AbstractTest {
 
     }
 
-
     @Test
     void deleteImage() {
 
