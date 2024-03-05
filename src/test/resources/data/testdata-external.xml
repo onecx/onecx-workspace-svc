@@ -15,8 +15,8 @@
 	<MENU_ITEM_I18N menuitem_guid="33-1" language="en" i18n="EN translation"  />
 
 	<!-- PRODUCT -->
-	<PRODUCT guid="1234" optlock="0" workspace_guid="11-111" product_name="onecx-core" display_name="onecx-core" base_url="/core" tenant_id="tenant-100"/>
-	<PRODUCT guid="5678" optlock="0" workspace_guid="11-222" product_name="onecx-core" display_name="onecx-core" base_url="/test" tenant_id="tenant-100"/>
-	<PRODUCT guid="1111" optlock="0" workspace_guid="11-111" product_name="onecx-apm" display_name="onecx-core" base_url="/apm" tenant_id="tenant-100"/>
+	<PRODUCT guid="1234" optlock="0" workspace_guid="11-111" product_name="onecx-core" base_url="/core" tenant_id="tenant-100"/>
+	<PRODUCT guid="5678" optlock="0" workspace_guid="11-222" product_name="onecx-core" base_url="/test" tenant_id="tenant-100"/>
+	<PRODUCT guid="1111" optlock="0" workspace_guid="11-111" product_name="onecx-apm" base_url="/apm" tenant_id="tenant-100"/>
 
 </dataset>

@@ -746,8 +746,6 @@ components:
           type: string
         productName:
           type: string
-        displayName:
-          type: string
         baseUrl:
           type: string
     RoleSearchCriteria:
@@ -1385,8 +1383,6 @@ components:
           type: string
         productName:
           type: string
-        displayName:
-          type: string
         baseUrl:
           type: string
         microfrontends:
@@ -1445,8 +1441,6 @@ components:
         id:
           type: string
         productName:
-          type: string
-        displayName:
           type: string
         baseUrl:
           type: string
