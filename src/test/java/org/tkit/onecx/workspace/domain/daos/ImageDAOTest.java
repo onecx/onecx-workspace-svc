@@ -10,6 +10,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mockito;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 
+import gen.org.tkit.onecx.image.rs.internal.model.RefTypeDTO;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -33,6 +34,8 @@ public class ImageDAOTest {
                 ImageDAO.ErrorKeys.FAILED_TO_DELETE_BY_REF_ID_QUERY);
         methodExceptionTests(() -> dao.findByRefIdAndRefType(null, null),
                 ImageDAO.ErrorKeys.FIND_ENTITY_BY_REF_ID_REF_TYPE_FAILED);
+        methodExceptionTests(() -> dao.deleteQueryByRefIdAndRefType("1", RefTypeDTO.LOGO),
+                ImageDAO.ErrorKeys.FAILED_TO_DELETE_BY_REF_ID_REF_TYPE_QUERY);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {
