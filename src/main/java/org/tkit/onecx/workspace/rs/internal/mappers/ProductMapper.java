@@ -44,6 +44,7 @@ public interface ProductMapper {
 
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "productName", ignore = true)
+    @Mapping(target = "displayName", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)

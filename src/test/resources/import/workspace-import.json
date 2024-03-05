@@ -375,6 +375,7 @@
           {
             "baseUrl" : "/core",
             "productName": "onecx-core",
+            "displayName": "onecx-core",
             "microfrontends": [
               {
                 "mfeId": "menu",
@@ -442,6 +443,7 @@
             {
               "baseUrl" : "/core",
               "productName": "onecx-core",
+              "displayName": "onecx-core",
               "microfrontends": [
                 {
                   "mfeId": "menu",
