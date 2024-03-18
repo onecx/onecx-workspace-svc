@@ -48,6 +48,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         assertThat(dto).isNotNull()
                 .returns(requestDTO.getRoleId(), from(AssignmentDTO::getRoleId))
                 .returns(requestDTO.getMenuItemId(), from(AssignmentDTO::getMenuItemId));
+        assertThat(dto.getId()).isNotNull();
 
         // create Role without body
         var exception = given()
@@ -135,6 +136,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         assertThat(data).isNotNull();
         assertThat(data.getTotalElements()).isEqualTo(3);
         assertThat(data.getStream()).isNotNull().hasSize(3);
+        assertThat(data.getStream().get(0).getId()).isNotNull();
 
         criteria.setWorkspaceId("11-111");
         data = given()
