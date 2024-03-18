@@ -880,6 +880,8 @@ components:
     Assignment:
       type: object
       properties:
+        id:
+          type: string
         modificationCount:
           format: int32
           type: integer
