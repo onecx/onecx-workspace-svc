@@ -37,6 +37,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "modificationCount", source = "modificationCount")
     void update(UpdateWorkspaceRequestDTO dto, @MappingTarget Workspace workspace);
 
+    @Mapping(target = "baseUrl", ignore = true)
     @Mapping(target = "names", ignore = true)
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTO dto);
 

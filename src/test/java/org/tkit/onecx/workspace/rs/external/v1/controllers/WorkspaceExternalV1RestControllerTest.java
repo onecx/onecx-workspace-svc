@@ -42,6 +42,23 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
     }
 
     @Test
+    void searchWorkspacesByBasePathCriteria() {
+        WorkspaceSearchCriteriaDTOV1 criteriaDTOV1 = new WorkspaceSearchCriteriaDTOV1();
+        criteriaDTOV1.setBaseUrl("/company1");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteriaDTOV1)
+                .post("/search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspacePageResultDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat("test01").isEqualTo(dto.getStream().get(0).getName());
+    }
+
+    @Test
     void getWorkspaceByNameTest() {
         var dto = given()
                 .when()
