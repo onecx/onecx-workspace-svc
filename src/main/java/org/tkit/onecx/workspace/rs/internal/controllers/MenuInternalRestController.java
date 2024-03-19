@@ -82,16 +82,15 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @Override
-    @Transactional
     public Response deleteAllMenuItemsForWorkspace(String id) {
         menuService.deleteAllMenuItemsForWorkspace(id);
         return Response.noContent().build();
     }
 
     @Override
-    @Transactional
     public Response deleteMenuItemById(String menuItemId) {
-        menuService.deleteMenuItem(menuItemId);
+        var menuItem = dao.loadAllChildren(menuItemId);
+        menuService.deleteMenuItem(menuItem);
         return Response.noContent().build();
     }
 

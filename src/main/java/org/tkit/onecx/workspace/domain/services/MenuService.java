@@ -90,9 +90,24 @@ public class MenuService {
     }
 
     @Transactional
-    public void deleteMenuItem(String menuItemId) {
-        assignmentDAO.deleteAllByMenuId(menuItemId);
-        dao.deleteQueryById(menuItemId);
+    public void deleteMenuItem(MenuItem menuItem) {
+        var childIds = childs(menuItem);
+        if (menuItem != null) {
+            childIds.add(menuItem.getId());
+        }
+        assignmentDAO.deleteAllByMenuId(childIds);
+        dao.deleteQueryByIds(childIds);
+    }
+
+    private List<Object> childs(MenuItem menuItem) {
+        List<Object> ids = new ArrayList<>();
+        if (menuItem != null) {
+            menuItem.getChildren().forEach(item -> {
+                ids.add(item.getId());
+                ids.addAll(childs(item));
+            });
+        }
+        return ids;
     }
 
     @Transactional
