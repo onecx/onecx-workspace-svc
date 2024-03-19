@@ -95,7 +95,6 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
     @Transactional
     public void deleteAllByMenuId(List<Object> ids) {
         try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
             var cq = this.deleteQuery();
             var root = cq.from(Assignment.class);
             cq.where(root.get(Assignment_.MENU_ITEM_ID).in(ids));

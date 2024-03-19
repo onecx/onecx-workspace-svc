@@ -91,7 +91,7 @@ public class MenuService {
 
     @Transactional
     public void deleteMenuItem(MenuItem menuItem) {
-        var childIds = childs(menuItem);
+        var childIds = children(menuItem);
         if (menuItem != null) {
             childIds.add(menuItem.getId());
         }
@@ -99,12 +99,12 @@ public class MenuService {
         dao.deleteQueryByIds(childIds);
     }
 
-    private List<Object> childs(MenuItem menuItem) {
+    private List<Object> children(MenuItem menuItem) {
         List<Object> ids = new ArrayList<>();
         if (menuItem != null) {
             menuItem.getChildren().forEach(item -> {
                 ids.add(item.getId());
-                ids.addAll(childs(item));
+                ids.addAll(children(item));
             });
         }
         return ids;
