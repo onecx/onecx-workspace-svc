@@ -100,6 +100,32 @@ class MenuInternalRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void deleteMenuItemByIdWhenChildrenExistTest() {
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("menuItemId", "33-1")
+                .delete("{menuItemId}")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        var criteria = new MenuItemSearchCriteriaDTO()
+                .workspaceId("11-111");
+
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("search")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(MenuItemPageResultDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(7);
+    }
+
+    @Test
     void deleteAllMenuItemsForWorkspaceTest() {
         given()
                 .when()

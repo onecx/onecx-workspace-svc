@@ -1,7 +1,6 @@
 package org.tkit.onecx.workspace.domain.daos;
 
-import static org.tkit.onecx.workspace.domain.models.Workspace_.NAME;
-import static org.tkit.onecx.workspace.domain.models.Workspace_.THEME;
+import static org.tkit.onecx.workspace.domain.models.Workspace_.*;
 import static org.tkit.quarkus.jpa.models.TraceableEntity_.ID;
 import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
 
@@ -88,6 +87,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
             addSearchStringPredicate(predicates, cb, workspaceTable.get(NAME), criteria.getName());
             addSearchStringPredicate(predicates, cb, workspaceTable.get(THEME), criteria.getThemeName());
+            addSearchStringPredicate(predicates, cb, workspaceTable.get(BASE_URL), criteria.getBaseUrl());
             if (criteria.getNames() != null && !criteria.getNames().isEmpty()) {
                 predicates.add(workspaceTable.get(NAME).in(criteria.getNames()));
             }

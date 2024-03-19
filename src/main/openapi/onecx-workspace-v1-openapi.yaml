@@ -157,6 +157,12 @@ components:
       properties:
         name:
           type: string
+        theme:
+          type: string
+        products:
+          type: array
+          items:
+            type: string
         description:
           type: string
     WorkspaceSearchCriteria:
@@ -165,6 +171,8 @@ components:
         themeName:
           type: string
         productName:
+          type: string
+        baseUrl:
           type: string
         pageNumber:
           format: int32

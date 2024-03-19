@@ -16,6 +16,8 @@ public class WorkspaceSearchCriteria implements Serializable {
 
     private String themeName;
 
+    private String baseUrl;
+
     private Integer pageNumber = 0;
 
     private Integer pageSize = 100;

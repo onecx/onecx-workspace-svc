@@ -26,6 +26,15 @@ public interface WorkspaceMapper {
     @Mapping(target = "removeStreamItem", ignore = true)
     WorkspacePageResultDTOV1 mapAbstractList(PageResult<Workspace> page);
 
+    default WorkspaceAbstractDTOV1 mapAbstract(Workspace workspace) {
+        WorkspaceAbstractDTOV1 abstractDTOV1 = new WorkspaceAbstractDTOV1();
+        abstractDTOV1.setName(workspace.getName());
+        abstractDTOV1.setTheme(workspace.getTheme());
+        abstractDTOV1.setDescription(workspace.getDescription());
+        abstractDTOV1.setProducts(workspace.getProducts().stream().map(Product::getProductName).toList());
+        return abstractDTOV1;
+    }
+
     @Mapping(target = "name", ignore = true)
     @Mapping(target = "names", ignore = true)
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTOV1 criteria);
