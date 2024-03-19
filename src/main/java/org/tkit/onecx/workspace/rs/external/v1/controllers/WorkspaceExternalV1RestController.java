@@ -43,6 +43,7 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     }
 
     @Override
+    @Transactional
     public Response searchWorkspaces(WorkspaceSearchCriteriaDTOV1 workspaceSearchCriteriaDTOV1) {
         var criteria = mapper.map(workspaceSearchCriteriaDTOV1);
         var result = workspaceDAO.findBySearchCriteria(criteria);
