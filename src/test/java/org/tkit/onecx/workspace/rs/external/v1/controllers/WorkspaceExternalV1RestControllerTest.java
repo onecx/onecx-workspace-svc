@@ -55,7 +55,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .extract().as(WorkspacePageResultDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat("test01").isEqualTo(dto.getStream().get(0).getName());
+        assertThat(dto.getStream().get(0).getName()).isEqualTo("test01");
     }
 
     @Test
