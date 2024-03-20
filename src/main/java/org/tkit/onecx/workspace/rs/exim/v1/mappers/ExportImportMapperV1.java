@@ -36,8 +36,6 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "products", ignore = true)
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "subjectLink", source = "subjectLinks")
-    @Mapping(target = "imageUrl", source = "imageUrls")
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
 
     @Mapping(target = "modificationCount", ignore = true)
@@ -70,10 +68,6 @@ public interface ExportImportMapperV1 {
     ImportWorkspaceResponseDTOV1 create(WorkspaceSnapshotDTOV1 request,
             Map<String, ImportResponseStatusDTOV1> workspaces);
 
-    @Mapping(target = "removeSubjectLinksItem", ignore = true)
-    @Mapping(target = "removeImageUrlsItem", ignore = true)
-    @Mapping(target = "subjectLinks", source = "subjectLink")
-    @Mapping(target = "imageUrls", source = "imageUrl")
     @Mapping(target = "removeRolesItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
 

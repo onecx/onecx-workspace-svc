@@ -177,17 +177,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EximWorkspaceRole'
-        subjectLinks:
-          uniqueItems: true
-          maxItems: 3
-          type: array
-          items:
-            $ref: '#/components/schemas/EximSubjectLink'
-        imageUrls:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
     EximWorkspaceRole:
       type: object
       properties:

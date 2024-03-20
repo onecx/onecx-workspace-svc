@@ -105,22 +105,11 @@ components:
           type: string
         footerLabel:
           type: string
-        subjectLinks:
-          maxItems: 3
-          uniqueItems: true
-          type: array
-          items:
-            $ref: '#/components/schemas/SubjectLink'
         products:
           type: array
           uniqueItems: true
           items:
             $ref: "#/components/schemas/Product"
-        imageUrls:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
         workspaceRoles:
           type: array
           uniqueItems: true

@@ -2,9 +2,7 @@ package org.tkit.onecx.workspace.domain.models;
 
 import static jakarta.persistence.FetchType.LAZY;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.*;
 
@@ -21,8 +19,7 @@ import lombok.Setter;
         @UniqueConstraint(name = "WORKSPACE_NAME_TENANT_ID", columnNames = { "NAME", "TENANT_ID" }),
         @UniqueConstraint(name = "WORKSPACE_BASE_URL_TENANT_ID", columnNames = { "BASE_URL", "TENANT_ID" })
 })
-@NamedEntityGraph(name = Workspace.WORKSPACE_FULL, attributeNodes = { @NamedAttributeNode("subjectLink"),
-        @NamedAttributeNode("imageUrl"), @NamedAttributeNode(value = "products") })
+@NamedEntityGraph(name = Workspace.WORKSPACE_FULL, attributeNodes = { @NamedAttributeNode(value = "products") })
 @SuppressWarnings("squid:S2160")
 public class Workspace extends TraceableEntity {
 
@@ -62,20 +59,9 @@ public class Workspace extends TraceableEntity {
     @Column(name = "FOOTER_LABEL")
     private String footerLabel;
 
-    @ElementCollection(fetch = LAZY)
-    @CollectionTable(name = "SUBJECT_LINK")
-    @AttributeOverride(name = "label", column = @Column(name = "link_label"))
-    @AttributeOverride(name = "url", column = @Column(name = "link_url"))
-    private Set<SubjectLink> subjectLink = new HashSet<>();
-
     @Column(name = "ROLES")
     @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
     private List<Role> roles;
-
-    @ElementCollection(fetch = LAZY)
-    @CollectionTable(name = "IMAGE_URL")
-    @Column(name = "IMAGE_URL")
-    private Set<String> imageUrl = new HashSet<>();
 
     @Column(name = "LOGO_URL")
     private String logoUrl;
