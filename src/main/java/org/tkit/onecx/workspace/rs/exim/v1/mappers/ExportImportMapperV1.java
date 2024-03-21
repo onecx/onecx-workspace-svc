@@ -206,9 +206,7 @@ public interface ExportImportMapperV1 {
 
     default List<Product> create(List<EximProductDTOV1> products, Workspace workspace) {
         List<Product> newProducts = new ArrayList<>();
-        products.forEach(productDTOV1 -> {
-            newProducts.add(map(productDTOV1, workspace));
-        });
+        products.forEach(productDTOV1 -> newProducts.add(map(productDTOV1, workspace)));
         return newProducts;
     }
 
