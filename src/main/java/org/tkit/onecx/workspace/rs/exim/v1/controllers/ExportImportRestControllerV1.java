@@ -15,10 +15,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
-import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
-import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
-import org.tkit.onecx.workspace.domain.daos.RoleDAO;
-import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
+import org.tkit.onecx.workspace.domain.daos.*;
 import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.onecx.workspace.domain.services.MenuService;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportExceptionMapperV1;
@@ -54,6 +51,9 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
     @Inject
     RoleDAO roleDAO;
+
+    @Inject
+    ProductDAO productDAO;
 
     @Override
     public Response exportMenuByWorkspaceName(String name) {
@@ -138,6 +138,10 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
                     workspace = mapper.create(dto);
                     workspace.setName(name);
                     dao.create(workspace);
+                    if (dto.getProducts() != null) {
+                        var products = mapper.create(dto.getProducts(), workspace);
+                        productDAO.create(products);
+                    }
                     items.put(name, ImportResponseStatusDTOV1.CREATED);
                 } else {
                     items.put(name, ImportResponseStatusDTOV1.SKIPPED);

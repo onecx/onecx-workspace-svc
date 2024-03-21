@@ -39,11 +39,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "names", ignore = true)
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTOV1 criteria);
 
-    @Mapping(target = "subjectLinks", ignore = true)
     @Mapping(target = "workspaceRoles", source = "roles")
-    @Mapping(target = "removeSubjectLinksItem", ignore = true)
-    @Mapping(target = "imageUrls", ignore = true)
-    @Mapping(target = "removeImageUrlsItem", ignore = true)
     @Mapping(target = "removeWorkspaceRolesItem", ignore = true)
     WorkspaceDTOV1 map(Workspace workspace);
 

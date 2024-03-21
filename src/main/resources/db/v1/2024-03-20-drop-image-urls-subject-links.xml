@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet author="dev (generated)" id="1710944924844-1">
+        <dropForeignKeyConstraint baseTableName="image_url" constraintName="image_url_workspace_guid"/>
+        <dropForeignKeyConstraint baseTableName="subject_link" constraintName="subject_link_workspace_guid"/>
+        <dropTable tableName="image_url"/>
+        <dropTable tableName="subject_link"/>
+    </changeSet>
+</databaseChangeLog>

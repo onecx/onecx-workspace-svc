@@ -43,6 +43,10 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(3)
                 .contains(new EximWorkspaceRoleDTOV1().name("role-1-2").description("d1"));
+        assertThat(w.getProducts()).isNotNull().isNotEmpty().hasSize(2)
+                .contains(new EximProductDTOV1().productName("onecx-core").baseUrl("/core")
+                        .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("menu").basePath("/menu"),
+                                new EximMicrofrontendDTOV1().appId("theme").basePath("/theme"))));
     }
 
     @Test
@@ -77,6 +81,70 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
     @Test
     void importWorkspaceTest() {
+        WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
+
+        var roles = new ArrayList<EximWorkspaceRoleDTOV1>();
+        roles.add(new EximWorkspaceRoleDTOV1().name("role1").description("role1"));
+        roles.add(new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+
+        var products = new ArrayList<EximProductDTOV1>();
+        var microFrontends = new ArrayList<EximMicrofrontendDTOV1>();
+        microFrontends.add(new EximMicrofrontendDTOV1().appId("app1").basePath("/app1"));
+        products.add(new EximProductDTOV1()
+                .productName("product1")
+                .baseUrl("/productBase")
+                .microfrontends(microFrontends));
+
+        EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
+                .baseUrl("/someurl")
+                .name("testWorkspace")
+                .roles(roles)
+                .products(products);
+
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        map.put("testWorkspace", workspace);
+        snapshot.setWorkspaces(map);
+
+        var importResponse = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("/import")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(ImportWorkspaceResponseDTOV1.class);
+
+        assertThat(importResponse).isNotNull();
+        assertThat(importResponse.getWorkspaces()).containsEntry("testWorkspace", ImportResponseStatusDTOV1.CREATED);
+
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
+        request.addNamesItem("testWorkspace");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/export")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
+        var w = dto.getWorkspaces().get("testWorkspace");
+        assertThat(w).isNotNull();
+        assertThat(w.getName()).isEqualTo("testWorkspace");
+
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
+                .containsExactly(
+                        new EximWorkspaceRoleDTOV1().name("role1").description("role1"),
+                        new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+        assertThat(w.getProducts()).isNotNull().isNotEmpty().hasSize(1)
+                .containsExactly(new EximProductDTOV1().productName("product1").baseUrl("/productBase")
+                        .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("app1").basePath("/app1"))));
+    }
+
+    @Test
+    void importWorkspaceWithoutProductTest() {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
 
         var roles = new ArrayList<EximWorkspaceRoleDTOV1>();
@@ -125,7 +193,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .containsExactly(
                         new EximWorkspaceRoleDTOV1().name("role1").description("role1"),
                         new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
-
+        assertThat(w.getProducts()).isEmpty();
     }
 
     @Test
