@@ -4,9 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.*;
 
 import org.mapstruct.*;
-import org.tkit.onecx.workspace.domain.models.MenuItem;
-import org.tkit.onecx.workspace.domain.models.Role;
-import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
@@ -68,8 +66,15 @@ public interface ExportImportMapperV1 {
     ImportWorkspaceResponseDTOV1 create(WorkspaceSnapshotDTOV1 request,
             Map<String, ImportResponseStatusDTOV1> workspaces);
 
+    @Mapping(target = "removeProductsItem", ignore = true)
     @Mapping(target = "removeRolesItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
+
+    @Mapping(target = "removeMicrofrontendsItem", ignore = true)
+    EximProductDTOV1 map(Product product);
+
+    @Mapping(target = "appId", source = "mfeId")
+    EximMicrofrontendDTOV1 map(Microfrontend microfrontend);
 
     default MenuSnapshotDTOV1 create(List<MenuItem> menuStructure) {
         MenuSnapshotDTOV1 snapshot = new MenuSnapshotDTOV1();
@@ -199,4 +204,29 @@ public interface ExportImportMapperV1 {
         return dto;
     }
 
+    default List<Product> create(List<EximProductDTOV1> products, Workspace workspace) {
+        List<Product> newProducts = new ArrayList<>();
+        products.forEach(productDTOV1 -> {
+            newProducts.add(map(productDTOV1, workspace));
+        });
+        return newProducts;
+    }
+
+    @Mapping(target = "workspaceId", ignore = true)
+    @Mapping(target = "workspace", source = "workspace")
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "baseUrl", source = "productDTOV1.baseUrl")
+    Product map(EximProductDTOV1 productDTOV1, Workspace workspace);
+
+    @Mapping(target = "mfeId", source = "appId")
+    @Mapping(target = "id", ignore = true)
+    Microfrontend map(EximMicrofrontendDTOV1 eximMicrofrontendDTOV1);
 }
