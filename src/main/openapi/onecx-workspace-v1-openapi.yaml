@@ -7,6 +7,7 @@ servers:
   - url: "http://onecx-workspace:8080"
 tags:
   - name: workspaceExternal
+  - name: menuExternal
 paths:
   /v1/workspaces/search:
     post:
@@ -56,6 +57,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspaceLoad'
+        "404":
+          description: Not found
+  /v1/menuItems/search:
+    post:
+      tags:
+        - menuExternal
+      description: Search for menu items by search criteria
+      operationId: searchMenuItemsByCriteriaV1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuItemSearchCriteria'
+      responses:
+        "200":
+          description: Corresponding menu items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItemPageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /v1/menuItems/tree:
+    post:
+      tags:
+        - menuExternal
+      description: Fetch the menuItems of the workspace in the tree structure
+      operationId: getMenuStructureV1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuStructureSearchCriteria'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItemStructure'
         "404":
           description: Not found
 components:
@@ -184,6 +231,129 @@ components:
           description: The size of page
           default: 100
           type: integer
+    MenuItemSearchCriteria:
+      type: object
+      required:
+        - workspaceId
+      properties:
+        workspaceId:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          type: integer
+    MenuItemPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItemResult'
+    MenuItemResult:
+      type: object
+      required:
+        - modificationCount
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        badge:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        external:
+          type: boolean
+        parentItemId:
+          type: string
+    MenuStructureSearchCriteria:
+      type: object
+      required:
+        - workspaceId
+      properties:
+        workspaceId:
+          type: string
+    MenuItemStructure:
+      type: object
+      required:
+        - menuItems
+        - workspaceId
+      properties:
+        workspaceId:
+          type: string
+        menuItems:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/TreeMenuItem'
+    TreeMenuItem:
+      type: object
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        applicationId:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        badge:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        external:
+          type: boolean
+        parentItemId:
+          type: string
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/TreeMenuItem'
     Product:
       type: object
       properties:
@@ -202,6 +372,41 @@ components:
         mfeId:
           type: string
         basePath:
+          type: string
+    Scope:
+      enum:
+        - WORKSPACE
+        - APP
+        - PAGE
+      type: string
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
           type: string
   parameters:
     name:
