@@ -177,17 +177,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EximWorkspaceRole'
-        subjectLinks:
-          uniqueItems: true
-          maxItems: 3
+        products:
           type: array
           items:
-            $ref: '#/components/schemas/EximSubjectLink'
-        imageUrls:
-          uniqueItems: true
+            $ref: '#/components/schemas/EximProduct'
+    EximProduct:
+      type: object
+      properties:
+        productName:
+          type: string
+        baseUrl:
+          type: string
+        microfrontends:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/EximMicrofrontend'
+    EximMicrofrontend:
+      type: object
+      properties:
+        appId:
+          type: string
+        basePath:
+          type: string
     EximWorkspaceRole:
       type: object
       properties:
@@ -207,13 +218,6 @@ components:
         country:
           type: string
         postalCode:
-          type: string
-    EximSubjectLink:
-      type: object
-      properties:
-        label:
-          type: string
-        url:
           type: string
     MenuSnapshot:
       type: object

@@ -148,17 +148,6 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
-        subjectLinks:
-          uniqueItems: true
-          maxItems: 3
-          type: array
-          items:
-            $ref: '#/components/schemas/SubjectLink'
-        imageUrls:
-          uniqueItems: true
-          type: array
-          items:
-            type: string
     WorkspaceAddress:
       type: object
       properties:

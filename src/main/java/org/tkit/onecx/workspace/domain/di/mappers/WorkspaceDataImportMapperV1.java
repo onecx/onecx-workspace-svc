@@ -21,8 +21,6 @@ public interface WorkspaceDataImportMapperV1 {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    @Mapping(target = "subjectLink", source = "subjectLinks")
-    @Mapping(target = "imageUrl", source = "imageUrls")
     Workspace createWorkspace(WorkspaceImportDTOV1 workspaceDTO);
 
     @AfterMapping

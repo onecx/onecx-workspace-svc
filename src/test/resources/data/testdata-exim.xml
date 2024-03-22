@@ -9,6 +9,18 @@
     <WORKSPACE guid="33-111" optlock="0" company_name="Company4" theme="22-222" description="Company4 test" home_page="main_page" name="test04" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company4" postalcode="56-789" street="Kolorowa" streetno="6" tenant_id="tenant-200"/>
     <WORKSPACE guid="33-222" optlock="0" company_name="Company5" theme="22-222" description="Company5 Test" home_page="main_page" name="test05" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company5" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-200"/>
 
+    <!-- PRODUCT -->
+    <PRODUCT guid="1234" optlock="10" workspace_guid="11-111" product_name="onecx-core" base_url="/core" tenant_id="tenant-100"/>
+    <PRODUCT guid="5678" optlock="10" workspace_guid="11-111" product_name="onecx-apm" base_url="/apm" tenant_id="tenant-100"/>
+
+    <!-- MICROFRONTEND -->
+    <MICROFRONTEND guid="1234" mfe_id="menu" base_path="/menu" product_guid="1234"/>
+    <MICROFRONTEND guid="5678" mfe_id="theme" base_path="/theme" product_guid="1234"/>
+    <MICROFRONTEND guid="1111" mfe_id="apm1" base_path="/a1" product_guid="5678"/>
+    <MICROFRONTEND guid="2222" mfe_id="apm2" base_path="/a2" product_guid="5678"/>
+    <MICROFRONTEND guid="3333" mfe_id="apm3" base_path="/a3" product_guid="5678"/>
+    <MICROFRONTEND guid="4444" mfe_id="apm4" base_path="/a4" product_guid="5678"/>
+
     <!-- MENU_ITEM -->
     <MENU_ITEM guid="33-1" optlock="0" disabled="FALSE" key="PORTAL_MAIN_MENU" name="Main Menu" external="FALSE"  pos="0" scope="WORKSPACE" url=""  workspace="11-111" application_id="" tenant_id="tenant-100"/>
     <MENU_ITEM guid="33-2" optlock="0" disabled="FALSE" key="PORTAL_MAIN_MENU2" name="33-3" external="FALSE"  pos="0" scope="WORKSPACE" url=""  workspace="11-111" application_id="" tenant_id="tenant-100"/>
