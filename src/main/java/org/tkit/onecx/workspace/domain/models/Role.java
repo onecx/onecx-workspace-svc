@@ -14,9 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "ROLE", uniqueConstraints = {
-        @UniqueConstraint(name = "ROLE_NAME", columnNames = { "TENANT_ID", "NAME" })
-}, indexes = {
-        @Index(name = "ROLE_NAME", columnList = "NAME")
+        @UniqueConstraint(name = "UI_WORKSPACE_ROLE_NAME", columnNames = { "WORKSPACE_GUID", "NAME" })
 })
 @NamedEntityGraph(name = Role.ROLE_LOAD, attributeNodes = { @NamedAttributeNode("workspace") })
 @SuppressWarnings("java:S2160")

@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet author="dev (generated)" id="1711355839929-3">
+        <addUniqueConstraint columnNames="workspace_guid, name" constraintName="ui_workspace_role_name" tableName="role"/>
+        <addUniqueConstraint columnNames="base_url, workspace_guid" constraintName="ui_product_base_url_workspace" tableName="product"/>
+        <addUniqueConstraint columnNames="product_name, workspace_guid" constraintName="ui_product_name_workspace" tableName="product"/>
+        <addUniqueConstraint columnNames="product_guid, base_path" constraintName="ui_product_base_path" tableName="microfrontend"/>
+        <dropUniqueConstraint constraintName="role_name" tableName="role"/>
+        <dropUniqueConstraint constraintName="mfe_id_path_product_guid" tableName="microfrontend"/>
+        <dropUniqueConstraint constraintName="product_name_workspace_guid" tableName="product"/>
+        <dropUniqueConstraint constraintName="workspace_base_url_key" tableName="workspace"/>
+        <dropUniqueConstraint constraintName="product_base_url_key" tableName="product"/>
+    </changeSet>
+</databaseChangeLog>

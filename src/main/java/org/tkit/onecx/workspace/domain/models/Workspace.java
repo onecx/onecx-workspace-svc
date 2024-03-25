@@ -41,7 +41,7 @@ public class Workspace extends TraceableEntity {
     @Column(name = "HOME_PAGE")
     private String homePage;
 
-    @Column(name = "BASE_URL", unique = true, nullable = false)
+    @Column(name = "BASE_URL", nullable = false)
     private String baseUrl;
 
     @Column(name = "COMPANY_NAME")
