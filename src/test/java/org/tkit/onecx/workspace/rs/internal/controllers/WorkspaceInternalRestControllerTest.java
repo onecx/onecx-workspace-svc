@@ -66,7 +66,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_key'  Detail: Key (base_url)=(/work1) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_tenant_id'  Detail: Key (base_url, tenant_id)=(/work1, tenant-100) already exists.]");
 
         createWorkspaceDTO.setName("custom-new-name");
 
@@ -81,7 +81,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_key'  Detail: Key (base_url)=(/work1) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_tenant_id'  Detail: Key (base_url, tenant_id)=(/work1, tenant-100) already exists.]");
     }
 
     @Test
@@ -247,7 +247,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         // update workspace with already existing baseUrl for other workspace
-        response.setBaseUrl("/company3");
+        response.setBaseUrl("/company1");
         var error = given().when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
@@ -260,7 +260,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo("MERGE_ENTITY_FAILED");
         assertThat(error.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_key'  Detail: Key (base_url)=(/company3) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_tenant_id'  Detail: Key (base_url, tenant_id)=(/company1, tenant-100) already exists.]");
 
         // normal update
         response.setBaseUrl("/company2/updated");

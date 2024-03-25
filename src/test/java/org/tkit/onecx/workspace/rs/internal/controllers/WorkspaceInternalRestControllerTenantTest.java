@@ -87,7 +87,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
-                .header(APM_HEADER_PARAM, createToken("org1"))
+                .header(APM_HEADER_PARAM, createToken("org2"))
                 .post()
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
@@ -95,7 +95,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_key'  Detail: Key (base_url)=(/work1) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_tenant_id'  Detail: Key (base_url, tenant_id)=(/work1, tenant-200) already exists.]");
     }
 
     @Test
@@ -271,7 +271,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         // update workspace with already existing baseUrl for other workspace
-        response.setBaseUrl("/company3");
+        response.setBaseUrl("/company1");
         var error = given().when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
@@ -285,7 +285,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo("MERGE_ENTITY_FAILED");
         assertThat(error.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_key'  Detail: Key (base_url)=(/company3) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'workspace_base_url_tenant_id'  Detail: Key (base_url, tenant_id)=(/company1, tenant-100) already exists.]");
 
         // normal update
         response.setBaseUrl("/company2/updated");
