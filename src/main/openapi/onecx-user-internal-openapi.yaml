@@ -49,6 +49,10 @@ components:
       properties:
         token:
           type: string
+        menuKeys:
+          type: array
+          items:
+            type: string
     UserWorkspaceMenuStructure:
       type: object
       properties:

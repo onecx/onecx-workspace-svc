@@ -162,6 +162,64 @@ class UserMenuInternalControllerTest extends AbstractTest {
     }
 
     @Test
+    void getMenuStructureForUserIdByMenuKeyTest() {
+
+        var workspaceName = "test03";
+        var accessToken = createAccessTokenBearer(USER_BOB);
+        var idToken = createToken("org1");
+
+        var data = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, idToken)
+                .body(new UserWorkspaceMenuRequestDTO().token(accessToken).menuKeys(List.of("main-menu", "not-existing")))
+                .pathParam("workspaceName", workspaceName)
+                .post()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().body().as(UserWorkspaceMenuStructureDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getWorkspaceName()).isNotNull().isEqualTo(workspaceName);
+        assertThat(data.getMenu()).isNotNull().isNotEmpty();
+
+        var output = print(data.getMenu(), "");
+        System.out.println(output);
+
+        String tmp = """
+                + [1] 4-2
+                  + [0] 4-2-1
+                  + [1] 4-2-2
+                  + [2] 4-2-3
+                    + [0] 4-2-3-1
+                """;
+        assertThat(output).isEqualTo(tmp);
+        assertThat(countMenuItems(data.getMenu())).isEqualTo(5);
+
+        // without bearer prefix
+        accessToken = createAccessToken(USER_BOB);
+        data = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, idToken)
+                .body(new UserWorkspaceMenuRequestDTO().token(accessToken).menuKeys(List.of("main-menu", "not-existing")))
+                .pathParam("workspaceName", workspaceName)
+                .post()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().body().as(UserWorkspaceMenuStructureDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getWorkspaceName()).isNotNull().isEqualTo(workspaceName);
+        assertThat(data.getMenu()).isNotNull().isNotEmpty();
+
+        output = print(data.getMenu(), "");
+        System.out.println(output);
+        assertThat(output).isEqualTo(tmp);
+        assertThat(countMenuItems(data.getMenu())).isEqualTo(5);
+    }
+
+    @Test
     void getMenuStructureForUserIdOrg2Test() {
 
         var workspaceName = "test04";

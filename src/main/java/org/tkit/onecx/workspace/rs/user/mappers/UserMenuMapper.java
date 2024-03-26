@@ -22,13 +22,20 @@ public interface UserMenuMapper {
     }
 
     default UserWorkspaceMenuStructureDTO mapTree(String workspaceName, Collection<MenuItem> entities,
-            Map<String, Set<String>> mapping, Set<String> roles) {
+            Map<String, Set<String>> mapping, Set<String> roles, Set<String> mappingKeys) {
         UserWorkspaceMenuStructureDTO dto = empty(workspaceName);
         if (entities.isEmpty()) {
             return dto;
         }
-
-        var items = entities.stream().filter(m -> m.getParentId() == null).collect(Collectors.toSet());
+        Set<MenuItem> items;
+        if (!mappingKeys.isEmpty()) {
+            items = entities.stream().filter(m -> m.getParentId() == null)
+                    .filter(m -> mappingKeys.contains(m.getKey()))
+                    .collect(Collectors.toSet());
+        } else {
+            items = entities.stream().filter(m -> m.getParentId() == null)
+                    .collect(Collectors.toSet());
+        }
         items = filterMenu(items, mapping, roles);
         if (items.isEmpty()) {
             return dto;
