@@ -23,6 +23,7 @@ import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.AssignmentMenu;
 import org.tkit.onecx.workspace.rs.user.mappers.ExceptionMapper;
 import org.tkit.onecx.workspace.rs.user.mappers.UserMenuMapper;
+import org.tkit.onecx.workspace.rs.user.services.MenuMappingConfig;
 import org.tkit.onecx.workspace.rs.user.services.TokenService;
 import org.tkit.quarkus.log.cdi.LogExclude;
 import org.tkit.quarkus.log.cdi.LogService;
@@ -53,9 +54,20 @@ public class UserMenuInternalController implements UserMenuInternalApi {
     @Inject
     UserMenuMapper mapper;
 
+    @Inject
+    MenuMappingConfig mappingConfig;
+
     @Override
     public Response getUserMenu(String workspaceName, @LogExclude UserWorkspaceMenuRequestDTO userWorkspaceMenuRequestDTO) {
         var roles = tokenService.getTokenRoles(userWorkspaceMenuRequestDTO.getToken());
+        HashSet<String> menuKeys = new HashSet<>();
+        if (userWorkspaceMenuRequestDTO.getMenuKeys() != null) {
+            userWorkspaceMenuRequestDTO.getMenuKeys().forEach(s -> {
+                if (mappingConfig.userConfig().mapping().containsKey(s)) {
+                    menuKeys.add(mappingConfig.userConfig().mapping().get(s));
+                }
+            });
+        }
 
         var workspace = workspaceDAO.findByName(workspaceName);
         if (workspace == null) {
@@ -75,7 +87,8 @@ public class UserMenuInternalController implements UserMenuInternalApi {
         criteria.setWorkspaceId(workspace.getId());
         var items = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
 
-        return Response.ok(mapper.mapTree(workspaceName, items, mapping, new HashSet<>(roles))).build();
+        return Response.ok(mapper.mapTree(workspaceName, items, mapping, new HashSet<>(roles), menuKeys))
+                .build();
     }
 
     @ServerExceptionMapper
