@@ -31,6 +31,7 @@ public interface WorkspaceMapper {
         abstractDTOV1.setName(workspace.getName());
         abstractDTOV1.setTheme(workspace.getTheme());
         abstractDTOV1.setDescription(workspace.getDescription());
+        abstractDTOV1.setId(workspace.getId());
         abstractDTOV1.setProducts(workspace.getProducts().stream().map(Product::getProductName).toList());
         return abstractDTOV1;
     }

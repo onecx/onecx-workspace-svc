@@ -146,6 +146,8 @@ components:
       properties:
         name:
           type: string
+        id:
+          type: string
         theme:
           type: string
         products:
