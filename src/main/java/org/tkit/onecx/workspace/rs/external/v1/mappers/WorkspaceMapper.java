@@ -35,7 +35,7 @@ public interface WorkspaceMapper {
         return abstractDTOV1;
     }
 
-    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "name", source = "workspaceName")
     @Mapping(target = "names", ignore = true)
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTOV1 criteria);
 
