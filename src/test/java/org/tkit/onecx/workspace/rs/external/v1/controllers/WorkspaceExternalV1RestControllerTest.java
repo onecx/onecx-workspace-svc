@@ -173,7 +173,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         assertThat(dto).isNotNull();
         assertThat(dto.getCompanyName()).isNotNull().isNotEmpty().isEqualTo("Company2");
 
-        // more workspaces for the url
+        // another test to match /de base path
         requestDTOV1.setUrl("/de/test/some/strange");
         dto = given()
                 .when()
@@ -186,5 +186,29 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getCompanyName()).isNotNull().isNotEmpty().isEqualTo("Company44");
+
+        // test with a http protocol
+        requestDTOV1.setUrl("https://my.domain.com/de/test/some/strange");
+        dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/byUrl")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getCompanyName()).isNotNull().isNotEmpty().isEqualTo("Company44");
+
+        // strange protocol
+        requestDTOV1.setUrl("asd://");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/byUrl")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
     }
 }
