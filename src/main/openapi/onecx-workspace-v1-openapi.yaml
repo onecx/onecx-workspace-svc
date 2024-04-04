@@ -181,6 +181,8 @@ components:
           type: string
         productName:
           type: string
+        workspaceName:
+            type: string
         baseUrl:
           type: string
         pageNumber:
