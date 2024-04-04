@@ -8,6 +8,26 @@ servers:
 tags:
   - name: workspaceExternal
 paths:
+  /v1/workspaces/byUrl:
+    post:
+      tags:
+        - workspaceExternal
+      description: search workspace by url
+      operationId: getWorkspaceByUrl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetWorkspaceByUrlRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workspace'
+        "404":
+          description: Not found
   /v1/workspaces/search:
     post:
       tags:
@@ -191,6 +211,13 @@ components:
         mfeId:
           type: string
         basePath:
+          type: string
+    GetWorkspaceByUrlRequest:
+      type: object
+      required:
+        - url
+      properties:
+        url:
           type: string
   parameters:
     name:
