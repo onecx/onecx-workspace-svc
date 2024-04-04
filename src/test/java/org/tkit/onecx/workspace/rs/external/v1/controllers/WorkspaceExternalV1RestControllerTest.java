@@ -87,7 +87,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .extract().as(WorkspacePageResultDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(3);
+        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(6);
     }
 
     @Test
@@ -115,7 +115,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 arguments(criteria1, 3),
                 arguments(criteria2, 0), // different tenant so will not find it
                 arguments(criteria3, 0),
-                arguments(emptyCriteria, 3));
+                arguments(emptyCriteria, 6));
     }
 
     @Test
@@ -143,5 +143,48 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         assertThat(dto.getProducts()).isNotNull().isNotEmpty().hasSize(2);
         assertThat(dto.getProducts().get(0).getProductName()).isNotEmpty();
         assertThat(dto.getProducts().get(1).getProductName()).isNotEmpty();
+    }
+
+    @Test
+    void getWorkspaceByUrlTest() {
+
+        GetWorkspaceByUrlRequestDTOV1 requestDTOV1 = new GetWorkspaceByUrlRequestDTOV1();
+        requestDTOV1.setUrl("does-not-exist-url");
+        // not existing workspace
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/byUrl")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        // existing workspace
+        requestDTOV1.setUrl("/company2/admin/my/url");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/byUrl")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getCompanyName()).isNotNull().isNotEmpty().isEqualTo("Company2");
+
+        // more workspaces for the url
+        requestDTOV1.setUrl("/de/test/some/strange");
+        dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/byUrl")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getCompanyName()).isNotNull().isNotEmpty().isEqualTo("Company44");
     }
 }
