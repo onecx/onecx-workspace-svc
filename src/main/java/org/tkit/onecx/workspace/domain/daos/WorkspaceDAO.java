@@ -53,6 +53,21 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
+    public Workspace findByUrl(String url) {
+
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Workspace.class);
+            var root = cq.from(Workspace.class);
+            cq.where(cb.like(cb.literal(url), cb.concat(root.get(BASE_URL), "%")));
+            return this.getEntityManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception ex) {
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_BY_URL);
+        }
+    }
+
     /**
      * This method fetches the whole workspace with all his lazy load objects
      */
@@ -107,6 +122,7 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
     public enum ErrorKeys {
 
         ERROR_FIND_WORKSPACE_BY_NAME,
+        ERROR_FIND_WORKSPACE_BY_URL,
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_FIND_BY_CRITERIA,
         ERROR_LOAD_WORKSPACE
