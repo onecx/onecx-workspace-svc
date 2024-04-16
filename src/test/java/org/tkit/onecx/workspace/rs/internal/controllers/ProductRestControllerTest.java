@@ -119,6 +119,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getStream()).isNotEmpty().hasSize(1);
+        assertThat(dto.getStream().get(0).getMicrofrontends()).hasSize(2);
     }
 
     @Test

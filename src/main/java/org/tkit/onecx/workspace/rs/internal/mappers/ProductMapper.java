@@ -19,6 +19,9 @@ public interface ProductMapper {
     @Mapping(target = "removeStreamItem", ignore = true)
     ProductPageResultDTO mapPage(PageResult<Product> page);
 
+    @Mapping(target = "removeMicrofrontendsItem", ignore = true)
+    ProductResultDTO mapResult(Product product);
+
     ProductSearchCriteria map(ProductSearchCriteriaDTO dto);
 
     default Product create(CreateProductRequestDTO dto, Workspace workspace) {
