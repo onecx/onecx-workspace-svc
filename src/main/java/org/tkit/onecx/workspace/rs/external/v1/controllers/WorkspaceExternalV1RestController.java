@@ -1,5 +1,8 @@
 package org.tkit.onecx.workspace.rs.external.v1.controllers;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -10,6 +13,7 @@ import org.tkit.onecx.workspace.rs.external.v1.mappers.WorkspaceMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.external.v1.WorkspaceExternalV1Api;
+import gen.org.tkit.onecx.workspace.rs.external.v1.model.GetWorkspaceByUrlRequestDTOV1;
 import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceSearchCriteriaDTOV1;
 
 @LogService
@@ -36,6 +40,23 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     @Override
     public Response getWorkspaceByName(String name) {
         var item = workspaceDAO.findByName(name);
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(mapper.map(item)).build();
+    }
+
+    @Override
+    public Response getWorkspaceByUrl(GetWorkspaceByUrlRequestDTOV1 getWorkspaceByUrlRequestDTOV1) {
+        String searchBasePathString = getWorkspaceByUrlRequestDTOV1.getUrl();
+        try {
+            URI uri = new URI(getWorkspaceByUrlRequestDTOV1.getUrl());
+            searchBasePathString = uri.getPath();
+        } catch (URISyntaxException e) {
+            // if its not URI ignore and use the string
+        }
+        var item = workspaceDAO.findByUrl(searchBasePathString);
+
         if (item == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

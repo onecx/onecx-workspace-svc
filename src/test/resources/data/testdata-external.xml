@@ -6,6 +6,9 @@
 	<WORKSPACE guid="11-111" optlock="0" company_name="Company1" theme="11-111" description="Company1 test" home_page="main_page" name="test01" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company1" postalcode="56-789" street="Kolorowa" streetno="6" tenant_id="tenant-100"/>
 	<WORKSPACE guid="11-222" optlock="0" company_name="Company2" theme="11-111" description="Company2 Test" home_page="main_page" name="test02" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company2" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-100"/>
 	<WORKSPACE guid="22-111" optlock="0" company_name="Company3" theme="11-111" description="Company3 Test" home_page="main_page" name="test03" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/company3" postalcode="45-341" street="Wilhelmstrasse" streetno="15" tenant_id="tenant-100"/>
+	<WORKSPACE guid="22-222" optlock="0" company_name="Company22" theme="cap" description="Company22 Test" home_page="main_page" name="test22" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/de/cap/admin" postalcode="45-341" street="Wilhelmstrasse" streetno="15" tenant_id="tenant-100"/>
+	<WORKSPACE guid="22-333" optlock="0" company_name="Company33" theme="tkom" description="Company33 Test" home_page="main_page" name="test33" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/de/tkom/admin" postalcode="45-341" street="Wilhelmstrasse" streetno="15" tenant_id="tenant-100"/>
+	<WORKSPACE guid="22-444" optlock="0" company_name="Company44" theme="germany" description="Company44 Test" home_page="main_page" name="test44" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/de" postalcode="45-341" street="Wilhelmstrasse" streetno="15" tenant_id="tenant-100"/>
 	<WORKSPACE guid="33-111" optlock="0" company_name="Company4" theme="22-222" description="Company4 test" home_page="main_page" name="test04" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company4" postalcode="56-789" street="Kolorowa" streetno="6" tenant_id="tenant-200"/>
 	<WORKSPACE guid="33-222" optlock="0" company_name="Company5" theme="22-222" description="Company5 Test" home_page="main_page" name="test05" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company5" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-200"/>
 
@@ -19,4 +22,12 @@
 	<PRODUCT guid="5678" optlock="0" workspace_guid="11-222" product_name="onecx-core" base_url="/test" tenant_id="tenant-100"/>
 	<PRODUCT guid="1111" optlock="0" workspace_guid="11-111" product_name="onecx-apm" base_url="/apm" tenant_id="tenant-100"/>
 
+	<!-- MICROFRONTEND -->
+	<MICROFRONTEND guid="1234" mfe_id="menu" base_path="/menu" product_guid="1234"/>
+	<MICROFRONTEND guid="5678" mfe_id="theme" base_path="/theme" product_guid="1234"/>
+
+	<ROLE guid="r11" workspace_guid="11-111" optlock="0" name="n1" description="d1" tenant_id="tenant-100"/>
+	<ROLE guid="r12" workspace_guid="11-111" optlock="0" name="n2" description="d1" tenant_id="tenant-100"/>
+
+	<ASSIGNMENT guid="a11" optlock="0" menu_item_id="33-1" role_id="r11" tenant_id="tenant-100"/>
 </dataset>
