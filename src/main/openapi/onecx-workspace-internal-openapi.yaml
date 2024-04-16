@@ -748,6 +748,10 @@ components:
           type: string
         baseUrl:
           type: string
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/Microfrontend'
     RoleSearchCriteria:
       type: object
       properties:
