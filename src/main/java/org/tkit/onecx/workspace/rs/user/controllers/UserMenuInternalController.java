@@ -87,7 +87,7 @@ public class UserMenuInternalController implements UserMenuInternalApi {
         criteria.setWorkspaceId(workspace.getId());
         var items = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
 
-        return Response.ok(mapper.mapTree(workspaceName, items, mapping, new HashSet<>(roles), menuKeys))
+        return Response.ok(mapper.mapTree(workspace, items, mapping, new HashSet<>(roles), menuKeys))
                 .build();
     }
 
