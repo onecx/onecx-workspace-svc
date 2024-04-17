@@ -9,6 +9,7 @@ import org.tkit.onecx.workspace.domain.models.MenuItem;
 
 import gen.org.tkit.onecx.workspace.rs.user.model.UserWorkspaceMenuItemDTO;
 import gen.org.tkit.onecx.workspace.rs.user.model.UserWorkspaceMenuStructureDTO;
+import org.tkit.onecx.workspace.domain.models.Workspace;
 
 @Mapper
 public interface UserMenuMapper {
@@ -21,9 +22,9 @@ public interface UserMenuMapper {
         return new UserWorkspaceMenuStructureDTO().workspaceName(workspaceName).menu(List.of());
     }
 
-    default UserWorkspaceMenuStructureDTO mapTree(String workspaceName, Collection<MenuItem> entities,
-            Map<String, Set<String>> mapping, Set<String> roles, Set<String> mappingKeys) {
-        UserWorkspaceMenuStructureDTO dto = empty(workspaceName);
+    default UserWorkspaceMenuStructureDTO mapTree(Workspace workspace, Collection<MenuItem> entities,
+                                                  Map<String, Set<String>> mapping, Set<String> roles, Set<String> mappingKeys) {
+        UserWorkspaceMenuStructureDTO dto = empty(workspace.getName());
         if (entities.isEmpty()) {
             return dto;
         }
@@ -40,6 +41,7 @@ public interface UserMenuMapper {
         if (items.isEmpty()) {
             return dto;
         }
+        items.forEach(menuItem -> menuItem.setUrl(workspace.getBaseUrl() + menuItem.getUrl()));
 
         return dto.menu(items.stream().map(this::mapTreeItem).toList());
     }
