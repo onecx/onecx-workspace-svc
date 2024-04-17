@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
+import org.tkit.onecx.workspace.domain.models.Workspace;
 
 import gen.org.tkit.onecx.workspace.rs.user.model.UserWorkspaceMenuItemDTO;
 import gen.org.tkit.onecx.workspace.rs.user.model.UserWorkspaceMenuStructureDTO;
-import org.tkit.onecx.workspace.domain.models.Workspace;
 
 @Mapper
 public interface UserMenuMapper {
@@ -23,7 +23,7 @@ public interface UserMenuMapper {
     }
 
     default UserWorkspaceMenuStructureDTO mapTree(Workspace workspace, Collection<MenuItem> entities,
-                                                  Map<String, Set<String>> mapping, Set<String> roles, Set<String> mappingKeys) {
+            Map<String, Set<String>> mapping, Set<String> roles, Set<String> mappingKeys) {
         UserWorkspaceMenuStructureDTO dto = empty(workspace.getName());
         if (entities.isEmpty()) {
             return dto;
