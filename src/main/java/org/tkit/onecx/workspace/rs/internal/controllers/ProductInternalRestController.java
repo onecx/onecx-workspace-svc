@@ -15,6 +15,7 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.workspace.domain.daos.ProductDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
+import org.tkit.onecx.workspace.domain.services.ProductService;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.ProductMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
@@ -45,6 +46,9 @@ public class ProductInternalRestController implements ProductInternalApi {
 
     @Inject
     WorkspaceDAO workspaceDAO;
+
+    @Inject
+    ProductService productService;
 
     @Override
     public Response createProduct(CreateProductRequestDTO createProductRequestDTO) {
@@ -80,8 +84,8 @@ public class ProductInternalRestController implements ProductInternalApi {
     @Override
     public Response searchProducts(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
         var criteria = mapper.map(productSearchCriteriaDTO);
-        var result = dao.findByCriteria(criteria);
-        return Response.ok(mapper.mapPage(result)).build();
+        var result = productService.findByCriteria(criteria);
+        return Response.ok(result).build();
     }
 
     @Override
