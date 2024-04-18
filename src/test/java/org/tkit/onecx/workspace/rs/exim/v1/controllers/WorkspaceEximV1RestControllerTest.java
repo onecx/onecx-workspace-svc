@@ -291,7 +291,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         var c4 = c2.getChildren().get(1);
         assertThat(c4).isNotNull();
         assertThat(c4.getKey()).isEqualTo("PORTAL_MAIN_MENU4");
-        assertThat(c4.getRoles()).isNull();
+        assertThat(c4.getRoles()).isEmpty();
     }
 
     @Test
@@ -409,7 +409,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         var c4 = map.get("key4");
         assertThat(c4).isNotNull();
         assertThat(c4.getKey()).isEqualTo("key4");
-        assertThat(c4.getRoles()).isNull();
+        assertThat(c4.getRoles()).isEmpty();
     }
 
     @Test

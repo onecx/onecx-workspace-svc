@@ -345,7 +345,7 @@ class RoleRestControllerTest extends AbstractTest {
         assertThat(exception.getDetail()).isNotNull()
                 .isEqualTo(
                         "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_workspace_role_name'  Detail: Key (workspace_guid, name)=(11-111, n3) already exists.]");
-        assertThat(exception.getInvalidParams()).isNull();
+        assertThat(exception.getInvalidParams()).isEmpty();
     }
 
     @Test
