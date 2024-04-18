@@ -62,10 +62,10 @@ public interface UserMenuMapper {
     }
 
     default String updateInternalUrl(String workspaceUrl, String menuItemUrl, Boolean isExternal) {
-        if (!isExternal) {
-            return workspaceUrl + menuItemUrl;
-        } else {
+        if (Boolean.TRUE.equals(isExternal)) {
             return menuItemUrl;
+        } else {
+            return workspaceUrl + menuItemUrl;
         }
     }
 
