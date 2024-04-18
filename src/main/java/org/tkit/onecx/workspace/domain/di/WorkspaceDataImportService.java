@@ -39,7 +39,7 @@ public class WorkspaceDataImportService implements DataImportService {
     }
 
     public void cleanInsert(WorkspaceDataImportDTOV1 data) {
-        if (data == null || data.getRequests() == null) {
+        if (data == null || data.getRequests().isEmpty()) {
             return;
         }
         var tenantIds = data.getRequests().stream().map(ImportRequestDTOV1::getTenantId).toList();

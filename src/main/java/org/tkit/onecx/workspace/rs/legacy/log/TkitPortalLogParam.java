@@ -18,9 +18,9 @@ public class TkitPortalLogParam implements LogParam {
                         x -> "MenuRegistrationRequestDTO[ request version: "
                                 + ((MenuRegistrationRequestDTO) x).getRequestVersion()
                                 + "menu items size: "
-                                + (((MenuRegistrationRequestDTO) x).getMenuItems() != null
+                                + (!((MenuRegistrationRequestDTO) x).getMenuItems().isEmpty()
                                         ? ((MenuRegistrationRequestDTO) x).getMenuItems().size()
-                                        : "null")
+                                        : "empty")
                                 + " ]"));
     }
 
