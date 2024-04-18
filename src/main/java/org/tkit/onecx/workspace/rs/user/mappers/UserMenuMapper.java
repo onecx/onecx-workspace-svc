@@ -43,7 +43,7 @@ public interface UserMenuMapper {
         }
         items.forEach(menuItem -> {
             if (menuItem.getUrl() != null) {
-                menuItem.setUrl(workspace.getBaseUrl() + menuItem.getUrl());
+                menuItem.setUrl(updateInternalUrl(workspace.getBaseUrl(), menuItem.getUrl(), menuItem.isExternal()));
             }
             menuItem = updateUrl(menuItem, workspace.getBaseUrl());
         });
@@ -54,11 +54,19 @@ public interface UserMenuMapper {
     default MenuItem updateUrl(MenuItem menuItem, String workspaceUrl) {
         if (!menuItem.getChildren().isEmpty()) {
             menuItem.getChildren().forEach(menuItemChild -> {
-                menuItemChild.setUrl(workspaceUrl + menuItemChild.getUrl());
+                menuItemChild.setUrl(updateInternalUrl(workspaceUrl, menuItemChild.getUrl(), menuItemChild.isExternal()));
                 updateUrl(menuItemChild, workspaceUrl);
             });
         }
         return menuItem;
+    }
+
+    default String updateInternalUrl(String workspaceUrl, String menuItemUrl, Boolean isExternal) {
+        if (!isExternal) {
+            return workspaceUrl + menuItemUrl;
+        } else {
+            return menuItemUrl;
+        }
     }
 
     default Set<MenuItem> filterMenu(Set<MenuItem> items, Map<String, Set<String>> mapping, Set<String> roles) {
