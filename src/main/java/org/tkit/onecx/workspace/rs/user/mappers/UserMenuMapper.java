@@ -41,9 +41,24 @@ public interface UserMenuMapper {
         if (items.isEmpty()) {
             return dto;
         }
-        items.forEach(menuItem -> menuItem.setUrl(workspace.getBaseUrl() + menuItem.getUrl()));
+        items.forEach(menuItem -> {
+            if (menuItem.getUrl() != null) {
+                menuItem.setUrl(workspace.getBaseUrl() + menuItem.getUrl());
+            }
+            menuItem = updateUrl(menuItem, workspace.getBaseUrl());
+        });
 
         return dto.menu(items.stream().map(this::mapTreeItem).toList());
+    }
+
+    default MenuItem updateUrl(MenuItem menuItem, String workspaceUrl) {
+        if (!menuItem.getChildren().isEmpty()) {
+            menuItem.getChildren().forEach(menuItemChild -> {
+                menuItemChild.setUrl(workspaceUrl + menuItemChild.getUrl());
+                updateUrl(menuItemChild, workspaceUrl);
+            });
+        }
+        return menuItem;
     }
 
     default Set<MenuItem> filterMenu(Set<MenuItem> items, Map<String, Set<String>> mapping, Set<String> roles) {
