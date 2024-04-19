@@ -137,7 +137,8 @@ class UserMenuInternalControllerTest extends AbstractTest {
                 """;
         assertThat(output).isEqualTo(tmp);
         assertThat(countMenuItems(data.getMenu())).isEqualTo(9);
-        assertThat(data.getMenu().get(0).getUrl()).contains("/company3");
+        assertThat(data.getMenu().get(0).getUrl()).isEqualTo("");
+        assertThat(data.getMenu().get(0).getChildren().get(0).getUrl()).contains("/company3");
 
         // without bearer prefix
         accessToken = createAccessToken(USER_BOB);

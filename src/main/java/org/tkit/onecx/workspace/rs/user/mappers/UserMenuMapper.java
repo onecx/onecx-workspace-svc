@@ -41,12 +41,7 @@ public interface UserMenuMapper {
         if (items.isEmpty()) {
             return dto;
         }
-        items.forEach(menuItem -> {
-            if (menuItem.getUrl() != null) {
-                menuItem.setUrl(updateInternalUrl(workspace.getBaseUrl(), menuItem.getUrl(), menuItem.isExternal()));
-            }
-            menuItem = updateUrl(menuItem, workspace.getBaseUrl());
-        });
+        items.forEach(menuItem -> menuItem = updateUrl(menuItem, workspace.getBaseUrl()));
 
         return dto.menu(items.stream().map(this::mapTreeItem).toList());
     }
@@ -57,6 +52,10 @@ public interface UserMenuMapper {
                 menuItemChild.setUrl(updateInternalUrl(workspaceUrl, menuItemChild.getUrl(), menuItemChild.isExternal()));
                 updateUrl(menuItemChild, workspaceUrl);
             });
+        } else {
+            if (menuItem.getUrl() != null) {
+                menuItem.setUrl(updateInternalUrl(workspaceUrl, menuItem.getUrl(), menuItem.isExternal()));
+            }
         }
         return menuItem;
     }
