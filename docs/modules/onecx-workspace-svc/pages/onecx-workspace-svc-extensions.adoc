@@ -98,13 +98,13 @@ h| Version
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-hibernate-orm.adoc[Link]
 | 3.9.3
 
-| quarkus-resteasy-reactive
+| quarkus-rest
 
-| https://quarkus.io/guides/resteasy-reactive[Link]
-| https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-resteasy-reactive.adoc[Link]
+| https://quarkus.io/guides/rest[Link]
+| https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-rest.adoc[Link]
 | 3.9.3
 
-| quarkus-resteasy-reactive-jackson
+| quarkus-rest-jackson
 
 | https://quarkus.io/guides/rest-json[Link]
 | 
@@ -144,6 +144,11 @@ h| Version
 
 | https://quarkus.io/guides/container-image[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-container-image-docker.adoc[Link]
+| 3.9.3
+
+
+
+|===us-container-image-docker.adoc[Link]
 | 3.9.3
 
 
