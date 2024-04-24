@@ -245,7 +245,10 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         var s = dto.getSlots().stream().filter(x -> "slot1".equals(x.getName())).findFirst().orElse(null);
         assertThat(s).isNotNull();
         assertThat(s.getName()).isEqualTo("slot1");
-        assertThat(s.getComponents()).isNotNull().containsExactly("c1", "c2", "c3");
+        assertThat(s.getComponents()).isNotNull().hasSize(3);
+        assertThat(s.getComponents().stream().filter(x -> "c1".equals(x.getName())).findFirst()).isPresent();
+        assertThat(s.getComponents().stream().filter(x -> "c2".equals(x.getName())).findFirst()).isPresent();
+        assertThat(s.getComponents().stream().filter(x -> "c3".equals(x.getName())).findFirst()).isPresent();
 
         requestDTOV1.setPath("/company2/admin/my/url");
         dto = given()

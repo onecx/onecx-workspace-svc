@@ -21,7 +21,7 @@ import lombok.Setter;
 public class Slot extends TraceableEntity {
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "WORKSPACE_GUID")
+    @JoinColumn(name = "WORKSPACE_GUID", foreignKey = @ForeignKey(name = "SLOT_WORKSPACE_GUID"))
     private Workspace workspace;
 
     @Column(name = "WORKSPACE_GUID", insertable = false, updatable = false)
@@ -36,9 +36,11 @@ public class Slot extends TraceableEntity {
 
     @Column(name = "COMPONENT", nullable = false)
     @ElementCollection
-    @CollectionTable(name = "SLOT_COMPONENTS", joinColumns = @JoinColumn(name = "SLOT_GUID"))
+    @CollectionTable(name = "SLOT_COMPONENTS", joinColumns = @JoinColumn(name = "SLOT_GUID"), uniqueConstraints = {
+            @UniqueConstraint(name = "SLOT_COMPONENT", columnNames = { "NAME", "APP_ID", "PRODUCT_NAME", "SLOT_GUID" })
+    }, foreignKey = @ForeignKey(name = "SLOT_COMPONENTS_SLOT_GUID"))
     @OrderColumn(name = "INDEX")
-    private List<String> components;
+    private List<Component> components;
 
     @PostPersist
     void postPersist() {

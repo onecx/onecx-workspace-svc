@@ -126,7 +126,16 @@ components:
         components:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/WorkspaceWrapperComponent'
+    WorkspaceWrapperComponent:
+      type: object
+      properties:
+        productName:
+          type: string
+        appId:
+          type: string
+        name:
+          type: string
     WorkspaceLoad:
       type: object
       properties:

@@ -24,20 +24,20 @@
 
 	<!-- SLOT -->
 	<SLOT guid="s11" optlock="0" tenant_id="tenant-100" name="slot1" workspace_guid="11-111" />
-	<SLOT_COMPONENTS index="0" slot_guid="s11" component="c1" />
-	<SLOT_COMPONENTS index="1" slot_guid="s11" component="c2" />
-	<SLOT_COMPONENTS index="2" slot_guid="s11" component="c3" />
+	<SLOT_COMPONENTS index="0" slot_guid="s11" name="c1" product_name="p1" app_id="a1"/>
+	<SLOT_COMPONENTS index="1" slot_guid="s11" name="c2" product_name="p1" app_id="a1"/>
+	<SLOT_COMPONENTS index="2" slot_guid="s11" name="c3" product_name="p1" app_id="a1"/>
 
 	<SLOT guid="s12" optlock="0" tenant_id="tenant-100" name="slot2" workspace_guid="11-111" />
-	<SLOT_COMPONENTS index="0" slot_guid="s12" component="c4" />
-	<SLOT_COMPONENTS index="1" slot_guid="s12" component="c5" />
+	<SLOT_COMPONENTS index="0" slot_guid="s12" name="c4" product_name="p1" app_id="a1" />
+	<SLOT_COMPONENTS index="1" slot_guid="s12" name="c5" product_name="p1" app_id="a1" />
 
 
 	<SLOT guid="s13" optlock="0" tenant_id="tenant-100" name="slot3" workspace_guid="11-111" />
-	<SLOT_COMPONENTS index="0" slot_guid="s13" component="c6" />
+	<SLOT_COMPONENTS index="0" slot_guid="s13" name="c6" product_name="p1" app_id="a1" />
 
 	<SLOT guid="s21" optlock="0" tenant_id="tenant-100" name="slot1" workspace_guid="11-222" />
-	<SLOT_COMPONENTS index="0" slot_guid="s21" component="c1" />
+	<SLOT_COMPONENTS index="0" slot_guid="s21" name="c1" product_name="p1" app_id="a1" />
 
 	<!-- MICROFRONTEND -->
 	<MICROFRONTEND guid="1234" mfe_id="menu" base_path="/menu" product_guid="1234"/>

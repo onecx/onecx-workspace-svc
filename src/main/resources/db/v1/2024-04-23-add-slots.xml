@@ -25,23 +25,23 @@
             <column name="creationuser" type="VARCHAR(255)"/>
             <column name="modificationuser" type="VARCHAR(255)"/>
         </createTable>
-
-        <addUniqueConstraint columnNames="name, workspace_guid, tenant_id" constraintName="slot_workspace_name" tableName="slot"/>
-
         <createTable tableName="slot_components">
             <column name="index" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="slot_components_pkey"/>
             </column>
-            <column name="component" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="app_id" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="product_name" type="VARCHAR(255)"/>
             <column name="slot_guid" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="slot_components_pkey"/>
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseColumnNames="slot_guid" baseTableName="slot_components" constraintName="fkb5hkacdwrequyxdux39gelhwh" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="slot" validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="workspace_guid" baseTableName="slot" constraintName="fkjq5vw0ow5al87vtnbwaqgu7la" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
+        <addUniqueConstraint columnNames="name, app_id, product_name, slot_guid" constraintName="slot_component" tableName="slot_components"/>
+        <addUniqueConstraint columnNames="name, workspace_guid, tenant_id" constraintName="slot_workspace_name" tableName="slot"/>
+
+        <addForeignKeyConstraint baseColumnNames="slot_guid" baseTableName="slot_components" constraintName="slot_components_slot_guid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="slot" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="workspace_guid" baseTableName="slot" constraintName="slot_workspace_guid" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
 
     </changeSet>
 
