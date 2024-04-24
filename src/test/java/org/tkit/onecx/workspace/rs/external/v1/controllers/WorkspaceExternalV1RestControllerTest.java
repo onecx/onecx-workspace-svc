@@ -69,6 +69,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .extract().as(WorkspaceDTOV1.class);
 
         assertThat(dto).isNotNull();
+        assertThat(dto.getProducts()).isNotNull().hasSize(2).containsExactly("onecx-core", "onecx-apm");
         assertThat(dto.getName()).isEqualTo("test01");
     }
 
@@ -211,4 +212,78 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
     }
+
+    @Test
+    void loadWorkspaceByUrlTest() {
+
+        var requestDTOV1 = new WorkspaceLoadRequestDTOV1().path("does-not-exist-url");
+
+        // not existing workspace
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        // existing workspace
+        requestDTOV1.setPath("/company1/admin/my/url");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceWrapperDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getName()).isEqualTo("test01");
+        assertThat(dto.getSlots()).isNotNull().hasSize(3);
+        assertThat(dto.getSlots().get(0)).isNotNull();
+        var s = dto.getSlots().stream().filter(x -> "slot1".equals(x.getName())).findFirst().orElse(null);
+        assertThat(s).isNotNull();
+        assertThat(s.getName()).isEqualTo("slot1");
+        assertThat(s.getComponents()).isNotNull().containsExactly("c1", "c2", "c3");
+
+        requestDTOV1.setPath("/company2/admin/my/url");
+        dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceWrapperDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getSlots()).isNotNull().hasSize(1);
+        assertThat(dto.getName()).isNotNull().isNotEmpty().isEqualTo("test02");
+
+        // another test to match /de base path
+        requestDTOV1.setPath("/de/test/some/strange");
+        dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceWrapperDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getName()).isEqualTo("test44");
+
+        // strange protocol
+        requestDTOV1.setPath("asd://");
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
 }

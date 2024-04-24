@@ -19,11 +19,16 @@ import lombok.Setter;
         @UniqueConstraint(name = "WORKSPACE_NAME_TENANT_ID", columnNames = { "NAME", "TENANT_ID" }),
         @UniqueConstraint(name = "WORKSPACE_BASE_URL_TENANT_ID", columnNames = { "BASE_URL", "TENANT_ID" })
 })
-@NamedEntityGraph(name = Workspace.WORKSPACE_FULL, attributeNodes = { @NamedAttributeNode(value = "products") })
+@NamedEntityGraph(name = Workspace.WORKSPACE_FULL, includeAllAttributes = true)
+@NamedEntityGraph(name = Workspace.WORKSPACE_PRODUCTS, attributeNodes = { @NamedAttributeNode(value = "products") })
+@NamedEntityGraph(name = Workspace.WORKSPACE_PRODUCTS_SLOTS, attributeNodes = { @NamedAttributeNode(value = "products"),
+        @NamedAttributeNode(value = "slots") })
 @SuppressWarnings("squid:S2160")
 public class Workspace extends TraceableEntity {
 
     public static final String WORKSPACE_FULL = "Workspace.full";
+    public static final String WORKSPACE_PRODUCTS = "Workspace.products";
+    public static final String WORKSPACE_PRODUCTS_SLOTS = "Workspace.products_slots";
 
     @TenantId
     @Column(name = "TENANT_ID")
@@ -68,5 +73,8 @@ public class Workspace extends TraceableEntity {
 
     @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
     private List<Product> products;
+
+    @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
+    private List<Slot> slots;
 
 }

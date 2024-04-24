@@ -14,6 +14,7 @@ import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.external.v1.WorkspaceExternalV1Api;
 import gen.org.tkit.onecx.workspace.rs.external.v1.model.GetWorkspaceByUrlRequestDTOV1;
+import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceLoadRequestDTOV1;
 import gen.org.tkit.onecx.workspace.rs.external.v1.model.WorkspaceSearchCriteriaDTOV1;
 
 @LogService
@@ -38,8 +39,17 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     }
 
     @Override
+    public Response loadWorkspaceByRequest(WorkspaceLoadRequestDTOV1 workspaceLoadRequestDTOV1) {
+        var item = workspaceDAO.loadByUrlProductsSlots(workspaceLoadRequestDTOV1.getPath());
+        if (item == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(mapper.loadWrapper(item)).build();
+    }
+
+    @Override
     public Response getWorkspaceByName(String name) {
-        var item = workspaceDAO.findByName(name);
+        var item = workspaceDAO.loadByNameProducts(name);
         if (item == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -64,7 +74,6 @@ public class WorkspaceExternalV1RestController implements WorkspaceExternalV1Api
     }
 
     @Override
-    @Transactional
     public Response searchWorkspaces(WorkspaceSearchCriteriaDTOV1 workspaceSearchCriteriaDTOV1) {
         var criteria = mapper.map(workspaceSearchCriteriaDTOV1);
         var result = workspaceDAO.findBySearchCriteria(criteria);

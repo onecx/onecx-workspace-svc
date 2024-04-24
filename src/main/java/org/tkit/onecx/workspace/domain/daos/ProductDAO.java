@@ -21,6 +21,22 @@ import org.tkit.quarkus.jpa.models.TraceableEntity_;
 @ApplicationScoped
 public class ProductDAO extends AbstractDAO<Product> {
 
+    // https://hibernate.atlassian.net/browse/HHH-16830#icft=HHH-16830
+    @Override
+    public Product findById(Object id) throws DAOException {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Product.class);
+            var root = cq.from(Product.class);
+            cq.where(cb.equal(root.get(TraceableEntity_.ID), id));
+            return this.getEntityManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception e) {
+            throw handleConstraint(e, ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
+        }
+    }
+
     @Transactional(Transactional.TxType.NOT_SUPPORTED)
     public PageResult<Product> findByCriteria(ProductSearchCriteria criteria) {
         try {
@@ -37,6 +53,7 @@ public class ProductDAO extends AbstractDAO<Product> {
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
+            cq.orderBy(cb.asc(root.get(TraceableEntity_.ID)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
@@ -77,6 +94,8 @@ public class ProductDAO extends AbstractDAO<Product> {
     }
 
     public enum ErrorKeys {
+
+        FIND_ENTITY_BY_ID_FAILED,
 
         LOAD_ENTITY_BY_ID_FAILED,
 

@@ -19,9 +19,12 @@ import lombok.Setter;
         @UniqueConstraint(name = "UI_PRODUCT_NAME_WORKSPACE", columnNames = { "PRODUCT_NAME", "WORKSPACE_GUID" }),
         @UniqueConstraint(name = "UI_PRODUCT_BASE_URL_WORKSPACE", columnNames = { "BASE_URL", "WORKSPACE_GUID" })
 })
-@NamedEntityGraph(name = "Product.loadById", includeAllAttributes = true, attributeNodes = { @NamedAttributeNode("workspace") })
+
+@NamedEntityGraph(name = Product.PRODUCT_SEARCH, attributeNodes = { @NamedAttributeNode("microfrontends") })
 @SuppressWarnings("squid:S2160")
 public class Product extends TraceableEntity {
+
+    public static final String PRODUCT_SEARCH = "Product.search";
 
     @TenantId
     @Column(name = "TENANT_ID")

@@ -28,6 +28,8 @@ class ProductDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.findById(null),
+                ProductDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.findByCriteria(null),
                 ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_CRITERIA);
         methodExceptionTests(() -> dao.loadById(null),

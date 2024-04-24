@@ -1,0 +1,48 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet author="dev (generated)" id="1713884660417-1">
+        <createTable tableName="slot">
+            <column name="optlock" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="modificationdate" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="guid" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="slot_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tenant_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="workspace_guid" type="VARCHAR(255)"/>
+            <column name="creationuser" type="VARCHAR(255)"/>
+            <column name="modificationuser" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addUniqueConstraint columnNames="name, workspace_guid, tenant_id" constraintName="slot_workspace_name" tableName="slot"/>
+
+        <createTable tableName="slot_components">
+            <column name="index" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="slot_components_pkey"/>
+            </column>
+            <column name="component" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slot_guid" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="slot_components_pkey"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="slot_guid" baseTableName="slot_components" constraintName="fkb5hkacdwrequyxdux39gelhwh" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="slot" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="workspace_guid" baseTableName="slot" constraintName="fkjq5vw0ow5al87vtnbwaqgu7la" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="guid" referencedTableName="workspace" validate="true"/>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -14,6 +14,7 @@ paths:
         - workspaceExternal
       description: search workspace by url
       operationId: getWorkspaceByUrl
+      deprecated: true
       requestBody:
         content:
           application/json:
@@ -26,6 +27,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workspace'
+        "404":
+          description: Not found
+  /v1/workspaces/load:
+    post:
+      tags:
+        - workspaceExternal
+      description: load workspace by request
+      operationId: loadWorkspaceByRequest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceLoadRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceWrapper'
         "404":
           description: Not found
   /v1/workspaces/search:
@@ -80,6 +101,30 @@ paths:
           description: Not found
 components:
   schemas:
+    WorkspaceWrapper:
+      type: object
+      properties:
+        name:
+          type: string
+        baseUrl:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceWrapperSlot'
+    WorkspaceWrapperSlot:
+      type: object
+      properties:
+        name:
+          type: string
+        components:
+          type: array
+          items:
+            type: string
     WorkspaceLoad:
       type: object
       properties:
@@ -119,6 +164,11 @@ components:
             type: string
         logoUrl:
           type: string
+        products:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
     WorkspaceAddress:
@@ -133,13 +183,6 @@ components:
         country:
           type: string
         postalCode:
-          type: string
-    SubjectLink:
-      type: object
-      properties:
-        label:
-          type: string
-        url:
           type: string
     WorkspacePageResult:
       type: object
@@ -168,10 +211,6 @@ components:
           type: string
         theme:
           type: string
-        products:
-          type: array
-          items:
-            type: string
         description:
           type: string
     WorkspaceSearchCriteria:
@@ -213,6 +252,13 @@ components:
         mfeId:
           type: string
         basePath:
+          type: string
+    WorkspaceLoadRequest:
+      type: object
+      required:
+        - path
+      properties:
+        path:
           type: string
     GetWorkspaceByUrlRequest:
       type: object
