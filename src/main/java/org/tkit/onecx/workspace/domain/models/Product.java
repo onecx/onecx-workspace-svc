@@ -19,7 +19,7 @@ import lombok.Setter;
         @UniqueConstraint(name = "UI_PRODUCT_NAME_WORKSPACE", columnNames = { "PRODUCT_NAME", "WORKSPACE_GUID" }),
         @UniqueConstraint(name = "UI_PRODUCT_BASE_URL_WORKSPACE", columnNames = { "BASE_URL", "WORKSPACE_GUID" })
 })
-@NamedEntityGraph(name = "Product.loadById", includeAllAttributes = true, attributeNodes = { @NamedAttributeNode("workspace") })
+
 @SuppressWarnings("squid:S2160")
 public class Product extends TraceableEntity {
 

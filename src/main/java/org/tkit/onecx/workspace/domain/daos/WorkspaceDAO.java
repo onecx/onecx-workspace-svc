@@ -92,6 +92,46 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
+    public Workspace loadByNameProducts(String name) {
+
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Workspace.class);
+            var root = cq.from(Workspace.class);
+
+            cq.where(cb.equal(root.get(NAME), name));
+            var workspaceQuery = this.getEntityManager().createQuery(cq);
+            workspaceQuery.setHint(HINT_LOAD_GRAPH,
+                    this.getEntityManager().getEntityGraph(Workspace.WORKSPACE_PRODUCTS_SLOTS));
+
+            return this.getEntityManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception ex) {
+            throw handleConstraint(ex, ErrorKeys.ERROR_LOAD_WORKSPACE_PRODUCTS);
+        }
+    }
+
+    public Workspace loadByUrlProductsSlots(String url) {
+
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Workspace.class);
+            var root = cq.from(Workspace.class);
+
+            cq.where(cb.like(cb.literal(url), cb.concat(root.get(BASE_URL), "%")));
+            var workspaceQuery = this.getEntityManager().createQuery(cq);
+            workspaceQuery.setHint(HINT_LOAD_GRAPH,
+                    this.getEntityManager().getEntityGraph(Workspace.WORKSPACE_PRODUCTS_SLOTS));
+
+            return this.getEntityManager().createQuery(cq).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        } catch (Exception ex) {
+            throw handleConstraint(ex, ErrorKeys.ERROR_LOAD_WORKSPACE_PRODUCTS_SLOTS);
+        }
+    }
+
     public PageResult<Workspace> findBySearchCriteria(WorkspaceSearchCriteria criteria) {
         try {
             var cb = getEntityManager().getCriteriaBuilder();
@@ -121,6 +161,8 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
 
     public enum ErrorKeys {
 
+        ERROR_LOAD_WORKSPACE_PRODUCTS,
+        ERROR_LOAD_WORKSPACE_PRODUCTS_SLOTS,
         ERROR_FIND_WORKSPACE_BY_NAME,
         ERROR_FIND_WORKSPACE_BY_URL,
         FIND_ENTITY_BY_ID_FAILED,

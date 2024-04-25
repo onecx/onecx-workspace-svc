@@ -8,6 +8,6 @@ import lombok.Setter;
 public class ProductSearchCriteria {
     private String workspaceId;
     private String productName;
-    private Integer pageNumber;
-    private Integer pageSize;
+    private Integer pageNumber = 0;
+    private Integer pageSize = 100;
 }

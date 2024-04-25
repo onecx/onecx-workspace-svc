@@ -28,6 +28,11 @@ class WorkspaceDAOTest {
 
     @Test
     void methodExceptionTests() {
+
+        methodExceptionTests(() -> dao.loadByNameProducts(null),
+                WorkspaceDAO.ErrorKeys.ERROR_LOAD_WORKSPACE_PRODUCTS);
+        methodExceptionTests(() -> dao.loadByUrlProductsSlots(null),
+                WorkspaceDAO.ErrorKeys.ERROR_LOAD_WORKSPACE_PRODUCTS_SLOTS);
         methodExceptionTests(() -> dao.loadById(null),
                 WorkspaceDAO.ErrorKeys.ERROR_LOAD_WORKSPACE);
         methodExceptionTests(() -> dao.findBySearchCriteria(null),
