@@ -27,12 +27,17 @@ public class ProductService {
             return result;
         }
 
-        var list = result.getStream().peek(x -> x.setMicrofrontends(new ArrayList<>())).toList();
+        var list = result.getStream().filter(ProductService::resetMicrofrontends).toList();
 
         var map = list.stream().collect(Collectors.toMap(Product::getId, x -> x));
         var items = microfrontendDAO.findByProductNames(map.keySet());
         items.forEach(mfe -> map.get(mfe.getProductId()).getMicrofrontends().add(mfe));
 
         return new PageResult<>(result.getTotalElements(), list.stream(), result.getNumber(), result.getSize());
+    }
+
+    private static boolean resetMicrofrontends(Product p) {
+        p.setMicrofrontends(new ArrayList<>());
+        return true;
     }
 }
