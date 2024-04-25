@@ -1,14 +1,16 @@
 package org.tkit.onecx.workspace.domain.services;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.criteria.ProductSearchCriteria;
+import org.tkit.onecx.workspace.domain.daos.MicrofrontendDAO;
 import org.tkit.onecx.workspace.domain.daos.ProductDAO;
-import org.tkit.onecx.workspace.rs.internal.mappers.ProductMapper;
-
-import gen.org.tkit.onecx.workspace.rs.internal.model.ProductPageResultDTO;
+import org.tkit.onecx.workspace.domain.models.Product;
+import org.tkit.quarkus.jpa.daos.PageResult;
 
 @ApplicationScoped
 public class ProductService {
@@ -17,11 +19,20 @@ public class ProductService {
     ProductDAO productDAO;
 
     @Inject
-    ProductMapper mapper;
+    MicrofrontendDAO microfrontendDAO;
 
-    @Transactional
-    public ProductPageResultDTO findByCriteria(ProductSearchCriteria criteria) {
+    public PageResult<Product> findByCriteria(ProductSearchCriteria criteria) {
         var result = productDAO.findByCriteria(criteria);
-        return mapper.mapPage(result);
+        if (result.isEmpty()) {
+            return result;
+        }
+
+        var list = result.getStream().peek(x -> x.setMicrofrontends(new ArrayList<>())).toList();
+
+        var map = list.stream().collect(Collectors.toMap(Product::getId, x -> x));
+        var items = microfrontendDAO.findByProductNames(map.keySet());
+        items.forEach(mfe -> map.get(mfe.getProductId()).getMicrofrontends().add(mfe));
+
+        return new PageResult<>(result.getTotalElements(), list.stream(), result.getNumber(), result.getSize());
     }
 }

@@ -62,6 +62,7 @@ public interface WorkspaceDataImportMapperV1 {
     Product createWorkspace(ProductDTOV1 productDTO);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "productId", ignore = true)
     Microfrontend createWorkspace(MicrofrontendDTOV1 mfeDTO);
 
     @Mapping(target = "id", ignore = true)

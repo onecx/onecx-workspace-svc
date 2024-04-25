@@ -27,4 +27,7 @@ public class Microfrontend implements Serializable {
     @Column(name = "BASE_PATH", nullable = false)
     private String basePath;
 
+    @Column(name = "PRODUCT_GUID", insertable = false, updatable = false)
+    private String productId;
+
 }
