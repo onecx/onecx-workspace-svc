@@ -18,6 +18,7 @@ import lombok.Setter;
 @Table(name = "SLOT", uniqueConstraints = {
         @UniqueConstraint(name = "SLOT_WORKSPACE_NAME", columnNames = { "NAME", "WORKSPACE_GUID", "TENANT_ID" })
 })
+@SuppressWarnings("java:S2160")
 public class Slot extends TraceableEntity {
 
     @ManyToOne(fetch = LAZY)

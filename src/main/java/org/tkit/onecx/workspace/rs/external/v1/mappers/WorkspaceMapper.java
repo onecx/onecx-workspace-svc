@@ -44,7 +44,7 @@ public interface WorkspaceMapper {
     @Named("products-to-string")
     default Set<String> productsToString(List<Product> products) {
         if (products == null) {
-            return null;
+            return Set.of();
         }
         return products.stream().map(Product::getProductName).collect(Collectors.toSet());
     }
