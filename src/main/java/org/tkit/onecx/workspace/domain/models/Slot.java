@@ -18,8 +18,11 @@ import lombok.Setter;
 @Table(name = "SLOT", uniqueConstraints = {
         @UniqueConstraint(name = "SLOT_WORKSPACE_NAME", columnNames = { "NAME", "WORKSPACE_GUID", "TENANT_ID" })
 })
+@NamedEntityGraph(name = Slot.SLOT_LOAD, attributeNodes = { @NamedAttributeNode("workspace") })
 @SuppressWarnings("java:S2160")
 public class Slot extends TraceableEntity {
+
+    public static final String SLOT_LOAD = "Slot.load";
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "WORKSPACE_GUID", foreignKey = @ForeignKey(name = "SLOT_WORKSPACE_GUID"))
