@@ -43,6 +43,7 @@ public interface ProductMapper {
     Product create(CreateProductRequestDTO dto);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "productId", ignore = true)
     Microfrontend create(CreateMicrofrontendDTO dto);
 
     @Mapping(target = "workspace", ignore = true)
@@ -73,6 +74,7 @@ public interface ProductMapper {
     }
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "productId", ignore = true)
     Microfrontend update(UpdateMicrofrontendDTO dto);
 
     List<ProductDTO> map(List<Product> entity);

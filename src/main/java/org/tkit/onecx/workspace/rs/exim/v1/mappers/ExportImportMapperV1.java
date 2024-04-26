@@ -227,5 +227,6 @@ public interface ExportImportMapperV1 {
 
     @Mapping(target = "mfeId", source = "appId")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "productId", ignore = true)
     Microfrontend map(EximMicrofrontendDTOV1 eximMicrofrontendDTOV1);
 }
