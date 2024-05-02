@@ -1,0 +1,5 @@
+
+:docker-registry: https://github.com/onecx/onecx-workspace-svc/pkgs/container/onecx-workspace-svc
+:helm-registry: https://github.com/onecx/onecx-workspace-svc/pkgs/container/charts%2Fonecx-workspace-svc
+:properties-file: src/main/resources/application.properties
+:helm-file: src/main/helm/values.yaml

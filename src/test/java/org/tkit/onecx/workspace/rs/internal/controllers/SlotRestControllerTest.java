@@ -17,17 +17,16 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@TestHTTPEndpoint(RoleInternalRestController.class)
+@TestHTTPEndpoint(SlotInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-class RoleRestControllerTest extends AbstractTest {
+class SlotRestControllerTest extends AbstractTest {
 
     @Test
-    void createNewRoleTest() {
+    void createNewSlotTest() {
 
         // create Role
-        var requestDTO = new CreateRoleRequestDTO();
-        requestDTO.setName("test01");
-        requestDTO.setDescription("description");
+        var requestDTO = new CreateSlotRequestDTO();
+        requestDTO.setName("slot01");
 
         given()
                 .when()
@@ -61,11 +60,10 @@ class RoleRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
-                .body().as(RoleDTO.class);
+                .body().as(SlotDTO.class);
 
         assertThat(dto).isNotNull()
-                .returns(requestDTO.getName(), from(RoleDTO::getName))
-                .returns(requestDTO.getDescription(), from(RoleDTO::getDescription));
+                .returns(requestDTO.getName(), from(SlotDTO::getName));
 
         // create Role without body
         var exception = given()
@@ -77,12 +75,12 @@ class RoleRestControllerTest extends AbstractTest {
                 .extract().as(ProblemDetailResponseDTO.class);
 
         assertThat(exception.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isEqualTo("createRole.createRoleRequestDTO: must not be null");
+        assertThat(exception.getDetail()).isEqualTo("createSlot.createSlotRequestDTO: must not be null");
 
         // create Role with existing name
-        requestDTO = new CreateRoleRequestDTO();
+        requestDTO = new CreateSlotRequestDTO();
         requestDTO.setWorkspaceId("11-111");
-        requestDTO.setName("n1");
+        requestDTO.setName("slot1");
 
         exception = given().when()
                 .contentType(APPLICATION_JSON)
@@ -94,11 +92,11 @@ class RoleRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_workspace_role_name'  Detail: Key (workspace_guid, name)=(11-111, n1) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'slot_workspace_name'  Detail: Key (name, workspace_guid, tenant_id)=(slot1, 11-111, tenant-100) already exists.]");
     }
 
     @Test
-    void getNotFoundRole() {
+    void getNotFoundSlot() {
         given()
                 .contentType(APPLICATION_JSON)
                 .get("does-not-exists")
@@ -107,7 +105,7 @@ class RoleRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void deleteRoleTest() {
+    void deleteSlotNoneExistsTest() {
 
         // delete Role
         given()
@@ -120,30 +118,33 @@ class RoleRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .get("DELETE_1")
                 .then().statusCode(NOT_FOUND.getStatusCode());
+    }
 
+    @Test
+    void deleteSlotTest() {
         // delete Role in portal
         given()
                 .contentType(APPLICATION_JSON)
-                .delete("r11")
+                .delete("s11")
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
     }
 
     @Test
-    void getRoleByIdTest() {
+    void getSlotByIdTest() {
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
-                .get("r12")
+                .get("s11")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(RoleDTO.class);
+                .body().as(SlotDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getName()).isEqualTo("n2");
-        assertThat(dto.getId()).isEqualTo("r12");
+        assertThat(dto.getName()).isEqualTo("slot1");
+        assertThat(dto.getId()).isEqualTo("s11");
 
         given()
                 .contentType(APPLICATION_JSON)
@@ -152,120 +153,64 @@ class RoleRestControllerTest extends AbstractTest {
 
         dto = given()
                 .contentType(APPLICATION_JSON)
-                .get("r11")
+                .get("s12")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(RoleDTO.class);
+                .body().as(SlotDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getName()).isEqualTo("n1");
-        assertThat(dto.getId()).isEqualTo("r11");
+        assertThat(dto.getName()).isEqualTo("slot2");
+        assertThat(dto.getId()).isEqualTo("s12");
 
     }
 
     @Test
-    void searchRolesTest() {
-        var criteria = new RoleSearchCriteriaDTO();
-        criteria.workspaceId("11-111");
-
+    void getWorkspaceSlotTest() {
         var data = given()
                 .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("/search")
+                .get("/workspace/11-111")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .as(RolePageResultDTO.class);
+                .as(WorkspaceSlotsDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(4);
-        assertThat(data.getStream()).isNotNull().hasSize(4);
-
-        criteria.workspaceId("    ");
+        assertThat(data.getSlots()).isNotNull().hasSize(3);
+        assertThat(data.getSlots().get(0)).isNotNull();
+        assertThat(data.getSlots().get(0).getComponents()).isNotNull().hasSize(3);
 
         data = given()
                 .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("/search")
+                .get("/workspace/11-222")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .as(RolePageResultDTO.class);
+                .as(WorkspaceSlotsDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(4);
-        assertThat(data.getStream()).isNotNull().hasSize(4);
-
-        criteria.workspaceId(null);
-        data = given()
-                .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("/search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .contentType(APPLICATION_JSON)
-                .extract()
-                .as(RolePageResultDTO.class);
-
-        assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(4);
-        assertThat(data.getStream()).isNotNull().hasSize(4);
-
-        criteria.setName(" ");
-        criteria.setDescription(" ");
-        data = given()
-                .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("/search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .contentType(APPLICATION_JSON)
-                .extract()
-                .as(RolePageResultDTO.class);
-
-        assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(4);
-        assertThat(data.getStream()).isNotNull().hasSize(4);
-
-        criteria.setName("n3");
-        criteria.setDescription("d1");
-
-        data = given()
-                .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("/search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .contentType(APPLICATION_JSON)
-                .extract()
-                .as(RolePageResultDTO.class);
-
-        assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(1);
-        assertThat(data.getStream()).isNotNull().hasSize(1);
-
+        assertThat(data.getSlots()).isNotNull().isEmpty();
     }
 
     @Test
-    void updateRoleTest() {
+    void updateSlotTest() {
 
         // download Role
         var dto = given().contentType(APPLICATION_JSON)
                 .when()
-                .get("r11")
+                .get("s11")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(RoleDTO.class);
+                .body().as(SlotDTO.class);
 
-        // update none existing Role
-        var requestDto = new UpdateRoleRequestDTO();
+        // update none existing Slot
+        var requestDto = new UpdateSlotRequestDTO();
         requestDto.setName("test01");
         requestDto.setModificationCount(dto.getModificationCount());
-        requestDto.setDescription("description-update");
+        requestDto.getComponents().add(new SlotComponentDTO().name("new_c2").productName("p1").appId("a1"));
 
         given()
                 .contentType(APPLICATION_JSON)
@@ -274,21 +219,21 @@ class RoleRestControllerTest extends AbstractTest {
                 .put("does-not-exists")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
-        // update Role
+        // update Slot
         given()
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
-                .put("r11")
+                .put("s11")
                 .then()
                 .statusCode(OK.getStatusCode());
 
-        // update Role with old modificationCount
+        // update Slot with old modificationCount
         var exception = given()
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
-                .put("r11")
+                .put("s11")
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
@@ -298,44 +243,46 @@ class RoleRestControllerTest extends AbstractTest {
                 .isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.OPTIMISTIC_LOCK.name());
         assertThat(exception.getDetail()).isNotNull()
                 .isEqualTo(
-                        "Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect) : [org.tkit.onecx.workspace.domain.models.Role#r11]");
+                        "Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect) : [org.tkit.onecx.workspace.domain.models.Slot#s11]");
 
         // download Role
         dto = given().contentType(APPLICATION_JSON)
                 .when()
-                .get("r11")
+                .get("s11")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(RoleDTO.class);
+                .body().as(SlotDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getDescription()).isEqualTo(requestDto.getDescription());
+        assertThat(dto.getName()).isEqualTo(requestDto.getName());
+        assertThat(dto.getComponents()).isNotNull().hasSize(1);
+        assertThat(dto.getComponents().get(0)).returns("new_c2", from(SlotComponentDTO::getName));
 
     }
 
     @Test
-    void updateRoleWithExistingNameTest() {
+    void updateSlotWithExistingNameTest() {
 
         // download Role
         var d = given().contentType(APPLICATION_JSON)
                 .when()
-                .get("r11")
+                .get("s11")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(RoleDTO.class);
+                .body().as(SlotDTO.class);
 
         var dto = new UpdateRoleRequestDTO();
         dto.setModificationCount(d.getModificationCount());
-        dto.setName("n3");
+        dto.setName("slot2");
         dto.setDescription("description");
 
         var exception = given()
                 .contentType(APPLICATION_JSON)
                 .when()
                 .body(dto)
-                .put("r11")
+                .put("s11")
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
@@ -344,12 +291,12 @@ class RoleRestControllerTest extends AbstractTest {
         assertThat(exception.getErrorCode()).isNotNull().isEqualTo("MERGE_ENTITY_FAILED");
         assertThat(exception.getDetail()).isNotNull()
                 .isEqualTo(
-                        "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_workspace_role_name'  Detail: Key (workspace_guid, name)=(11-111, n3) already exists.]");
+                        "could not execute statement [ERROR: duplicate key value violates unique constraint 'slot_workspace_name'  Detail: Key (name, workspace_guid, tenant_id)=(slot2, 11-111, tenant-100) already exists.]");
         assertThat(exception.getInvalidParams()).isEmpty();
     }
 
     @Test
-    void updateRoleWithoutBodyTest() {
+    void updateSlotWithoutBodyTest() {
 
         var exception = given()
                 .contentType(APPLICATION_JSON)
@@ -363,7 +310,7 @@ class RoleRestControllerTest extends AbstractTest {
         assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isNotNull()
                 .isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name());
-        assertThat(exception.getDetail()).isNotNull().isEqualTo("updateWorkspaceRole.updateRoleRequestDTO: must not be null");
+        assertThat(exception.getDetail()).isNotNull().isEqualTo("updateSlot.updateSlotRequestDTO: must not be null");
         assertThat(exception.getInvalidParams()).isNotNull().hasSize(1);
     }
 }

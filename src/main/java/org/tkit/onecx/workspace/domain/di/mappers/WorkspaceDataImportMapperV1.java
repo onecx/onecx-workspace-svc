@@ -21,6 +21,7 @@ public interface WorkspaceDataImportMapperV1 {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "slots", ignore = true)
     Workspace createWorkspace(WorkspaceImportDTOV1 workspaceDTO);
 
     @AfterMapping
@@ -61,6 +62,7 @@ public interface WorkspaceDataImportMapperV1 {
     Product createWorkspace(ProductDTOV1 productDTO);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "productId", ignore = true)
     Microfrontend createWorkspace(MicrofrontendDTOV1 mfeDTO);
 
     @Mapping(target = "id", ignore = true)

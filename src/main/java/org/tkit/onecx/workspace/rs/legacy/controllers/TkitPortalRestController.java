@@ -85,7 +85,7 @@ public class TkitPortalRestController implements TkitPortalApi {
         }
 
         try {
-            if (menuRegistrationRequestDTO.getMenuItems() == null || menuRegistrationRequestDTO.getMenuItems().isEmpty()) {
+            if (menuRegistrationRequestDTO.getMenuItems().isEmpty()) {
                 throw new ConstraintException("Menu items are empty", ErrorKeys.MENU_ITEMS_EMPTY, null);
             }
 

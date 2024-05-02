@@ -97,7 +97,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
         var status = ImportResponseStatusDTOV1.SKIPPED;
 
-        if (menuSnapshotDTOV1.getMenu().getMenuItems() != null && !menuSnapshotDTOV1.getMenu().getMenuItems().isEmpty()) {
+        if (!menuSnapshotDTOV1.getMenu().getMenuItems().isEmpty()) {
 
             // convert menu dto to menu item object
             List<MenuItem> items = new LinkedList<>();
@@ -138,7 +138,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
                     workspace = mapper.create(dto);
                     workspace.setName(name);
                     dao.create(workspace);
-                    if (dto.getProducts() != null) {
+                    if (!dto.getProducts().isEmpty()) {
                         var products = mapper.create(dto.getProducts(), workspace);
                         productDAO.create(products);
                     }

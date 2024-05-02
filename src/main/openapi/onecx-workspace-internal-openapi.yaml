@@ -163,6 +163,119 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/slots:
+    post:
+      tags:
+        - slotInternal
+      description: Add a new slot to workspace
+      operationId: createSlot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSlotRequest'
+      responses:
+        "201":
+          description: OK
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slot'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/slots/workspace/{id}:
+    get:
+      tags:
+        - slotInternal
+      description: Get slots for workspace
+      operationId: getSlotsForWorkspace
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: Corresponding menu items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceSlots'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /internal/slots/{id}:
+    get:
+      tags:
+        - slotInternal
+      description: Retrieve slot detail info
+      operationId: getSlotById
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slot'
+        "404":
+          description: Not found
+    delete:
+      tags:
+        - slotInternal
+      description: Delete a slot
+      operationId: deleteSlotById
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        "204":
+          description: OK
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+    put:
+      tags:
+        - slotInternal
+      description: Update an existing slot
+      operationId: updateSlot
+      parameters:
+        - $ref: '#/components/parameters/id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSlotRequest'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slot'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Menu item not found
   /internal/menuItems:
     post:
       tags:
@@ -748,6 +861,10 @@ components:
           type: string
         baseUrl:
           type: string
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/Microfrontend'
     RoleSearchCriteria:
       type: object
       properties:
@@ -1270,6 +1387,75 @@ components:
           type: object
           additionalProperties:
             type: string
+    CreateSlotRequest:
+      type: object
+      required:
+        - workspaceId
+        - name
+      properties:
+        workspaceId:
+          type: string
+        name:
+          type: string
+    UpdateSlotRequest:
+      type: object
+      required:
+        - modificationCount
+        - name
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        name:
+          type: string
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlotComponent'
+    Slot:
+      type: object
+      properties:
+        modificationCount:
+          format: int32
+          type: integer
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        id:
+          type: string
+        workspaceId:
+          type: string
+        name:
+          type: string
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlotComponent'
+    SlotComponent:
+      type: object
+      required:
+        - productName
+        - appId
+        - name
+      properties:
+        productName:
+          type: string
+        appId:
+          type: string
+        name:
+          type: string
+    WorkspaceSlots:
+      type: object
+      properties:
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
     CreateMenuItem:
       type: object
       required:

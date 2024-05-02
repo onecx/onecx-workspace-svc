@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
+import org.tkit.onecx.workspace.domain.models.Workspace;
 
 import gen.org.tkit.onecx.workspace.rs.user.model.UserWorkspaceMenuItemDTO;
 import gen.org.tkit.onecx.workspace.rs.user.model.UserWorkspaceMenuStructureDTO;
@@ -21,9 +22,9 @@ public interface UserMenuMapper {
         return new UserWorkspaceMenuStructureDTO().workspaceName(workspaceName).menu(List.of());
     }
 
-    default UserWorkspaceMenuStructureDTO mapTree(String workspaceName, Collection<MenuItem> entities,
+    default UserWorkspaceMenuStructureDTO mapTree(Workspace workspace, Collection<MenuItem> entities,
             Map<String, Set<String>> mapping, Set<String> roles, Set<String> mappingKeys) {
-        UserWorkspaceMenuStructureDTO dto = empty(workspaceName);
+        UserWorkspaceMenuStructureDTO dto = empty(workspace.getName());
         if (entities.isEmpty()) {
             return dto;
         }
@@ -36,7 +37,7 @@ public interface UserMenuMapper {
             items = entities.stream().filter(m -> m.getParentId() == null)
                     .collect(Collectors.toSet());
         }
-        items = filterMenu(items, mapping, roles);
+        items = filterMenu(items, mapping, roles, workspace.getBaseUrl());
         if (items.isEmpty()) {
             return dto;
         }
@@ -44,21 +45,30 @@ public interface UserMenuMapper {
         return dto.menu(items.stream().map(this::mapTreeItem).toList());
     }
 
-    default Set<MenuItem> filterMenu(Set<MenuItem> items, Map<String, Set<String>> mapping, Set<String> roles) {
+    default String updateInternalUrl(String workspaceUrl, String menuItemUrl, Boolean isExternal) {
+        if (Boolean.TRUE.equals(isExternal)) {
+            return menuItemUrl;
+        } else {
+            return workspaceUrl + menuItemUrl;
+        }
+    }
+
+    default Set<MenuItem> filterMenu(Set<MenuItem> items, Map<String, Set<String>> mapping, Set<String> roles,
+            String workspaceUrl) {
         Set<MenuItem> tmp = new HashSet<>(items);
         tmp.forEach(m -> {
             var mr = mapping.get(m.getId());
             if (mr == null || mr.stream().noneMatch(roles::contains)) {
                 items.remove(m);
             } else {
-                filterChildren(m, mapping, roles);
+                filterChildren(m, mapping, roles, workspaceUrl);
             }
         });
 
         return items;
     }
 
-    default void filterChildren(MenuItem menuItem, Map<String, Set<String>> mapping, Set<String> roles) {
+    default void filterChildren(MenuItem menuItem, Map<String, Set<String>> mapping, Set<String> roles, String workspaceUrl) {
         Set<MenuItem> items = new HashSet<>(menuItem.getChildren());
         items.forEach(child -> {
             var mr = mapping.get(child.getId());
@@ -66,10 +76,11 @@ public interface UserMenuMapper {
                 menuItem.getChildren().remove(child);
             } else {
                 if (child.getChildren() != null && !child.getChildren().isEmpty()) {
-                    filterChildren(child, mapping, roles);
+                    filterChildren(child, mapping, roles, workspaceUrl);
+                } else {
+                    child.setUrl(updateInternalUrl(workspaceUrl, child.getUrl(), child.isExternal()));
                 }
             }
         });
     }
-
 }

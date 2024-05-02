@@ -1,0 +1,67 @@
+
+include::onecx-workspace-svc-attributes.adoc[opts=optional]
+
+=== Default properties
+
+.{properties-file}
+[%collapsible%open]
+====
+[source,properties,subs=attributes+]
+----
+quarkus.datasource.db-kind=postgresql
+quarkus.datasource.jdbc.max-size=30
+quarkus.datasource.jdbc.min-size=10
+quarkus.hibernate-orm.jdbc.timezone=UTC
+quarkus.hibernate-orm.log.sql=false
+quarkus.banner.enabled=false
+quarkus.hibernate-orm.database.generation=validate
+quarkus.hibernate-orm.multitenant=DISCRIMINATOR
+quarkus.liquibase.migrate-at-start=true
+quarkus.liquibase.validate-on-migrate=true
+tkit.log.json.enabled=true
+onecx.workspace.token.verified=false
+onecx.workspace.token.claim.path=realm_access/roles
+onecx.workspace.token.issuer.public-key-location.enabled=false
+onecx.workspace.token.issuer.public-key-location.suffix=/protocol/openid-connect/certs
+onecx.workspace.user.menu.mapping.main-menu=PORTAL_MAIN_MENU
+onecx.workspace.user.menu.mapping.user-profile-menu=USER_PROFILE_MENU
+onecx.workspace.user.menu.mapping.footer-menu=PORTAL_FOOTER_MENU
+tkit.dataimport.enabled=false
+tkit.dataimport.configurations.workspace.file=dev-data.import.json
+tkit.dataimport.configurations.workspace.metadata.operation=CLEAN_INSERT
+tkit.dataimport.configurations.workspace.enabled=false
+tkit.dataimport.configurations.workspace.stop-at-error=true
+tkit.legacy.enable-menu-auto-registration=false
+tkit.rs.context.tenant-id.enabled=true
+%prod.quarkus.datasource.jdbc.url=${DB_URL:jdbc:postgresql://postgresdb:5432/onecx-workspace?sslmode=disable}
+%prod.quarkus.datasource.username=${DB_USER:onecx-workspace}
+%prod.quarkus.datasource.password=${DB_PWD:onecx-workspace}
+----
+====
+
+=== Extensions
+
+include::onecx-workspace-svc-extensions.adoc[opts=optional]
+
+=== Container
+
+{docker-registry}[Docker registry]
+
+
+=== Helm
+
+{helm-registry}[Helm registry]
+
+Default values
+
+.{helm-file}
+[source,yaml]
+----
+app:
+  name: svc
+  image:
+    repository: "onecx/onecx-workspace-svc"
+  db:
+    enabled: true
+----
+

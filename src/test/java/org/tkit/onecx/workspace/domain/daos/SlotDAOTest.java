@@ -14,9 +14,9 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-class WorkspaceDAOTest {
+class SlotDAOTest {
     @Inject
-    WorkspaceDAO dao;
+    SlotDAO dao;
 
     @InjectMock
     EntityManager em;
@@ -28,26 +28,16 @@ class WorkspaceDAOTest {
 
     @Test
     void methodExceptionTests() {
-
-        methodExceptionTests(() -> dao.loadByNameProducts(null),
-                WorkspaceDAO.ErrorKeys.ERROR_LOAD_WORKSPACE_PRODUCTS);
-        methodExceptionTests(() -> dao.loadByUrlProductsSlots(null),
-                WorkspaceDAO.ErrorKeys.ERROR_LOAD_WORKSPACE_PRODUCTS_SLOTS);
-        methodExceptionTests(() -> dao.loadById(null),
-                WorkspaceDAO.ErrorKeys.ERROR_LOAD_WORKSPACE);
-        methodExceptionTests(() -> dao.findBySearchCriteria(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_BY_CRITERIA);
         methodExceptionTests(() -> dao.findById(null),
-                WorkspaceDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
-        methodExceptionTests(() -> dao.findByName(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_BY_NAME);
-        methodExceptionTests(() -> dao.findByUrl(null),
-                WorkspaceDAO.ErrorKeys.ERROR_FIND_WORKSPACE_BY_URL);
+                SlotDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
+        methodExceptionTests(() -> dao.loadById(null),
+                SlotDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED);
+        methodExceptionTests(() -> dao.findSlotsByWorkspaceId(null),
+                SlotDAO.ErrorKeys.ERROR_FIND_SLOTS_BY_WORKSPACE_ID);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {
         var exc = Assertions.assertThrows(DAOException.class, fn);
         Assertions.assertEquals(key, exc.key);
     }
-
 }

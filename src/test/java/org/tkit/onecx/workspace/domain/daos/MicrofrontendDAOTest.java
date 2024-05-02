@@ -14,9 +14,9 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-class ProductDAOTest {
+class MicrofrontendDAOTest {
     @Inject
-    ProductDAO dao;
+    MicrofrontendDAO dao;
 
     @InjectMock
     EntityManager em;
@@ -28,14 +28,8 @@ class ProductDAOTest {
 
     @Test
     void methodExceptionTests() {
-        methodExceptionTests(() -> dao.findById(null),
-                ProductDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
-        methodExceptionTests(() -> dao.findByCriteria(null),
-                ProductDAO.ErrorKeys.ERROR_FIND_PRODUCTS_BY_CRITERIA);
-        methodExceptionTests(() -> dao.loadById(null),
-                ProductDAO.ErrorKeys.LOAD_ENTITY_BY_ID_FAILED);
-        methodExceptionTests(() -> dao.deleteProduct(null),
-                ProductDAO.ErrorKeys.ERROR_DELETE_PRODUCT_ID);
+        methodExceptionTests(() -> dao.findByProductNames(null),
+                MicrofrontendDAO.ErrorKeys.ERROR_FIND_BY_PRODUCT_NAMES);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

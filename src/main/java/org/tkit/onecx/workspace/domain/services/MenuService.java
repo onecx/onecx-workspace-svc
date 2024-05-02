@@ -60,7 +60,7 @@ public class MenuService {
         List<Assignment> assignments = new ArrayList<>();
         for (MenuItem menuItem : items) {
             var mr = menuRoles.get(menuItem.getId());
-            if (mr != null) {
+            if (!mr.isEmpty()) {
 
                 for (String roleName : mr) {
                     var role = tmp.get(roleName);
