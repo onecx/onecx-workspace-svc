@@ -34,6 +34,9 @@ public class Workspace extends TraceableEntity {
     @Column(name = "TENANT_ID")
     private String tenantId;
 
+    @Column(name = "PERSIST")
+    private Boolean persist;
+
     @Column(name = "NAME", nullable = false)
     private String name;
 

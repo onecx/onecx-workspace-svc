@@ -11,6 +11,7 @@ import gen.org.tkit.onecx.workspace.di.workspace.v1.model.*;
 @Mapper(uses = OffsetDateTimeMapper.class)
 public interface WorkspaceDataImportMapperV1 {
 
+    @Mapping(target = "persist", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "theme", source = "themeName")
     @Mapping(target = "creationDate", ignore = true)
