@@ -105,6 +105,20 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void deleteInitialWorkspace_should_persist() {
+        given()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-222")
+                .delete("{id}")
+                .then().statusCode(NO_CONTENT.getStatusCode());
+
+        given().contentType(APPLICATION_JSON)
+                .pathParam("id", "11-222")
+                .get("{id}")
+                .then().statusCode(OK.getStatusCode());
+    }
+
+    @Test
     void getWorkspace() {
         var dto = given()
                 .contentType(APPLICATION_JSON)

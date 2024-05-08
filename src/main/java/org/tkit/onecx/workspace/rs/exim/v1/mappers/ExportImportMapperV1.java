@@ -24,6 +24,7 @@ public interface ExportImportMapperV1 {
 
     Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data);
 
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
