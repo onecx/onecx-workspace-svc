@@ -11,7 +11,7 @@ import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface WorkspaceMapper {
 
-    @Mapping(target = "persist", ignore = true)
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
@@ -26,7 +26,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "slots", ignore = true)
     Workspace create(CreateWorkspaceRequestDTO dto);
 
-    @Mapping(target = "persist", ignore = true)
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "products", ignore = true)
     @Mapping(target = "creationDate", ignore = true)

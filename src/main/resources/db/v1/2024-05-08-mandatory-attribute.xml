@@ -6,7 +6,7 @@
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
 <changeSet author="dev (generated)" id="1715166355129-1">
     <addColumn tableName="workspace">
-        <column name="persist" type="bool"/>
+        <column name="mandatory" type="bool"/>
     </addColumn>
 </changeSet>
 </databaseChangeLog>

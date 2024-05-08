@@ -25,7 +25,7 @@ public class WorkspaceService {
         if (workspace == null) {
             return;
         }
-        if (Boolean.TRUE.equals(workspace.getPersist())) {
+        if (Boolean.TRUE.equals(workspace.getMandatory())) {
             return;
         }
         imageDAO.deleteQueryByRefId(workspace.getId());
