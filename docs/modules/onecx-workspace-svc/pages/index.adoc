@@ -4,5 +4,7 @@ include::onecx-workspace-svc-attributes.adoc[opts=optional]
 
 include::docs.adoc[opts=optional]
 
+=== Configuration
+include::onecx-workspace-svc.adoc[opts=optional]
 
 include::onecx-workspace-svc-docs.adoc[opts=optional]
