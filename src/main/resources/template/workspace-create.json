@@ -88,7 +88,7 @@
       "key": "PORTAL_MAIN_MENU",
       "name": "Main Menu",
       "position": 0,
-      "roles": [ "onecx-admin", "onecx-user-test" ],
+      "roles": [ "onecx-admin", "onecx-user" ],
       "children": [
         {
           "key": "CORE_WELCOME",
@@ -105,7 +105,7 @@
       "name": "User Profile Menu",
       "position": 1,
       "badge": "folder",
-      "roles": [ "onecx-admin", "onecx-user-test" ],
+      "roles": [ "onecx-admin", "onecx-user" ],
       "children": [
         {
           "key": "PERSONAL_INFO",
@@ -141,7 +141,7 @@
       "key": "PORTAL_FOOTER_MENU",
       "name": "Footer Menu",
       "position": 3,
-      "roles": [ "onecx-admin", "onecx-user-test" ],
+      "roles": [ "onecx-admin", "onecx-user" ],
       "children": [
         {
           "key": "FOOTER_CONTACT",

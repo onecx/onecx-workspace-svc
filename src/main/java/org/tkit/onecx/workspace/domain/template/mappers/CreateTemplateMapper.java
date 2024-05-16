@@ -23,8 +23,10 @@ public interface CreateTemplateMapper {
         List<Assignment> assignments = new ArrayList<>();
 
         menus.forEach(m -> menuMap.get(m.getId()).forEach(r -> {
-            var tmp = rolesMap.computeIfAbsent(r, s -> createRole(workspace, r));
-            assignments.add(createAssignment(m, tmp));
+            var role = rolesMap.get(r);
+            if (role != null) {
+                assignments.add(createAssignment(m, role));
+            }
         }));
         return assignments;
     }

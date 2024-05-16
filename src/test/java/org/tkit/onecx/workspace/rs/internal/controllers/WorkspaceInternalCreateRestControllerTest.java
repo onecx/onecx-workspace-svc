@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 import io.quarkus.test.junit.QuarkusTest;
-import org.tkit.quarkus.test.WithDBData;
 
 @QuarkusTest
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
