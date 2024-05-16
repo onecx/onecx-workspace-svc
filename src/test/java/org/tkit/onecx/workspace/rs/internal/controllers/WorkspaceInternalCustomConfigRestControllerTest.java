@@ -33,6 +33,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     Config config;
 
     @Test
+    @SuppressWarnings("java:S5976")
     void createWorkspaceMissingResourceTest() {
 
         Mockito.when(templateConfig.resource()).thenReturn("template/missing-file.json");
@@ -42,9 +43,9 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
-                .name("Workspace1")
-                .companyName("Company1")
-                .baseUrl("/work1");
+                .name("Workspace-missing-resource")
+                .companyName("Company-missing-resource")
+                .baseUrl("/work-missing-resource");
 
         given()
                 .when()
@@ -57,6 +58,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     }
 
     @Test
+    @SuppressWarnings("java:S5976")
     void createWorkspaceWrongFileTest() {
 
         Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/missing-file.json");
@@ -66,7 +68,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
-                .name("Workspace1")
+                .name("Workspace-wrong-file")
                 .companyName("Company1")
                 .baseUrl("/work1");
 
@@ -81,6 +83,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     }
 
     @Test
+    @SuppressWarnings("java:S5961")
     void createWorkspaceDisabledTest() {
 
         var tmp = config.unwrap(SmallRyeConfig.class).getConfigMapping(CreateTemplateConfig.class);
@@ -136,7 +139,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
                 .as(RolePageResultDTO.class);
 
         assertThat(rolesResult).isNotNull();
-        assertThat(rolesResult.getTotalElements()).isEqualTo(0);
+        assertThat(rolesResult.getTotalElements()).isZero();
         assertThat(rolesResult.getStream()).isNotNull().isEmpty();
 
         var slotsResponse = given()
@@ -191,6 +194,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     }
 
     @Test
+    @SuppressWarnings("java:S5976")
     void createWorkspaceWrongJsonFormatTest() {
 
         Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/not-valid-workspace-create.json");
@@ -214,6 +218,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     }
 
     @Test
+    @SuppressWarnings("java:S5961")
     void createWorkspaceFileTest() {
 
         Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/workspace-create.json");
@@ -288,7 +293,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(slotsResponse.getSlots()).isNotNull().hasSize(3);
         assertThat(slotsResponse.getSlots().get(0)).isNotNull();
         var slotMap = slotsResponse.getSlots().stream().collect(Collectors.toMap(SlotDTO::getName, x -> x));
-        assertThat(slotMap.keySet()).containsOnly("menu", "headerRight", "horizontalMenu");
+        assertThat(slotMap).containsOnlyKeys("menu", "headerRight", "horizontalMenu");
         assertThat(slotMap.get("menu").getComponents()).isNotNull().hasSize(2);
 
         var productsResponse = given()

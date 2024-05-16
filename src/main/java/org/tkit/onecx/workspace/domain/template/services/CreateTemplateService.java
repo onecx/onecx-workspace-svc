@@ -1,5 +1,6 @@
 package org.tkit.onecx.workspace.domain.template.services;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -56,7 +57,7 @@ public class CreateTemplateService {
             if (config.classPathResource()) {
                 var url = WorkspaceService.class.getClassLoader().getResource(config.resource());
                 if (url == null) {
-                    throw new Exception(
+                    throw new FileNotFoundException(
                             "Workspace template class-path resource does not found. resource: " + config.resource());
                 }
                 try (InputStream in = WorkspaceService.class.getClassLoader()
@@ -66,12 +67,19 @@ public class CreateTemplateService {
             } else {
                 var path = Paths.get(config.resource());
                 if (!Files.exists(path)) {
-                    throw new Exception("Workspace template file does not found. resource: " + config.resource());
+                    throw new FileNotFoundException("Workspace template file does not found. resource: " + config.resource());
                 }
                 return objectMapper.readValue(path.toFile(), WorkspaceCreateTemplateDTO.class);
             }
         } catch (Exception ex) {
-            throw new RuntimeException("Error parsing create workspace template", ex);
+            throw new TemplateException(ex);
+        }
+    }
+
+    public static class TemplateException extends RuntimeException {
+
+        public TemplateException(Throwable ex) {
+            super("Error parsing create workspace template", ex);
         }
     }
 }
