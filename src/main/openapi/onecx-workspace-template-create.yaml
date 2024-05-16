@@ -1,0 +1,122 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-workspace create template
+  version: 1.0.0
+servers:
+  - url: "http://localhost"
+paths:
+  /template/workspace:
+    post:
+      operationId: createTemplateWorkspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceCreate'
+      responses:
+        200:
+          description: ok
+components:
+  schemas:
+    WorkspaceCreate:
+      type: object
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        menuItems:
+          description: Menu Items structure imported with a workspace
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
+    Slot:
+      type: object
+      properties:
+        name:
+          type: string
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/Component'
+    Component:
+      type: object
+      properties:
+        name:
+          type: string
+        productName:
+          type: string
+        appId:
+          type: string
+
+    Role:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    MenuItem:
+      type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        applicationId:
+          type: string
+        badge:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        external:
+          type: boolean
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        roles:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/MenuItem'
+    Product:
+      description: "Workspace registered product"
+      type: object
+      properties:
+        productName:
+          type: string
+        baseUrl:
+          type: string
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/Microfrontend'
+    Microfrontend:
+      description: "Product microfrontend"
+      type: object
+      properties:
+        mfeId:
+          type: string
+        basePath:
+          type: string

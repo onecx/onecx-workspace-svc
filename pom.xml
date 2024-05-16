@@ -227,6 +227,19 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>create-template</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-workspace-template-create.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.workspace.template.create</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.template.create.model</modelPackage>
+                            <modelNameSuffix>TemplateDTO</modelNameSuffix>
+                            <generateApis>false</generateApis>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>di-workspace-v1</id>
                         <goals>
                             <goal>generate</goal>

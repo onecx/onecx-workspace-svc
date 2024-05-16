@@ -20,7 +20,7 @@ public class ClaimService {
     @PostConstruct
     @SuppressWarnings("java:S2696")
     public void init() {
-        claimPath = splitClaimPath(config.token().claimPath());
+        claimPath = splitClaimPath(config.claimPath());
     }
 
     public String[] getClaimPath() {
