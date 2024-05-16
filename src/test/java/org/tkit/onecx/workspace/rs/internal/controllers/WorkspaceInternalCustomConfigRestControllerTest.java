@@ -32,16 +32,6 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     @Inject
     Config config;
 
-    //    @Inject
-    //    Config config;
-    //
-    //    @BeforeEach
-    //    void beforeEach() {
-    //        Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/not-valid-workspace-create.json");
-    //        Mockito.when(templateConfig.classPathResource()).thenReturn(false);
-    //        Mockito.when(templateConfig.enabled()).thenReturn(true);
-    //    }
-
     @Test
     void createWorkspaceMissingResourceTest() {
 
@@ -224,10 +214,10 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void createWorkspaceClassPathTest() {
+    void createWorkspaceFileTest() {
 
-        Mockito.when(templateConfig.resource()).thenReturn("template/workspace-create.json");
-        Mockito.when(templateConfig.classPathResource()).thenReturn(true);
+        Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/workspace-create.json");
+        Mockito.when(templateConfig.classPathResource()).thenReturn(false);
         Mockito.when(templateConfig.enabled()).thenReturn(true);
 
         // create workspace

@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
-import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 import io.quarkus.test.junit.QuarkusTest;
+import org.tkit.quarkus.test.WithDBData;
 
 @QuarkusTest
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
@@ -23,11 +23,10 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
     void createWorkspaceTest() {
 
         // create workspace
-        var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
-        createWorkspaceDTO
-                .name("Workspace1")
-                .companyName("Company1")
-                .baseUrl("/work1");
+        var createWorkspaceDTO = new CreateWorkspaceRequestDTO()
+                .name("Workspace-Create")
+                .companyName("Company-Create")
+                .baseUrl("/work-create");
 
         var responseDto = given()
                 .when()
@@ -52,9 +51,9 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .extract().as(WorkspaceDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getName()).isNotNull().isEqualTo("Workspace1");
-        assertThat(dto.getCompanyName()).isNotNull().isEqualTo("Company1");
-        assertThat(dto.getBaseUrl()).isNotNull().isEqualTo("/work1");
+        assertThat(dto.getName()).isNotNull().isEqualTo(createWorkspaceDTO.getName());
+        assertThat(dto.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
+        assertThat(dto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
         var criteria = new RoleSearchCriteriaDTO();
         criteria.workspaceId(responseDto.getId());
