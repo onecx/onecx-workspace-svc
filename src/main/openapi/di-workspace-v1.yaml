@@ -117,13 +117,6 @@ components:
             type: string
         logoUrl:
           type: string
-    SubjectLink:
-      type: object
-      properties:
-        label:
-          type: string
-        url:
-          type: string
     WorkspaceRole:
       type: object
       properties:
