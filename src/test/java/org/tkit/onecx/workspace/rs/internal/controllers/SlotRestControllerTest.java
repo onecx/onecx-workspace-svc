@@ -63,7 +63,7 @@ class SlotRestControllerTest extends AbstractTest {
                 .body().as(WorkspaceSlotsDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(4).isEqualTo(dto.getSlots().size());
+        assertThat(dto.getSlots().size()).isEqualTo(4);
 
         // create Role without body
         var exception = given()
