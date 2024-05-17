@@ -16,7 +16,7 @@ public class SlotLogParam implements LogParam {
         return List.of(
                 item(10, CreateSlotRequestDTO.class,
                         x -> CreateSlotRequestDTO.class.getSimpleName() + "["
-                                + ((CreateSlotRequestDTO) x).getName() + ","
+                                + ((CreateSlotRequestDTO) x).getSlots().size() + ","
                                 + ((CreateSlotRequestDTO) x).getWorkspaceId() + "]"),
                 item(10, UpdateSlotRequestDTO.class,
                         x -> UpdateSlotRequestDTO.class.getSimpleName() + "[" + ((UpdateSlotRequestDTO) x).getName()

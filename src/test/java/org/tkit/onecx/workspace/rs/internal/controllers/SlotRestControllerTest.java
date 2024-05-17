@@ -1,11 +1,12 @@
 package org.tkit.onecx.workspace.rs.internal.controllers;
 
 import static io.restassured.RestAssured.given;
-import static jakarta.ws.rs.core.HttpHeaders.LOCATION;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
@@ -26,7 +27,7 @@ class SlotRestControllerTest extends AbstractTest {
 
         // create Role
         var requestDTO = new CreateSlotRequestDTO();
-        requestDTO.setName("slot01");
+        requestDTO.setSlots(List.of(new CreateSlotDTO().name("slot01")));
 
         given()
                 .when()
@@ -46,24 +47,23 @@ class SlotRestControllerTest extends AbstractTest {
 
         requestDTO.workspaceId("11-111");
 
-        var uri = given()
+        given()
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
-                .then().statusCode(CREATED.getStatusCode())
-                .extract().header(LOCATION);
+                .then().statusCode(CREATED.getStatusCode());
 
         var dto = given()
                 .contentType(APPLICATION_JSON)
-                .get(uri)
+                .get("/workspace/11-111")
                 .then()
                 .statusCode(OK.getStatusCode())
                 .extract()
-                .body().as(SlotDTO.class);
+                .body().as(WorkspaceSlotsDTO.class);
 
-        assertThat(dto).isNotNull()
-                .returns(requestDTO.getName(), from(SlotDTO::getName));
+        assertThat(dto).isNotNull();
+        assertThat(dto.getSlots()).hasSize(4);
 
         // create Role without body
         var exception = given()
@@ -77,22 +77,18 @@ class SlotRestControllerTest extends AbstractTest {
         assertThat(exception.getErrorCode()).isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.CONSTRAINT_VIOLATIONS.name());
         assertThat(exception.getDetail()).isEqualTo("createSlot.createSlotRequestDTO: must not be null");
 
-        // create Role with existing name
+        // create Slot with existing name, should skip
         requestDTO = new CreateSlotRequestDTO();
         requestDTO.setWorkspaceId("11-111");
-        requestDTO.setName("slot1");
+        requestDTO.setSlots(List.of(new CreateSlotDTO().name("slot1")));
 
-        exception = given().when()
+        given().when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
                 .then()
-                .statusCode(BAD_REQUEST.getStatusCode())
-                .extract().as(ProblemDetailResponseDTO.class);
+                .statusCode(NO_CONTENT.getStatusCode());
 
-        assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
-        assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'slot_workspace_name'  Detail: Key (name, workspace_guid, tenant_id)=(slot1, 11-111, tenant-100) already exists.]");
     }
 
     @Test

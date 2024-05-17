@@ -178,16 +178,12 @@ paths:
       responses:
         "201":
           description: OK
-          headers:
-            Location:
-              required: true
-              schema:
-                type: string
-                format: url
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Slot'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Slot'
         "400":
           description: Bad request
           content:
@@ -1397,6 +1393,14 @@ components:
       properties:
         workspaceId:
           type: string
+        slots:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CreateSlot'
+    CreateSlot:
+      type: object
+      properties:
         name:
           type: string
     UpdateSlotRequest:
