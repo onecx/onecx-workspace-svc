@@ -63,8 +63,8 @@ public class UserMenuInternalController implements UserMenuInternalApi {
         HashSet<String> menuKeys = new HashSet<>();
         if (!userWorkspaceMenuRequestDTO.getMenuKeys().isEmpty()) {
             userWorkspaceMenuRequestDTO.getMenuKeys().forEach(s -> {
-                if (mappingConfig.userConfig().mapping().containsKey(s)) {
-                    menuKeys.add(mappingConfig.userConfig().mapping().get(s));
+                if (mappingConfig.mapping().containsKey(s)) {
+                    menuKeys.add(mappingConfig.mapping().get(s));
                 }
             });
         }
