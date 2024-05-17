@@ -1397,6 +1397,14 @@ components:
       properties:
         workspaceId:
           type: string
+        slots:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CreateSlot'
+    CreateSlot:
+      type: object
+      properties:
         name:
           type: string
     UpdateSlotRequest:
