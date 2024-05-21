@@ -70,7 +70,13 @@ public interface ExportImportMapperV1 {
 
     @Mapping(target = "removeProductsItem", ignore = true)
     @Mapping(target = "removeRolesItem", ignore = true)
+    @Mapping(target = "removeSlotsItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
+
+    @Mapping(target = "removeComponentsItem", ignore = true)
+    EximSlotDTOV1 map(Slot slot);
+
+    EximComponentDTOV1 map(Component component);
 
     @Mapping(target = "removeMicrofrontendsItem", ignore = true)
     EximProductDTOV1 map(Product product);

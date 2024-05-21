@@ -47,6 +47,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .contains(new EximProductDTOV1().productName("onecx-core").baseUrl("/core")
                         .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("menu").basePath("/menu"),
                                 new EximMicrofrontendDTOV1().appId("theme").basePath("/theme"))));
+
+        assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(3);
     }
 
     @Test
