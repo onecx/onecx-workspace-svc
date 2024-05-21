@@ -70,7 +70,13 @@ public interface ExportImportMapperV1 {
 
     @Mapping(target = "removeProductsItem", ignore = true)
     @Mapping(target = "removeRolesItem", ignore = true)
+    @Mapping(target = "removeSlotsItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
+
+    @Mapping(target = "removeComponentsItem", ignore = true)
+    EximSlotDTOV1 map(Slot slot);
+
+    EximComponentDTOV1 map(Component component);
 
     @Mapping(target = "removeMicrofrontendsItem", ignore = true)
     EximProductDTOV1 map(Product product);
@@ -212,6 +218,12 @@ public interface ExportImportMapperV1 {
         return newProducts;
     }
 
+    default List<Slot> createSlots(List<EximSlotDTOV1> slots, Workspace workspace) {
+        List<Slot> newSlots = new ArrayList<>();
+        slots.forEach(dto -> newSlots.add(map(dto, workspace)));
+        return newSlots;
+    }
+
     @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "workspace", source = "workspace")
     @Mapping(target = "tenantId", ignore = true)
@@ -230,4 +242,19 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "productId", ignore = true)
     Microfrontend map(EximMicrofrontendDTOV1 eximMicrofrontendDTOV1);
+
+    @Mapping(target = "workspaceId", ignore = true)
+    @Mapping(target = "workspace", source = "workspace")
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "name", source = "dto.name")
+    Slot map(EximSlotDTOV1 dto, Workspace workspace);
+
 }

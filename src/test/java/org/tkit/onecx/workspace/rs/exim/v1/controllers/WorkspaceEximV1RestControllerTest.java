@@ -47,6 +47,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .contains(new EximProductDTOV1().productName("onecx-core").baseUrl("/core")
                         .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("menu").basePath("/menu"),
                                 new EximMicrofrontendDTOV1().appId("theme").basePath("/theme"))));
+
+        assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(3);
     }
 
     @Test
@@ -83,6 +85,30 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     void importWorkspaceTest() {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
 
+        var slots = new ArrayList<EximSlotDTOV1>();
+        slots.add(new EximSlotDTOV1().name("slot1")
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app1")
+                                .productName("product1")
+                                .name("component1"))
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app1")
+                                .productName("product1")
+                                .name("component2")));
+        slots.add(new EximSlotDTOV1().name("slot2")
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app2")
+                                .productName("product2")
+                                .name("component3"))
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app2")
+                                .productName("product2")
+                                .name("component4")));
+
         var roles = new ArrayList<EximWorkspaceRoleDTOV1>();
         roles.add(new EximWorkspaceRoleDTOV1().name("role1").description("role1"));
         roles.add(new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
@@ -99,7 +125,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .baseUrl("/someurl")
                 .name("testWorkspace")
                 .roles(roles)
-                .products(products);
+                .products(products)
+                .slots(slots);
 
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("testWorkspace", workspace);
@@ -141,6 +168,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(w.getProducts()).isNotNull().isNotEmpty().hasSize(1)
                 .containsExactly(new EximProductDTOV1().productName("product1").baseUrl("/productBase")
                         .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("app1").basePath("/app1"))));
+
+        assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(2);
     }
 
     @Test

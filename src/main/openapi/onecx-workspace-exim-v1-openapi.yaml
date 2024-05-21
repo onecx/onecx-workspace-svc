@@ -181,6 +181,32 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EximProduct'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximSlot'
+    EximSlot:
+      type: object
+      properties:
+        name:
+          type: string
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximComponent'
+    EximComponent:
+      type: object
+      required:
+        - productName
+        - appId
+        - name
+      properties:
+        productName:
+          type: string
+        appId:
+          type: string
+        name:
+          type: string
     EximProduct:
       type: object
       properties:
