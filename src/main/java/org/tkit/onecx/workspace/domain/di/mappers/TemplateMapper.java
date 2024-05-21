@@ -45,7 +45,7 @@ public interface TemplateMapper {
         return assignments;
     }
 
-    @Mapping(target = "mandatory", ignore = true)
+    @Mapping(target = "mandatory", constant = "true")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "theme", source = "themeName")
     @Mapping(target = "creationDate", ignore = true)
