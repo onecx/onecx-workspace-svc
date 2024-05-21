@@ -55,6 +55,9 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     @Inject
     ProductDAO productDAO;
 
+    @Inject
+    SlotDAO slotDAO;
+
     @Override
     public Response exportMenuByWorkspaceName(String name) {
         var workspace = dao.findByName(name);
@@ -134,6 +137,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         request.getWorkspaces().forEach((name, dto) -> {
             try {
                 var workspace = map.get(name);
+
                 if (workspace == null) {
                     workspace = mapper.create(dto);
                     workspace.setName(name);
@@ -141,6 +145,10 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
                     if (!dto.getProducts().isEmpty()) {
                         var products = mapper.create(dto.getProducts(), workspace);
                         productDAO.create(products);
+                    }
+                    if (!dto.getSlots().isEmpty()) {
+                        var slots = mapper.createSlots(dto.getSlots(), workspace);
+                        slotDAO.create(slots);
                     }
                     items.put(name, ImportResponseStatusDTOV1.CREATED);
                 } else {
