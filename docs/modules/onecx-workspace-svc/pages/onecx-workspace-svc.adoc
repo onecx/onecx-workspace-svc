@@ -78,6 +78,40 @@ endif::add-copy-button-to-env-var[]
 |
 
 
+a| [[onecx-workspace-svc_onecx-workspace-template-import-tenants]]`link:#onecx-workspace-svc_onecx-workspace-template-import-tenants[onecx.workspace.template.import.tenants]`
+
+
+[.description]
+--
+Template import tenants
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_IMPORT_TENANTS+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_IMPORT_TENANTS+++`
+endif::add-copy-button-to-env-var[]
+--|list of string 
+|`default`
+
+
+a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]]`link:#onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping[onecx.workspace.template.import.role-mapping]`
+
+
+[.description]
+--
+Role mapping for the template import
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_IMPORT_ROLE_MAPPING+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_IMPORT_ROLE_MAPPING+++`
+endif::add-copy-button-to-env-var[]
+--|`Map<String,String>` 
+|
+
+
 a| [[onecx-workspace-svc_onecx-workspace-token-verified]]`link:#onecx-workspace-svc_onecx-workspace-token-verified[onecx.workspace.token.verified]`
 
 

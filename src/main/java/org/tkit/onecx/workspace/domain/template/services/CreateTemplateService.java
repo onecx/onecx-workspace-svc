@@ -44,7 +44,7 @@ public class CreateTemplateService {
         List<MenuItem> menus = new ArrayList<>();
         var menuMap = mapper.recursiveMappingTreeStructure(dto.getMenuItems(), workspace, null, menus);
 
-        List<Assignment> assignments = mapper.createAssignments(workspace, roles, menus, menuMap);
+        List<Assignment> assignments = mapper.createAssignments(roles, menus, menuMap);
 
         // update role name base on the role mapping configuration.
         roles.forEach(role -> role.setName(config.roleMapping().getOrDefault(role.getName(), role.getName())));

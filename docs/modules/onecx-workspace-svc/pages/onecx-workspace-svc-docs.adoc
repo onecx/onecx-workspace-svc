@@ -27,11 +27,11 @@ onecx.workspace.user.menu.mapping.main-menu=PORTAL_MAIN_MENU
 onecx.workspace.user.menu.mapping.user-profile-menu=USER_PROFILE_MENU
 onecx.workspace.user.menu.mapping.footer-menu=PORTAL_FOOTER_MENU
 tkit.dataimport.enabled=false
-tkit.dataimport.configurations.workspace.file=dev-data.import.json
-tkit.dataimport.configurations.workspace.metadata.operation=CLEAN_INSERT
-tkit.dataimport.configurations.workspace.enabled=false
-tkit.dataimport.configurations.workspace.stop-at-error=true
-quarkus.native.resources.includes=template/workspace-create.json
+tkit.dataimport.configurations.template.file=template/workspace-import.json
+tkit.dataimport.configurations.template.class-path=true
+tkit.dataimport.configurations.template.enabled=false
+tkit.dataimport.configurations.template.stop-at-error=true
+quarkus.native.resources.includes=template/workspace-create.json,template/workspace-import.json
 tkit.legacy.enable-menu-auto-registration=false
 tkit.rs.context.tenant-id.enabled=true
 %prod.quarkus.datasource.jdbc.url=${DB_URL:jdbc:postgresql://postgresdb:5432/onecx-workspace?sslmode=disable}

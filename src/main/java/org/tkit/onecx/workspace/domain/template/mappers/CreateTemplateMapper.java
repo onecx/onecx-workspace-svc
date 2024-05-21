@@ -13,7 +13,7 @@ import gen.org.tkit.onecx.workspace.template.create.model.*;
 @Mapper(uses = OffsetDateTimeMapper.class)
 public interface CreateTemplateMapper {
 
-    default List<Assignment> createAssignments(Workspace workspace, List<Role> roles, List<MenuItem> menus,
+    default List<Assignment> createAssignments(List<Role> roles, List<MenuItem> menus,
             Map<String, Set<String>> menuMap) {
         if (menus == null || menus.isEmpty()) {
             return List.of();
