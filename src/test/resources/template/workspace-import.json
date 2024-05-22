@@ -1,0 +1,177 @@
+{
+  "workspaces": [
+    {
+      "name": "ADMIN",
+      "themeName": "OneCX Theme",
+      "description": "OneCX Admin workspace",
+      "baseUrl": "/admin",
+      "roles": [
+        {
+          "name": "onecx-admin",
+          "description": "OneCX Admin - do all - default tenant"
+        },
+        {
+          "name": "onecx-user",
+          "description": "OneCX Read only - default tenant"
+        }
+      ],
+      "products": [
+        {
+          "productName": "onecx-user-profile",
+          "baseUrl": "/user",
+          "microfrontends": [
+            {
+              "mfeId": "onecx-user-profile-ui",
+              "basePath": "/user"
+            }
+          ]
+        },
+        {
+          "productName": "onecx-workspace",
+          "baseUrl": "/workspace",
+          "microfrontends": [
+            {
+              "mfeId": "onecx-workspace-ui",
+              "basePath": "/workspace"
+            }
+          ]
+        },
+        {
+          "productName": "onecx-shell",
+          "baseUrl": "/onecx-shell",
+          "microfrontends": []
+        },
+        {
+          "productName": "onecx-welcome",
+          "baseUrl": "/welcome",
+          "microfrontends": [
+            {
+              "mfeId": "onecx-welcome-ui",
+              "basePath": "/welcome"
+            }
+          ]
+        }
+      ],
+      "slots": [
+        {
+          "name": "menu",
+          "components": [
+            {
+              "productName": "onecx-workspace",
+              "appId": "onecx-workspace-ui",
+              "name": "./OneCXUserSidebarMenuComponent"
+            },
+            {
+              "productName": "onecx-workspace",
+              "appId": "onecx-workspace-ui",
+              "name": "./OneCXVerticalMainMenuComponent"
+            }
+          ]
+        },
+        {
+          "name": "headerRight",
+          "components": [
+            {
+              "productName": "onecx-help",
+              "appId": "onecx-help-ui",
+              "name": "./OneCXShowHelpComponent"
+            }
+          ]
+        },
+        {
+          "name": "horizontalMenu",
+          "components": [
+            {
+              "productName": "onecx-workspace",
+              "appId": "onecx-workspace-ui",
+              "name": "./OneCXHorizontalMainMenuComponent"
+            }
+          ]
+        }
+      ],
+      "menuItems": [
+        {
+          "key": "PORTAL_MAIN_MENU",
+          "name": "Main Menu",
+          "position": 0,
+          "roles": [ "onecx-admin", "onecx-user" ],
+          "children": [
+            {
+              "key": "CORE_WELCOME",
+              "name": "Welcome Page",
+              "url": "/welcome",
+              "applicationId": "portal-welcome-ui",
+              "position": 0,
+              "badge": "home"
+            }
+          ]
+        },
+        {
+          "key": "USER_PROFILE_MENU",
+          "name": "User Profile Menu",
+          "position": 1,
+          "badge": "folder",
+          "roles": [ "onecx-admin", "onecx-user" ],
+          "children": [
+            {
+              "key": "PERSONAL_INFO",
+              "name": "Personal Info",
+              "url": "/user",
+              "applicationId": "personal-info",
+              "position": 0,
+              "badge": "user",
+              "i18n": {
+                "de": "Meine persönlichen Daten",
+                "en": "My Personal Info"
+              }
+            },
+            {
+              "key": "ACCOUNT_SETTINGS",
+              "name": "Account Settings",
+              "url": "/user/account",
+              "applicationId": "account-settings",
+              "position": 1,
+              "badge": "cog"
+            },
+            {
+              "key": "CHANGE_PASSWORD",
+              "name": "Change Password",
+              "applicationId": "change-password",
+              "position": 2,
+              "badge": "key",
+              "roles": [ "onecx-admin" ]
+            }
+          ]
+        },
+        {
+          "key": "PORTAL_FOOTER_MENU",
+          "name": "Footer Menu",
+          "position": 3,
+          "roles": [ "onecx-admin", "onecx-user" ],
+          "children": [
+            {
+              "key": "FOOTER_CONTACT",
+              "name": "Contact",
+              "url": "/contact",
+              "position": 0,
+              "i18n": {
+                "de": "Kontakt",
+                "en": "Contact"
+              }
+            },
+            {
+              "key": "FOOTER_IMPRINT",
+              "name": "Impressum",
+              "url": "/imprint",
+              "position": 1,
+              "i18n": {
+                "de": "Impressum",
+                "en": "Imprint"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

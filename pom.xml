@@ -240,16 +240,15 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>di-workspace-v1</id>
+                        <id>di-template</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/di-workspace-v1.yaml</inputSpec>
-                            <apiPackage>gen.org.tkit.onecx.workspace.di.workspace.v1</apiPackage>
-                            <modelPackage>gen.org.tkit.onecx.workspace.di.workspace.v1.model</modelPackage>
-                            <modelNameSuffix>DTOV1</modelNameSuffix>
-                            <skipValidateSpec>true</skipValidateSpec>
+                            <inputSpec>src/main/openapi/onecx-workspace-di-template.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.workspace.template.di</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.template.di.model</modelPackage>
+                            <modelNameSuffix>DI</modelNameSuffix>
                             <generateApis>false</generateApis>
                         </configuration>
                     </execution>

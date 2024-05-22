@@ -1,17 +1,51 @@
 package org.tkit.onecx.workspace.domain.di.mappers;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-import org.mapstruct.*;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.tkit.onecx.workspace.domain.models.*;
-import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.workspace.di.workspace.v1.model.*;
+import gen.org.tkit.onecx.workspace.template.di.model.*;
 
-@Mapper(uses = OffsetDateTimeMapper.class)
-public interface WorkspaceDataImportMapperV1 {
+@Mapper
+public interface TemplateMapper {
 
-    @Mapping(target = "mandatory", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "roleId", ignore = true)
+    @Mapping(target = "menuItemId", ignore = true)
+    Assignment createAssignment(MenuItem menuItem, Role role);
+
+    default List<Assignment> createAssignments(List<Role> roles, List<MenuItem> menus,
+            Map<String, Set<String>> menuMap) {
+        if (menus == null || menus.isEmpty()) {
+            return List.of();
+        }
+
+        var rolesMap = roles.stream().collect(Collectors.toMap(Role::getName, x -> x));
+        List<Assignment> assignments = new ArrayList<>();
+
+        menus.forEach(m -> menuMap.get(m.getId()).forEach(r -> {
+            var role = rolesMap.get(r);
+            if (role != null) {
+                assignments.add(createAssignment(m, role));
+            }
+        }));
+        return assignments;
+    }
+
+    @Mapping(target = "mandatory", constant = "true")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "theme", source = "themeName")
     @Mapping(target = "creationDate", ignore = true)
@@ -22,18 +56,22 @@ public interface WorkspaceDataImportMapperV1 {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    @Mapping(target = "slots", ignore = true)
-    Workspace createWorkspace(WorkspaceImportDTOV1 workspaceDTO);
+    Workspace createWorkspace(TemplateWorkspaceDI dto);
 
     @AfterMapping
-    default void afterWorkspace(WorkspaceImportDTOV1 dto, @MappingTarget Workspace workspace) {
+    default void afterWorkspace(TemplateWorkspaceDI dto, @MappingTarget Workspace workspace) {
         if (workspace == null) {
             return;
         }
-        if (workspace.getRoles() == null) {
-            return;
+        if (workspace.getRoles() != null) {
+            workspace.getRoles().forEach(r -> r.setWorkspace(workspace));
         }
-        workspace.getRoles().forEach(r -> r.setWorkspace(workspace));
+        if (workspace.getProducts() != null) {
+            workspace.getProducts().forEach(r -> r.setWorkspace(workspace));
+        }
+        if (workspace.getSlots() != null) {
+            workspace.getSlots().forEach(r -> r.setWorkspace(workspace));
+        }
     }
 
     @Mapping(target = "id", ignore = true)
@@ -47,7 +85,20 @@ public interface WorkspaceDataImportMapperV1 {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
-    Role createRole(WorkspaceRoleDTOV1 dto);
+    Slot createSlot(TemplateSlotDI dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "workspaceId", ignore = true)
+    Role createRole(TemplateRoleDI dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
@@ -60,11 +111,11 @@ public interface WorkspaceDataImportMapperV1 {
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
-    Product createWorkspace(ProductDTOV1 productDTO);
+    Product createWorkspace(TemplateProductDI dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "productId", ignore = true)
-    Microfrontend createWorkspace(MicrofrontendDTOV1 mfeDTO);
+    Microfrontend createWorkspace(TemplateMicrofrontendDI dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
@@ -83,9 +134,9 @@ public interface WorkspaceDataImportMapperV1 {
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "parentId", ignore = true)
-    MenuItem mapMenu(MenuItemStructureDTOV1 menuItemStructureDto);
+    MenuItem createMenu(TemplateMenuItemDI dto);
 
-    default Map<String, Set<String>> recursiveMappingTreeStructure(List<MenuItemStructureDTOV1> items, Workspace workspace,
+    default Map<String, Set<String>> recursiveMappingTreeStructure(List<TemplateMenuItemDI> items, Workspace workspace,
             MenuItem parent,
             List<MenuItem> mappedItems) {
 
@@ -96,9 +147,9 @@ public interface WorkspaceDataImportMapperV1 {
         List<MenuItem> result = new ArrayList<>();
         Map<String, Set<String>> roles = new HashMap<>();
 
-        for (MenuItemStructureDTOV1 item : items) {
+        for (TemplateMenuItemDI item : items) {
             if (item != null) {
-                MenuItem menu = mapMenu(item);
+                MenuItem menu = createMenu(item);
                 menu.setWorkspace(workspace);
                 menu.setParent(parent);
                 result.add(menu);
@@ -130,5 +181,4 @@ public interface WorkspaceDataImportMapperV1 {
             }
         }
     }
-
 }
