@@ -55,9 +55,7 @@ public class TemplateDataImportService implements DataImportService {
 
     private void importWorkspaces(List<String> tenants, List<TemplateWorkspaceDI> dto) {
 
-        if (tenants.isEmpty()) {
-            return;
-        }
+        log.info("Starting import workspaces for tenants: {}", tenants);
         if (dto.isEmpty()) {
             return;
         }

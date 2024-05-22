@@ -30,10 +30,10 @@ class AfterStartDataImportTest extends AbstractTest {
         assertThat(w.getName()).isEqualTo("ADMIN");
         assertThat(w.getTenantId()).isEqualTo("tenant-100");
 
-        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(4);
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2);
         var map = w.getRoles().stream().collect(Collectors.toMap(Role::getName, x -> x));
 
-        assertThat(map).containsOnlyKeys("role1", "role2", "roleA", "roleB");
+        assertThat(map).containsOnlyKeys("onecx-admin", "onecx-user-test");
     }
 
 }
