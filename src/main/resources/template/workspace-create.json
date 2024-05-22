@@ -59,7 +59,7 @@
     },
     {
       "productName": "onecx-workspace",
-      "baseUrl": "/product1",
+      "baseUrl": "/workspace",
       "microfrontends": [
         {
           "mfeId": "onecx-workspace-ui",
