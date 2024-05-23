@@ -10,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tkit.onecx.workspace.domain.di.mappers.TemplateMapper;
 import org.tkit.onecx.workspace.domain.di.models.TemplateConfig;
-import org.tkit.onecx.workspace.domain.models.Assignment;
-import org.tkit.onecx.workspace.domain.models.MenuItem;
-import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.dataimport.DataImport;
 import org.tkit.quarkus.dataimport.DataImportConfig;
 import org.tkit.quarkus.dataimport.DataImportService;
@@ -76,6 +74,8 @@ public class TemplateDataImportService implements DataImportService {
             List<Workspace> workspaces = new ArrayList<>();
             List<MenuItem> menuItems = new ArrayList<>();
             List<Assignment> assignments = new ArrayList<>();
+            List<Product> products = new ArrayList<>();
+            List<Slot> slots = new ArrayList<>();
             for (String name : tmp) {
                 var item = workspaceMap.get(name);
 
@@ -95,10 +95,13 @@ public class TemplateDataImportService implements DataImportService {
                 // update role name base on the role mapping configuration.
                 workspace.getRoles().forEach(
                         role -> role.setName(templateConfig.roleMapping().getOrDefault(role.getName(), role.getName())));
+
+                products.addAll(workspace.getProducts());
+                slots.addAll(workspace.getSlots());
             }
 
             // create data in database for tenantId
-            service.createWorkspaces(tenantId, workspaces, menuItems, assignments);
+            service.createWorkspaces(tenantId, workspaces, menuItems, assignments, products, slots);
         }
     }
 

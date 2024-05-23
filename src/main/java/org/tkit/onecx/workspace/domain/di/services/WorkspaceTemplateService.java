@@ -7,12 +7,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
-import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
-import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
-import org.tkit.onecx.workspace.domain.models.Assignment;
-import org.tkit.onecx.workspace.domain.models.MenuItem;
-import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.onecx.workspace.domain.daos.*;
+import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.context.ApplicationContext;
 import org.tkit.quarkus.context.Context;
 
@@ -30,9 +26,15 @@ public class WorkspaceTemplateService {
     @Inject
     AssignmentDAO assignmentDAO;
 
+    @Inject
+    SlotDAO slotDAO;
+
+    @Inject
+    ProductDAO productDAO;
+
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void createWorkspaces(String tenantId, List<Workspace> workspaces, List<MenuItem> menuItems,
-            List<Assignment> assignments) {
+            List<Assignment> assignments, List<Product> products, List<Slot> slots) {
         try {
             var ctx = Context.builder()
                     .principal(PRINCIPAL)
@@ -41,6 +43,8 @@ public class WorkspaceTemplateService {
             ApplicationContext.start(ctx);
 
             workspaceDAO.create(workspaces);
+            productDAO.create(products);
+            slotDAO.create(slots);
             menuItemDAO.create(menuItems);
             assignmentDAO.create(assignments);
 
