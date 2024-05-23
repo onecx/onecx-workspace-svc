@@ -2,7 +2,7 @@
   "workspaces": [
     {
       "name": "ADMIN",
-      "themeName": "OneCX Theme",
+      "themeName": "OneCX",
       "description": "OneCX Admin workspace",
       "baseUrl": "/admin",
       "roles": [
