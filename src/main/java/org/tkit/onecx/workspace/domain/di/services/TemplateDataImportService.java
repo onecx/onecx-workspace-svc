@@ -89,7 +89,7 @@ public class TemplateDataImportService implements DataImportService {
                         items);
 
                 // create assignments of menus and roles
-                assignments.addAll(mapper.createAssignments(workspace.getRoles(), menuItems, menuRoles));
+                assignments.addAll(mapper.createAssignments(workspace.getRoles(), items, menuRoles));
                 menuItems.addAll(items);
 
                 // update role name base on the role mapping configuration.
