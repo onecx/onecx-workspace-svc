@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
+import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Role;
 import org.tkit.onecx.workspace.domain.models.Workspace;
@@ -20,6 +21,9 @@ class AfterStartDataImportTest extends AbstractTest {
 
     @Inject
     WorkspaceDAO workspaceDAO;
+
+    @Inject
+    AssignmentDAO assignmentDAO;
 
     @Test
     void importDataFromFileTest() {
@@ -38,6 +42,9 @@ class AfterStartDataImportTest extends AbstractTest {
         assertThat(w.getProducts()).isNotNull().isNotEmpty().hasSize(4);
 
         assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(3);
+
+        var assignments = assignmentDAO.findAll().toList();
+        assertThat(assignments).isNotNull().hasSize(7);
     }
 
 }
