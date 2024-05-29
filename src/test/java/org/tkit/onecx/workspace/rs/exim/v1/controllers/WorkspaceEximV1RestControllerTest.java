@@ -49,6 +49,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                                 new EximMicrofrontendDTOV1().appId("theme").basePath("/theme"))));
 
         assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(3);
+
+        assertThat(w.getImages()).isNotNull().isNotEmpty().hasSize(2);
     }
 
     @Test
