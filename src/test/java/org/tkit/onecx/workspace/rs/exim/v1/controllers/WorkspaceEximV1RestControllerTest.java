@@ -766,4 +766,56 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(2);
     }
+
+    @Test
+    void importOperatorNoSlotsNoProductsWorkspaceTest() {
+        WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
+
+        var roles = new ArrayList<EximWorkspaceRoleDTOV1>();
+        roles.add(new EximWorkspaceRoleDTOV1().name("role1").description("role1"));
+        roles.add(new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+
+        EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
+                .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .baseUrl("/someurl")
+                .name("testWorkspace")
+                .roles(roles);
+
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        map.put("new_test_workspace", workspace);
+        snapshot.setWorkspaces(map);
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("operator")
+                .then()
+                .statusCode(OK.getStatusCode());
+
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
+        request.addNamesItem("new_test_workspace");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/export")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
+        var w = dto.getWorkspaces().get("new_test_workspace");
+        assertThat(w).isNotNull();
+        assertThat(w.getName()).isEqualTo("new_test_workspace");
+
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
+                .containsExactly(
+                        new EximWorkspaceRoleDTOV1().name("role1").description("role1"),
+                        new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+        assertThat(w.getProducts()).isNotNull().isEmpty();
+        assertThat(w.getSlots()).isNotNull().isEmpty();
+    }
 }
