@@ -9,8 +9,8 @@
     <WORKSPACE guid="33-111" optlock="0" company_name="Company4" theme="22-222" description="Company4 test" home_page="main_page" name="test04" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company4" postalcode="56-789" street="Kolorowa" streetno="6" tenant_id="tenant-200"/>
     <WORKSPACE guid="33-222" optlock="0" company_name="Company5" theme="22-222" description="Company5 Test" home_page="main_page" name="test05" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company5" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-200"/>
 
-    <IMAGE guid="i1" optlock="0" mime_type="image/x-icon" data_length="3" data="123456667890123456" ref_type="favicon" ref_id="11-111" tenant_id="tenant-100" />
-    <IMAGE guid="i3" optlock="0" mime_type="image/png" data_length="3" data="123456667890123456" ref_type="logo" ref_id="11-111" tenant_id="tenant-100" />
+    <IMAGE guid="i1" optlock="0" mime_type="image/x-icon" data_length="3" data="123456667890123456" ref_type="favicon" ref_id="test01" tenant_id="tenant-100" />
+    <IMAGE guid="i3" optlock="0" mime_type="image/png" data_length="3" data="123456667890123456" ref_type="logo" ref_id="test01" tenant_id="tenant-100" />
 
     <!-- PRODUCT -->
     <PRODUCT guid="1234" optlock="10" workspace_guid="11-111" product_name="onecx-core" base_url="/core" tenant_id="tenant-100"/>

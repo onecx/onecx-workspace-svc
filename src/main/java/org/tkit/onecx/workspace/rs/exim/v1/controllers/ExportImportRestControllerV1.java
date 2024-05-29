@@ -86,8 +86,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         if (data.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
-        var images = imageDAO.findByRefIds(request.getNames());
+        var images = imageDAO.findByRefIds(data.keySet());
         return Response.ok(mapper.create(data, images)).build();
     }
 
