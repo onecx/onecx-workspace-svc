@@ -1,10 +1,15 @@
 package org.tkit.onecx.workspace.domain.services;
 
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.daos.*;
+import org.tkit.onecx.workspace.domain.models.Image;
+import org.tkit.onecx.workspace.domain.models.Product;
+import org.tkit.onecx.workspace.domain.models.Slot;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.domain.template.models.WorkspaceCreateTemplate;
 
@@ -71,4 +76,14 @@ public class WorkspaceService {
 
         return workspace;
     }
+
+    @Transactional
+    public void importWorkspace(List<Workspace> createWorkspaces, List<Image> createImages, List<Slot> createSlots,
+            List<Product> createProducts) {
+        imageDAO.create(createImages);
+        workspaceDAO.create(createWorkspaces);
+        productDAO.create(createProducts);
+        slotDAO.create(createSlots);
+    }
+
 }

@@ -12,17 +12,82 @@ import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ExportImportMapperV1 {
 
+    default List<Image> createImages(String workspaceName, Map<String, ImageDTOV1> images) {
+        if (images == null) {
+            return List.of();
+        }
+        List<Image> result = new ArrayList<>();
+        images.forEach((refType, dto) -> result.add(createImage(workspaceName, refType, dto)));
+        return result;
+    }
+
+    default Image updateImage(Image image, ImageDTOV1 dto) {
+        image.setImageData(dto.getImageData());
+        image.setMimeType(dto.getMimeType());
+        image.setLength(length(dto.getImageData()));
+        return image;
+    }
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "operator", ignore = true)
+    @Mapping(target = "length", source = "dto.imageData", qualifiedByName = "length")
+    Image createImage(String refId, String refType, ImageDTOV1 dto);
+
+    @Named("length")
+    default Integer length(byte[] data) {
+        if (data == null) {
+            return 0;
+        }
+        return data.length;
+    }
+
     ImportMenuResponseDTOV1 create(String id, ImportResponseStatusDTOV1 status);
 
-    default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces) {
+    default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces, List<Image> images) {
+        if (workspaces == null) {
+            return null;
+        }
+        var imagesMap = createImages(images);
+
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         snapshot.setCreated(OffsetDateTime.now());
         snapshot.setId(UUID.randomUUID().toString());
-        snapshot.setWorkspaces(map(workspaces));
+        snapshot.setWorkspaces(map(workspaces, imagesMap));
         return snapshot;
     }
 
-    Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data);
+    default Map<String, Map<String, ImageDTOV1>> createImages(List<Image> images) {
+        if (images == null) {
+            return Map.of();
+        }
+        Map<String, Map<String, ImageDTOV1>> result = new HashMap<>();
+        images.forEach(image -> result.computeIfAbsent(image.getRefId(), k -> new HashMap<>())
+                .put(image.getRefType(), createImage(image)));
+        return result;
+    }
+
+    ImageDTOV1 createImage(Image image);
+
+    default Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data, Map<String, Map<String, ImageDTOV1>> images) {
+        if (data == null) {
+            return Map.of();
+        }
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        data.forEach((name, value) -> {
+            EximWorkspaceDTOV1 dto = map(value);
+            dto.setImages(images.get(name));
+            map.put(name, dto);
+        });
+        return map;
+    }
 
     @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
@@ -72,6 +137,8 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "removeProductsItem", ignore = true)
     @Mapping(target = "removeRolesItem", ignore = true)
     @Mapping(target = "removeSlotsItem", ignore = true)
+    @Mapping(target = "removeImagesItem", ignore = true)
+    @Mapping(target = "images", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
 
     @Mapping(target = "removeComponentsItem", ignore = true)
@@ -258,4 +325,11 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "name", source = "dto.name")
     Slot map(EximSlotDTOV1 dto, Workspace workspace);
 
+    static String imageId(Image image) {
+        return imageId(image.getRefId(), image.getRefType());
+    }
+
+    static String imageId(String refId, String refType) {
+        return refId + "#" + refType;
+    }
 }

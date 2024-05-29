@@ -18,6 +18,7 @@ import org.tkit.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
 import org.tkit.onecx.workspace.domain.daos.*;
 import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.onecx.workspace.domain.services.MenuService;
+import org.tkit.onecx.workspace.domain.services.WorkspaceService;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportExceptionMapperV1;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportMapperV1;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
@@ -50,13 +51,10 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     AssignmentDAO assignmentDAO;
 
     @Inject
-    RoleDAO roleDAO;
+    ImageDAO imageDAO;
 
     @Inject
-    ProductDAO productDAO;
-
-    @Inject
-    SlotDAO slotDAO;
+    WorkspaceService service;
 
     @Override
     public Response exportMenuByWorkspaceName(String name) {
@@ -88,7 +86,9 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         if (data.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(mapper.create(data)).build();
+
+        var images = imageDAO.findByRefIds(request.getNames());
+        return Response.ok(mapper.create(data, images)).build();
     }
 
     @Override
@@ -127,17 +127,19 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
-    @Transactional
     public Response importWorkspaces(WorkspaceSnapshotDTOV1 request) {
         var workspaceNames = request.getWorkspaces().keySet();
 
         var criteria = new WorkspaceSearchCriteria();
         criteria.setNames(workspaceNames);
         var workspaces = dao.findBySearchCriteria(criteria);
-
         var map = workspaces.getStream().collect(Collectors.toMap(Workspace::getName, workspace -> workspace));
 
         Map<String, ImportResponseStatusDTOV1> items = new HashMap<>();
+        List<Workspace> createWorkspaces = new ArrayList<>();
+        List<Slot> createSlots = new ArrayList<>();
+        List<Product> createProducts = new ArrayList<>();
+        List<Image> createImages = new ArrayList<>();
 
         request.getWorkspaces().forEach((name, dto) -> {
             try {
@@ -146,14 +148,15 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
                 if (workspace == null) {
                     workspace = mapper.create(dto);
                     workspace.setName(name);
-                    dao.create(workspace);
+                    createWorkspaces.add(workspace);
+                    createImages.addAll(mapper.createImages(name, dto.getImages()));
                     if (!dto.getProducts().isEmpty()) {
                         var products = mapper.create(dto.getProducts(), workspace);
-                        productDAO.create(products);
+                        createProducts.addAll(products);
                     }
                     if (!dto.getSlots().isEmpty()) {
                         var slots = mapper.createSlots(dto.getSlots(), workspace);
-                        slotDAO.create(slots);
+                        createSlots.addAll(slots);
                     }
                     items.put(name, ImportResponseStatusDTOV1.CREATED);
                 } else {
@@ -163,6 +166,8 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
                 items.put(name, ImportResponseStatusDTOV1.ERROR);
             }
         });
+
+        service.importWorkspace(createWorkspaces, createImages, createSlots, createProducts);
 
         return Response.ok(mapper.create(request, items)).build();
     }

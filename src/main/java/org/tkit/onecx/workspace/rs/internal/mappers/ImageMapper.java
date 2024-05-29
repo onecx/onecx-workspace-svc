@@ -21,6 +21,8 @@ public interface ImageMapper {
     @Mapping(target = "modificationDate", ignore = true)
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     @Mapping(target = "refId", source = "refId")
     @Mapping(target = "refType", source = "refType")
     Image create(String refId, String refType, String mimeType, Integer length);

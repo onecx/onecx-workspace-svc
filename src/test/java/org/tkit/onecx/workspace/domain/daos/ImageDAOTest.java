@@ -30,6 +30,8 @@ class ImageDAOTest {
 
     @Test
     void methodExceptionTests() {
+        methodExceptionTests(() -> dao.findByRefIds(null),
+                ImageDAO.ErrorKeys.ERROR_FIND_REF_IDS);
         methodExceptionTests(() -> dao.deleteQueryByRefId(null),
                 ImageDAO.ErrorKeys.FAILED_TO_DELETE_BY_REF_ID_QUERY);
         methodExceptionTests(() -> dao.findByRefIdAndRefType(null, null),

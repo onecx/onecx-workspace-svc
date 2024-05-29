@@ -9,5 +9,12 @@
         <addColumn tableName="workspace">
             <column name="operator" type="bool"/>
         </addColumn>
+        <addColumn tableName="image">
+            <column name="operator" type="bool"/>
+            <column name="tenant_id" type="VARCHAR(255)"/>
+        </addColumn>
+
+        <addNotNullConstraint tableName="image" columnName="tenant_id" constraintName="image_tenant_id"
+                              defaultNullValue="default"/>
     </changeSet>
 </databaseChangeLog>

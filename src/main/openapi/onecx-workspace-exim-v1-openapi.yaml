@@ -206,6 +206,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EximSlot'
+        images:
+          $ref: '#/components/schemas/Images'
+    Images:
+      type: object
+      nullable: false
+      additionalProperties:
+        $ref: '#/components/schemas/Image'
+    Image:
+      type: object
+      properties:
+        imageData:
+          type: string
+          format: byte
+        mimeType:
+          type: string
     EximSlot:
       type: object
       properties:

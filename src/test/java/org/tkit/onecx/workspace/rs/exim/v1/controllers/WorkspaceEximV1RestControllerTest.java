@@ -122,6 +122,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .microfrontends(microFrontends));
 
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
+                .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .baseUrl("/someurl")
                 .name("testWorkspace")
                 .roles(roles)
@@ -184,6 +186,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .baseUrl("/someurl")
                 .name("testWorkspace")
                 .roles(roles);
+
+        workspace.setImages(null);
 
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("testWorkspace", workspace);
