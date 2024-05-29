@@ -36,6 +36,7 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "slots", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
 
     @Mapping(target = "modificationCount", ignore = true)

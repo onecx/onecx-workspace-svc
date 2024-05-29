@@ -24,6 +24,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "slots", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     Workspace create(CreateWorkspaceRequestDTO dto);
 
     @Mapping(target = "mandatory", ignore = true)
@@ -39,6 +40,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "modificationCount", source = "modificationCount")
     @Mapping(target = "slots", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     void update(UpdateWorkspaceRequestDTO dto, @MappingTarget Workspace workspace);
 
     @Mapping(target = "baseUrl", ignore = true)

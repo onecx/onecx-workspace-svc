@@ -122,6 +122,11 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
     }
 
     @Override
+    public Response importOperatorWorkspaces(WorkspaceSnapshotDTOV1 workspaceSnapshotDTOV1) {
+        return Response.ok().build();
+    }
+
+    @Override
     @Transactional
     public Response importWorkspaces(WorkspaceSnapshotDTOV1 request) {
         var workspaceNames = request.getWorkspaces().keySet();

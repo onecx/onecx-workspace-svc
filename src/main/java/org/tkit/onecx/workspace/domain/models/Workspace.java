@@ -80,4 +80,9 @@ public class Workspace extends TraceableEntity {
     @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
     private List<Slot> slots;
 
+    /**
+     * Flag to identify created by an operator
+     */
+    @Column(name = "OPERATOR")
+    private Boolean operator;
 }
