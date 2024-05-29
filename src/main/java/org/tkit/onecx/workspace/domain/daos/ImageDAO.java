@@ -1,5 +1,8 @@
 package org.tkit.onecx.workspace.domain.daos;
 
+import java.util.Collection;
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -63,7 +66,39 @@ public class ImageDAO extends AbstractDAO<Image> {
         }
     }
 
+    public List<Image> findByRefIds(Collection<String> refIds) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Image.class);
+            var root = cq.from(Image.class);
+            if (refIds != null && !refIds.isEmpty()) {
+                cq.where(root.get(Image_.REF_ID).in(refIds));
+            }
+            return this.getEntityManager().createQuery(cq).getResultList();
+
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_REF_IDS, ex);
+        }
+    }
+
+    @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
+    public void deleteQueryByRefIds(Collection<String> refIds) throws DAOException {
+        try {
+            var cq = deleteQuery();
+            var root = cq.from(Image.class);
+            cq.where(root.get(Image_.REF_ID).in(refIds));
+            getEntityManager().createQuery(cq).executeUpdate();
+            getEntityManager().flush();
+        } catch (Exception e) {
+            throw handleConstraint(e, ErrorKeys.FAILED_TO_DELETE_BY_REF_IDS_QUERY);
+        }
+    }
+
     public enum ErrorKeys {
+
+        FAILED_TO_DELETE_BY_REF_IDS_QUERY,
+
+        ERROR_FIND_REF_IDS,
 
         FAILED_TO_DELETE_BY_REF_ID_QUERY,
 

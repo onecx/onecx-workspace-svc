@@ -1,14 +1,18 @@
 package org.tkit.onecx.workspace.domain.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.daos.*;
+import org.tkit.onecx.workspace.domain.models.Image;
+import org.tkit.onecx.workspace.domain.models.Product;
+import org.tkit.onecx.workspace.domain.models.Slot;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.domain.template.models.WorkspaceCreateTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ApplicationScoped
 public class WorkspaceService {
@@ -36,9 +40,6 @@ public class WorkspaceService {
 
     @Inject
     AssignmentDAO assignmentDAO;
-
-    @Inject
-    ObjectMapper mapper;
 
     @Transactional
     public void deleteWorkspace(String id) {
@@ -71,4 +72,39 @@ public class WorkspaceService {
 
         return workspace;
     }
+
+    @Transactional
+    public void importWorkspace(List<Workspace> createWorkspaces, List<Image> createImages, List<Slot> createSlots,
+            List<Product> createProducts) {
+        imageDAO.create(createImages);
+        workspaceDAO.create(createWorkspaces);
+        productDAO.create(createProducts);
+        slotDAO.create(createSlots);
+    }
+
+    @Transactional
+    public void importOperator(List<Workspace> workspaces, List<Image> images, List<Slot> slots,
+            List<Product> products) {
+        if (workspaces.isEmpty()) {
+            return;
+        }
+        var names = workspaces.stream().map(Workspace::getName).collect(Collectors.toSet());
+
+        // delete existing data
+        var tmp = workspaceDAO.findByNames(names);
+        if (!tmp.isEmpty()) {
+            var workspaceIds = tmp.stream().map(Workspace::getId).collect(Collectors.toSet());
+            assignmentDAO.deleteAllByWorkspaceIds(workspaceIds);
+            menuItemDAO.deleteAllMenuItemsByWorkspaceIds(workspaceIds);
+            imageDAO.deleteQueryByRefIds(names);
+            workspaceDAO.delete(tmp);
+        }
+
+        // create new data
+        workspaceDAO.create(workspaces);
+        imageDAO.create(images);
+        productDAO.create(products);
+        slotDAO.create(slots);
+    }
+
 }

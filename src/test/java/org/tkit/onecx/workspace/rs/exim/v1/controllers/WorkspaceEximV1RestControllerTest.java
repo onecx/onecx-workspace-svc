@@ -122,6 +122,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .microfrontends(microFrontends));
 
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
+                .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .baseUrl("/someurl")
                 .name("testWorkspace")
                 .roles(roles)
@@ -184,6 +186,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .baseUrl("/someurl")
                 .name("testWorkspace")
                 .roles(roles);
+
+        workspace.setImages(null);
 
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("testWorkspace", workspace);
@@ -546,5 +550,272 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(error).isNotNull();
         assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
+    }
+
+    @Test
+    void importOperatorThemesEmptyTest() {
+
+        var request = new WorkspaceSnapshotDTOV1();
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("operator")
+                .then()
+                .statusCode(OK.getStatusCode());
+
+        request.setWorkspaces(null);
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("operator")
+                .then()
+                .statusCode(OK.getStatusCode());
+    }
+
+    @Test
+    void importOperatorWorkspaceNoBodyTest() {
+        var importResponse = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .post("operator")
+                .then()
+                .statusCode(BAD_REQUEST.getStatusCode())
+                .extract().as(EximProblemDetailResponseDTOV1.class);
+
+        assertThat(importResponse).isNotNull();
+        assertThat(importResponse.getErrorCode()).isEqualTo("CONSTRAINT_VIOLATIONS");
+    }
+
+    @Test
+    void importOperatorWorkspaceTest() {
+        WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
+
+        var slots = new ArrayList<EximSlotDTOV1>();
+        slots.add(new EximSlotDTOV1().name("slot1")
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app1")
+                                .productName("product1")
+                                .name("component1"))
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app1")
+                                .productName("product1")
+                                .name("component2")));
+        slots.add(new EximSlotDTOV1().name("slot2")
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app2")
+                                .productName("product2")
+                                .name("component3"))
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app2")
+                                .productName("product2")
+                                .name("component4")));
+
+        var roles = new ArrayList<EximWorkspaceRoleDTOV1>();
+        roles.add(new EximWorkspaceRoleDTOV1().name("role1").description("role1"));
+        roles.add(new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+
+        var products = new ArrayList<EximProductDTOV1>();
+        var microFrontends = new ArrayList<EximMicrofrontendDTOV1>();
+        microFrontends.add(new EximMicrofrontendDTOV1().appId("app1").basePath("/app1"));
+        products.add(new EximProductDTOV1()
+                .productName("product1")
+                .baseUrl("/productBase")
+                .microfrontends(microFrontends));
+
+        EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
+                .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .baseUrl("/someurl")
+                .name("testWorkspace")
+                .roles(roles)
+                .products(products)
+                .slots(slots);
+
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        map.put("test01", workspace);
+        snapshot.setWorkspaces(map);
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("operator")
+                .then()
+                .statusCode(OK.getStatusCode());
+
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
+        request.addNamesItem("test01");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/export")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
+        var w = dto.getWorkspaces().get("test01");
+        assertThat(w).isNotNull();
+        assertThat(w.getName()).isEqualTo("test01");
+
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
+                .containsExactly(
+                        new EximWorkspaceRoleDTOV1().name("role1").description("role1"),
+                        new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+        assertThat(w.getProducts()).isNotNull().isNotEmpty().hasSize(1)
+                .containsExactly(new EximProductDTOV1().productName("product1").baseUrl("/productBase")
+                        .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("app1").basePath("/app1"))));
+
+        assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(2);
+    }
+
+    @Test
+    void importOperatorNewWorkspaceTest() {
+        WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
+
+        var slots = new ArrayList<EximSlotDTOV1>();
+        slots.add(new EximSlotDTOV1().name("slot1")
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app1")
+                                .productName("product1")
+                                .name("component1"))
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app1")
+                                .productName("product1")
+                                .name("component2")));
+        slots.add(new EximSlotDTOV1().name("slot2")
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app2")
+                                .productName("product2")
+                                .name("component3"))
+                .addComponentsItem(
+                        new EximComponentDTOV1()
+                                .appId("app2")
+                                .productName("product2")
+                                .name("component4")));
+
+        var roles = new ArrayList<EximWorkspaceRoleDTOV1>();
+        roles.add(new EximWorkspaceRoleDTOV1().name("role1").description("role1"));
+        roles.add(new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+
+        var products = new ArrayList<EximProductDTOV1>();
+        var microFrontends = new ArrayList<EximMicrofrontendDTOV1>();
+        microFrontends.add(new EximMicrofrontendDTOV1().appId("app1").basePath("/app1"));
+        products.add(new EximProductDTOV1()
+                .productName("product1")
+                .baseUrl("/productBase")
+                .microfrontends(microFrontends));
+
+        EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
+                .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .baseUrl("/someurl")
+                .name("testWorkspace")
+                .roles(roles)
+                .products(products)
+                .slots(slots);
+
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        map.put("new_test_workspace", workspace);
+        snapshot.setWorkspaces(map);
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("operator")
+                .then()
+                .statusCode(OK.getStatusCode());
+
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
+        request.addNamesItem("new_test_workspace");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/export")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
+        var w = dto.getWorkspaces().get("new_test_workspace");
+        assertThat(w).isNotNull();
+        assertThat(w.getName()).isEqualTo("new_test_workspace");
+
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
+                .containsExactly(
+                        new EximWorkspaceRoleDTOV1().name("role1").description("role1"),
+                        new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+        assertThat(w.getProducts()).isNotNull().isNotEmpty().hasSize(1)
+                .containsExactly(new EximProductDTOV1().productName("product1").baseUrl("/productBase")
+                        .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("app1").basePath("/app1"))));
+
+        assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(2);
+    }
+
+    @Test
+    void importOperatorNoSlotsNoProductsWorkspaceTest() {
+        WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
+
+        var roles = new ArrayList<EximWorkspaceRoleDTOV1>();
+        roles.add(new EximWorkspaceRoleDTOV1().name("role1").description("role1"));
+        roles.add(new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+
+        EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
+                .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
+                .baseUrl("/someurl")
+                .name("testWorkspace")
+                .roles(roles);
+
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        map.put("new_test_workspace", workspace);
+        snapshot.setWorkspaces(map);
+
+        given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(snapshot)
+                .post("operator")
+                .then()
+                .statusCode(OK.getStatusCode());
+
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
+        request.addNamesItem("new_test_workspace");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/export")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
+        var w = dto.getWorkspaces().get("new_test_workspace");
+        assertThat(w).isNotNull();
+        assertThat(w.getName()).isEqualTo("new_test_workspace");
+
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
+                .containsExactly(
+                        new EximWorkspaceRoleDTOV1().name("role1").description("role1"),
+                        new EximWorkspaceRoleDTOV1().name("role2").description("role2"));
+        assertThat(w.getProducts()).isNotNull().isEmpty();
+        assertThat(w.getSlots()).isNotNull().isEmpty();
     }
 }

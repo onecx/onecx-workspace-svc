@@ -2,6 +2,7 @@ package org.tkit.onecx.workspace.domain.models;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -31,4 +32,13 @@ public class Image extends TraceableEntity {
     @Column(name = "DATA")
     private byte[] imageData;
 
+    /**
+     * Flag to identify created by an operator
+     */
+    @Column(name = "OPERATOR")
+    private Boolean operator;
+
+    @TenantId
+    @Column(name = "TENANT_ID")
+    private String tenantId;
 }

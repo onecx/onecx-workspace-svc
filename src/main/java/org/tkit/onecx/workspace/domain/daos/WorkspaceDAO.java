@@ -5,6 +5,7 @@ import static org.tkit.quarkus.jpa.models.TraceableEntity_.ID;
 import static org.tkit.quarkus.jpa.utils.QueryCriteriaUtil.addSearchStringPredicate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -173,8 +174,21 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
         }
     }
 
+    public List<Workspace> findByNames(Collection<String> workspaceNames) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(Workspace.class);
+            var root = cq.from(Workspace.class);
+            cq.where(root.get(NAME).in(workspaceNames));
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw handleConstraint(ex, ErrorKeys.ERROR_FIND_WORKSPACE_BY_NAMES);
+        }
+    }
+
     public enum ErrorKeys {
 
+        ERROR_FIND_WORKSPACE_BY_NAMES,
         ERROR_FILTER_WORKSPACE_NAMES,
         ERROR_LOAD_WORKSPACE_PRODUCTS,
         ERROR_LOAD_WORKSPACE_PRODUCTS_SLOTS,

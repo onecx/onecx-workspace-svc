@@ -3,6 +3,7 @@ package org.tkit.onecx.workspace.domain.daos;
 import static org.tkit.onecx.workspace.domain.models.MenuItem.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -59,6 +60,23 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             return getEntityManager().createQuery(cq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID, ex);
+        }
+    }
+
+    /**
+     * This method delete all menu items by workspace id.
+     *
+     * @param ids - workspace ids
+     */
+    @Transactional
+    public void deleteAllMenuItemsByWorkspaceIds(Collection<String> ids) {
+        try {
+            var cq = this.deleteQuery();
+            var root = cq.from(MenuItem.class);
+            cq.where(root.get(MenuItem_.WORKSPACE_ID).in(ids));
+            getEntityManager().createQuery(cq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_IDS, ex);
         }
     }
 
@@ -231,7 +249,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         ERROR_LOAD_MENU_BY_ID_AND_KEY,
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
-
+        ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_IDS,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA,
 
         ERROR_FIND_MENU_ITEMS_BY_CRITERIA,

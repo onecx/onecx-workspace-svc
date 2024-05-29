@@ -44,7 +44,8 @@ class MenuItemDAOTest {
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_MENU_BY_ID_AND_KEY);
         methodExceptionTests(() -> dao.findById(null),
                 MenuItemDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
-
+        methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceIds(null),
+                MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_IDS);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {

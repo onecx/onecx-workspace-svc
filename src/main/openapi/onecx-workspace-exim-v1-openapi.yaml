@@ -54,6 +54,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EximProblemDetailResponse'
+  /exim/v1/workspace/operator:
+    post:
+      tags:
+        - workspaceExportImport
+      description: Import workspaces
+      operationId: importOperatorWorkspaces
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceSnapshot'
+      responses:
+        "200":
+          description: Import successfully workspaces
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EximProblemDetailResponse'
   /exim/v1/workspace/{name}/menu/export:
     get:
       tags:
@@ -185,6 +206,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EximSlot'
+        images:
+          $ref: '#/components/schemas/Images'
+    Images:
+      type: object
+      nullable: false
+      additionalProperties:
+        $ref: '#/components/schemas/Image'
+    Image:
+      type: object
+      properties:
+        imageData:
+          type: string
+          format: byte
+        mimeType:
+          type: string
     EximSlot:
       type: object
       properties:
