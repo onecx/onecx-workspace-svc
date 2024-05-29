@@ -123,6 +123,35 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
     @Override
     public Response importOperatorWorkspaces(WorkspaceSnapshotDTOV1 workspaceSnapshotDTOV1) {
+
+        if (workspaceSnapshotDTOV1.getWorkspaces() == null) {
+            return Response.ok().build();
+        }
+
+        List<Workspace> workspaces = new ArrayList<>();
+        List<Image> images = new ArrayList<>();
+        List<Slot> slots = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
+        workspaceSnapshotDTOV1.getWorkspaces().forEach((name, dto) -> {
+            var workspace = mapper.create(dto);
+            workspace.setName(name);
+            workspace.setOperator(true);
+            workspaces.add(workspace);
+
+            var items = mapper.createImages(name, dto.getImages());
+            items.forEach(x -> x.setOperator(true));
+            images.addAll(items);
+            if (!dto.getProducts().isEmpty()) {
+                products.addAll(mapper.create(dto.getProducts(), workspace));
+            }
+            if (!dto.getSlots().isEmpty()) {
+                slots.addAll(mapper.createSlots(dto.getSlots(), workspace));
+            }
+        });
+
+        // delete and create data
+        service.importOperator(workspaces, images, slots, products);
+
         return Response.ok().build();
     }
 

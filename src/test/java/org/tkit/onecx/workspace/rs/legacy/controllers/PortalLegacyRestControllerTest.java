@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuItemStructureDTO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
