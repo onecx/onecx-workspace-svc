@@ -133,7 +133,7 @@
         {
           "key": "CORE_WELCOME",
           "name": "Welcome Page",
-          "applicationId": "portal-welcome-ui",
+          "applicationId": "onecx-welcome-ui",
           "position": 0,
           "url": "/welcome",
           "badge": "home",
