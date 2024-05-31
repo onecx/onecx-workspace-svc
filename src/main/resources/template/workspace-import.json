@@ -22,7 +22,7 @@
           "microfrontends": [
             {
               "mfeId": "onecx-user-profile-ui",
-              "basePath": "/user"
+              "basePath": "/"
             }
           ]
         },
@@ -32,7 +32,7 @@
           "microfrontends": [
             {
               "mfeId": "onecx-workspace-ui",
-              "basePath": "/workspace"
+              "basePath": "/"
             }
           ]
         },
@@ -47,7 +47,7 @@
           "microfrontends": [
             {
               "mfeId": "onecx-welcome-ui",
-              "basePath": "/welcome"
+              "basePath": "/"
             }
           ]
         }
