@@ -2,6 +2,7 @@ package org.tkit.onecx.workspace.rs.exim.v1.mappers;
 
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.models.*;
@@ -51,7 +52,8 @@ public interface ExportImportMapperV1 {
 
     ImportMenuResponseDTOV1 create(String id, ImportResponseStatusDTOV1 status);
 
-    default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces, List<Image> images) {
+    default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces, List<Image> images, Collection<MenuItem> menus,
+            Map<String, Set<String>> roles) {
         if (workspaces == null) {
             return null;
         }
@@ -60,7 +62,7 @@ public interface ExportImportMapperV1 {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         snapshot.setCreated(OffsetDateTime.now());
         snapshot.setId(UUID.randomUUID().toString());
-        snapshot.setWorkspaces(map(workspaces, imagesMap));
+        snapshot.setWorkspaces(map(workspaces, imagesMap, menus, roles));
         return snapshot;
     }
 
@@ -76,14 +78,21 @@ public interface ExportImportMapperV1 {
 
     ImageDTOV1 createImage(Image image);
 
-    default Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data, Map<String, Map<String, ImageDTOV1>> images) {
+    default Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data, Map<String, Map<String, ImageDTOV1>> images,
+            Collection<MenuItem> menus, Map<String, Set<String>> roles) {
         if (data == null) {
             return Map.of();
         }
+
+        Map<String, List<EximWorkspaceMenuItemDTOV1>> menuMap = new HashMap<>();
+        var parents = menus.stream().filter(m -> m.getParentId() == null).toList();
+        parents.forEach(m -> menuMap.computeIfAbsent(m.getWorkspaceId(), k -> new ArrayList<>()).add(map(m, roles)));
+
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         data.forEach((name, value) -> {
             EximWorkspaceDTOV1 dto = map(value);
             dto.setImages(images.get(name));
+            dto.setMenuItems(menuMap.get(value.getId()));
             map.put(name, dto);
         });
         return map;
@@ -139,6 +148,8 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "removeSlotsItem", ignore = true)
     @Mapping(target = "removeImagesItem", ignore = true)
     @Mapping(target = "images", ignore = true)
+    @Mapping(target = "menuItems", ignore = true)
+    @Mapping(target = "removeMenuItemsItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
 
     @Mapping(target = "removeComponentsItem", ignore = true)
@@ -217,6 +228,37 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "parentId", ignore = true)
     MenuItem map(EximWorkspaceMenuItemDTOV1 eximWorkspaceMenuItemDTOV1);
+
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "roleId", ignore = true)
+    @Mapping(target = "menuItemId", ignore = true)
+    Assignment createAssignment(MenuItem menuItem, Role role);
+
+    default List<Assignment> createAssignments(List<Role> roles, List<MenuItem> menus,
+            Map<String, Set<String>> menuMap) {
+        if (menus == null || menus.isEmpty()) {
+            return List.of();
+        }
+
+        var rolesMap = roles.stream().collect(Collectors.toMap(Role::getName, x -> x));
+        List<Assignment> assignments = new ArrayList<>();
+
+        menus.forEach(m -> menuMap.get(m.getId()).forEach(r -> {
+            var role = rolesMap.get(r);
+            if (role != null) {
+                assignments.add(createAssignment(m, role));
+            }
+        }));
+        return assignments;
+    }
 
     default Map<String, Set<String>> recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace,
             MenuItem parent,

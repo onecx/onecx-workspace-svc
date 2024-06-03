@@ -22,6 +22,7 @@ import org.tkit.onecx.workspace.domain.services.WorkspaceService;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportExceptionMapperV1;
 import org.tkit.onecx.workspace.rs.exim.v1.mappers.ExportImportMapperV1;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
+import org.tkit.quarkus.jpa.models.TraceableEntity;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.exim.v1.WorkspaceExportImportApi;
@@ -81,13 +82,21 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         criteria.setNames(request.getNames());
         var workspaces = dao.findBySearchCriteria(criteria);
 
-        var data = workspaces.getStream().collect(Collectors.toMap(Workspace::getName, workspace -> workspace));
+        var data = workspaces.getStream().collect(toMap(Workspace::getName, workspace -> workspace));
 
         if (data.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         var images = imageDAO.findByRefIds(data.keySet());
-        return Response.ok(mapper.create(data, images)).build();
+
+        var ids = data.values().stream().map(TraceableEntity::getId).collect(toSet());
+        var menus = menuItemDAO.loadAllMenuItemsByWorkspaces(ids);
+
+        var ma = assignmentDAO.findAssignmentMenuForWorkspaces(ids);
+        Map<String, Set<String>> roles = ma.stream()
+                .collect(groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toSet())));
+
+        return Response.ok(mapper.create(data, images, menus, roles)).build();
     }
 
     @Override
@@ -131,6 +140,9 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         List<Image> images = new ArrayList<>();
         List<Slot> slots = new ArrayList<>();
         List<Product> products = new ArrayList<>();
+        List<MenuItem> menuItems = new ArrayList<>();
+        List<Assignment> assignments = new ArrayList<>();
+
         workspaceSnapshotDTOV1.getWorkspaces().forEach((name, dto) -> {
             var workspace = mapper.create(dto);
             workspace.setName(name);
@@ -146,10 +158,21 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
             if (!dto.getSlots().isEmpty()) {
                 slots.addAll(mapper.createSlots(dto.getSlots(), workspace));
             }
+
+            // create workspace menu items
+            if (dto.getMenuItems() != null && !dto.getMenuItems().isEmpty()) {
+                List<MenuItem> mis = new ArrayList<>();
+                Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(dto.getMenuItems(), workspace, null,
+                        mis);
+
+                // create assignments of menus and roles
+                assignments.addAll(mapper.createAssignments(workspace.getRoles(), mis, menuRoles));
+                menuItems.addAll(mis);
+            }
         });
 
         // delete and create data
-        service.importOperator(workspaces, images, slots, products);
+        service.importOperator(workspaces, images, slots, products, menuItems, assignments);
 
         return Response.ok().build();
     }
@@ -168,6 +191,8 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         List<Slot> createSlots = new ArrayList<>();
         List<Product> createProducts = new ArrayList<>();
         List<Image> createImages = new ArrayList<>();
+        List<MenuItem> menuItems = new ArrayList<>();
+        List<Assignment> assignments = new ArrayList<>();
 
         request.getWorkspaces().forEach((name, dto) -> {
             try {
@@ -186,6 +211,18 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
                         var slots = mapper.createSlots(dto.getSlots(), workspace);
                         createSlots.addAll(slots);
                     }
+
+                    // create workspace menu items
+                    if (dto.getMenuItems() != null && !dto.getMenuItems().isEmpty()) {
+                        List<MenuItem> mis = new ArrayList<>();
+                        Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(dto.getMenuItems(), workspace,
+                                null,
+                                mis);
+
+                        // create assignments of menus and roles
+                        assignments.addAll(mapper.createAssignments(workspace.getRoles(), mis, menuRoles));
+                        menuItems.addAll(mis);
+                    }
                     items.put(name, ImportResponseStatusDTOV1.CREATED);
                 } else {
                     items.put(name, ImportResponseStatusDTOV1.SKIPPED);
@@ -195,7 +232,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
             }
         });
 
-        service.importWorkspace(createWorkspaces, createImages, createSlots, createProducts);
+        service.importWorkspace(createWorkspaces, createImages, createSlots, createProducts, menuItems, assignments);
 
         return Response.ok(mapper.create(request, items)).build();
     }

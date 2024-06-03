@@ -30,8 +30,10 @@ class AssignmentDAOTest {
     void methodExceptionTests() {
         methodExceptionTests(() -> dao.deleteAllByWorkspaceIds(null),
                 AssignmentDAO.ErrorKeys.ERROR_DELETE_ITEMS_BY_WORKSPACE_ID);
+        methodExceptionTests(() -> dao.findAssignmentMenuForWorkspaces(null),
+                AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_WORKSPACES);
         methodExceptionTests(() -> dao.findAssignmentMenuForWorkspace(null),
-                AssignmentDAO.ErrorKeys.ERROR_FIND_MENU_ID_FOR_USER);
+                AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_WORKSPACE);
         methodExceptionTests(() -> dao.deleteAllByWorkspaceId(null),
                 AssignmentDAO.ErrorKeys.ERROR_DELETE_ITEMS_BY_WORKSPACE_ID);
         methodExceptionTests(() -> dao.deleteAllByMenuId(null),

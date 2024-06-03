@@ -8,10 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.daos.*;
-import org.tkit.onecx.workspace.domain.models.Image;
-import org.tkit.onecx.workspace.domain.models.Product;
-import org.tkit.onecx.workspace.domain.models.Slot;
-import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.onecx.workspace.domain.template.models.WorkspaceCreateTemplate;
 
 @ApplicationScoped
@@ -75,16 +72,18 @@ public class WorkspaceService {
 
     @Transactional
     public void importWorkspace(List<Workspace> createWorkspaces, List<Image> createImages, List<Slot> createSlots,
-            List<Product> createProducts) {
+            List<Product> createProducts, List<MenuItem> menuItems, List<Assignment> assignments) {
         imageDAO.create(createImages);
         workspaceDAO.create(createWorkspaces);
         productDAO.create(createProducts);
         slotDAO.create(createSlots);
+        menuItemDAO.create(menuItems);
+        assignmentDAO.create(assignments);
     }
 
     @Transactional
     public void importOperator(List<Workspace> workspaces, List<Image> images, List<Slot> slots,
-            List<Product> products) {
+            List<Product> products, List<MenuItem> menuItems, List<Assignment> assignments) {
         if (workspaces.isEmpty()) {
             return;
         }
@@ -105,6 +104,8 @@ public class WorkspaceService {
         imageDAO.create(images);
         productDAO.create(products);
         slotDAO.create(slots);
+        menuItemDAO.create(menuItems);
+        assignmentDAO.create(assignments);
     }
 
 }

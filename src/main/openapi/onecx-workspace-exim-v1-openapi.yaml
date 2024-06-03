@@ -208,6 +208,10 @@ components:
             $ref: '#/components/schemas/EximSlot'
         images:
           $ref: '#/components/schemas/Images'
+        menuItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/EximWorkspaceMenuItem'
     Images:
       type: object
       nullable: false
