@@ -118,6 +118,22 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         }
     }
 
+    public List<MenuItem> loadAllMenuItemsByWorkspaces(Collection<String> workspaceIds) {
+        try {
+            var cb = getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(MenuItem.class);
+            var root = cq.from(MenuItem.class);
+            cq.where(root.get(MenuItem_.WORKSPACE_ID).in(workspaceIds));
+
+            return getEntityManager()
+                    .createQuery(cq)
+                    .setHint(HINT_LOAD_GRAPH, this.getEntityManager().getEntityGraph(MENU_ITEM_WORKSPACE_AND_TRANSLATIONS))
+                    .getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACES, ex);
+        }
+    }
+
     public PageResult<MenuItem> findByCriteria(MenuItemSearchCriteria criteria) {
         try {
             var cb = getEntityManager().getCriteriaBuilder();
@@ -255,7 +271,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         ERROR_FIND_MENU_ITEMS_BY_CRITERIA,
 
         ERROR_LOAD_ALL_CHILDREN,
-
+        ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACES,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID,
     }
 }

@@ -21,6 +21,22 @@ import org.tkit.quarkus.jpa.models.TraceableEntity_;
 @ApplicationScoped
 public class AssignmentDAO extends AbstractDAO<Assignment> {
 
+    public List<AssignmentMenu> findAssignmentMenuForWorkspaces(Collection<String> workspaceIds) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(AssignmentMenu.class);
+            var root = cq.from(Assignment.class);
+
+            cq.select(cb.construct(AssignmentMenu.class, root.get(Assignment_.MENU_ITEM_ID),
+                    root.get(Assignment_.ROLE).get(Role_.NAME)));
+            cq.where(root.get(Assignment_.ROLE).get(Role_.WORKSPACE_ID).in(workspaceIds));
+
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_WORKSPACES, ex);
+        }
+    }
+
     public List<AssignmentMenu> findAssignmentMenuForWorkspace(String workspaceId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
@@ -33,7 +49,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_MENU_ID_FOR_USER, ex);
+            throw new DAOException(ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_WORKSPACE, ex);
         }
     }
 
@@ -132,8 +148,9 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
     public enum ErrorKeys {
 
+        ERROR_FIND_ASSIGNMENT_BY_WORKSPACES,
         ERROR_DELETE_ITEMS_BY_ROLE_ID,
-        ERROR_FIND_MENU_ID_FOR_USER,
+        ERROR_FIND_ASSIGNMENT_BY_WORKSPACE,
 
         ERROR_DELETE_ITEMS_BY_MENU_ID,
 
