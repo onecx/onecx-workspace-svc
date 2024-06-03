@@ -100,10 +100,11 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .extract().as(ProductPageResultDTO.class);
 
         assertThat(productsResponse).isNotNull();
-        assertThat(productsResponse.getStream()).isNotNull().isNotEmpty().hasSize(4);
+        assertThat(productsResponse.getStream()).isNotNull().isNotEmpty().hasSize(8);
 
         var productName = productsResponse.getStream().stream().map(ProductResultDTO::getProductName).toList();
-        assertThat(productName).containsOnly("onecx-user-profile", "onecx-workspace", "onecx-shell", "onecx-welcome");
+        assertThat(productName).containsOnly("onecx-user-profile", "onecx-workspace", "onecx-shell", "onecx-welcome",
+                "onecx-permission", "onecx-tenant", "onecx-theme", "onecx-product-store");
 
         var menuResponse = given()
                 .when()
@@ -115,7 +116,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .extract().as(MenuItemPageResultDTO.class);
 
         assertThat(menuResponse).isNotNull();
-        assertThat(menuResponse.getStream()).isNotNull().isNotEmpty().hasSize(9);
+        assertThat(menuResponse.getStream()).isNotNull().isNotEmpty().hasSize(17);
         var parents = menuResponse.getStream().stream().filter(x -> x.getParentItemId() == null).toList();
         assertThat(parents).isNotNull().isNotEmpty().hasSize(3);
         var parentNames = parents.stream().map(MenuItemResultDTO::getName).toList();
@@ -132,7 +133,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .as(AssignmentPageResultDTO.class);
 
         assertThat(assignmentResponse).isNotNull();
-        assertThat(assignmentResponse.getStream()).isNotNull().isNotEmpty().hasSize(7);
+        assertThat(assignmentResponse.getStream()).isNotNull().isNotEmpty().hasSize(14);
     }
 
 }
