@@ -197,7 +197,8 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     @SuppressWarnings("java:S5976")
     void createWorkspaceWrongJsonFormatTest() {
 
-        Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/not-valid-workspace-create.json");
+        Mockito.when(templateConfig.resource())
+                .thenReturn("./src/test/resources/template/not-valid-workspace-create-test.json");
         Mockito.when(templateConfig.classPathResource()).thenReturn(false);
         Mockito.when(templateConfig.enabled()).thenReturn(true);
 
@@ -221,7 +222,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     @SuppressWarnings("java:S5961")
     void createWorkspaceFileTest() {
 
-        Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/workspace-create.json");
+        Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/workspace-create-test.json");
         Mockito.when(templateConfig.classPathResource()).thenReturn(false);
         Mockito.when(templateConfig.enabled()).thenReturn(true);
 

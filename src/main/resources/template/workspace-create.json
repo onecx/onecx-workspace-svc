@@ -48,12 +48,47 @@
   ],
   "products": [
     {
-      "productName": "onecx-user-profile",
-      "baseUrl": "/user",
+      "productName": "onecx-shell",
+      "baseUrl": "/newShell",
+      "microfrontends": []
+    },
+    {
+      "productName": "onecx-permission",
+      "baseUrl": "/permission",
       "microfrontends": [
         {
-          "mfeId": "onecx-user-profile-ui",
-          "basePath": "/user"
+          "mfeId": "onecx-permission-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-product-store",
+      "baseUrl": "/application",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-product-store-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-tenant",
+      "baseUrl": "/tenant",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-tenant-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-theme",
+      "baseUrl": "/theme",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-theme-ui",
+          "basePath": "/"
         }
       ]
     },
@@ -63,14 +98,9 @@
       "microfrontends": [
         {
           "mfeId": "onecx-workspace-ui",
-          "basePath": "/workspace"
+          "basePath": "/"
         }
       ]
-    },
-    {
-      "productName": "onecx-shell",
-      "baseUrl": "/newShell",
-      "microfrontends": []
     },
     {
       "productName": "onecx-welcome",
@@ -78,7 +108,17 @@
       "microfrontends": [
         {
           "mfeId": "onecx-welcome-ui",
-          "basePath": "/welcome"
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-user-profile",
+      "baseUrl": "/user",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-user-profile-ui",
+          "basePath": "/"
         }
       ]
     }
@@ -88,15 +128,103 @@
       "key": "PORTAL_MAIN_MENU",
       "name": "Main Menu",
       "position": 0,
-      "roles": [ "onecx-admin", "onecx-user" ],
+      "roles": ["onecx-admin", "onecx-user"],
       "children": [
         {
           "key": "CORE_WELCOME",
           "name": "Welcome Page",
-          "url": "/welcome",
-          "applicationId": "portal-welcome-ui",
+          "applicationId": "onecx-welcome-ui",
           "position": 0,
-          "badge": "home"
+          "url": "/welcome",
+          "badge": "home",
+          "i18n": {
+            "de": "Willkommen"
+          }
+        },
+        {
+          "key": "CORE_PRODUCT_STORE",
+          "name": "Application Store",
+          "applicationId": "onecx-product-store-ui",
+          "position": 1,
+          "url": "/application",
+          "badge": "cog",
+          "roles": ["onecx-admin"]
+        },
+        {
+          "key": "CORE_WORKSPACE_MENU",
+          "name": "Workspace",
+          "position": 2,
+          "badge": "folder",
+          "roles": ["onecx-admin"],
+          "children": [
+            {
+              "key": "CORE_WORKSPACE",
+              "name": "Workspaces",
+              "applicationId": "onecx-workspace-ui",
+              "position": 0,
+              "url": "/workspace",
+              "badge": "ellipsis-h",
+              "roles": ["onecx-admin"]
+            },
+            {
+              "key": "CORE_THEME",
+              "name": "Themes",
+              "applicationId": "onecx-theme-ui",
+              "position": 1,
+              "url": "/theme",
+              "badge": "palette",
+              "roles": ["onecx-admin"]
+            },
+            {
+              "key": "CORE_TENANT",
+              "name": "Tenants",
+              "applicationId": "onecx-tenant-ui",
+              "position": 1,
+              "url": "/tenant",
+              "badge": "android",
+              "roles": ["onecx-admin"],
+              "i18n": {
+                "de": "Mandanten",
+                "en": "Tenants"
+              }
+            }
+          ]
+        },
+        {
+          "key": "CORE_USER_PERMISSIONS",
+          "name": "User & Roles",
+          "position": 3,
+          "badge": "users",
+          "roles": ["onecx-admin"],
+          "i18n": {
+            "de": "Benutzer & Rollen"
+          },
+          "children": [
+            {
+              "key": "CORE_ROLES_PERMISSIONS",
+              "name": "Roles & Permissions",
+              "applicationId": "onecx-permission-ui",
+              "position": 0,
+              "url": "/permission",
+              "badge": "lock",
+              "roles": ["onecx-admin"],
+              "i18n": {
+                "de": "Rollen & Berechtigungen"
+              }
+            },
+            {
+              "key": "CORE_IAM",
+              "name": "IAM User & Roles",
+              "applicationId": "onecx-iam-ui",
+              "position": 1,
+              "url": "/iam",
+              "badge": "users",
+              "roles": ["onecx-admin"],
+              "i18n": {
+                "de": "IAM Benutzer & Rollen"
+              }
+            }
+          ]
         }
       ]
     },
@@ -105,14 +233,14 @@
       "name": "User Profile Menu",
       "position": 1,
       "badge": "folder",
-      "roles": [ "onecx-admin", "onecx-user" ],
+      "roles": ["onecx-admin", "onecx-user"],
       "children": [
         {
           "key": "PERSONAL_INFO",
           "name": "Personal Info",
-          "url": "/user",
-          "applicationId": "personal-info",
+          "applicationId": "onecx-user-profile-ui",
           "position": 0,
+          "url": "/user",
           "badge": "user",
           "i18n": {
             "de": "Meine persönlichen Daten",
@@ -122,18 +250,21 @@
         {
           "key": "ACCOUNT_SETTINGS",
           "name": "Account Settings",
+          "applicationId": "onecx-user-profile-ui",
           "url": "/user/account",
-          "applicationId": "account-settings",
           "position": 1,
           "badge": "cog"
         },
         {
           "key": "CHANGE_PASSWORD",
           "name": "Change Password",
-          "applicationId": "change-password",
+          "applicationId": "onecx-user-profile-ui",
+          "url": "/user/change-password",
           "position": 2,
           "badge": "key",
-          "roles": [ "onecx-admin" ]
+          "i18n": {
+            "de": "Passwort ändern"
+          }
         }
       ]
     },
@@ -141,7 +272,7 @@
       "key": "PORTAL_FOOTER_MENU",
       "name": "Footer Menu",
       "position": 3,
-      "roles": [ "onecx-admin", "onecx-user" ],
+      "roles": ["onecx-admin", "onecx-user"],
       "children": [
         {
           "key": "FOOTER_CONTACT",
