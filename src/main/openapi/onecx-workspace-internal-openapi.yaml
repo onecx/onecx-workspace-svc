@@ -1149,6 +1149,8 @@ components:
           $ref: '#/components/schemas/WorkspaceAddress'
         mandatory:
           type: boolean
+        operator:
+          type: boolean
     WorkspaceAbstract:
       required:
         - name
