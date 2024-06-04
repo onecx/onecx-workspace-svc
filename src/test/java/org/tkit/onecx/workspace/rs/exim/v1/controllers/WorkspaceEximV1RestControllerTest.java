@@ -55,6 +55,39 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     }
 
     @Test
+    void exportWorkspaceNoMenuTest() {
+        ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1()
+                .includeMenus(false)
+                .addNamesItem("test01").addNamesItem("test02").addNamesItem("does-not-exists");
+        var dto = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/export")
+                .then().log().all()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceSnapshotDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getWorkspaces()).isNotNull().hasSize(2);
+        var w = dto.getWorkspaces().get("test01");
+        assertThat(w).isNotNull();
+        assertThat(w.getName()).isEqualTo("test01");
+
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(3)
+                .contains(new EximWorkspaceRoleDTOV1().name("role-1-2").description("d1"));
+        assertThat(w.getProducts()).isNotNull().isNotEmpty().hasSize(2)
+                .contains(new EximProductDTOV1().productName("onecx-core").baseUrl("/core")
+                        .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("menu").basePath("/menu"),
+                                new EximMicrofrontendDTOV1().appId("theme").basePath("/theme"))));
+
+        assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(3);
+
+        assertThat(w.getImages()).isNotNull().isNotEmpty().hasSize(2);
+        assertThat(w.getMenuItems()).isNull();
+    }
+
+    @Test
     void exportAllWorkspaceTest() {
         var dto = given()
                 .when()

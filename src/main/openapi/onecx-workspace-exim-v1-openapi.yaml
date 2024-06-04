@@ -351,12 +351,17 @@ components:
       type: string
     ExportWorkspacesRequest:
       type: object
+      required:
+        - includeMenus
       properties:
         names:
           type: array
           uniqueItems: true
           items:
             type: string
+        includeMenus:
+          type: boolean
+          default: true
     EximProblemDetailResponse:
       type: object
       properties:
