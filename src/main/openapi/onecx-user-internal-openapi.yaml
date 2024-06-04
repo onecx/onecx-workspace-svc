@@ -83,6 +83,8 @@ components:
           type: string
         external:
           type: boolean
+        disabled:
+          type: boolean
         i18n:
           type: object
           additionalProperties:
