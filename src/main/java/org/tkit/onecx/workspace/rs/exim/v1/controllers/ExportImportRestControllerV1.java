@@ -89,13 +89,16 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         }
         var images = imageDAO.findByRefIds(data.keySet());
 
-        var ids = data.values().stream().map(TraceableEntity::getId).collect(toSet());
-        var menus = menuItemDAO.loadAllMenuItemsByWorkspaces(ids);
+        Collection<MenuItem> menus = List.of();
+        Map<String, Set<String>> roles = Map.of();
+        if (request.getIncludeMenus()) {
+            var ids = data.values().stream().map(TraceableEntity::getId).collect(toSet());
+            menus = menuItemDAO.loadAllMenuItemsByWorkspaces(ids);
 
-        var ma = assignmentDAO.findAssignmentMenuForWorkspaces(ids);
-        Map<String, Set<String>> roles = ma.stream()
-                .collect(groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toSet())));
-
+            var ma = assignmentDAO.findAssignmentMenuForWorkspaces(ids);
+            roles = ma.stream()
+                    .collect(groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toSet())));
+        }
         return Response.ok(mapper.create(data, images, menus, roles)).build();
     }
 
