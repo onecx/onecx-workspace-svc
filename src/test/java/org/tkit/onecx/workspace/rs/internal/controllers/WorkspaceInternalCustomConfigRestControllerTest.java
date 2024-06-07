@@ -294,8 +294,9 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(slotsResponse.getSlots()).isNotNull().hasSize(3);
         assertThat(slotsResponse.getSlots().get(0)).isNotNull();
         var slotMap = slotsResponse.getSlots().stream().collect(Collectors.toMap(SlotDTO::getName, x -> x));
-        assertThat(slotMap).containsOnlyKeys("menu", "headerRight", "horizontalMenu");
-        assertThat(slotMap.get("menu").getComponents()).isNotNull().hasSize(2);
+        assertThat(slotMap).containsOnlyKeys("onecx-shell-vertical-menu", "onecx-shell-header-right",
+                "onecx-shell-horizontal-menu");
+        assertThat(slotMap.get("onecx-shell-vertical-menu").getComponents()).isNotNull().hasSize(2);
 
         var productsResponse = given()
                 .when()
