@@ -54,7 +54,7 @@
       ],
       "slots": [
         {
-          "name": "menu",
+          "name": "onecx-shell-vertical-menu",
           "components": [
             {
               "productName": "onecx-workspace",
@@ -69,7 +69,7 @@
           ]
         },
         {
-          "name": "headerRight",
+          "name": "onecx-shell-header-right",
           "components": [
             {
               "productName": "onecx-help",
@@ -79,7 +79,7 @@
           ]
         },
         {
-          "name": "horizontalMenu",
+          "name": "onecx-shell-horizontal-menu",
           "components": [
             {
               "productName": "onecx-workspace",
