@@ -88,7 +88,8 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
 
         assertThat(slotsResponse.getSlots().get(0)).isNotNull();
         var slotMap = slotsResponse.getSlots().stream().collect(Collectors.toMap(SlotDTO::getName, x -> x));
-        assertThat(slotMap).containsOnlyKeys("menu", "headerRight", "horizontalMenu");
+        assertThat(slotMap).containsOnlyKeys("onecx-shell-vertical-menu", "onecx-shell-header-right",
+                "onecx-shell-horizontal-menu");
 
         var productsResponse = given()
                 .when()
