@@ -269,7 +269,7 @@ class SlotRestControllerTest extends AbstractTest {
                 .extract()
                 .body().as(SlotDTO.class);
         //remove first component and add it again to the end
-        var firstComponent =  dto.getComponents().get(0);
+        var firstComponent = dto.getComponents().get(0);
         dto.getComponents().remove(0);
         dto.getComponents().add(firstComponent);
 
@@ -280,13 +280,13 @@ class SlotRestControllerTest extends AbstractTest {
 
         // update Slot
         var result = given()
-                    .contentType(APPLICATION_JSON)
-                    .body(requestDto)
-                    .when()
-                    .put("s11")
-                    .then()
-                    .statusCode(OK.getStatusCode())
-                    .extract().as(SlotDTO.class);
+                .contentType(APPLICATION_JSON)
+                .body(requestDto)
+                .when()
+                .put("s11")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(SlotDTO.class);
         Assertions.assertEquals("c2", result.getComponents().get(0).getName());
         Assertions.assertEquals("c3", result.getComponents().get(1).getName());
         Assertions.assertEquals("c1", result.getComponents().get(2).getName());

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.tkit.onecx.workspace.domain.models.Component;
 import org.tkit.onecx.workspace.domain.models.Slot;
 import org.tkit.onecx.workspace.domain.models.Workspace;
@@ -24,7 +23,6 @@ public interface SlotMapper {
     }
 
     List<SlotDTO> map(List<Slot> data);
-
 
     default Slot update(UpdateSlotRequestDTO dto, Slot slot) {
         slot.setModificationCount(dto.getModificationCount());

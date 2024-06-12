@@ -95,8 +95,8 @@ public class SlotInternalRestController implements SlotInternalApi {
         }
         var temp = updateSlotRequestDTO.getComponents();
         updateSlotRequestDTO.setComponents(null);
-        var updated = mapper.update(updateSlotRequestDTO, slot);
-        dao.update(updated);
+        var toUpdate = mapper.update(updateSlotRequestDTO, slot);
+        var updated = dao.update(toUpdate);
         updated.setComponents(mapper.mapComponents(temp));
         slot = dao.update(updated);
         return Response.ok(mapper.map(slot)).build();
