@@ -11,144 +11,144 @@ h| Version
 | tkit-quarkus-data-import
 
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-data-import.html[Link]
-| https://github.com/1000kit/tkit-quarkus/blob/2.23.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-data-import.adoc[Link]
-| 2.23.0
+| https://github.com/1000kit/tkit-quarkus/blob/2.25.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-data-import.adoc[Link]
+| 2.25.0
 
 | tkit-quarkus-jpa
 
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-jpa.html[Link]
-| https://github.com/1000kit/tkit-quarkus/blob/2.23.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-jpa.adoc[Link]
-| 2.23.0
+| https://github.com/1000kit/tkit-quarkus/blob/2.25.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-jpa.adoc[Link]
+| 2.25.0
 
 | tkit-quarkus-log-cdi
 
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-log-cdi.html[Link]
-| https://github.com/1000kit/tkit-quarkus/blob/2.23.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-log-cdi.adoc[Link]
-| 2.23.0
+| https://github.com/1000kit/tkit-quarkus/blob/2.25.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-log-cdi.adoc[Link]
+| 2.25.0
 
 | tkit-quarkus-log-rs
 
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-log-rs.html[Link]
-| https://github.com/1000kit/tkit-quarkus/blob/2.23.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-log-rs.adoc[Link]
-| 2.23.0
+| https://github.com/1000kit/tkit-quarkus/blob/2.25.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-log-rs.adoc[Link]
+| 2.25.0
 
 | tkit-quarkus-log-json
 
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-log-json.html[Link]
-| https://github.com/1000kit/tkit-quarkus/blob/2.23.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-log-json.adoc[Link]
-| 2.23.0
+| https://github.com/1000kit/tkit-quarkus/blob/2.25.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-log-json.adoc[Link]
+| 2.25.0
 
 | tkit-quarkus-rest
 
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-rest.html[Link]
-| https://github.com/1000kit/tkit-quarkus/blob/2.23.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-rest.adoc[Link]
-| 2.23.0
+| https://github.com/1000kit/tkit-quarkus/blob/2.25.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-rest.adoc[Link]
+| 2.25.0
 
 | onecx-tenant
 
 | https://onecx.github.io/docs/onecx-quarkus/current/onecx-quarkus/onecx-tenant.html[Link]
-| https://github.com/onecx/onecx-quarkus/blob/0.18.0/docs/modules/onecx-quarkus/pages/includes/onecx-tenant.adoc[Link]
-| 0.18.0
+| https://github.com/onecx/onecx-quarkus/blob/0.20.0/docs/modules/onecx-quarkus/pages/includes/onecx-tenant.adoc[Link]
+| 0.20.0
 
 | tkit-quarkus-jpa-tenant
 
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-jpa-tenant.html[Link]
-| https://github.com/1000kit/tkit-quarkus/blob/2.23.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-jpa-tenant.adoc[Link]
-| 2.23.0
+| https://github.com/1000kit/tkit-quarkus/blob/2.25.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-jpa-tenant.adoc[Link]
+| 2.25.0
 
 | tkit-quarkus-rest-context
 
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-rest-context.html[Link]
-| https://github.com/1000kit/tkit-quarkus/blob/2.23.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-rest-context.adoc[Link]
-| 2.23.0
+| https://github.com/1000kit/tkit-quarkus/blob/2.25.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-rest-context.adoc[Link]
+| 2.25.0
 
 | quarkus-oidc
 
 | https://quarkus.io/guides/security-oidc-bearer-token-authentication-tutorial[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-oidc.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-arc
 
 | https://quarkus.io/guides/cdi-reference[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-arc.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-liquibase
 
 | https://quarkus.io/guides/liquibase[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-liquibase.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-smallrye-health
 
 | https://quarkus.io/guides/smallrye-health[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-smallrye-health.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-micrometer-registry-prometheus
 
 | https://quarkus.io/guides/telemetry-micrometer[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-micrometer-registry-prometheus.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-hibernate-orm
 
 | https://quarkus.io/guides/hibernate-orm[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-hibernate-orm.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-rest
 
 | https://quarkus.io/guides/rest[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-rest.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-rest-jackson
 
 | https://quarkus.io/guides/rest-json[Link]
 | 
-| 3.9.4
+| 3.11.1
 
 | quarkus-jdbc-postgresql
 
 | https://quarkus.io/guides/datasource[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-jdbc-postgresql.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-smallrye-openapi
 
 | https://quarkus.io/guides/openapi-swaggerui[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-smallrye-openapi.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-hibernate-validator
 
 | https://quarkus.io/guides/validation[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-hibernate-validator.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | quarkus-opentelemetry
 
 | https://quarkus.io/guides/opentelemetry[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-opentelemetry.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 | onecx-core
 
 | https://onecx.github.io/docs/onecx-quarkus/current/onecx-quarkus/onecx-core.html[Link]
 | 
-| 0.18.0
+| 0.20.0
 
 | quarkus-container-image-docker
 
 | https://quarkus.io/guides/container-image[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-container-image-docker.adoc[Link]
-| 3.9.4
+| 3.11.1
 
 
 
-|===us-container-image-docker.adoc[Link]
+|===image-docker.adoc[Link]
 | 3.9.3
 
 

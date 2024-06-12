@@ -6,6 +6,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.tkit.onecx.workspace.domain.models.Component;
 import org.tkit.onecx.workspace.domain.models.Slot;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -34,7 +35,10 @@ public interface SlotMapper {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
+    @Mapping(target = "components", ignore = true)
     void update(UpdateSlotRequestDTO dto, @MappingTarget Slot slot);
+
+    List<Component> mapComponents(List<SlotComponentDTO> components);
 
     default List<Slot> createList(CreateSlotRequestDTO createSlotRequestDTO, Workspace workspace) {
         List<Slot> slots = new ArrayList<>();

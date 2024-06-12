@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.from;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.test.AbstractTest;
@@ -254,6 +255,41 @@ class SlotRestControllerTest extends AbstractTest {
         assertThat(dto.getName()).isEqualTo(requestDto.getName());
         assertThat(dto.getComponents()).isNotNull().hasSize(1);
         assertThat(dto.getComponents().get(0)).returns("new_c2", from(SlotComponentDTO::getName));
+
+    }
+
+    @Test
+    void updateSlotComponentOrder() {
+        // get slot
+        var dto = given().contentType(APPLICATION_JSON)
+                .when()
+                .get("s11")
+                .then().statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .body().as(SlotDTO.class);
+        //remove first component and add it again to the end
+        var firstComponent = dto.getComponents().get(0);
+        dto.getComponents().remove(0);
+        dto.getComponents().add(firstComponent);
+
+        var requestDto = new UpdateSlotRequestDTO();
+        requestDto.setName(dto.getName());
+        requestDto.setModificationCount(dto.getModificationCount());
+        requestDto.setComponents(dto.getComponents());
+
+        // update Slot
+        var result = given()
+                .contentType(APPLICATION_JSON)
+                .body(requestDto)
+                .when()
+                .put("s11")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(SlotDTO.class);
+        Assertions.assertEquals("c2", result.getComponents().get(0).getName());
+        Assertions.assertEquals("c3", result.getComponents().get(1).getName());
+        Assertions.assertEquals("c1", result.getComponents().get(2).getName());
 
     }
 

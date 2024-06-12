@@ -61,7 +61,7 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 
-a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]]`link:#onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping[onecx.workspace.template.create.role-mapping]`
+a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]]`link:#onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping[onecx.workspace.template.create.role-mapping."role-mapping"]`
 
 
 [.description]
@@ -69,12 +69,13 @@ a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mappi
 Role mapping for create template.
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING+++`
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++`
 endif::add-copy-button-to-env-var[]
---|`Map<String,String>` 
+--|link:https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]
+ 
 |
 
 
@@ -95,7 +96,7 @@ endif::add-copy-button-to-env-var[]
 |`default`
 
 
-a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]]`link:#onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping[onecx.workspace.template.import.role-mapping]`
+a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]]`link:#onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping[onecx.workspace.template.import.role-mapping."role-mapping"]`
 
 
 [.description]
@@ -103,12 +104,13 @@ a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mappi
 Role mapping for the template import
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_IMPORT_ROLE_MAPPING+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_IMPORT_ROLE_MAPPING__ROLE_MAPPING_+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_IMPORT_ROLE_MAPPING+++`
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_IMPORT_ROLE_MAPPING__ROLE_MAPPING_+++`
 endif::add-copy-button-to-env-var[]
---|`Map<String,String>` 
+--|link:https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]
+ 
 |
 
 
@@ -187,18 +189,19 @@ endif::add-copy-button-to-env-var[]
 |`realm_access/roles`
 
 
-a| [[onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping]]`link:#onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping[onecx.workspace.user.menu.mapping]`
+a| [[onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping]]`link:#onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping[onecx.workspace.user.menu.mapping."mapping"]`
 
 
 [.description]
 --
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_USER_MENU_MAPPING+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_USER_MENU_MAPPING__MAPPING_+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_USER_MENU_MAPPING+++`
+Environment variable: `+++ONECX_WORKSPACE_USER_MENU_MAPPING__MAPPING_+++`
 endif::add-copy-button-to-env-var[]
---|`Map<String,String>` 
+--|link:https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]
+ 
 |
 
 |===
