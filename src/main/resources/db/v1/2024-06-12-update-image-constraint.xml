@@ -1,0 +1,12 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet author="dev (generated)" id="1718199760982-1">
+        <dropUniqueConstraint constraintName="image_constraints" tableName="image"/>
+        <addUniqueConstraint columnNames="ref_id, tenant_id, ref_type" constraintName="image_constraints" tableName="image"/>
+    </changeSet>
+</databaseChangeLog>
