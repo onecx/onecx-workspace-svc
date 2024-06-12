@@ -53,7 +53,7 @@ public class ProductDAO extends AbstractDAO<Product> {
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
-            cq.orderBy(cb.asc(root.get(TraceableEntity_.ID)));
+            cq.orderBy(cb.desc(root.get(TraceableEntity_.CREATION_DATE)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {

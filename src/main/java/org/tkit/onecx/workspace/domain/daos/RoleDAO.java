@@ -55,7 +55,7 @@ public class RoleDAO extends AbstractDAO<Role> {
             if (!predicates.isEmpty()) {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
-
+            cq.orderBy(cb.desc(root.get(TraceableEntity_.CREATION_DATE)));
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_FIND_ROLE_BY_CRITERIA, ex);
