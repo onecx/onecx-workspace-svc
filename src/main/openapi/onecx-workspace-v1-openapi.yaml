@@ -244,6 +244,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     Product:
       type: object

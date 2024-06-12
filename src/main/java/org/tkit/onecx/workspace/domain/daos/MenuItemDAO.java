@@ -148,6 +148,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             if (!predicates.isEmpty()) {
                 cq.where(cb.and(predicates.toArray(new Predicate[] {})));
             }
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {

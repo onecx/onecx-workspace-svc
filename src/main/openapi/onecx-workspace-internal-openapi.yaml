@@ -779,6 +779,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     MenuItemPageResult:
       type: object
@@ -816,6 +817,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     ProductPageResult:
       type: object
@@ -879,6 +881,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     AssignmentSearchCriteria:
       type: object
@@ -896,6 +899,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     AssignmentPageResult:
       type: object
@@ -1028,6 +1032,7 @@ components:
           format: int32
           description: The size of page
           default: 100
+          maximum: 1000
           type: integer
     WorkspacePageResult:
       type: object
