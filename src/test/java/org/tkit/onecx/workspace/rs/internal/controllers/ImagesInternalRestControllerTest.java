@@ -96,7 +96,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'image_constraints'  Detail: Key (ref_id, ref_type)=(productNameUpload, logo) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'image_constraints'  Detail: Key (ref_id, tenant_id, ref_type)=(productNameUpload, tenant-100, logo) already exists.]");
     }
 
     @Test
