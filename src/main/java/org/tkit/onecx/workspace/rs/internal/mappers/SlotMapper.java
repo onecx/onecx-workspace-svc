@@ -6,6 +6,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.tkit.onecx.workspace.domain.models.Component;
 import org.tkit.onecx.workspace.domain.models.Slot;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
@@ -24,17 +25,15 @@ public interface SlotMapper {
 
     List<SlotDTO> map(List<Slot> data);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "creationDate", ignore = true)
-    @Mapping(target = "creationUser", ignore = true)
-    @Mapping(target = "modificationDate", ignore = true)
-    @Mapping(target = "modificationUser", ignore = true)
-    @Mapping(target = "controlTraceabilityManual", ignore = true)
-    @Mapping(target = "persisted", ignore = true)
-    @Mapping(target = "tenantId", ignore = true)
-    @Mapping(target = "workspace", ignore = true)
-    @Mapping(target = "workspaceId", ignore = true)
-    void update(UpdateSlotRequestDTO dto, @MappingTarget Slot slot);
+
+    default Slot update(UpdateSlotRequestDTO dto, Slot slot) {
+        slot.setModificationCount(dto.getModificationCount());
+        slot.setName(dto.getName());
+        slot.setComponents(mapComponents(dto.getComponents()));
+        return slot;
+    }
+
+    List<Component> mapComponents(List<SlotComponentDTO> components);
 
     default List<Slot> createList(CreateSlotRequestDTO createSlotRequestDTO, Workspace workspace) {
         List<Slot> slots = new ArrayList<>();
