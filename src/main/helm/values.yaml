@@ -10,4 +10,4 @@ app:
         enabled: true
         spec:
           kcConfig:
-            defaultClientScopes: [ ocx:tenant:read ]
+            defaultClientScopes: [ ocx-tn:read ]
