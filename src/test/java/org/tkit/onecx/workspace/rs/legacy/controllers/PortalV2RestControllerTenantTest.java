@@ -2,38 +2,40 @@ package org.tkit.onecx.workspace.rs.legacy.controllers;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.Response.Status.*;
+import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuItemStructureDTO;
+import gen.org.tkit.onecx.workspace.rs.legacy.model.*;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
-@TestHTTPEndpoint(PortalLegacyRestController.class)
-class PortalLegacyRestControllerTest extends AbstractTest {
+@TestHTTPEndpoint(PortalV2RestController.class)
+class PortalV2RestControllerTenantTest extends AbstractTest {
 
     @Test
-    void getMenuStructureForNoPortalNameTest() {
+    void getMenuStructureForPortalNameOrg3Test() {
 
         var data = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "LEGAGY_WRONG_PORTAL_ID")
-                .get("{portalName}")
+                .pathParam("portalId", "test01")
+                .header(APM_HEADER_PARAM, createToken("org3"))
+                .get()
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(new TypeRef<List<MenuItemStructureDTO>>() {
+                .body().as(new TypeRef<List<MenuItemDTO>>() {
                 });
 
-        assertThat(data).isNotNull().isEmpty();
+        Assertions.assertThat(data).isNotNull().isEmpty();
     }
 
     @Test
@@ -42,32 +44,30 @@ class PortalLegacyRestControllerTest extends AbstractTest {
 
         var data = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "test01")
-                .get("{portalName}")
+                .pathParam("portalId", "test01")
+                .header(APM_HEADER_PARAM, createToken("org1"))
+                .get()
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(new TypeRef<List<MenuItemStructureDTO>>() {
+                .body().as(new TypeRef<List<MenuItemDTO>>() {
                 });
 
-        assertThat(data).isNotNull().isNotEmpty().hasSize(5);
-    }
+        Assertions.assertThat(data).isNotNull().isNotEmpty().hasSize(5);
 
-    @Test
-    @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
-    void getMenuStructureForPortalNameAndAppTest() {
-
-        var data = given()
+        data = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "test01")
-                .pathParam("applicationId", "test01")
-                .get("{portalName}/{applicationId}")
+                .pathParam("portalId", "test01")
+                .header(APM_HEADER_PARAM, createToken("org1"))
+                .queryParam("interpolate", Boolean.FALSE)
+                .get()
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(new TypeRef<List<MenuItemStructureDTO>>() {
+                .body().as(new TypeRef<List<MenuItemDTO>>() {
                 });
 
-        assertThat(data).isNotNull().isNotEmpty().hasSize(5);
+        Assertions.assertThat(data).isNotNull().isNotEmpty().hasSize(5);
     }
+
 }

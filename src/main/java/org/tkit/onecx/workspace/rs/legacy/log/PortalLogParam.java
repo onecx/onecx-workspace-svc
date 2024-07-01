@@ -9,7 +9,7 @@ import org.tkit.quarkus.log.cdi.LogParam;
 import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuRegistrationRequestDTO;
 
 @ApplicationScoped
-public class TkitPortalLogParam implements LogParam {
+public class PortalLogParam implements LogParam {
 
     @Override
     public List<Item> getClasses() {

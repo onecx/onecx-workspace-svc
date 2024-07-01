@@ -6,7 +6,7 @@ import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 import static jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.notNull;
-import static org.tkit.onecx.workspace.rs.legacy.controllers.PortalLegacyRestControllerExceptionTest.ErrorKey.ERROR_TEST;
+import static org.tkit.onecx.workspace.rs.legacy.controllers.PortalV1RestControllerExceptionTest.ErrorKey.ERROR_TEST;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +21,8 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@TestHTTPEndpoint(TkitPortalRestController.class)
-class TkitPortalRestControllerExceptionTest extends AbstractTest {
+@TestHTTPEndpoint(PortalV2RestController.class)
+class PortalV2RestControllerExceptionTest extends AbstractTest {
 
     @InjectMock
     WorkspaceDAO dao;
@@ -38,21 +38,21 @@ class TkitPortalRestControllerExceptionTest extends AbstractTest {
     void getMenuStructureForNoPortalNameTest() {
         var exception = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "TEST_ERROR")
+                .pathParam("portalId", "TEST_ERROR")
                 .get()
                 .then().statusCode(INTERNAL_SERVER_ERROR.getStatusCode())
                 .extract().as(RestExceptionDTO.class);
 
-        assertThat(exception.getErrorCode()).isEqualTo("UNDEFINED_ERROR_CODE");
+        assertThat(exception.getCode()).isEqualTo("UNDEFINED_ERROR_CODE");
 
         exception = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "TEST_ERROR")
+                .pathParam("portalId", "TEST_ERROR")
                 .get()
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(RestExceptionDTO.class);
 
-        assertThat(exception.getErrorCode()).isEqualTo(ERROR_TEST.name());
+        assertThat(exception.getCode()).isEqualTo(ERROR_TEST.name());
     }
 
 }

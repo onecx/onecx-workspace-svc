@@ -64,5 +64,13 @@ app:
     repository: "onecx/onecx-workspace-svc"
   db:
     enabled: true
+  operator:
+    keycloak:
+      client:
+        enabled: true
+        spec:
+          kcConfig:
+            defaultClientScopes: [ ocx-tn:read ]
+
 ----
 

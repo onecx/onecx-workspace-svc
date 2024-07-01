@@ -8,49 +8,49 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.StringSubstitutor;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
-import org.tkit.onecx.workspace.rs.legacy.mappers.TkitPortalMapper;
+import org.tkit.onecx.workspace.rs.legacy.mappers.PortalExceptionMapper;
+import org.tkit.onecx.workspace.rs.legacy.mappers.PortalMenuItemMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
-import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.org.tkit.onecx.workspace.rs.legacy.TkitPortalApi;
+import gen.org.tkit.onecx.workspace.rs.legacy.V1MenuStructureApi;
 import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuRegistrationRequestDTO;
 import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuRegistrationResponseDTO;
-import gen.org.tkit.onecx.workspace.rs.legacy.model.RestExceptionDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @LogService
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
-public class TkitPortalRestController implements TkitPortalApi {
-
-    @ConfigProperty(name = "tkit.legacy.enable.menu.auto.registration", defaultValue = "false")
-    boolean enableAutoRegistration;
+public class PortalV1RestController implements V1MenuStructureApi {
 
     @Inject
-    TkitLegacyAppConfig appConfig;
-
-    @Inject
-    MenuItemDAO menuItemDAO;
+    MenuItemDAO dao;
 
     @Inject
     WorkspaceDAO workspaceDAO;
 
     @Inject
-    TkitPortalMapper mapper;
+    PortalMenuItemMapper mapper;
+
+    @Inject
+    PortalConfig appConfig;
+
+    @Inject
+    PortalExceptionMapper exceptionMapper;
 
     @Override
-    public Response getMenuStructureForTkitPortalName(String portalName, Boolean interpolate) {
+    public Response getMenuStructureForPortalIdAndApplicationId(String applicationId, String portalId) {
+        return getMenuStructureForPortalId(portalId);
+    }
+
+    @Override
+    public Response getMenuStructureForPortalId(String portalName) {
         var workspace = workspaceDAO.findByName(portalName);
         if (workspace == null) {
             return Response.ok(mapper.mapToEmptyTree()).build();
@@ -58,17 +58,8 @@ public class TkitPortalRestController implements TkitPortalApi {
 
         var criteria = new MenuItemLoadCriteria();
         criteria.setWorkspaceId(workspace.getId());
-        var menuItems = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
-
-        if (interpolate != null && interpolate) {
-            for (MenuItem item : menuItems) {
-                if (StringUtils.isNotBlank(item.getUrl())) {
-                    item.setUrl(StringSubstitutor.replace(item.getUrl(), System.getenv()));
-                }
-            }
-        }
-
-        return Response.ok(mapper.mapToTree(menuItems, workspace.getName())).build();
+        var items = dao.loadAllMenuItemsByCriteria(criteria);
+        return Response.ok(mapper.mapToTree(items, workspace.getName())).build();
     }
 
     @Override
@@ -86,26 +77,27 @@ public class TkitPortalRestController implements TkitPortalApi {
 
         try {
             if (menuRegistrationRequestDTO.getMenuItems().isEmpty()) {
-                throw new ConstraintException("Menu items are empty", ErrorKeys.MENU_ITEMS_EMPTY, null);
+                throw new ConstraintException("Menu items are empty", PortalV2RestController.ErrorKeys.MENU_ITEMS_EMPTY, null);
             }
 
             var workspace = workspaceDAO.findByName(portalName);
             if (workspace == null) {
-                throw new ConstraintException("Workspace not found", ErrorKeys.WORKSPACE_DOES_NOT_EXIST, null);
+                throw new ConstraintException("Workspace not found", PortalV2RestController.ErrorKeys.WORKSPACE_DOES_NOT_EXIST,
+                        null);
             }
 
             // In the old structure just a sub part of the menu was sent, so we need to find the parent menu item if defined
             var parentKey = menuRegistrationRequestDTO.getMenuItems().get(0).getParentKey();
             MenuItem parent = null;
             if (parentKey != null) {
-                parent = menuItemDAO.loadMenuItemByWorkspaceAndKey(portalName, parentKey);
+                parent = dao.loadMenuItemByWorkspaceAndKey(portalName, parentKey);
             }
 
             List<MenuItem> items = new LinkedList<>();
             mapper.recursiveMappingTreeStructure(menuRegistrationRequestDTO.getMenuItems(), workspace, parent, appId, items);
 
-            menuItemDAO.deleteAllMenuItemsByWorkspaceAndAppId(workspace.getId(), appId);
-            menuItemDAO.create(items);
+            dao.deleteAllMenuItemsByWorkspaceAndAppId(workspace.getId(), appId);
+            dao.create(items);
 
             response.setApplied(true);
         } catch (Exception ex) {
@@ -117,21 +109,8 @@ public class TkitPortalRestController implements TkitPortalApi {
     }
 
     @ServerExceptionMapper
-    public RestResponse<RestExceptionDTO> exception(Exception ex) {
-        log.error("Processing tkit portal rest controller error: {}", ex.getMessage());
-
-        if (ex instanceof DAOException de) {
-            return RestResponse.status(Response.Status.BAD_REQUEST,
-                    mapper.exception(de.getMessageKey().name(), ex.getMessage(), de.parameters));
-        }
-        return RestResponse.status(Response.Status.INTERNAL_SERVER_ERROR,
-                mapper.exception("UNDEFINED_ERROR_CODE", ex.getMessage()));
-
-    }
-
-    enum ErrorKeys {
-        WORKSPACE_DOES_NOT_EXIST,
-        MENU_ITEMS_EMPTY,
-
+    public Response exception(Exception ex) {
+        log.error("Processing portal legacy rest controller error: {}", ex.getMessage());
+        return exceptionMapper.create(ex);
     }
 }

@@ -6,18 +6,18 @@ info:
 servers:
   - url: "http://onecx-portal:8080"
 tags:
-  - name: portalLegacy
-  - name: tkitPortal
+  - name: V1MenuStructure
+  - name: V2MenuStructure
 paths:
-  /legacy/menustructure/{portalId}/{applicationId}:
+  /1000kit-portal-server/menustructure/{portalId}/{appId}:
     get:
       tags:
-        - portalLegacy
+        - V1MenuStructure
       description: Fetch the menuItems of the portal and application pair in the tree
         structure
       operationId: getMenuStructureForPortalIdAndApplicationId
       parameters:
-        - name: applicationId
+        - name: appId
           in: path
           required: true
           schema:
@@ -35,7 +35,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MenuItemStructure'
+                  $ref: '#/components/schemas/MenuItem'
         "401":
           description: Not authorized
         "404":
@@ -46,84 +46,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RestException'
-      deprecated: true
-  /legacy/menustructure/{portalName}:
-    get:
-      tags:
-        - portalLegacy
-      description: Fetch the menuItems of the portal in the tree structure
-      operationId: getMenuStructureForPortalName
-      parameters:
-        - name: portalName
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MenuItemStructure'
-        "401":
-          description: Not authorized
-        "404":
-          description: Not found
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RestException'
-      deprecated: true
-  /1000kit-portal-server/menustructure/{portalName}:
-    get:
-      tags:
-        - tkitPortal
-      description: Fetch the menuItems of the portal in the tree structure
-      operationId: getMenuStructureForTkitPortalName
-      parameters:
-        - name: portalName
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: interpolate
-          in: query
-          required: false
-          schema:
-            type: boolean
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/TkitMenuItemStructure'
-        "401":
-          description: Not authorized
-        "404":
-          description: Not found
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RestException'
-      deprecated: true
-  /1000kit-portal-server/menustructure/{portalName}/{appId}:
     post:
       tags:
-        - tkitPortal
+        - V1MenuStructure
       description: Register menu from the application
       operationId: submitMenuRegistrationRequest
       parameters:
-        - name: portalName
+        - name: portalId
           in: path
           required: true
           schema:
@@ -154,12 +83,84 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RestException'
+      deprecated: true
+  /1000kit-portal-server/menustructure/{portalId}:
+    get:
+      tags:
+        - V1MenuStructure
+      description: Fetch the menuItems of the portal in the tree structure
+      operationId: getMenuStructureForPortalId
+      parameters:
+        - name: portalId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItem'
+        "401":
+          description: Not authorized
+        "404":
+          description: Not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestException'
+      deprecated: true
+  /1000kit-portal-server/v2/menustructure/{portalId}:
+    get:
+      tags:
+        - V2MenuStructure
+      description: Fetch the menuItems of the portal in the tree structure
+      operationId: getMenuStructureV2ForPortalId
+      parameters:
+        - name: portalId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: interpolate
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItem'
+        "401":
+          description: Not authorized
+        "404":
+          description: Not found
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestException'
+      deprecated: true
 components:
   schemas:
     RestException:
       type: object
       properties:
-        errorCode:
+        code:
+          type: string
+        codeClass:
           type: string
         message:
           type: string
@@ -171,106 +172,49 @@ components:
           type: object
           additionalProperties:
             type: object
-    TkitMenuItemStructure:
+    MenuItem:
       type: object
       properties:
-        version:
-          format: int32
-          type: integer
-        guid:
-          type: string
         persisted:
           type: boolean
-        key:
+        guid:
           type: string
-        name:
-          type: string
-        url:
-          type: string
-        portalId:
-          type: string
-        applicationId:
-          type: string
-        disabled:
-          type: boolean
-        position:
-          format: int32
-          type: integer
-        badge:
-          type: string
-        portalExit:
-          type: boolean
-        parentItemId:
-          type: string
-        scope:
-          $ref: '#/components/schemas/Scope'
-        i18n:
-          type: object
-          additionalProperties:
-            type: string
-        children:
-          type: array
-          items:
-            $ref: '#/components/schemas/TkitMenuItemStructure'
-        parentKey:
-          type: string
-        permissionObject:
-          type: string
-    MenuItemStructure:
-      type: object
-      properties:
         version:
           format: int32
           type: integer
-        creationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        creationUser:
-          type: string
-        modificationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        modificationUser:
-          type: string
-        id:
-          type: string
         key:
           type: string
         name:
           type: string
-        description:
-          type: string
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
         url:
           type: string
         portalId:
-          type: string
-        applicationId:
           type: string
         disabled:
           type: boolean
         position:
           format: int32
           type: integer
-        badge:
-          type: string
-        portalExit:
-          type: boolean
-        parentItemId:
-          type: string
-        scope:
-          $ref: '#/components/schemas/Scope'
-        i18n:
-          type: object
-          additionalProperties:
-            type: string
         children:
           type: array
           items:
-            $ref: '#/components/schemas/MenuItemStructure'
+            $ref: '#/components/schemas/MenuItem'
+        permissionObject:
+          type: string
+        badge:
+          type: string
+        scope:
+          $ref: '#/components/schemas/Scope'
+        applicationId:
+          type: string
+        portalExit:
+          type: boolean
         parentKey:
           type: string
-    OffsetDateTime:
-      format: date-time
-      type: string
-      example: 2022-03-10T12:15:50-04:00
     Scope:
       enum:
         - PORTAL
@@ -285,7 +229,7 @@ components:
         menuItems:
           type: array
           items:
-            $ref: '#/components/schemas/TkitMenuItemStructure'
+            $ref: '#/components/schemas/MenuItem'
     MenuRegistrationResponse:
       type: object
       properties:
