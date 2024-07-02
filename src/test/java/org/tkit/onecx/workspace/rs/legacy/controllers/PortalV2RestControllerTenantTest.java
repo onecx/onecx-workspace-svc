@@ -3,7 +3,6 @@ package org.tkit.onecx.workspace.rs.legacy.controllers;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.OK;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
