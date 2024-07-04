@@ -204,4 +204,21 @@ endif::add-copy-button-to-env-var[]
  
 |
 
+
+a| [[onecx-workspace-svc_tkit-legacy-enable-menu-auto-registration]]`link:#onecx-workspace-svc_tkit-legacy-enable-menu-auto-registration[tkit.legacy.enable-menu-auto-registration]`
+
+
+[.description]
+--
+Enabled or disable menu auto registration.
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++TKIT_LEGACY_ENABLE_MENU_AUTO_REGISTRATION+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++TKIT_LEGACY_ENABLE_MENU_AUTO_REGISTRATION+++`
+endif::add-copy-button-to-env-var[]
+--|boolean 
+|`false`
+
 |===

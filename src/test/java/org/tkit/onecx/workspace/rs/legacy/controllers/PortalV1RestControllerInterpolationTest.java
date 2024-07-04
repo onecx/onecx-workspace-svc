@@ -11,14 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.org.tkit.onecx.workspace.rs.legacy.model.TkitMenuItemStructureDTO;
+import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuItemDTO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
-@TestHTTPEndpoint(TkitPortalRestController.class)
-class TkitPortalRestControllerInterpolationTest extends AbstractTest {
+@TestHTTPEndpoint(PortalV2RestController.class)
+class PortalV1RestControllerInterpolationTest extends AbstractTest {
 
     @Test
     @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
@@ -26,13 +26,13 @@ class TkitPortalRestControllerInterpolationTest extends AbstractTest {
 
         var data = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "test01")
+                .pathParam("portalId", "test01")
                 .queryParam("interpolate", Boolean.TRUE)
                 .get()
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
+                .body().as(new TypeRef<List<MenuItemDTO>>() {
                 });
 
         assertThat(data).isNotNull().isNotEmpty().hasSize(5);
@@ -42,9 +42,9 @@ class TkitPortalRestControllerInterpolationTest extends AbstractTest {
         assertThat(getUrlFromMenuItemByName(data, "PORTAL_CHILD_8")).isEqualTo("/interpolated8");
     }
 
-    private String getUrlFromMenuItemByName(List<TkitMenuItemStructureDTO> menuList, String key) {
+    private String getUrlFromMenuItemByName(List<MenuItemDTO> menuList, String key) {
         String foundurl;
-        for (TkitMenuItemStructureDTO menuItem : menuList) {
+        for (MenuItemDTO menuItem : menuList) {
             if (menuItem.getKey().equals(key)) {
                 foundurl = menuItem.getUrl();
                 return foundurl;

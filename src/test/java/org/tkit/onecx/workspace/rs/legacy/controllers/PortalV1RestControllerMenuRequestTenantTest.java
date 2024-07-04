@@ -13,20 +13,20 @@ import org.mockito.Mockito;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
+import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuItemDTO;
 import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuRegistrationRequestDTO;
 import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuRegistrationResponseDTO;
 import gen.org.tkit.onecx.workspace.rs.legacy.model.ScopeDTO;
-import gen.org.tkit.onecx.workspace.rs.legacy.model.TkitMenuItemStructureDTO;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@TestHTTPEndpoint(TkitPortalRestController.class)
-class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
+@TestHTTPEndpoint(PortalV1RestController.class)
+class PortalV1RestControllerMenuRequestTenantTest extends AbstractTest {
 
     @InjectMock
-    TkitLegacyAppConfig appConfig;
+    PortalConfig appConfig;
 
     @Test
     @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
@@ -36,7 +36,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         var response = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("portalName", "does-not-exist")
+                .pathParam("portalId", "does-not-exist")
                 .pathParam("appId", "parameters-management-ui")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .post("{appId}")
@@ -51,7 +51,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         response = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("portalName", "test03")
+                .pathParam("portalId", "test03")
                 .pathParam("appId", "parameters-management-ui")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .post("{appId}")
@@ -66,7 +66,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         response = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("portalName", "test03")
+                .pathParam("portalId", "test03")
                 .pathParam("appId", "parameters-management-ui")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .post("{appId}")
@@ -79,9 +79,9 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
 
         request = new MenuRegistrationRequestDTO();
         request.setRequestVersion(0);
-        var menuItems = new ArrayList<TkitMenuItemStructureDTO>();
+        var menuItems = new ArrayList<MenuItemDTO>();
         request.setMenuItems(menuItems);
-        var menuItem = new TkitMenuItemStructureDTO();
+        var menuItem = new MenuItemDTO();
         menuItems.add(menuItem);
 
         menuItem.setKey("PARAMETERS_MANAGEMENT_UI_ROOT");
@@ -95,7 +95,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         menuItem.setI18n(Map.of("de", "Parameters management", "en", "Parameters management"));
         menuItem.setChildren(new ArrayList<>());
 
-        var subMenuItem = new TkitMenuItemStructureDTO();
+        var subMenuItem = new MenuItemDTO();
         menuItem.getChildren().add(subMenuItem);
         subMenuItem.setKey("PARAMETERS_MANAGEMENT_SEARCH");
         subMenuItem.setName("Parameters management search page menu item");
@@ -111,7 +111,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         response = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("portalName", "test01")
+                .pathParam("portalId", "test01")
                 .pathParam("appId", "parameters-management-ui")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .post("{appId}")
@@ -126,7 +126,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         response = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("portalName", "test01")
+                .pathParam("portalId", "test01")
                 .pathParam("appId", "parameters-management-ui")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .post("{appId}")
@@ -142,7 +142,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         response = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("portalName", "test01")
+                .pathParam("portalId", "test01")
                 .pathParam("appId", "parameters-management-ui")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .post("{appId}")
@@ -157,7 +157,7 @@ class TkitPortalSubmitMenuRequestTenantTest extends AbstractTest {
         response = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("portalName", "test01")
+                .pathParam("portalId", "test01")
                 .pathParam("appId", "parameters-management-ui")
                 .header(APM_HEADER_PARAM, createToken("org3"))
                 .post("{appId}")

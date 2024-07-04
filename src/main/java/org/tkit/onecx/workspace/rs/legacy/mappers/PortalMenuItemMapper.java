@@ -11,17 +11,16 @@ import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.workspace.rs.legacy.model.RestExceptionDTO;
+import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuItemDTO;
 import gen.org.tkit.onecx.workspace.rs.legacy.model.ScopeDTO;
-import gen.org.tkit.onecx.workspace.rs.legacy.model.TkitMenuItemStructureDTO;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
-public interface TkitPortalMapper {
+public interface PortalMenuItemMapper {
 
-    default void recursiveMappingTreeStructure(List<TkitMenuItemStructureDTO> items, Workspace workspace, MenuItem parent,
+    default void recursiveMappingTreeStructure(List<MenuItemDTO> items, Workspace workspace, MenuItem parent,
             String applicationId, List<MenuItem> mappedItems) {
         int position = 0;
-        for (TkitMenuItemStructureDTO item : items) {
+        for (MenuItemDTO item : items) {
             if (item != null) {
                 MenuItem menu = mapMenu(item);
                 updateMenu(menu, position, workspace, parent, applicationId);
@@ -46,14 +45,14 @@ public interface TkitPortalMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "modificationCount", ignore = true, defaultValue = "0")
-    @Mapping(target = "parent.id", source = "parentItemId")
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "parentId", ignore = true)
-    MenuItem mapMenu(TkitMenuItemStructureDTO menuItemStructureDto);
+    @Mapping(target = "parent", ignore = true)
+    MenuItem mapMenu(MenuItemDTO menuItemStructureDto);
 
     default void updateMenu(MenuItem menuItem, int position, Workspace workspace,
             MenuItem parent, String applicationId) {
@@ -66,12 +65,12 @@ public interface TkitPortalMapper {
     @ValueMapping(target = "WORKSPACE", source = "PORTAL")
     MenuItem.Scope map(ScopeDTO scope);
 
-    default List<TkitMenuItemStructureDTO> mapToEmptyTree() {
+    default List<MenuItemDTO> mapToEmptyTree() {
         return new ArrayList<>();
     }
 
-    default List<TkitMenuItemStructureDTO> mapToTree(List<MenuItem> menuItems, String portalId) {
-        var result = new ArrayList<TkitMenuItemStructureDTO>();
+    default List<MenuItemDTO> mapToTree(List<MenuItem> menuItems, String portalId) {
+        var result = new ArrayList<MenuItemDTO>();
         if (menuItems == null) {
             return result;
         }
@@ -79,7 +78,7 @@ public interface TkitPortalMapper {
         // create map of <id, menuItem>
         var map = menuItems.stream().map(this::mapWithEmptyChildren)
                 .map(item -> item.portalId(portalId))
-                .collect(Collectors.toMap(TkitMenuItemStructureDTO::getGuid, x -> x));
+                .collect(Collectors.toMap(MenuItemDTO::getGuid, x -> x));
 
         // loop over all menu items, add parent or child in result tree
         menuItems.forEach(m -> {
@@ -96,7 +95,6 @@ public interface TkitPortalMapper {
 
     @Mapping(target = "permissionObject", ignore = true)
     @Mapping(target = "portalExit", source = "external")
-    @Mapping(target = "parentItemId", source = "parent.id")
     @Mapping(target = "portalId", ignore = true)
     @Mapping(target = "parentKey", source = "parent.id")
     @Mapping(target = "version", source = "modificationCount")
@@ -104,19 +102,9 @@ public interface TkitPortalMapper {
     @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "children", ignore = true)
     @Mapping(target = "guid", source = "id")
-    TkitMenuItemStructureDTO mapWithEmptyChildren(MenuItem entity);
+    MenuItemDTO mapWithEmptyChildren(MenuItem entity);
 
     @ValueMapping(target = "PORTAL", source = "WORKSPACE")
     ScopeDTO map(MenuItem.Scope scope);
 
-    @Mapping(target = "removeParametersItem", ignore = true)
-    @Mapping(target = "namedParameters", ignore = true)
-    @Mapping(target = "removeNamedParametersItem", ignore = true)
-    @Mapping(target = "parameters", ignore = true)
-    RestExceptionDTO exception(String errorCode, String message);
-
-    @Mapping(target = "removeParametersItem", ignore = true)
-    @Mapping(target = "namedParameters", ignore = true)
-    @Mapping(target = "removeNamedParametersItem", ignore = true)
-    RestExceptionDTO exception(String errorCode, String message, List<Object> parameters);
 }

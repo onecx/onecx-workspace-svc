@@ -2,7 +2,7 @@ package org.tkit.onecx.workspace.rs.legacy.controllers;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
-import static jakarta.ws.rs.core.Response.Status.OK;
+import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -13,26 +13,29 @@ import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.test.WithDBData;
 
-import gen.org.tkit.onecx.workspace.rs.legacy.model.*;
+import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuItemDTO;
+import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuRegistrationRequestDTO;
+import gen.org.tkit.onecx.workspace.rs.legacy.model.MenuRegistrationResponseDTO;
+import gen.org.tkit.onecx.workspace.rs.legacy.model.ScopeDTO;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
-@TestHTTPEndpoint(TkitPortalRestController.class)
-class TkitPortalRestControllerTest extends AbstractTest {
+@TestHTTPEndpoint(PortalV1RestController.class)
+class PortalV1RestControllerTest extends AbstractTest {
 
     @Test
     void getMenuStructureForNoPortalNameTest() {
 
         var data = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "LEGAGY_WRONG_PORTAL_ID")
-                .get()
+                .pathParam("portalId", "LEGAGY_WRONG_PORTAL_ID")
+                .get("{portalId}")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
+                .body().as(new TypeRef<List<MenuItemDTO>>() {
                 });
 
         assertThat(data).isNotNull().isEmpty();
@@ -44,25 +47,30 @@ class TkitPortalRestControllerTest extends AbstractTest {
 
         var data = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "test01")
-                .get()
+                .pathParam("portalId", "test01")
+                .get("{portalId}")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
+                .body().as(new TypeRef<List<MenuItemDTO>>() {
                 });
 
         assertThat(data).isNotNull().isNotEmpty().hasSize(5);
+    }
 
-        data = given()
+    @Test
+    @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
+    void getMenuStructureForPortalNameAndAppTest() {
+
+        var data = given()
                 .contentType(APPLICATION_JSON)
-                .pathParam("portalName", "test01")
-                .queryParam("interpolate", Boolean.FALSE)
-                .get()
+                .pathParam("portalId", "test01")
+                .pathParam("applicationId", "test01")
+                .get("{applicationId}")
                 .then().statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()
-                .body().as(new TypeRef<List<TkitMenuItemStructureDTO>>() {
+                .body().as(new TypeRef<List<MenuItemDTO>>() {
                 });
 
         assertThat(data).isNotNull().isNotEmpty().hasSize(5);
@@ -73,9 +81,9 @@ class TkitPortalRestControllerTest extends AbstractTest {
     void submitMenuRegistrationRequestTest() {
         var request = new MenuRegistrationRequestDTO();
         request.setRequestVersion(0);
-        var menuItems = new ArrayList<TkitMenuItemStructureDTO>();
+        var menuItems = new ArrayList<MenuItemDTO>();
         request.setMenuItems(menuItems);
-        var menuItem = new TkitMenuItemStructureDTO();
+        var menuItem = new MenuItemDTO();
         menuItems.add(menuItem);
 
         menuItem.setKey("PARAMETERS_MANAGEMENT_UI_ROOT");
@@ -89,7 +97,7 @@ class TkitPortalRestControllerTest extends AbstractTest {
         menuItem.setI18n(Map.of("de", "Parameters management", "en", "Parameters management"));
         menuItem.setChildren(new ArrayList<>());
 
-        var subMenuItem = new TkitMenuItemStructureDTO();
+        var subMenuItem = new MenuItemDTO();
         menuItem.getChildren().add(subMenuItem);
         subMenuItem.setKey("PARAMETERS_MANAGEMENT_SEARCH");
         subMenuItem.setName("Parameters management search page menu item");
@@ -105,7 +113,7 @@ class TkitPortalRestControllerTest extends AbstractTest {
         var response = given()
                 .contentType(APPLICATION_JSON)
                 .body(request)
-                .pathParam("portalName", "test03")
+                .pathParam("portalId", "test03")
                 .pathParam("appId", "parameters-management-ui")
                 .post("{appId}")
                 .then().statusCode(OK.getStatusCode())
