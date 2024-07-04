@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -23,6 +25,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(MenuInternalRestController.class)
 @WithDBData(value = "data/testdata-parent-change.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class MenuInternalRestControllerParentChangeTest extends AbstractTest {
 
     private static Stream<Arguments> menuPosition() {
@@ -45,6 +48,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .modificationCount(0);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -74,6 +78,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .modificationCount(0);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -92,6 +97,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .modificationCount(0);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -112,6 +118,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .modificationCount(0);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -139,6 +146,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .modificationCount(0);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -152,6 +160,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
         var criteria = new MenuStructureSearchCriteriaDTO().workspaceId("4");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)

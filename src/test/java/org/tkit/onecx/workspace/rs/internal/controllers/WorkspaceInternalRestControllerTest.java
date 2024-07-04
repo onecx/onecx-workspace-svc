@@ -4,9 +4,11 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -16,6 +18,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class WorkspaceInternalRestControllerTest extends AbstractTest {
 
     @Test
@@ -29,6 +32,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .baseUrl("/work1");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -44,6 +48,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
         // create without body
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post()
@@ -55,6 +60,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(exception.getDetail()).isEqualTo("createWorkspace.createWorkspaceRequestDTO: must not be null");
 
         exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -70,6 +76,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         createWorkspaceDTO.setName("custom-new-name");
 
         exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -86,17 +93,20 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     @Test
     void deleteWorkspace() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .delete("{id}")
                 .then().statusCode(NO_CONTENT.getStatusCode());
 
-        given().contentType(APPLICATION_JSON)
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .get("{id}")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .delete("{id}")
@@ -106,12 +116,14 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     @Test
     void deleteInitialWorkspace_should_persist() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
                 .delete("{id}")
                 .then().statusCode(NO_CONTENT.getStatusCode());
 
-        given().contentType(APPLICATION_JSON)
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
                 .get("{id}")
                 .then().statusCode(OK.getStatusCode());
@@ -120,6 +132,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     @Test
     void getWorkspace() {
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .get("{id}")
@@ -138,6 +151,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     @Test
     void getWorkspaceByName() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "does-not-exists")
                 .get("/search/{name}")
@@ -145,6 +159,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "test01")
                 .get("/search/{name}")
@@ -163,6 +178,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
     @Test
     void getWorkspaceByNameNotFound() {
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "not-found")
                 .get("/name/{name}")
@@ -178,6 +194,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
         // empty criteria
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -195,6 +212,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         criteria.setThemeName("11-111");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -212,6 +230,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         criteria.setThemeName("   ");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -228,6 +247,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         criteria.setName(" _ ");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -244,14 +264,16 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
     @Test
     void updateWorkspaceTest() {
-        var response = given().when()
+        var response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
                 .get("{id}")
                 .then().statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
         // update none existing workspace
-        given().when()
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "none-exists")
@@ -261,7 +283,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
         // update workspace with already existing baseUrl for other workspace
         response.setBaseUrl("/company1");
-        var error = given().when()
+        var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
@@ -279,7 +302,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         response.setBaseUrl("/company2/updated");
         response.setCompanyName("Company 2 updated");
         response.setName("Workspace2Test");
-        var updatedWorkspace = given().when()
+        var updatedWorkspace = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
@@ -292,7 +316,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(updatedWorkspace).isNotNull();
         assertThat(updatedWorkspace.getName()).isEqualTo(response.getName());
 
-        var updatedResponse = given().when()
+        var updatedResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
                 .get("{id}")
@@ -311,7 +336,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         updatedResponse.setCompanyName("Company 2 test");
         updatedResponse.setName("Workspace2Test");
         updatedResponse.setModificationCount(0);
-        given().when()
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(updatedResponse)
                 .pathParam("id", "11-222")
@@ -323,7 +349,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
     @Test
     void modificationCountTest() {
-        var updatedResponse = given().when()
+        var updatedResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
                 .get("{id}")
@@ -336,7 +363,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         updatedResponse.setCompanyName("Company 2 test");
         updatedResponse.setName("Workspace2Test");
         updatedResponse.setModificationCount(0);
-        given().when()
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(updatedResponse)
                 .pathParam("id", "11-222")

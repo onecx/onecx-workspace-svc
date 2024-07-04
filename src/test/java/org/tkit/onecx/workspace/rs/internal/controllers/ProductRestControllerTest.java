@@ -4,11 +4,13 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -18,6 +20,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(ProductInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class ProductRestControllerTest extends AbstractTest {
 
     @Test
@@ -37,6 +40,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         // test not existing workspace
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
@@ -50,6 +54,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         request.setWorkspaceId("11-111");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
@@ -65,6 +70,7 @@ class ProductRestControllerTest extends AbstractTest {
         request.setProductName("testProduct1");
         request.setBaseUrl("/test1");
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
@@ -80,6 +86,7 @@ class ProductRestControllerTest extends AbstractTest {
     @Test
     void getProductDoesNotExists() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .get("does-not-exists")
@@ -90,6 +97,7 @@ class ProductRestControllerTest extends AbstractTest {
     @Test
     void deleteProductByIdTest() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("productId", "5678")
@@ -98,6 +106,7 @@ class ProductRestControllerTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("productId", "5678")
@@ -109,6 +118,7 @@ class ProductRestControllerTest extends AbstractTest {
                 .workspaceId("11-111");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -130,6 +140,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         // not existing product
         var response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -144,6 +155,7 @@ class ProductRestControllerTest extends AbstractTest {
         criteria.productName("onecx-core");
 
         response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -160,6 +172,7 @@ class ProductRestControllerTest extends AbstractTest {
     void getProductsForWorkspaceIdTest() {
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/search")
@@ -170,6 +183,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         // not existing product
         var response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -183,6 +197,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         criteria.workspaceId("does-not-exists");
         response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -198,6 +213,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         // existing product
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -218,6 +234,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         // not sending request
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("productId", "does-not-exist")
@@ -229,6 +246,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         // not existing product
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
@@ -238,6 +256,7 @@ class ProductRestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         var product = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .get("1234")
@@ -258,6 +277,7 @@ class ProductRestControllerTest extends AbstractTest {
         request.getMicrofrontends().get(0).setBasePath("/mfe1-test");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
@@ -272,6 +292,7 @@ class ProductRestControllerTest extends AbstractTest {
         assertThat(dto.getBaseUrl()).isEqualTo(request.getBaseUrl());
 
         var filteredProduct = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .get("1234")
@@ -285,6 +306,7 @@ class ProductRestControllerTest extends AbstractTest {
 
         dto.setMicrofrontends(new ArrayList<>());
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(dto)
                 .contentType(APPLICATION_JSON)
@@ -301,6 +323,7 @@ class ProductRestControllerTest extends AbstractTest {
         //second time should fail because of wrong modificationCount
         request.setModificationCount(-1);
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(request)
                 .contentType(APPLICATION_JSON)
@@ -318,6 +341,7 @@ class ProductRestControllerTest extends AbstractTest {
         update.setModificationCount(-1);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .body(update)
                 .contentType(APPLICATION_JSON)

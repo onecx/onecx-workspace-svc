@@ -6,6 +6,7 @@ import static jakarta.ws.rs.core.Response.Status.NOT_FOUND;
 import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.stream.Stream;
 
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.external.v1.model.*;
@@ -23,12 +25,14 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceExternalV1RestController.class)
 @WithDBData(value = "data/testdata-external.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:read", "ocx-ws:write" })
 class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
     @ParameterizedTest
     @MethodSource("criteriaAndResults")
     void searchWorkspacesByCriteria(WorkspaceSearchCriteriaDTOV1 criteriaDTOV1, int results) {
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteriaDTOV1)
@@ -46,6 +50,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         WorkspaceSearchCriteriaDTOV1 criteriaDTOV1 = new WorkspaceSearchCriteriaDTOV1();
         criteriaDTOV1.setBaseUrl("/company1");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteriaDTOV1)
@@ -61,6 +66,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
     @Test
     void getWorkspaceByNameTest() {
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("name", "test01")
                 .get("{name}")
@@ -79,6 +85,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         var criteria = new WorkspaceSearchCriteriaDTOV1().productName("onecx-core");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -94,6 +101,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
     @Test
     void getWorkspaceByNameNotFound() {
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .pathParam("name", "not-found")
                 .get("{name}")
@@ -123,6 +131,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
     void getProductsForWorkspaceNameTest() {
         // not existing product
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "does-not-exist")
@@ -132,6 +141,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
         // existing product
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("name", "test01")
@@ -153,6 +163,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         requestDTOV1.setUrl("does-not-exist-url");
         // not existing workspace
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -163,6 +174,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         // existing workspace
         requestDTOV1.setUrl("/company2/admin/my/url");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -177,6 +189,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         // another test to match /de base path
         requestDTOV1.setUrl("/de/test/some/strange");
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -191,6 +204,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         // test with a http protocol
         requestDTOV1.setUrl("https://my.domain.com/de/test/some/strange");
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -205,6 +219,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         // strange protocol
         requestDTOV1.setUrl("asd://");
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -220,6 +235,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
         // not existing workspace
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -230,6 +246,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         // existing workspace
         requestDTOV1.setPath("/company1/admin/my/url");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -252,6 +269,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
         requestDTOV1.setPath("/company2/admin/my/url");
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -267,6 +285,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         // another test to match /de base path
         requestDTOV1.setPath("/de/test/some/strange");
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)
@@ -281,6 +300,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         // strange protocol
         requestDTOV1.setPath("asd://");
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTOV1)

@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
@@ -20,6 +22,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(ExportImportRestControllerV1.class)
 @WithDBData(value = "data/testdata-exim.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:read", "ocx-ws:write" })
 class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
     @Test
@@ -27,6 +30,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
         request.addNamesItem("test01").addNamesItem("test02").addNamesItem("does-not-exists");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -60,6 +64,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .includeMenus(false)
                 .addNamesItem("test01").addNamesItem("test02").addNamesItem("does-not-exists");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -90,6 +95,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     @Test
     void exportAllWorkspaceTest() {
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new ExportWorkspacesRequestDTOV1().names(new HashSet<>()))
@@ -107,6 +113,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
         request.addNamesItem("12345");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -185,6 +192,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setWorkspaces(map);
 
         var importResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -199,6 +207,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
         request.addNamesItem("testWorkspace");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -245,6 +254,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setWorkspaces(map);
 
         var importResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -259,6 +269,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
         request.addNamesItem("testWorkspace");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -301,6 +312,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setWorkspaces(map);
 
         var importResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -315,6 +327,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
         request.addNamesItem("testWorkspace");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -347,6 +360,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setWorkspaces(map);
 
         var importResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -371,6 +385,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setWorkspaces(map);
 
         var importResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -388,6 +403,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     @Test
     void importWorkspaceNoBodyTest() {
         var importResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("/import")
@@ -402,6 +418,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     @Test
     void exportMenuByWorkspaceIdTest() {
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .get("/test01/menu/export")
@@ -437,6 +454,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     @Test
     void exportMenuByWorkspaceIdNotFoundTest() {
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .get("/test05/menu/export")
@@ -455,6 +473,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .menu(new EximMenuStructureDTOV1());
 
         var response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -469,6 +488,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.getMenu().menuItems(new ArrayList<>());
 
         response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -503,6 +523,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .menu(new EximMenuStructureDTOV1().menuItems(menuItems));
 
         var response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -515,6 +536,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(response.getStatus()).isEqualTo(ImportResponseStatusDTOV1.UPDATED);
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .get("/test01/menu/export")
@@ -574,6 +596,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .menu(new EximMenuStructureDTOV1().menuItems(menuItems));
 
         var response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -598,6 +621,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         menu.setMenuItems(menuItems);
         snapshot.setMenu(menu);
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -622,6 +646,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         menu.setMenuItems(menuItems);
         snapshot.setMenu(menu);
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -647,6 +672,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setMenu(menu);
 
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -665,6 +691,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         var request = new WorkspaceSnapshotDTOV1();
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -674,6 +701,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         request.setWorkspaces(null);
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -685,6 +713,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
     @Test
     void importOperatorWorkspaceNoBodyTest() {
         var importResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post("operator")
@@ -751,6 +780,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setWorkspaces(map);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -761,6 +791,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
         request.addNamesItem("test01");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -854,6 +885,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setWorkspaces(map);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -864,6 +896,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
         request.addNamesItem("new_test_workspace");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -911,6 +944,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         snapshot.setWorkspaces(map);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
@@ -921,6 +955,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         ExportWorkspacesRequestDTOV1 request = new ExportWorkspacesRequestDTOV1();
         request.addNamesItem("new_test_workspace");
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)

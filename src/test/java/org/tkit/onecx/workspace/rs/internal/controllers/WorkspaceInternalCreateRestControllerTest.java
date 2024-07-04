@@ -5,11 +5,13 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.CREATED;
 import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -17,7 +19,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
-
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
 
     @Test
@@ -31,6 +33,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .baseUrl("/work-create");
 
         var responseDto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -42,6 +45,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
         assertThat(responseDto).isNotNull();
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", responseDto.getId())
                 .get("/internal/workspaces/{id}")
@@ -58,6 +62,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
         criteria.workspaceId(responseDto.getId());
 
         var rolesResult = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/internal/roles/search")
@@ -74,6 +79,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
         assertThat(names).containsOnly("onecx-admin", "onecx-user-test");
 
         var slotsResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", responseDto.getId())
                 .get("/internal/slots/workspace/{id}")
@@ -92,6 +98,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 "onecx-shell-horizontal-menu");
 
         var productsResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new ProductSearchCriteriaDTO().workspaceId(responseDto.getId()))
@@ -108,6 +115,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 "onecx-permission", "onecx-tenant", "onecx-theme", "onecx-product-store");
 
         var menuResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new MenuItemSearchCriteriaDTO().workspaceId(responseDto.getId()))
@@ -124,6 +132,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
         assertThat(parentNames).containsOnly("Footer Menu", "User Profile Menu", "Main Menu");
 
         var assignmentResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new AssignmentSearchCriteriaDTO().workspaceId(responseDto.getId()))
                 .post("/internal/assignments/search")

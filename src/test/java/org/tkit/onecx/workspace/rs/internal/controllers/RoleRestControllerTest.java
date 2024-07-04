@@ -6,10 +6,12 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -19,6 +21,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(RoleInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class RoleRestControllerTest extends AbstractTest {
 
     @Test
@@ -30,6 +33,7 @@ class RoleRestControllerTest extends AbstractTest {
         requestDTO.setDescription("description");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -39,6 +43,7 @@ class RoleRestControllerTest extends AbstractTest {
         requestDTO.workspaceId("does-not-exists");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -48,6 +53,7 @@ class RoleRestControllerTest extends AbstractTest {
         requestDTO.workspaceId("11-111");
 
         var uri = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -56,6 +62,7 @@ class RoleRestControllerTest extends AbstractTest {
                 .extract().header(LOCATION);
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get(uri)
                 .then()
@@ -69,6 +76,7 @@ class RoleRestControllerTest extends AbstractTest {
 
         // create Role without body
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post()
@@ -84,7 +92,8 @@ class RoleRestControllerTest extends AbstractTest {
         requestDTO.setWorkspaceId("11-111");
         requestDTO.setName("n1");
 
-        exception = given().when()
+        exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
@@ -100,6 +109,7 @@ class RoleRestControllerTest extends AbstractTest {
     @Test
     void getNotFoundRole() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("does-not-exists")
                 .then()
@@ -111,18 +121,21 @@ class RoleRestControllerTest extends AbstractTest {
 
         // delete Role
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("DELETE_1")
                 .then().statusCode(NO_CONTENT.getStatusCode());
 
         // check if Role exists
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("DELETE_1")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         // delete Role in portal
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("r11")
                 .then()
@@ -134,6 +147,7 @@ class RoleRestControllerTest extends AbstractTest {
     void getRoleByIdTest() {
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("r12")
                 .then().statusCode(OK.getStatusCode())
@@ -146,11 +160,13 @@ class RoleRestControllerTest extends AbstractTest {
         assertThat(dto.getId()).isEqualTo("r12");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("___")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("r11")
                 .then().statusCode(OK.getStatusCode())
@@ -170,6 +186,7 @@ class RoleRestControllerTest extends AbstractTest {
         criteria.workspaceId("11-111");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -186,6 +203,7 @@ class RoleRestControllerTest extends AbstractTest {
         criteria.workspaceId("    ");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -201,6 +219,7 @@ class RoleRestControllerTest extends AbstractTest {
 
         criteria.workspaceId(null);
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -217,6 +236,7 @@ class RoleRestControllerTest extends AbstractTest {
         criteria.setName(" ");
         criteria.setDescription(" ");
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -234,6 +254,7 @@ class RoleRestControllerTest extends AbstractTest {
         criteria.setDescription("d1");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -253,7 +274,8 @@ class RoleRestControllerTest extends AbstractTest {
     void updateRoleTest() {
 
         // download Role
-        var dto = given().contentType(APPLICATION_JSON)
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .when()
                 .get("r11")
                 .then().statusCode(OK.getStatusCode())
@@ -268,6 +290,7 @@ class RoleRestControllerTest extends AbstractTest {
         requestDto.setDescription("description-update");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
@@ -276,6 +299,7 @@ class RoleRestControllerTest extends AbstractTest {
 
         // update Role
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
@@ -285,6 +309,7 @@ class RoleRestControllerTest extends AbstractTest {
 
         // update Role with old modificationCount
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
@@ -301,7 +326,8 @@ class RoleRestControllerTest extends AbstractTest {
                         "Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect) : [org.tkit.onecx.workspace.domain.models.Role#r11]");
 
         // download Role
-        dto = given().contentType(APPLICATION_JSON)
+        dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .when()
                 .get("r11")
                 .then().statusCode(OK.getStatusCode())
@@ -318,7 +344,8 @@ class RoleRestControllerTest extends AbstractTest {
     void updateRoleWithExistingNameTest() {
 
         // download Role
-        var d = given().contentType(APPLICATION_JSON)
+        var d = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .when()
                 .get("r11")
                 .then().statusCode(OK.getStatusCode())
@@ -332,6 +359,7 @@ class RoleRestControllerTest extends AbstractTest {
         dto.setDescription("description");
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .when()
                 .body(dto)
@@ -352,6 +380,7 @@ class RoleRestControllerTest extends AbstractTest {
     void updateRoleWithoutBodyTest() {
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .when()
                 .pathParam("id", "update_create_new")

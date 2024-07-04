@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.Collection;
 import java.util.Map;
@@ -18,6 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -27,6 +29,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(MenuInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class MenuInternalRestControllerTest extends AbstractTest {
 
     @Test
@@ -35,6 +38,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .workspaceId("11-111");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -48,6 +52,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         criteria.setWorkspaceId("       ");
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -61,6 +66,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         criteria.setWorkspaceId(null);
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -76,6 +82,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void deleteMenuItemByIdTest() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "33-13")
@@ -87,6 +94,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .workspaceId("11-111");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -102,6 +110,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void deleteMenuItemByIdWhenChildrenExistTest() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "33-1")
@@ -113,6 +122,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .workspaceId("11-111");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -128,6 +138,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
     @Test
     void deleteAllMenuItemsForWorkspaceTest() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
@@ -139,6 +150,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .workspaceId("11-111");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -161,6 +173,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         menuItem.setI18n(Map.of("de", "Test DE Menu", "en", "Test EN Menu"));
 
         var uri = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(menuItem)
@@ -171,7 +184,8 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         assertThat(uri).isNotNull();
 
-        var dto = given().when()
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .get(uri)
                 .then().statusCode(OK.getStatusCode())
@@ -192,6 +206,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         menuItem.setParentItemId(parentItemId);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(menuItem)
@@ -219,6 +234,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         menuItem.setDisabled(false);
 
         var uri = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(menuItem)
@@ -229,7 +245,8 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         assertThat(uri).isNotNull();
 
-        var dto = given().when()
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .get(uri)
                 .then().statusCode(OK.getStatusCode())
@@ -242,7 +259,8 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     @Test
     void getMenuItemByIdTest() {
-        var dto = given().when()
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "33-6")
                 .get("{menuItemId}")
@@ -258,6 +276,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var criteria = new MenuStructureSearchCriteriaDTO().workspaceId("11-111");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -288,6 +307,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         var criteria = new MenuStructureSearchCriteriaDTO().workspaceId("does-not-exists");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
@@ -308,6 +328,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         // update menu item
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -316,6 +337,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -332,6 +354,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         request.parentItemId("44-2");
 
         error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -347,6 +370,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         request.parentItemId("does-not-exists");
         error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -362,6 +386,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         request.parentItemId("33-13");
         error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -377,6 +402,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         // update menu item
         request.parentItemId("44-6");
         error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -391,7 +417,8 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
     @Test
     void updateMenuItemParentTest() {
-        var dto = given().when()
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "44-6")
                 .get("{menuItemId}")
@@ -404,6 +431,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .modificationCount(dto.getModificationCount());
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -418,6 +446,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .modificationCount(dto.getModificationCount());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -438,6 +467,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         // update menu item
         var updatedData = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -454,6 +484,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         // update menu item
         updatedData = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -481,6 +512,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         // update menu item
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -505,6 +537,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         // update menu item
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -538,6 +571,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         // update menu item
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -558,6 +592,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         // update menu item
         var updatedData = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -574,6 +609,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         //Update second time and expect a BAD REQUEST because of wrong modificationCount
         request.setModificationCount(-1);
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -582,7 +618,8 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode());
 
-        var dto = given().when()
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "44-6")
                 .get("{menuItemId}")
@@ -607,6 +644,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
         request.setModificationCount(0);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
