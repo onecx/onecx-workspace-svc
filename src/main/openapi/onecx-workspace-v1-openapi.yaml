@@ -10,6 +10,8 @@ tags:
 paths:
   /v1/workspaces/byUrl:
     post:
+      security:
+        - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
       description: search workspace by url
@@ -31,6 +33,8 @@ paths:
           description: Not found
   /v1/workspaces/load:
     post:
+      security:
+        - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
       description: load workspace by request
@@ -51,6 +55,8 @@ paths:
           description: Not found
   /v1/workspaces/search:
     post:
+      security:
+        - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
       description: search workspace abstracts by criteria
@@ -69,6 +75,8 @@ paths:
                 $ref: '#/components/schemas/WorkspacePageResult'
   /v1/workspaces/{name}:
     get:
+      security:
+        - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
       description: get workspace by name
@@ -84,6 +92,8 @@ paths:
                 $ref: '#/components/schemas/Workspace'
   /v1/workspaces/{name}/load:
     get:
+      security:
+        - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
       description: Load workspace references to a workspace
@@ -100,6 +110,16 @@ paths:
         "404":
           description: Not found
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-ws:read: Grants read access
+            ocx-ws:write: Grants write access
+            ocx-ws:delete: Grants access to delete operations
   schemas:
     WorkspaceWrapper:
       type: object

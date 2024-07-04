@@ -6,10 +6,12 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -19,6 +21,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(AssignmentInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class AssignmentRestControllerTest extends AbstractTest {
 
     @Test
@@ -29,6 +32,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         requestDTO.setRoleId("r11");
 
         var uri = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -38,6 +42,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .extract().header(LOCATION);
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get(uri)
                 .then()
@@ -52,6 +57,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // create Role without body
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post()
@@ -67,7 +73,8 @@ class AssignmentRestControllerTest extends AbstractTest {
         requestDTO.setMenuItemId("33-6");
         requestDTO.setRoleId("r13");
 
-        exception = given().when()
+        exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
@@ -89,6 +96,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .roleId("r11");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -100,6 +108,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         requestDTO.setRoleId("does-not-exists");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -111,6 +120,7 @@ class AssignmentRestControllerTest extends AbstractTest {
     @Test
     void getNotFoundAssignment() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("does-not-exists")
                 .then()
@@ -124,6 +134,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         criteria.setMenuItemId("    ");
         criteria.setWorkspaceId("    ");
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -140,6 +151,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         criteria.setWorkspaceId("11-111");
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -155,6 +167,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         criteria.setMenuItemId(null);
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -171,6 +184,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         criteria.setMenuItemId("does-not-exists");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/search")
@@ -189,6 +203,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         criteria2.setMenuItemId("33-6");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria2)
                 .post("/search")
@@ -207,6 +222,7 @@ class AssignmentRestControllerTest extends AbstractTest {
         multipleAppIdsCriteria.setMenuItemId("55-2");
 
         var multipleAppIdsResult = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(multipleAppIdsCriteria)
                 .post("/search")
@@ -227,6 +243,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // delete Assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("DELETE_1")
                 .then()
@@ -234,6 +251,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // check Assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("a11")
                 .then()
@@ -241,6 +259,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // check if Assignment does not exist
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("a11")
                 .then()
@@ -248,6 +267,7 @@ class AssignmentRestControllerTest extends AbstractTest {
 
         // check Assignment
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("a11")
                 .then()

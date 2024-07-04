@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -21,6 +23,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(SlotInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class SlotRestControllerTest extends AbstractTest {
 
     @Test
@@ -31,6 +34,7 @@ class SlotRestControllerTest extends AbstractTest {
         requestDTO.setSlots(List.of(new CreateSlotDTO().name("slot01")));
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -40,6 +44,7 @@ class SlotRestControllerTest extends AbstractTest {
         requestDTO.workspaceId("does-not-exists");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -49,6 +54,7 @@ class SlotRestControllerTest extends AbstractTest {
         requestDTO.workspaceId("11-111");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
@@ -56,6 +62,7 @@ class SlotRestControllerTest extends AbstractTest {
                 .then().statusCode(CREATED.getStatusCode());
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("/workspace/11-111")
                 .then()
@@ -68,6 +75,7 @@ class SlotRestControllerTest extends AbstractTest {
 
         // create Role without body
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .post()
@@ -83,7 +91,8 @@ class SlotRestControllerTest extends AbstractTest {
         requestDTO.setWorkspaceId("11-111");
         requestDTO.setSlots(List.of(new CreateSlotDTO().name("slot1")));
 
-        given().when()
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(requestDTO)
                 .post()
@@ -95,6 +104,7 @@ class SlotRestControllerTest extends AbstractTest {
     @Test
     void getNotFoundSlot() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("does-not-exists")
                 .then()
@@ -106,12 +116,14 @@ class SlotRestControllerTest extends AbstractTest {
 
         // delete Role
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("DELETE_1")
                 .then().statusCode(NO_CONTENT.getStatusCode());
 
         // check if Role exists
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("DELETE_1")
                 .then().statusCode(NOT_FOUND.getStatusCode());
@@ -121,6 +133,7 @@ class SlotRestControllerTest extends AbstractTest {
     void deleteSlotTest() {
         // delete Role in portal
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .delete("s11")
                 .then()
@@ -132,6 +145,7 @@ class SlotRestControllerTest extends AbstractTest {
     void getSlotByIdTest() {
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("s11")
                 .then().statusCode(OK.getStatusCode())
@@ -144,11 +158,13 @@ class SlotRestControllerTest extends AbstractTest {
         assertThat(dto.getId()).isEqualTo("s11");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("___")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("s12")
                 .then().statusCode(OK.getStatusCode())
@@ -165,6 +181,7 @@ class SlotRestControllerTest extends AbstractTest {
     @Test
     void getWorkspaceSlotTest() {
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("/workspace/11-111")
                 .then()
@@ -179,6 +196,7 @@ class SlotRestControllerTest extends AbstractTest {
         assertThat(data.getSlots().get(0).getComponents()).isNotNull().hasSize(3);
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .get("/workspace/11-222")
                 .then()
@@ -195,7 +213,8 @@ class SlotRestControllerTest extends AbstractTest {
     void updateSlotTest() {
 
         // download Role
-        var dto = given().contentType(APPLICATION_JSON)
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .when()
                 .get("s11")
                 .then().statusCode(OK.getStatusCode())
@@ -210,6 +229,7 @@ class SlotRestControllerTest extends AbstractTest {
         requestDto.getComponents().add(new SlotComponentDTO().name("new_c2").productName("p1").appId("a1"));
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
@@ -218,6 +238,7 @@ class SlotRestControllerTest extends AbstractTest {
 
         // update Slot
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
@@ -227,6 +248,7 @@ class SlotRestControllerTest extends AbstractTest {
 
         // update Slot with old modificationCount
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
@@ -243,7 +265,8 @@ class SlotRestControllerTest extends AbstractTest {
                         "Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect) : [org.tkit.onecx.workspace.domain.models.Slot#s11]");
 
         // download Role
-        dto = given().contentType(APPLICATION_JSON)
+        dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .when()
                 .get("s11")
                 .then().statusCode(OK.getStatusCode())
@@ -261,7 +284,8 @@ class SlotRestControllerTest extends AbstractTest {
     @Test
     void updateSlotComponentOrder() {
         // get slot
-        var dto = given().contentType(APPLICATION_JSON)
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .when()
                 .get("s11")
                 .then().statusCode(OK.getStatusCode())
@@ -280,6 +304,7 @@ class SlotRestControllerTest extends AbstractTest {
 
         // update Slot
         var result = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(requestDto)
                 .when()
@@ -297,7 +322,8 @@ class SlotRestControllerTest extends AbstractTest {
     void updateSlotWithExistingNameTest() {
 
         // download Role
-        var d = given().contentType(APPLICATION_JSON)
+        var d = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .when()
                 .get("s11")
                 .then().statusCode(OK.getStatusCode())
@@ -311,6 +337,7 @@ class SlotRestControllerTest extends AbstractTest {
         dto.setDescription("description");
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .when()
                 .body(dto)
@@ -331,6 +358,7 @@ class SlotRestControllerTest extends AbstractTest {
     void updateSlotWithoutBodyTest() {
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .when()
                 .pathParam("id", "update_create_new")

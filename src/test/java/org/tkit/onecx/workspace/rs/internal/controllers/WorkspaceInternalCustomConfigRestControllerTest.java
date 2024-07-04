@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.tkit.onecx.workspace.domain.template.models.CreateTemplateConfig;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -24,6 +26,7 @@ import io.smallrye.config.SmallRyeConfig;
 
 @QuarkusTest
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
 
     @InjectMock
@@ -48,6 +51,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
                 .baseUrl("/work-missing-resource");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -73,6 +77,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
                 .baseUrl("/work1");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -99,6 +104,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
                 .baseUrl("/work1");
 
         var responseDto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -113,6 +119,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(responseDto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", responseDto.getId())
                 .get("/internal/workspaces/{id}")
@@ -129,6 +136,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         criteria.workspaceId(responseDto.getId());
 
         var rolesResult = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/internal/roles/search")
@@ -143,6 +151,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(rolesResult.getStream()).isNotNull().isEmpty();
 
         var slotsResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", responseDto.getId())
                 .get("/internal/slots/workspace/{id}")
@@ -156,6 +165,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(slotsResponse.getSlots()).isNotNull().isEmpty();
 
         var productsResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new ProductSearchCriteriaDTO().workspaceId(responseDto.getId()))
@@ -168,6 +178,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(productsResponse.getStream()).isNotNull().isEmpty();
 
         var menuResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new MenuItemSearchCriteriaDTO().workspaceId(responseDto.getId()))
@@ -180,6 +191,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(menuResponse.getStream()).isNotNull().isEmpty();
 
         var assignmentResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new AssignmentSearchCriteriaDTO().workspaceId(responseDto.getId()))
                 .post("/internal/assignments/search")
@@ -210,6 +222,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
                 .baseUrl("/work1");
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -234,6 +247,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
                 .baseUrl("/work1");
 
         var responseDto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -248,6 +262,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(responseDto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", responseDto.getId())
                 .get("/internal/workspaces/{id}")
@@ -264,6 +279,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         criteria.workspaceId(responseDto.getId());
 
         var rolesResult = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .post("/internal/roles/search")
@@ -281,6 +297,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(names).containsOnly("onecx-admin", "onecx-user");
 
         var slotsResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", responseDto.getId())
                 .get("/internal/slots/workspace/{id}")
@@ -299,6 +316,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(slotMap.get("onecx-shell-vertical-menu").getComponents()).isNotNull().hasSize(2);
 
         var productsResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new ProductSearchCriteriaDTO().workspaceId(responseDto.getId()))
@@ -314,6 +332,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(productName).containsOnly("onecx-user-profile", "onecx-workspace", "onecx-shell", "onecx-welcome");
 
         var menuResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new MenuItemSearchCriteriaDTO().workspaceId(responseDto.getId()))
@@ -330,6 +349,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         assertThat(parentNames).containsOnly("Footer Menu", "User Profile Menu", "Main Menu");
 
         var assignmentResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new AssignmentSearchCriteriaDTO().workspaceId(responseDto.getId()))
                 .post("/internal/assignments/search")

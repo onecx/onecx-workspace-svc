@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.stream.Stream;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -22,6 +24,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(WorkspaceInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
@@ -35,6 +38,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .baseUrl("/work1");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -50,6 +54,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         assertThat(dto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", dto.getId())
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -58,6 +63,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         var workspaceDTO = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", dto.getId())
                 .header(APM_HEADER_PARAM, createToken("org2"))
@@ -72,6 +78,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
 
         // create without body
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -84,6 +91,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         assertThat(exception.getDetail()).isEqualTo("createWorkspace.createWorkspaceRequestDTO: must not be null");
 
         exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(createWorkspaceDTO)
@@ -101,32 +109,37 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
     @Test
     void deleteWorkspace() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org2"))
                 .delete("{id}")
                 .then().statusCode(NO_CONTENT.getStatusCode());
 
-        given().contentType(APPLICATION_JSON)
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("{id}")
                 .then().statusCode(OK.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .delete("{id}")
                 .then().statusCode(NO_CONTENT.getStatusCode());
 
-        given().contentType(APPLICATION_JSON)
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get("{id}")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -137,6 +150,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
     @Test
     void getWorkspace() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org2"))
@@ -145,6 +159,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org3"))
@@ -153,6 +168,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-111")
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -176,6 +192,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
 
         // empty criteria
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .header(APM_HEADER_PARAM, createToken(organization))
@@ -194,6 +211,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         criteria.setThemeName("11-111");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .header(APM_HEADER_PARAM, createToken(organization))
@@ -212,6 +230,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         criteria.setThemeName("  ");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .header(APM_HEADER_PARAM, createToken(organization))
@@ -229,6 +248,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         criteria.setName(" _ ");
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(criteria)
                 .header(APM_HEADER_PARAM, createToken(organization))
@@ -253,7 +273,8 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void updateWorkspaceTest() {
-        var response = given().when()
+        var response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -261,7 +282,8 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .then().statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
         // update workspace with different tenant
-        given().when()
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
@@ -272,7 +294,8 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
 
         // update workspace with already existing baseUrl for other workspace
         response.setBaseUrl("/company1");
-        var error = given().when()
+        var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
@@ -291,7 +314,8 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         response.setBaseUrl("/company2/updated");
         response.setCompanyName("Company 2 updated");
         response.setName("Workspace2Test");
-        var updatedWorkspace = given().when()
+        var updatedWorkspace = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .body(response)
                 .pathParam("id", "11-222")
@@ -305,7 +329,8 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         assertThat(updatedWorkspace).isNotNull();
         assertThat(updatedWorkspace.getName()).isEqualTo("Workspace2Test");
 
-        var updatedResponse = given().when()
+        var updatedResponse = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
                 .header(APM_HEADER_PARAM, createToken("org1"))
