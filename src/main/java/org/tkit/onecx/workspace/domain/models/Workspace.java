@@ -40,6 +40,9 @@ public class Workspace extends TraceableEntity {
     @Column(name = "NAME", nullable = false)
     private String name;
 
+    @Column(name = "DISPLAY_NAME", nullable = false)
+    private String displayName;
+
     @Column(name = "DESCRIPTION")
     private String description;
 
