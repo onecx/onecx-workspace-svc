@@ -1,0 +1,300 @@
+{
+  "slots": [
+    {
+      "name": "onecx-shell-vertical-menu",
+      "components": [
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXUserSidebarMenuComponent"
+        },
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXVerticalMainMenuComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-shell-header-right",
+      "components": [
+        {
+          "productName": "onecx-help",
+          "appId": "onecx-help-ui",
+          "name": "./OneCXShowHelpComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-shell-horizontal-menu",
+      "components": [
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXHorizontalMainMenuComponent"
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "name": "onecx-admin",
+      "description": "OneCX Admin - do all - default tenant"
+    },
+    {
+      "name": "onecx-user",
+      "description": "OneCX Read only - default tenant"
+    }
+  ],
+  "products": [
+    {
+      "productName": "onecx-shell",
+      "baseUrl": "/newShell",
+      "microfrontends": []
+    },
+    {
+      "productName": "onecx-permission",
+      "baseUrl": "/permission",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-permission-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-product-store",
+      "baseUrl": "/application",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-product-store-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-tenant",
+      "baseUrl": "/tenant",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-tenant-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-theme",
+      "baseUrl": "/theme",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-theme-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-workspace",
+      "baseUrl": "/workspace",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-workspace-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-welcome",
+      "baseUrl": "/welcome",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-welcome-ui",
+          "basePath": "/"
+        }
+      ]
+    },
+    {
+      "productName": "onecx-user-profile",
+      "baseUrl": "/user",
+      "microfrontends": [
+        {
+          "mfeId": "onecx-user-profile-ui",
+          "basePath": "/"
+        }
+      ]
+    }
+  ],
+  "menuItems": [
+    {
+      "key": "PORTAL_MAIN_MENU",
+      "name": "Main Menu",
+      "position": 0,
+      "roles": ["onecx-admin", "onecx-user"],
+      "children": [
+        {
+          "key": "CORE_WELCOME",
+          "name": "Welcome Page",
+          "applicationId": "onecx-welcome-ui",
+          "position": 0,
+          "url": "/welcome",
+          "badge": "home",
+          "i18n": {
+            "de": "Willkommen"
+          }
+        },
+        {
+          "key": "CORE_PRODUCT_STORE",
+          "name": "Application Store",
+          "applicationId": "onecx-product-store-ui",
+          "position": 1,
+          "url": "/application",
+          "badge": "cog",
+          "roles": ["onecx-admin"]
+        },
+        {
+          "key": "CORE_WORKSPACE_MENU",
+          "name": "Workspace",
+          "position": 2,
+          "badge": "folder",
+          "roles": ["onecx-admin"],
+          "children": [
+            {
+              "key": "CORE_WORKSPACE",
+              "name": "Workspaces",
+              "applicationId": "onecx-workspace-ui",
+              "position": 0,
+              "url": "/workspace",
+              "badge": "ellipsis-h",
+              "roles": ["onecx-admin"]
+            },
+            {
+              "key": "CORE_THEME",
+              "name": "Themes",
+              "applicationId": "onecx-theme-ui",
+              "position": 1,
+              "url": "/theme",
+              "badge": "palette",
+              "roles": ["onecx-admin"]
+            },
+            {
+              "key": "CORE_TENANT",
+              "name": "Tenants",
+              "applicationId": "onecx-tenant-ui",
+              "position": 1,
+              "url": "/tenant",
+              "badge": "android",
+              "roles": ["onecx-admin"],
+              "i18n": {
+                "de": "Mandanten",
+                "en": "Tenants"
+              }
+            }
+          ]
+        },
+        {
+          "key": "CORE_USER_PERMISSIONS",
+          "name": "User & Roles",
+          "position": 3,
+          "badge": "users",
+          "roles": ["onecx-admin"],
+          "i18n": {
+            "de": "Benutzer & Rollen"
+          },
+          "children": [
+            {
+              "key": "CORE_ROLES_PERMISSIONS",
+              "name": "Roles & Permissions",
+              "applicationId": "onecx-permission-ui",
+              "position": 0,
+              "url": "/permission",
+              "badge": "lock",
+              "roles": ["onecx-admin"],
+              "i18n": {
+                "de": "Rollen & Berechtigungen"
+              }
+            },
+            {
+              "key": "CORE_IAM",
+              "name": "IAM User & Roles",
+              "applicationId": "onecx-iam-ui",
+              "position": 1,
+              "url": "/iam",
+              "badge": "users",
+              "roles": ["onecx-admin"],
+              "i18n": {
+                "de": "IAM Benutzer & Rollen"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "USER_PROFILE_MENU",
+      "name": "User Profile Menu",
+      "position": 1,
+      "badge": "folder",
+      "roles": ["onecx-admin", "onecx-user"],
+      "children": [
+        {
+          "key": "PERSONAL_INFO",
+          "name": "Personal Info",
+          "applicationId": "onecx-user-profile-ui",
+          "position": 0,
+          "url": "/user",
+          "badge": "user",
+          "i18n": {
+            "de": "Meine persönlichen Daten",
+            "en": "My Personal Info"
+          }
+        },
+        {
+          "key": "ACCOUNT_SETTINGS",
+          "name": "Account Settings",
+          "applicationId": "onecx-user-profile-ui",
+          "url": "/user/account",
+          "position": 1,
+          "badge": "cog"
+        },
+        {
+          "key": "CHANGE_PASSWORD",
+          "name": "Change Password",
+          "applicationId": "onecx-user-profile-ui",
+          "url": "/user/change-password",
+          "position": 2,
+          "badge": "key",
+          "i18n": {
+            "de": "Passwort ändern"
+          }
+        }
+      ]
+    },
+    {
+      "key": "PORTAL_FOOTER_MENU",
+      "name": "Footer Menu",
+      "position": 3,
+      "roles": ["onecx-admin", "onecx-user"],
+      "children": [
+        {
+          "key": "FOOTER_CONTACT",
+          "name": "Contact",
+          "url": "/contact",
+          "position": 0,
+          "i18n": {
+            "de": "Kontakt",
+            "en": "Contact"
+          }
+        },
+        {
+          "key": "FOOTER_IMPRINT",
+          "name": "Impressum",
+          "url": "/imprint",
+          "position": 1,
+          "i18n": {
+            "de": "Impressum",
+            "en": "Imprint"
+          }
+        }
+      ]
+    }
+  ]
+}

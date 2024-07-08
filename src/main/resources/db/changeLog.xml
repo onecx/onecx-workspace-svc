@@ -10,5 +10,7 @@
     <include relativeToChangelogFile="true" file="v1/2024-03-20-drop-image-urls-subject-links.xml"/>
     <include relativeToChangelogFile="true" file="v1/2024-03-25-change-constraints.xml"/>
     <include relativeToChangelogFile="true" file="v1/2024-04-23-add-slots.xml"/>
-
+    <include relativeToChangelogFile="true" file="v1/2024-05-08-mandatory-attribute.xml"/>
+    <include relativeToChangelogFile="true" file="v1/2024-05-28-workspace-operator.xml"/>
+    <include relativeToChangelogFile="true" file="v1/2024-06-12-update-image-constraint.xml"/>
 </databaseChangeLog>

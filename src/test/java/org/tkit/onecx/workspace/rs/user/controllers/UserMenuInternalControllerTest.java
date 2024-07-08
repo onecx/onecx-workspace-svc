@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.rs.user.mappers.ExceptionMapper;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
@@ -23,6 +25,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(UserMenuInternalController.class)
 @WithDBData(value = "data/testdata-user.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write" })
 class UserMenuInternalControllerTest extends AbstractTest {
 
     @Test
@@ -30,6 +33,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
 
         var workspaceName = "test03";
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .body(new UserWorkspaceMenuRequestDTO().token("this-is-not-token"))
                 .pathParam("workspaceName", workspaceName)
@@ -45,6 +49,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         var idToken = createToken("org1");
 
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, idToken)
@@ -67,6 +72,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         var workspaceName = "does-not-exists";
         var accessToken = createAccessTokenBearer(USER_BOB);
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(new UserWorkspaceMenuRequestDTO().token(accessToken))
@@ -84,6 +90,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         var idToken = createToken("org1");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, idToken)
@@ -107,6 +114,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         var idToken = createToken("org1");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, idToken)
@@ -143,6 +151,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         // without bearer prefix
         accessToken = createAccessToken(USER_BOB);
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, idToken)
@@ -171,6 +180,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         var idToken = createToken("org1");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, idToken)
@@ -201,6 +211,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         // without bearer prefix
         accessToken = createAccessToken(USER_BOB);
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, idToken)
@@ -229,6 +240,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         var idToken = createToken("org2");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, idToken)

@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.Collection;
 import java.util.Map;
@@ -12,6 +13,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -21,6 +23,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(MenuInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class MenuInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
@@ -30,6 +33,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .workspaceId("11-222");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -43,6 +47,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(6);
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org3"))
@@ -59,6 +64,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
     @Test
     void deleteMenuItemByIdTest() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "33-13")
@@ -71,6 +77,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .workspaceId("11-222");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -84,6 +91,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(6);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "33-13")
@@ -93,6 +101,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -109,6 +118,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
     @Test
     void deleteAllMenuItemsForWorkspaceTest() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
@@ -121,6 +131,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .workspaceId("11-222");
 
         var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -134,6 +145,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         assertThat(dto.getStream()).isNotNull().isNotEmpty();
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("id", "11-222")
@@ -143,6 +155,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .statusCode(NO_CONTENT.getStatusCode());
 
         dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -167,6 +180,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         menuItem.setI18n(Map.of("de", "Test DE Menu", "en", "Test EN Menu"));
 
         var error = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org3"))
@@ -180,6 +194,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         assertThat(error.getErrorCode()).isEqualTo("WORKSPACE_DOES_NOT_EXIST");
 
         var uri = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -191,7 +206,8 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
         assertThat(uri).isNotNull();
 
-        var dto = given().when()
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .get(uri)
@@ -205,7 +221,8 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
     void getMenuItemByIdTest() {
-        var dto = given().when()
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "33-6")
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -216,7 +233,8 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         assertThat(dto).isNotNull();
         assertThat(dto.getName()).isEqualTo("Portal Child 1");
 
-        given().when()
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "33-6")
                 .header(APM_HEADER_PARAM, createToken("org2"))
@@ -233,6 +251,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .workspaceId("11-222");
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org2"))
@@ -246,6 +265,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         assertThat(data.getMenuItems()).isEmpty();
 
         data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .header(APM_HEADER_PARAM, createToken("org1"))
@@ -283,6 +303,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         request.setModificationCount(0);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -294,6 +315,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
 
         // update menu item
         var updatedData = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
                 .body(request)
@@ -308,7 +330,8 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
         assertThat(updatedData.getKey()).isEqualTo(request.getKey());
         assertThat(updatedData.getDescription()).isEqualTo(request.getDescription());
 
-        var dto = given().when()
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
                 .pathParam("menuItemId", "44-6")
                 .header(APM_HEADER_PARAM, createToken("org1"))

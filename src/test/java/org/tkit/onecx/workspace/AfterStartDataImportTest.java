@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Test;
+import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Role;
 import org.tkit.onecx.workspace.domain.models.Workspace;
@@ -21,6 +22,9 @@ class AfterStartDataImportTest extends AbstractTest {
     @Inject
     WorkspaceDAO workspaceDAO;
 
+    @Inject
+    AssignmentDAO assignmentDAO;
+
     @Test
     void importDataFromFileTest() {
         Stream<Workspace> result = workspaceDAO.findAll();
@@ -30,10 +34,17 @@ class AfterStartDataImportTest extends AbstractTest {
         assertThat(w.getName()).isEqualTo("ADMIN");
         assertThat(w.getTenantId()).isEqualTo("tenant-100");
 
-        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(4);
+        assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2);
         var map = w.getRoles().stream().collect(Collectors.toMap(Role::getName, x -> x));
 
-        assertThat(map).containsOnlyKeys("role1", "role2", "roleA", "roleB");
+        assertThat(map).containsOnlyKeys("onecx-admin", "onecx-user-test");
+
+        assertThat(w.getProducts()).isNotNull().isNotEmpty().hasSize(4);
+
+        assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(3);
+
+        var assignments = assignmentDAO.findAll().toList();
+        assertThat(assignments).isNotNull().hasSize(7);
     }
 
 }

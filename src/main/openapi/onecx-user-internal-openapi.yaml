@@ -10,6 +10,8 @@ tags:
 paths:
   /internal/user/{workspaceName}/menu:
     post:
+      security:
+        - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - userMenuInternal
       description: Get menu for the user
@@ -41,6 +43,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-ws:all: Grants access to all operations
+            ocx-ws:read: Grants read access
   schemas:
     UserWorkspaceMenuRequest:
       type: object
@@ -82,6 +93,8 @@ components:
         badge:
           type: string
         external:
+          type: boolean
+        disabled:
           type: boolean
         i18n:
           type: object

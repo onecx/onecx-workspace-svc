@@ -14,6 +14,7 @@ import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.onecx.workspace.domain.services.WorkspaceService;
+import org.tkit.onecx.workspace.domain.template.services.CreateTemplateService;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.WorkspaceMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
@@ -42,10 +43,15 @@ public class WorkspaceInternalRestController implements WorkspaceInternalApi {
     @Context
     UriInfo uriInfo;
 
+    @Inject
+    CreateTemplateService createTemplateService;
+
     @Override
     public Response createWorkspace(CreateWorkspaceRequestDTO createWorkspaceRequestDTO) {
         var workspace = workspaceMapper.create(createWorkspaceRequestDTO);
-        workspace = dao.create(workspace);
+        var template = createTemplateService.createTemplate(workspace);
+
+        workspace = service.createWorkspace(workspace, template);
         return Response
                 .created(uriInfo.getAbsolutePathBuilder().path(workspace.getId()).build())
                 .entity(workspaceMapper.map(workspace))

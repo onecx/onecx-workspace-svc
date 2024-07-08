@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.tkit.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.47.0</version>
+        <version>0.54.0</version>
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
@@ -38,6 +38,14 @@
         <dependency>
             <groupId>org.tkit.quarkus.lib</groupId>
             <artifactId>tkit-quarkus-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.tkit.onecx.quarkus</groupId>
+            <artifactId>onecx-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc</artifactId>
         </dependency>
 
         <!-- TENANT -->
@@ -144,6 +152,11 @@
             <artifactId>quarkus-test-keycloak-server</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.tkit.quarkus.lib</groupId>
+            <artifactId>tkit-quarkus-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -161,6 +174,7 @@
                     <generateSupportingFiles>false</generateSupportingFiles>
                     <addCompileSourceRoot>true</addCompileSourceRoot>
                     <library>quarkus</library>
+                    <additionalProperties>onecx-scopes=true</additionalProperties>
                     <configOptions>
                         <sourceFolder>/</sourceFolder>
                         <openApiNullable>false</openApiNullable>
@@ -227,16 +241,28 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>di-workspace-v1</id>
+                        <id>create-template</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/di-workspace-v1.yaml</inputSpec>
-                            <apiPackage>gen.org.tkit.onecx.workspace.di.workspace.v1</apiPackage>
-                            <modelPackage>gen.org.tkit.onecx.workspace.di.workspace.v1.model</modelPackage>
-                            <modelNameSuffix>DTOV1</modelNameSuffix>
-                            <skipValidateSpec>true</skipValidateSpec>
+                            <inputSpec>src/main/openapi/onecx-workspace-template-create.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.workspace.template.create</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.template.create.model</modelPackage>
+                            <modelNameSuffix>TemplateDTO</modelNameSuffix>
+                            <generateApis>false</generateApis>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>di-template</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-workspace-di-template.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.workspace.template.di</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.template.di.model</modelPackage>
+                            <modelNameSuffix>DI</modelNameSuffix>
                             <generateApis>false</generateApis>
                         </configuration>
                     </execution>

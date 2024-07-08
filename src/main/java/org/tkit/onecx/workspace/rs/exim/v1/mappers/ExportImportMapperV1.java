@@ -2,6 +2,7 @@ package org.tkit.onecx.workspace.rs.exim.v1.mappers;
 
 import java.time.OffsetDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.models.*;
@@ -12,18 +13,92 @@ import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ExportImportMapperV1 {
 
+    default List<Image> createImages(String workspaceName, Map<String, ImageDTOV1> images) {
+        if (images == null) {
+            return List.of();
+        }
+        List<Image> result = new ArrayList<>();
+        images.forEach((refType, dto) -> result.add(createImage(workspaceName, refType, dto)));
+        return result;
+    }
+
+    default Image updateImage(Image image, ImageDTOV1 dto) {
+        image.setImageData(dto.getImageData());
+        image.setMimeType(dto.getMimeType());
+        image.setLength(length(dto.getImageData()));
+        return image;
+    }
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "operator", ignore = true)
+    @Mapping(target = "length", source = "dto.imageData", qualifiedByName = "length")
+    Image createImage(String refId, String refType, ImageDTOV1 dto);
+
+    @Named("length")
+    default Integer length(byte[] data) {
+        if (data == null) {
+            return 0;
+        }
+        return data.length;
+    }
+
     ImportMenuResponseDTOV1 create(String id, ImportResponseStatusDTOV1 status);
 
-    default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces) {
+    default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces, List<Image> images, Collection<MenuItem> menus,
+            Map<String, Set<String>> roles) {
+        if (workspaces == null) {
+            return null;
+        }
+        var imagesMap = createImages(images);
+
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         snapshot.setCreated(OffsetDateTime.now());
         snapshot.setId(UUID.randomUUID().toString());
-        snapshot.setWorkspaces(map(workspaces));
+        snapshot.setWorkspaces(map(workspaces, imagesMap, menus, roles));
         return snapshot;
     }
 
-    Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data);
+    default Map<String, Map<String, ImageDTOV1>> createImages(List<Image> images) {
+        if (images == null) {
+            return Map.of();
+        }
+        Map<String, Map<String, ImageDTOV1>> result = new HashMap<>();
+        images.forEach(image -> result.computeIfAbsent(image.getRefId(), k -> new HashMap<>())
+                .put(image.getRefType(), createImage(image)));
+        return result;
+    }
 
+    ImageDTOV1 createImage(Image image);
+
+    default Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data, Map<String, Map<String, ImageDTOV1>> images,
+            Collection<MenuItem> menus, Map<String, Set<String>> roles) {
+        if (data == null) {
+            return Map.of();
+        }
+
+        Map<String, List<EximWorkspaceMenuItemDTOV1>> menuMap = new HashMap<>();
+        var parents = menus.stream().filter(m -> m.getParentId() == null).toList();
+        parents.forEach(m -> menuMap.computeIfAbsent(m.getWorkspaceId(), k -> new ArrayList<>()).add(map(m, roles)));
+
+        Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
+        data.forEach((name, value) -> {
+            EximWorkspaceDTOV1 dto = map(value);
+            dto.setImages(images.get(name));
+            dto.setMenuItems(menuMap.get(value.getId()));
+            map.put(name, dto);
+        });
+        return map;
+    }
+
+    @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)
@@ -35,6 +110,7 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "modificationCount", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "slots", ignore = true)
+    @Mapping(target = "operator", ignore = true)
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
 
     @Mapping(target = "modificationCount", ignore = true)
@@ -69,7 +145,17 @@ public interface ExportImportMapperV1 {
 
     @Mapping(target = "removeProductsItem", ignore = true)
     @Mapping(target = "removeRolesItem", ignore = true)
+    @Mapping(target = "removeSlotsItem", ignore = true)
+    @Mapping(target = "removeImagesItem", ignore = true)
+    @Mapping(target = "images", ignore = true)
+    @Mapping(target = "menuItems", ignore = true)
+    @Mapping(target = "removeMenuItemsItem", ignore = true)
     EximWorkspaceDTOV1 map(Workspace workspace);
+
+    @Mapping(target = "removeComponentsItem", ignore = true)
+    EximSlotDTOV1 map(Slot slot);
+
+    EximComponentDTOV1 map(Component component);
 
     @Mapping(target = "removeMicrofrontendsItem", ignore = true)
     EximProductDTOV1 map(Product product);
@@ -143,6 +229,37 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "parentId", ignore = true)
     MenuItem map(EximWorkspaceMenuItemDTOV1 eximWorkspaceMenuItemDTOV1);
 
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "roleId", ignore = true)
+    @Mapping(target = "menuItemId", ignore = true)
+    Assignment createAssignment(MenuItem menuItem, Role role);
+
+    default List<Assignment> createAssignments(List<Role> roles, List<MenuItem> menus,
+            Map<String, Set<String>> menuMap) {
+        if (menus == null || menus.isEmpty()) {
+            return List.of();
+        }
+
+        var rolesMap = roles.stream().collect(Collectors.toMap(Role::getName, x -> x));
+        List<Assignment> assignments = new ArrayList<>();
+
+        menus.forEach(m -> menuMap.get(m.getId()).forEach(r -> {
+            var role = rolesMap.get(r);
+            if (role != null) {
+                assignments.add(createAssignment(m, role));
+            }
+        }));
+        return assignments;
+    }
+
     default Map<String, Set<String>> recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace,
             MenuItem parent,
             List<MenuItem> mappedItems) {
@@ -211,6 +328,12 @@ public interface ExportImportMapperV1 {
         return newProducts;
     }
 
+    default List<Slot> createSlots(List<EximSlotDTOV1> slots, Workspace workspace) {
+        List<Slot> newSlots = new ArrayList<>();
+        slots.forEach(dto -> newSlots.add(map(dto, workspace)));
+        return newSlots;
+    }
+
     @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "workspace", source = "workspace")
     @Mapping(target = "tenantId", ignore = true)
@@ -229,4 +352,26 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "productId", ignore = true)
     Microfrontend map(EximMicrofrontendDTOV1 eximMicrofrontendDTOV1);
+
+    @Mapping(target = "workspaceId", ignore = true)
+    @Mapping(target = "workspace", source = "workspace")
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "modificationCount", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "name", source = "dto.name")
+    Slot map(EximSlotDTOV1 dto, Workspace workspace);
+
+    static String imageId(Image image) {
+        return imageId(image.getRefId(), image.getRefType());
+    }
+
+    static String imageId(String refId, String refType) {
+        return refId + "#" + refType;
+    }
 }

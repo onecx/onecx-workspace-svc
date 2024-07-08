@@ -2,6 +2,7 @@ package org.tkit.onecx.workspace.domain.models;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.TenantId;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "IMAGE", uniqueConstraints = {
-        @UniqueConstraint(name = "IMAGE_CONSTRAINTS", columnNames = { "REF_ID", "REF_TYPE" })
+        @UniqueConstraint(name = "IMAGE_CONSTRAINTS", columnNames = { "REF_ID", "TENANT_ID", "REF_TYPE" })
 })
 @SuppressWarnings("squid:S2160")
 public class Image extends TraceableEntity {
@@ -31,4 +32,13 @@ public class Image extends TraceableEntity {
     @Column(name = "DATA")
     private byte[] imageData;
 
+    /**
+     * Flag to identify created by an operator
+     */
+    @Column(name = "OPERATOR")
+    private Boolean operator;
+
+    @TenantId
+    @Column(name = "TENANT_ID")
+    private String tenantId;
 }

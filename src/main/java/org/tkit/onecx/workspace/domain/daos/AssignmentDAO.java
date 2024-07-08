@@ -1,6 +1,7 @@
 package org.tkit.onecx.workspace.domain.daos;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,6 +21,22 @@ import org.tkit.quarkus.jpa.models.TraceableEntity_;
 @ApplicationScoped
 public class AssignmentDAO extends AbstractDAO<Assignment> {
 
+    public List<AssignmentMenu> findAssignmentMenuForWorkspaces(Collection<String> workspaceIds) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(AssignmentMenu.class);
+            var root = cq.from(Assignment.class);
+
+            cq.select(cb.construct(AssignmentMenu.class, root.get(Assignment_.MENU_ITEM_ID),
+                    root.get(Assignment_.ROLE).get(Role_.NAME)));
+            cq.where(root.get(Assignment_.ROLE).get(Role_.WORKSPACE_ID).in(workspaceIds));
+
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_WORKSPACES, ex);
+        }
+    }
+
     public List<AssignmentMenu> findAssignmentMenuForWorkspace(String workspaceId) {
         try {
             var cb = this.getEntityManager().getCriteriaBuilder();
@@ -32,7 +49,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
             return this.getEntityManager().createQuery(cq).getResultList();
         } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_MENU_ID_FOR_USER, ex);
+            throw new DAOException(ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_WORKSPACE, ex);
         }
     }
 
@@ -71,7 +88,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
                 cq.where(predicates.toArray(new Predicate[] {}));
             }
 
-            cq.orderBy(cb.asc(root.get(AbstractTraceableEntity_.creationDate)));
+            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.creationDate)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
         } catch (Exception ex) {
@@ -86,6 +103,18 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
             var cq = this.deleteQuery();
             var root = cq.from(Assignment.class);
             cq.where(cb.equal(root.get(Assignment_.MENU_ITEM).get(MenuItem_.WORKSPACE_ID), id));
+            getEntityManager().createQuery(cq).executeUpdate();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_DELETE_ITEMS_BY_WORKSPACE_ID, ex);
+        }
+    }
+
+    @Transactional
+    public void deleteAllByWorkspaceIds(Collection<String> ids) {
+        try {
+            var cq = this.deleteQuery();
+            var root = cq.from(Assignment.class);
+            cq.where(root.get(Assignment_.MENU_ITEM).get(MenuItem_.WORKSPACE_ID).in(ids));
             getEntityManager().createQuery(cq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_ITEMS_BY_WORKSPACE_ID, ex);
@@ -119,8 +148,9 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
 
     public enum ErrorKeys {
 
+        ERROR_FIND_ASSIGNMENT_BY_WORKSPACES,
         ERROR_DELETE_ITEMS_BY_ROLE_ID,
-        ERROR_FIND_MENU_ID_FOR_USER,
+        ERROR_FIND_ASSIGNMENT_BY_WORKSPACE,
 
         ERROR_DELETE_ITEMS_BY_MENU_ID,
 

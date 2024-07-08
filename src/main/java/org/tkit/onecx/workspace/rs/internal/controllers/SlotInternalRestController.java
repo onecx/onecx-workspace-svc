@@ -13,6 +13,8 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.workspace.domain.daos.SlotDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
+import org.tkit.onecx.workspace.domain.models.Slot;
+import org.tkit.onecx.workspace.domain.services.SlotService;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.SlotMapper;
 import org.tkit.quarkus.jpa.exceptions.ConstraintException;
@@ -43,6 +45,9 @@ public class SlotInternalRestController implements SlotInternalApi {
     @Inject
     WorkspaceDAO workspaceDAO;
 
+    @Inject
+    SlotService slotService;
+
     @Override
     public Response createSlot(CreateSlotRequestDTO createSlotRequestDTO) {
         var workspace = workspaceDAO.findById(createSlotRequestDTO.getWorkspaceId());
@@ -50,12 +55,19 @@ public class SlotInternalRestController implements SlotInternalApi {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        var slot = mapper.create(createSlotRequestDTO, workspace);
-        slot = dao.create(slot);
-        return Response
-                .created(uriInfo.getAbsolutePathBuilder().path(slot.getId()).build())
-                .entity(mapper.map(slot))
-                .build();
+        var slots = mapper.createList(createSlotRequestDTO, workspace);
+
+        var existingSlots = dao.findSlotsByWorkspaceId(workspace.getId()).stream().map(Slot::getName).toList();
+        slots.removeIf(slot -> existingSlots.contains(slot.getName()));
+        var createdSlots = dao.create(slots).toList();
+        if (!createdSlots.isEmpty()) {
+            return Response.status(Response.Status.CREATED)
+                    .entity(mapper.map(createdSlots))
+                    .build();
+        } else {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
     }
 
     @Override
@@ -87,7 +99,7 @@ public class SlotInternalRestController implements SlotInternalApi {
         }
 
         mapper.update(updateSlotRequestDTO, slot);
-        slot = dao.update(slot);
+        slot = slotService.update(slot, mapper.mapComponents(updateSlotRequestDTO.getComponents()));
         return Response.ok(mapper.map(slot)).build();
     }
 

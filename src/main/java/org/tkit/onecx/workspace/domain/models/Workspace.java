@@ -34,6 +34,9 @@ public class Workspace extends TraceableEntity {
     @Column(name = "TENANT_ID")
     private String tenantId;
 
+    @Column(name = "MANDATORY")
+    private Boolean mandatory;
+
     @Column(name = "NAME", nullable = false)
     private String name;
 
@@ -77,4 +80,9 @@ public class Workspace extends TraceableEntity {
     @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
     private List<Slot> slots;
 
+    /**
+     * Flag to identify created by an operator
+     */
+    @Column(name = "OPERATOR")
+    private Boolean operator;
 }

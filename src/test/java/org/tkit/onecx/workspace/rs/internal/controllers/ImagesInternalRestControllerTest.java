@@ -5,6 +5,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.tkit.onecx.workspace.rs.internal.mappers.ExceptionMapper.ErrorKeys.CONSTRAINT_VIOLATIONS;
+import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.io.File;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
+import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
 
 import gen.org.tkit.onecx.image.rs.internal.model.ImageInfoDTO;
@@ -26,6 +28,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 @TestHTTPEndpoint(ImagesInternalRestController.class)
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class ImagesInternalRestControllerTest extends AbstractTest {
 
     private static final String MEDIA_TYPE_IMAGE_PNG = "image/png";
@@ -37,6 +40,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     @Test
     void uploadImage() {
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", "productName")
                 .pathParam("refType", RefTypeDTO.LOGO.toString())
                 .when()
@@ -54,6 +58,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
     void uploadImageEmptyBody() {
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", "productName")
                 .pathParam("refType", RefTypeDTO.LOGO.toString())
                 .when()
@@ -74,6 +79,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         var refType = RefTypeDTO.LOGO;
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -84,6 +90,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
                 .statusCode(CREATED.getStatusCode());
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -96,7 +103,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo("PERSIST_ENTITY_FAILED");
         assertThat(exception.getDetail()).isEqualTo(
-                "could not execute statement [ERROR: duplicate key value violates unique constraint 'image_constraints'  Detail: Key (ref_id, ref_type)=(productNameUpload, logo) already exists.]");
+                "could not execute statement [ERROR: duplicate key value violates unique constraint 'image_constraints'  Detail: Key (ref_id, tenant_id, ref_type)=(productNameUpload, tenant-100, logo) already exists.]");
     }
 
     @Test
@@ -106,6 +113,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         var refType = RefTypeDTO.FAVICON;
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -116,6 +124,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
                 .statusCode(CREATED.getStatusCode());
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
@@ -135,6 +144,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         var refType = RefTypeDTO.LOGO;
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -145,6 +155,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
                 .statusCode(CREATED.getStatusCode());
 
         var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
@@ -164,6 +175,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         var refType = RefTypeDTO.FAVICON;
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -174,6 +186,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
                 .statusCode(CREATED.getStatusCode());
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("refId", refId + "_not_exists")
                 .pathParam("refType", refType)
@@ -189,6 +202,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         var refType = RefTypeDTO.LOGO;
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -201,6 +215,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
                 .body().as(ImageInfoDTO.class);
 
         var res = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -215,6 +230,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         Assertions.assertNotNull(res);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", "does-not-exists")
                 .pathParam("refType", refType)
                 .when()
@@ -232,6 +248,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         var refType = RefTypeDTO.LOGO;
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -244,6 +261,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
                 .body().as(ImageInfoDTO.class);
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", "wrongRefId")
                 .pathParam("refType", "wrongRefType")
                 .when()
@@ -265,6 +283,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         new Random().nextBytes(body);
 
         var exception = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", RefTypeDTO.LOGO)
                 .when()
@@ -288,6 +307,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         var refType = RefTypeDTO.LOGO;
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -300,6 +320,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
                 .body().as(ImageInfoDTO.class);
 
         var res = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)
                 .when()
@@ -312,6 +333,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
         Assertions.assertNotNull(res);
 
         given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
                 .contentType(APPLICATION_JSON)
                 .pathParam("refId", refId)
                 .pathParam("refType", refType)

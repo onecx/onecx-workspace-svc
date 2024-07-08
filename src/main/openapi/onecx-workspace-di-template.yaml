@@ -1,0 +1,179 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-workspace template data import workspace
+  version: 1.0.0
+servers:
+  - url: "http://localhost"
+paths:
+  /template/import:
+    post:
+      security:
+        - oauth2: [ ocx-ws:write ]
+      operationId: templateImport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateImport'
+      responses:
+        200:
+          description: ok
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://oauth.simple.api/token
+          scopes:
+            ocx-ws:write: Grants write access
+  schemas:
+    TemplateImport:
+      type: object
+      properties:
+        workspaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateWorkspace'
+    TemplateWorkspace:
+      description: Workspace data to be imported
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          description: Name of the workspace that should be created/updated
+          minLength: 1
+          type: string
+        themeName:
+          description: Theme name provided in a case when themeImportData is empty
+          type: string
+        description:
+          type: string
+        homePage:
+          type: string
+        baseUrl:
+          type: string
+        companyName:
+          type: string
+        logoUrl:
+          type: string
+        phoneNumber:
+          type: string
+        rssFeedUrl:
+          type: string
+        footerLabel:
+          type: string
+        address:
+          $ref: '#/components/schemas/TemplateAddress'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateRole'
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/TemplateProduct"
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateSlot'
+        menuItems:
+          description: Menu Items structure imported with a workspace
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateMenuItem'
+    TemplateMenuItem:
+      type: object
+      properties:
+        key:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        applicationId:
+          type: string
+        badge:
+          type: string
+        disabled:
+          type: boolean
+        position:
+          format: int32
+          type: integer
+        external:
+          type: boolean
+        i18n:
+          type: object
+          additionalProperties:
+            type: string
+        roles:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateMenuItem'
+    TemplateRole:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    TemplateAddress:
+      type: object
+      properties:
+        street:
+          type: string
+        streetNo:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        postalCode:
+          type: string
+    TemplateSlot:
+      type: object
+      properties:
+        name:
+          type: string
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateComponent'
+    TemplateComponent:
+      type: object
+      properties:
+        name:
+          type: string
+        productName:
+          type: string
+        appId:
+          type: string
+    TemplateProduct:
+      description: "Workspace registered product"
+      type: object
+      properties:
+        productName:
+          type: string
+        baseUrl:
+          type: string
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateMicrofrontend'
+    TemplateMicrofrontend:
+      description: "Product microfrontend"
+      type: object
+      properties:
+        mfeId:
+          type: string
+        basePath:
+          type: string
