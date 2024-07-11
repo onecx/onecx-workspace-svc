@@ -47,6 +47,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
                 .name("Workspace-missing-resource")
+                .displayName("Workspace-missing-resource")
                 .companyName("Company-missing-resource")
                 .baseUrl("/work-missing-resource");
 
@@ -73,6 +74,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
                 .name("Workspace-wrong-file")
+                .displayName("Workspace-wrong-file")
                 .companyName("Company1")
                 .baseUrl("/work1");
 
@@ -100,6 +102,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
                 .name("Workspace1")
+                .displayName("Workspace1")
                 .companyName("Company1")
                 .baseUrl("/work1");
 
@@ -115,6 +118,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
 
         assertThat(responseDto).isNotNull();
         assertThat(responseDto.getName()).isNotNull().isEqualTo(createWorkspaceDTO.getName());
+        assertThat(responseDto.getDisplayName()).isNotNull().isEqualTo(createWorkspaceDTO.getDisplayName());
         assertThat(responseDto.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
         assertThat(responseDto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
@@ -218,6 +222,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
                 .name("Workspace1")
+                .displayName("Workspace1")
                 .companyName("Company1")
                 .baseUrl("/work1");
 
@@ -243,6 +248,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
                 .name("Workspace1")
+                .displayName("Workspace1")
                 .companyName("Company1")
                 .baseUrl("/work1");
 
@@ -258,6 +264,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
 
         assertThat(responseDto).isNotNull();
         assertThat(responseDto.getName()).isNotNull().isEqualTo(createWorkspaceDTO.getName());
+        assertThat(responseDto.getDisplayName()).isNotNull().isEqualTo(createWorkspaceDTO.getDisplayName());
         assertThat(responseDto.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
         assertThat(responseDto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
@@ -272,6 +279,7 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getName()).isNotNull().isEqualTo("Workspace1");
+        assertThat(dto.getDisplayName()).isNotNull().isEqualTo("Workspace1");
         assertThat(dto.getCompanyName()).isNotNull().isEqualTo("Company1");
         assertThat(dto.getBaseUrl()).isNotNull().isEqualTo("/work1");
 

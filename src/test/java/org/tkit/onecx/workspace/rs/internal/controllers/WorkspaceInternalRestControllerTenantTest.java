@@ -34,6 +34,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
                 .name("Workspace1")
+                .displayName("Workspace1")
                 .companyName("Company1")
                 .baseUrl("/work1");
 
@@ -73,6 +74,7 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .extract().as(WorkspaceDTO.class);
         assertThat(workspaceDTO).isNotNull();
         assertThat(workspaceDTO.getName()).isNotNull().isEqualTo(createWorkspaceDTO.getName());
+        assertThat(workspaceDTO.getDisplayName()).isNotNull().isEqualTo(createWorkspaceDTO.getDisplayName());
         assertThat(workspaceDTO.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
         assertThat(workspaceDTO.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
@@ -281,6 +283,8 @@ class WorkspaceInternalRestControllerTenantTest extends AbstractTest {
                 .get("{id}")
                 .then().statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
+
+        response.setDisplayName(("testDisplayName"));
         // update workspace with different tenant
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient")).when()
