@@ -28,6 +28,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
         createWorkspaceDTO
                 .name("Workspace1")
+                .displayName("Workspace1")
                 .companyName("Company1")
                 .baseUrl("/work1");
 
@@ -43,6 +44,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getName()).isNotNull().isEqualTo(createWorkspaceDTO.getName());
+        assertThat(dto.getDisplayName()).isNotNull().isEqualTo(createWorkspaceDTO.getDisplayName());
         assertThat(dto.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
         assertThat(dto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
 
@@ -271,6 +273,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .get("{id}")
                 .then().statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceDTO.class);
+        response.setDisplayName("11-222");
         // update none existing workspace
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient")).when()
@@ -302,6 +305,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         response.setBaseUrl("/company2/updated");
         response.setCompanyName("Company 2 updated");
         response.setName("Workspace2Test");
+        response.setDisplayName("Workspace2TestDisplay");
         var updatedWorkspace = given()
                 .auth().oauth2(getKeycloakClientToken("testClient")).when()
                 .contentType(APPLICATION_JSON)
@@ -335,6 +339,7 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         updatedResponse.setBaseUrl("/company2/test");
         updatedResponse.setCompanyName("Company 2 test");
         updatedResponse.setName("Workspace2Test");
+        updatedResponse.setDisplayName("Workspace2Test");
         updatedResponse.setModificationCount(0);
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient")).when()

@@ -29,6 +29,7 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO()
                 .name("Workspace-Create")
+                .displayName("Workspace-Create-display")
                 .companyName("Company-Create")
                 .baseUrl("/work-create");
 

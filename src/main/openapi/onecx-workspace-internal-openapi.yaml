@@ -1134,9 +1134,12 @@ components:
     CreateWorkspaceRequest:
       required:
         - name
+        - displayName
       type: object
       properties:
         name:
+          type: string
+        displayName:
           type: string
         description:
           type: string
@@ -1161,6 +1164,7 @@ components:
     UpdateWorkspaceRequest:
       required:
         - name
+        - displayName
         - modificationCount
       type: object
       properties:
@@ -1168,6 +1172,8 @@ components:
           format: int32
           type: integer
         name:
+          type: string
+        displayName:
           type: string
         description:
           type: string
@@ -1192,6 +1198,7 @@ components:
     Workspace:
       required:
         - name
+        - displayName
       type: object
       properties:
         id:
@@ -1208,6 +1215,8 @@ components:
         modificationUser:
           type: string
         name:
+          type: string
+        displayName:
           type: string
         description:
           type: string
@@ -1236,12 +1245,15 @@ components:
     WorkspaceAbstract:
       required:
         - name
+        - displayName
         - id
       type: object
       properties:
         id:
           type: string
         name:
+          type: string
+        displayName:
           type: string
         description:
           type: string

@@ -57,6 +57,7 @@ public interface TemplateMapper {
     @Mapping(target = "persisted", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "operator", ignore = true)
+    @Mapping(target = "displayName", ignore = true)
     Workspace createWorkspace(TemplateWorkspaceDI dto);
 
     @AfterMapping
