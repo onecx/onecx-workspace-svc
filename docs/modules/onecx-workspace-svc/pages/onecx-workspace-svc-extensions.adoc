@@ -48,7 +48,7 @@ h| Version
 
 | https://quarkus.io/guides/security-oidc-bearer-token-authentication-tutorial[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-oidc.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | onecx-tenant
 
@@ -72,67 +72,67 @@ h| Version
 
 | https://quarkus.io/guides/cdi-reference[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-arc.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-liquibase
 
 | https://quarkus.io/guides/liquibase[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-liquibase.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-smallrye-health
 
 | https://quarkus.io/guides/smallrye-health[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-smallrye-health.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-micrometer-registry-prometheus
 
 | https://quarkus.io/guides/telemetry-micrometer[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-micrometer-registry-prometheus.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-hibernate-orm
 
 | https://quarkus.io/guides/hibernate-orm[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-hibernate-orm.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-rest
 
 | https://quarkus.io/guides/rest[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-rest.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-rest-jackson
 
 | https://quarkus.io/guides/rest-json[Link]
 | 
-| 3.12.0
+| 3.12.2
 
 | quarkus-jdbc-postgresql
 
 | https://quarkus.io/guides/datasource[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-jdbc-postgresql.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-smallrye-openapi
 
 | https://quarkus.io/guides/openapi-swaggerui[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-smallrye-openapi.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-hibernate-validator
 
 | https://quarkus.io/guides/validation[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-hibernate-validator.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | quarkus-opentelemetry
 
 | https://quarkus.io/guides/opentelemetry[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-opentelemetry.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 | tkit-quarkus-security
 
@@ -150,7 +150,7 @@ h| Version
 
 | https://quarkus.io/guides/container-image[Link]
 | https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-container-image-docker.adoc[Link]
-| 3.12.0
+| 3.12.2
 
 
 | onecx-security
