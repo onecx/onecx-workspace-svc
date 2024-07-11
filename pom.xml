@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.tkit.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.54.0</version>
+        <version>0.56.0</version>
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
@@ -161,6 +161,25 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.tkit.maven</groupId>
+                <artifactId>tkit-docs-quarkus-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>docs</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>docs</goal>
+                        </goals>
+                        <configuration>
+                            <skipDocs>${skipDocs}</skipDocs>
+                            <openApiFiles>
+                                <openApiFile>onecx-workspace-v1-openapi.yaml</openApiFile>
+                            </openApiFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>

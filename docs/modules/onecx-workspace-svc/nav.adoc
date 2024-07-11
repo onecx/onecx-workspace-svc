@@ -1,1 +1,3 @@
 * xref:onecx-workspace-svc:index.adoc[Workspace Backend Service]
+** External API(s)
+*** xref:onecx-workspace-svc:openapi/onecx-workspace-v1-openapi.adoc[Workspace Management V1]
