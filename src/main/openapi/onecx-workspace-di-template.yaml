@@ -65,6 +65,8 @@ components:
           type: string
         footerLabel:
           type: string
+        disabled:
+          type: boolean
         address:
           $ref: '#/components/schemas/TemplateAddress'
         roles:
