@@ -126,6 +126,8 @@ components:
       properties:
         name:
           type: string
+        displayName:
+          type: string
         baseUrl:
           type: string
         theme:
