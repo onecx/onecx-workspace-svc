@@ -1161,6 +1161,8 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
+        disabled:
+          type: boolean
     UpdateWorkspaceRequest:
       required:
         - name
@@ -1195,6 +1197,8 @@ components:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
+        disabled:
+          type: boolean
     Workspace:
       required:
         - name
@@ -1242,6 +1246,9 @@ components:
           type: boolean
         operator:
           type: boolean
+        disabled:
+          type: boolean
+          default: false
     WorkspaceAbstract:
       required:
         - name
@@ -1263,6 +1270,9 @@ components:
           type: string
         logoUrl:
           type: string
+        disabled:
+          type: boolean
+          default: false
     WorkspaceAddress:
       type: object
       properties:

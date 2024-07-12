@@ -3,9 +3,9 @@
 <dataset>
 
 	<!-- Workspace -->
-	<WORKSPACE guid="11-111" optlock="0" company_name="Company1" theme="11-111" description="Company1 test" home_page="main_page" name="test01" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company1" postalcode="56-789" street="Kolorowa" streetno="6" tenant_id="tenant-100" mandatory=""/>
-	<WORKSPACE guid="11-222" optlock="10" company_name="Company2" theme="11-111" description="Company2 Test" home_page="main_page" name="test02" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company2" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-100" mandatory="true"/>
-	<WORKSPACE guid="22-111" optlock="0" company_name="Company3" theme="11-111" description="Company3 Test" home_page="main_page" name="test03" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/company3" postalcode="45-341" street="Wilhelmstrasse" streetno="15" tenant_id="tenant-200"/>
+	<WORKSPACE guid="11-111" optlock="0" company_name="Company1" theme="11-111" description="Company1 test" home_page="main_page" name="test01" phone_number="606450342" rss_feed_url="url.com" city="Poznan" country="Poland" base_url="/company1" postalcode="56-789" street="Kolorowa" streetno="6" tenant_id="tenant-100" mandatory="" disabled="false"/>
+	<WORKSPACE guid="11-222" optlock="10" company_name="Company2" theme="11-111" description="Company2 Test" home_page="main_page" name="test02" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company2" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-100" mandatory="true" disabled="false"/>
+	<WORKSPACE guid="22-111" optlock="0" company_name="Company3" theme="11-111" description="Company3 Test" home_page="main_page" name="test03" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/company3" postalcode="45-341" street="Wilhelmstrasse" streetno="15" tenant_id="tenant-200" disabled="false"/>
 
 
 	<!-- MENU_ITEM -->

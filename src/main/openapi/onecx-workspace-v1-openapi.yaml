@@ -172,6 +172,8 @@ components:
       properties:
         name:
           type: string
+        displayName:
+          type: string
         description:
           type: string
         theme:
@@ -188,6 +190,8 @@ components:
           type: string
         footerLabel:
           type: string
+        disabled:
+          type: boolean
         workspaceRoles:
           type: array
           uniqueItems: true
@@ -240,6 +244,10 @@ components:
       properties:
         name:
           type: string
+        displayName:
+          type: string
+        disabled:
+          type: boolean
         theme:
           type: string
         description:

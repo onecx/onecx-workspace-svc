@@ -88,4 +88,10 @@ public class Workspace extends TraceableEntity {
      */
     @Column(name = "OPERATOR")
     private Boolean operator;
+
+    /**
+     * Flag to disable a workspace
+     */
+    @Column(name = "DISABLED")
+    private Boolean disabled;
 }

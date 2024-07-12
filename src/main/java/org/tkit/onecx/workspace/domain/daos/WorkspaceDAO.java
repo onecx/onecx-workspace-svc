@@ -121,7 +121,9 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
             var cq = cb.createQuery(Workspace.class);
             var root = cq.from(Workspace.class);
 
-            cq.where(cb.like(cb.literal(url), cb.concat(root.get(BASE_URL), "%")));
+            cq.where(cb.and(cb.like(cb.literal(url), cb.concat(root.get(BASE_URL), "%")),
+                    cb.or(cb.isNull(root.get(DISABLED)), cb.isFalse(root.get(DISABLED)))));
+
             var workspaceQuery = this.getEntityManager().createQuery(cq);
             workspaceQuery.setHint(HINT_LOAD_GRAPH,
                     this.getEntityManager().getEntityGraph(Workspace.WORKSPACE_PRODUCTS_SLOTS));

@@ -215,6 +215,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
 
         assertThat(dto).isNotNull();
         assertThat(dto.getCompanyName()).isNotNull().isNotEmpty().isEqualTo("Company44");
+        assertThat(dto.getDisabled()).isFalse();
 
         // strange protocol
         requestDTOV1.setUrl("asd://");
@@ -234,6 +235,17 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         var requestDTOV1 = new WorkspaceLoadRequestDTOV1().path("does-not-exist-url");
 
         // not existing workspace
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+
+        // disabled workspace
+        requestDTOV1.setPath("/company3");
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()

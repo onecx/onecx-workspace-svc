@@ -98,6 +98,7 @@ public interface ExportImportMapperV1 {
         return map;
     }
 
+    @Mapping(target = "disabled", ignore = true)
     @Mapping(target = "mandatory", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
