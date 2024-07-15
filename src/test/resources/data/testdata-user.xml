@@ -32,7 +32,7 @@
 	<!-- ROOT 4-2 -->
 	<MENU_ITEM guid="4-2" optlock="0" disabled="FALSE" key="key42" name="4-2" external="FALSE"  pos="1" scope="WORKSPACE" url=""  workspace="4" application_id="" tenant_id="tenant-100"/>
 	<!-- CHILDREN 4-2 -->
-	<MENU_ITEM guid="4-2-1" parent="4-2" pos="0" optlock="0" disabled="FALSE" key="key421" name="4-2-1" external="FALSE" scope="WORKSPACE" url=""  workspace="4" application_id="" tenant_id="tenant-100"/>
+	<MENU_ITEM guid="4-2-1" parent="4-2" pos="0" optlock="0" disabled="FALSE" key="key421" name="4-2-1" external="FALSE" scope="WORKSPACE" url="/${menuItem1}"  workspace="4" application_id="" tenant_id="tenant-100"/>
 	<MENU_ITEM guid="4-2-2" parent="4-2" pos="1" optlock="0" disabled="FALSE" key="key422" name="4-2-2" external="FALSE"  scope="WORKSPACE" url=""  workspace="4" application_id="" tenant_id="tenant-100"/>
 	<MENU_ITEM guid="4-2-3" parent="4-2" pos="2" optlock="0" disabled="FALSE" key="key423" name="4-2-3" external="FALSE"  scope="WORKSPACE" url=""  workspace="4" application_id="" tenant_id="tenant-100"/>
 	<!-- CHILDREN 4-2-3 -->

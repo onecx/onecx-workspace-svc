@@ -107,6 +107,29 @@ class UserMenuInternalControllerTest extends AbstractTest {
     }
 
     @Test
+    void getMenuStructure_shouldReturnSystemURL() {
+
+        var workspaceName = "test03";
+        var accessToken = createAccessTokenBearer(USER_BOB);
+        var idToken = createToken("org1");
+
+        var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, idToken)
+                .body(new UserWorkspaceMenuRequestDTO().token(accessToken))
+                .pathParam("workspaceName", workspaceName)
+                .post()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().body().as(UserWorkspaceMenuStructureDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getMenu().get(1).getChildren().get(0).getUrl()).isEqualTo("/company3/testItem1");
+    }
+
+    @Test
     void getMenuStructureForUserIdTest() {
 
         var workspaceName = "test03";
