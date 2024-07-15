@@ -27,7 +27,6 @@ public interface UserMenuMapper {
             Map<String, Set<String>> mapping, Set<String> roles, Set<String> mappingKeys) {
         UserWorkspaceMenuStructureDTO dto = empty(workspace.getName());
 
-        final var sub = new StringSubstitutor(System.getenv());
         if (entities.isEmpty()) {
             return dto;
         }
@@ -45,12 +44,6 @@ public interface UserMenuMapper {
         if (items.isEmpty()) {
             return dto;
         }
-
-        //        for (MenuItem item : items) {
-        //            if (item.getUrl() != null) {
-        //                item.setUrl(sub.replace(item.getUrl()));
-        //            }
-        //        }
 
         return dto.menu(items.stream().map(this::mapTreeItem).toList());
     }
