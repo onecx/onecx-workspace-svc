@@ -3,6 +3,8 @@ package org.tkit.onecx.workspace.rs.user.mappers;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringSubstitutor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
@@ -40,6 +42,12 @@ public interface UserMenuMapper {
         items = filterMenu(items, mapping, roles, workspace.getBaseUrl());
         if (items.isEmpty()) {
             return dto;
+        }
+
+        for (MenuItem item : items) {
+            if (StringUtils.isNotBlank(item.getUrl())) {
+                item.setUrl(StringSubstitutor.replace(item.getUrl(), System.getenv()));
+            }
         }
 
         return dto.menu(items.stream().map(this::mapTreeItem).toList());
