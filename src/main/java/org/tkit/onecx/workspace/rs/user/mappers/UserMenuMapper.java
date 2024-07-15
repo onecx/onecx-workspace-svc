@@ -3,7 +3,6 @@ package org.tkit.onecx.workspace.rs.user.mappers;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,12 +26,15 @@ public interface UserMenuMapper {
     default UserWorkspaceMenuStructureDTO mapTree(Workspace workspace, Collection<MenuItem> entities,
             Map<String, Set<String>> mapping, Set<String> roles, Set<String> mappingKeys) {
         UserWorkspaceMenuStructureDTO dto = empty(workspace.getName());
+
+        final var sub = new StringSubstitutor(System.getenv());
         if (entities.isEmpty()) {
             return dto;
         }
         Set<MenuItem> items;
         if (!mappingKeys.isEmpty()) {
-            items = entities.stream().filter(m -> m.getParentId() == null)
+            items = entities.stream()
+                    .filter(m -> m.getParentId() == null)
                     .filter(m -> mappingKeys.contains(m.getKey()))
                     .collect(Collectors.toSet());
         } else {
@@ -44,28 +46,34 @@ public interface UserMenuMapper {
             return dto;
         }
 
-        for (MenuItem item : items) {
-            if (StringUtils.isNotBlank(item.getUrl())) {
-                item.setUrl(StringSubstitutor.replace(item.getUrl(), System.getenv()));
-            }
-        }
+        //        for (MenuItem item : items) {
+        //            if (item.getUrl() != null) {
+        //                item.setUrl(sub.replace(item.getUrl()));
+        //            }
+        //        }
 
         return dto.menu(items.stream().map(this::mapTreeItem).toList());
     }
 
     default String updateInternalUrl(String workspaceUrl, String menuItemUrl, Boolean isExternal) {
+        final var sub = new StringSubstitutor(System.getenv());
         if (Boolean.TRUE.equals(isExternal)) {
             return menuItemUrl;
         } else {
-            return workspaceUrl + menuItemUrl;
+            return sub.replace(workspaceUrl + menuItemUrl);
         }
     }
 
     default Set<MenuItem> filterMenu(Set<MenuItem> items, Map<String, Set<String>> mapping, Set<String> roles,
             String workspaceUrl) {
         Set<MenuItem> tmp = new HashSet<>(items);
+        final var sub = new StringSubstitutor(System.getenv());
         tmp.forEach(m -> {
             var mr = mapping.get(m.getId());
+            var mUrl = m.getUrl();
+            if (mUrl != null) {
+                sub.replace(mUrl);
+            }
             if (mr == null || mr.stream().noneMatch(roles::contains)) {
                 items.remove(m);
             } else {
