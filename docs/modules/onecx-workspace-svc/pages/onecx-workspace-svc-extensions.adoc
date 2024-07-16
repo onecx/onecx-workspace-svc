@@ -44,12 +44,6 @@ h| Version
 | https://github.com/1000kit/tkit-quarkus/blob/2.27.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-rest.adoc[Link]
 | 2.27.0
 
-| quarkus-oidc
-
-| https://quarkus.io/guides/security-oidc-bearer-token-authentication-tutorial[Link]
-| https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-oidc.adoc[Link]
-| 3.12.2
-
 | onecx-tenant
 
 | https://onecx.github.io/docs/onecx-quarkus/current/onecx-quarkus/onecx-tenant.html[Link]
@@ -67,6 +61,12 @@ h| Version
 | https://1000kit.github.io/tkit-quarkus/current/tkit-quarkus/tkit-quarkus-rest-context.html[Link]
 | https://github.com/1000kit/tkit-quarkus/blob/2.27.0/docs/modules/tkit-quarkus/pages/includes/tkit-quarkus-rest-context.adoc[Link]
 | 2.27.0
+
+| quarkus-oidc
+
+| https://quarkus.io/guides/security-oidc-bearer-token-authentication-tutorial[Link]
+| https://github.com/quarkusio/quarkusio.github.io/blob/develop/_generated-doc/latest/config/quarkus-oidc.adoc[Link]
+| 3.12.2
 
 | quarkus-arc
 
