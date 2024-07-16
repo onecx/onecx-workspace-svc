@@ -43,10 +43,6 @@
             <groupId>org.tkit.onecx.quarkus</groupId>
             <artifactId>onecx-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-oidc</artifactId>
-        </dependency>
 
         <!-- TENANT -->
         <dependency>

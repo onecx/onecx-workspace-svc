@@ -48,10 +48,9 @@ public interface UserMenuMapper {
         return dto.menu(items.stream().map(this::mapTreeItem).toList());
     }
 
-    default String updateInternalUrl(String workspaceUrl, String menuItemUrl, Boolean isExternal) {
-        final var sub = new StringSubstitutor(System.getenv());
+    default String updateInternalUrl(String workspaceUrl, String menuItemUrl, Boolean isExternal, StringSubstitutor sub) {
         if (Boolean.TRUE.equals(isExternal)) {
-            return menuItemUrl;
+            return sub.replace(menuItemUrl);
         } else {
             return sub.replace(workspaceUrl + menuItemUrl);
         }
@@ -64,20 +63,20 @@ public interface UserMenuMapper {
         tmp.forEach(m -> {
             var mr = mapping.get(m.getId());
             var mUrl = m.getUrl();
-            if (mUrl != null) {
-                sub.replace(mUrl);
-            }
             if (mr == null || mr.stream().noneMatch(roles::contains)) {
                 items.remove(m);
             } else {
-                filterChildren(m, mapping, roles, workspaceUrl);
+                if (mUrl != null) {
+                    sub.replace(mUrl);
+                }
+                filterChildren(m, mapping, roles, workspaceUrl, sub);
             }
         });
 
         return items;
     }
 
-    default void filterChildren(MenuItem menuItem, Map<String, Set<String>> mapping, Set<String> roles, String workspaceUrl) {
+    default void filterChildren(MenuItem menuItem, Map<String, Set<String>> mapping, Set<String> roles, String workspaceUrl, StringSubstitutor sub) {
         Set<MenuItem> items = new HashSet<>(menuItem.getChildren());
         items.forEach(child -> {
             var mr = mapping.get(child.getId());
@@ -85,9 +84,9 @@ public interface UserMenuMapper {
                 menuItem.getChildren().remove(child);
             } else {
                 if (child.getChildren() != null && !child.getChildren().isEmpty()) {
-                    filterChildren(child, mapping, roles, workspaceUrl);
+                    filterChildren(child, mapping, roles, workspaceUrl, sub);
                 } else {
-                    child.setUrl(updateInternalUrl(workspaceUrl, child.getUrl(), child.isExternal()));
+                    child.setUrl(updateInternalUrl(workspaceUrl, child.getUrl(), child.isExternal(), sub));
                 }
             }
         });

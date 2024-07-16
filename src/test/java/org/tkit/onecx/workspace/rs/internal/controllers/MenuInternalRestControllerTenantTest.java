@@ -137,7 +137,7 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, createToken("org1"))
                 .body(criteria)
                 .post("search")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(MenuItemPageResultDTO.class);
 

@@ -35,7 +35,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post("/export")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceSnapshotDTOV1.class);
 
@@ -69,7 +69,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post("/export")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceSnapshotDTOV1.class);
 
@@ -677,7 +677,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
                 .post("/111111/menu/import")
-                .then().log().all()
+                .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(EximProblemDetailResponseDTOV1.class);
 

@@ -375,7 +375,6 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .pathParam("id", "11-222")
                 .put("{id}")
                 .then()
-                .log().all()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
     }
