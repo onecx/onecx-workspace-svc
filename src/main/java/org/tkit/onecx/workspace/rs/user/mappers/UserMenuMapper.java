@@ -76,7 +76,8 @@ public interface UserMenuMapper {
         return items;
     }
 
-    default void filterChildren(MenuItem menuItem, Map<String, Set<String>> mapping, Set<String> roles, String workspaceUrl, StringSubstitutor sub) {
+    default void filterChildren(MenuItem menuItem, Map<String, Set<String>> mapping, Set<String> roles, String workspaceUrl,
+            StringSubstitutor sub) {
         Set<MenuItem> items = new HashSet<>(menuItem.getChildren());
         items.forEach(child -> {
             var mr = mapping.get(child.getId());
