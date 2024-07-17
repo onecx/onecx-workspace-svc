@@ -211,6 +211,8 @@ components:
           type: string
         footerLabel:
           type: string
+        disabled:
+          type: boolean
         logoUrl:
           type: string
         address:
