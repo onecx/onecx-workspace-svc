@@ -43,10 +43,6 @@
             <groupId>org.tkit.onecx.quarkus</groupId>
             <artifactId>onecx-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-oidc</artifactId>
-        </dependency>
 
         <!-- TENANT -->
         <dependency>
@@ -323,6 +319,7 @@
                         <child6>interpolated6</child6>
                         <child7>interpolated7</child7>
                         <child8>interpolated8</child8>
+                        <menuItem1>testItem1</menuItem1>
                     </environmentVariables>
                 </configuration>
             </plugin>

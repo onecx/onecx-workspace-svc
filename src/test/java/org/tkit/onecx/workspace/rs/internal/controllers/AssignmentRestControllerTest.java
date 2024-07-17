@@ -207,7 +207,7 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(criteria2)
                 .post("/search")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract()

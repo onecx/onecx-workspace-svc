@@ -35,7 +35,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post("/export")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceSnapshotDTOV1.class);
 
@@ -69,7 +69,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .post("/export")
-                .then().log().all()
+                .then()
                 .statusCode(OK.getStatusCode())
                 .extract().as(WorkspaceSnapshotDTOV1.class);
 
@@ -182,6 +182,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .baseUrl("/someurl")
                 .name("testWorkspace")
+                .disabled(true)
                 .roles(roles)
                 .menuItems(menuItems)
                 .products(products)
@@ -221,6 +222,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         var w = dto.getWorkspaces().get("testWorkspace");
         assertThat(w).isNotNull();
         assertThat(w.getName()).isEqualTo("testWorkspace");
+        assertThat(w.getDisabled()).isEqualTo(true);
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
                 .containsExactly(
@@ -677,7 +679,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(snapshot)
                 .post("/111111/menu/import")
-                .then().log().all()
+                .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(EximProblemDetailResponseDTOV1.class);
 
