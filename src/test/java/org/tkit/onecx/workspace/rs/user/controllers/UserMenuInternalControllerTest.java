@@ -106,7 +106,6 @@ class UserMenuInternalControllerTest extends AbstractTest {
         assertThat(data.getMenu()).isNotNull().isEmpty();
     }
 
-
     @Test
     void getMenuStructureForUserIdTest() {
 
