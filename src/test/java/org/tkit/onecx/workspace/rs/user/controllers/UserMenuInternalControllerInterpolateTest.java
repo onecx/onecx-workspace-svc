@@ -20,7 +20,7 @@ import io.quarkus.test.junit.QuarkusTest;
 @TestHTTPEndpoint(UserMenuInternalController.class)
 @WithDBData(value = "data/testdata-user.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write" })
-public class UserMenuInternalControllerInterpolateTest extends AbstractTest {
+class UserMenuInternalControllerInterpolateTest extends AbstractTest {
 
     @Test
     void getMenuStructure_shouldReturnSystemURL() {
