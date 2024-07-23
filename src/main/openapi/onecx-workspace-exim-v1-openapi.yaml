@@ -11,7 +11,7 @@ paths:
   /exim/v1/workspace/export:
     post:
       security:
-        - oauth2: [ ocx-ws:read ]
+        - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - workspaceExportImport
       description: Export workspaces by names
@@ -34,7 +34,7 @@ paths:
   /exim/v1/workspace/import:
     post:
       security:
-        - oauth2: [ ocx-ws:write ]
+        - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceExportImport
       description: Import workspaces
@@ -61,7 +61,7 @@ paths:
   /exim/v1/workspace/operator:
     post:
       security:
-        - oauth2: [ ocx-ws:write ]
+        - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceExportImport
       description: Import workspaces
@@ -84,7 +84,7 @@ paths:
   /exim/v1/workspace/{name}/menu/export:
     get:
       security:
-        - oauth2: [ ocx-ws:write ]
+        - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceExportImport
       description: Export menu by workspace name
@@ -107,7 +107,7 @@ paths:
   /exim/v1/workspace/{name}/menu/import:
     post:
       security:
-        - oauth2: [ ocx-ws:write ]
+        - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceExportImport
       description: Import menu
@@ -145,6 +145,7 @@ components:
         clientCredentials:
           tokenUrl: https://oauth.simple.api/token
           scopes:
+            ocx-ws:all: Grants access to all operations
             ocx-ws:read: Grants read access
             ocx-ws:write: Grants write access
   schemas:
