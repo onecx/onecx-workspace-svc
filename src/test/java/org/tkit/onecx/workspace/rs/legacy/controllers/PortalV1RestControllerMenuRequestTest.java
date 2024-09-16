@@ -34,7 +34,11 @@ class PortalV1RestControllerMenuRequestTest extends AbstractTest {
     @Test
     @WithDBData(value = "data/testdata-legacy.xml", deleteAfterTest = true, deleteBeforeInsert = true)
     void submitMenuRegistrationRequestTest() {
-        Mockito.when(appConfig.enableMenuAutoRegistration()).thenReturn(true);
+
+        var m = Mockito.mock(PortalConfig.Legacy.class);
+        Mockito.when(appConfig.legacy()).thenReturn(m);
+        Mockito.when(m.enableMenuAutoRegistration()).thenReturn(true);
+
         var request = new MenuRegistrationRequestDTO();
         var response = given()
                 .contentType(APPLICATION_JSON)
@@ -143,8 +147,13 @@ class PortalV1RestControllerMenuRequestTest extends AbstractTest {
     public static class MockedAppConfig implements PortalConfig {
 
         @Override
-        public boolean enableMenuAutoRegistration() {
-            return false;
+        public Legacy legacy() {
+            return new Legacy() {
+                @Override
+                public boolean enableMenuAutoRegistration() {
+                    return false;
+                }
+            };
         }
     }
 

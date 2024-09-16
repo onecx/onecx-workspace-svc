@@ -1,107 +1,36 @@
-
 :summaryTableId: onecx-workspace-svc
 [.configuration-legend]
 icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
 [.configuration-reference.searchable, cols="80,.^10,.^10"]
 |===
 
-h|[[onecx-workspace-svc_configuration]]link:#onecx-workspace-svc_configuration[Configuration property]
-
+h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a| [[onecx-workspace-svc_onecx-workspace-template-create-enabled]]`link:#onecx-workspace-svc_onecx-workspace-template-create-enabled[onecx.workspace.template.create.enabled]`
-
-
-[.description]
---
-Enabled or enable create template configuration.
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ENABLED+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ENABLED+++`
-endif::add-copy-button-to-env-var[]
---|boolean 
-|`true`
-
-
-a| [[onecx-workspace-svc_onecx-workspace-template-create-resource]]`link:#onecx-workspace-svc_onecx-workspace-template-create-resource[onecx.workspace.template.create.resource]`
-
+a| [[onecx-workspace-svc_onecx-workspace-legacy-enable-menu-auto-registration]] [.property-path]##`onecx.workspace.legacy.enable-menu-auto-registration`##
 
 [.description]
 --
-Create template resource.
+Enabled or disable menu auto registration.
+
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_RESOURCE+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_LEGACY_ENABLE_MENU_AUTO_REGISTRATION+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_RESOURCE+++`
+Environment variable: `+++ONECX_WORKSPACE_LEGACY_ENABLE_MENU_AUTO_REGISTRATION+++`
 endif::add-copy-button-to-env-var[]
---|string 
-|`template/workspace-create.json`
-
-
-a| [[onecx-workspace-svc_onecx-workspace-template-create-class-path-resource]]`link:#onecx-workspace-svc_onecx-workspace-template-create-class-path-resource[onecx.workspace.template.create.class-path-resource]`
-
-
-[.description]
 --
-Class-path resource
+|boolean
+|`false`
 
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_CLASS_PATH_RESOURCE+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_CLASS_PATH_RESOURCE+++`
-endif::add-copy-button-to-env-var[]
---|boolean 
-|`true`
-
-
-a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]]`link:#onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping[onecx.workspace.template.create.role-mapping."role-mapping"]`
-
-
-[.description]
---
-Role mapping for create template.
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++`
-endif::add-copy-button-to-env-var[]
---|link:https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]
- 
-|
-
-
-a| [[onecx-workspace-svc_onecx-workspace-template-import-tenants]]`link:#onecx-workspace-svc_onecx-workspace-template-import-tenants[onecx.workspace.template.import.tenants]`
-
-
-[.description]
---
-Template import tenants
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_IMPORT_TENANTS+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_IMPORT_TENANTS+++`
-endif::add-copy-button-to-env-var[]
---|list of string 
-|`default`
-
-
-a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]]`link:#onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping[onecx.workspace.template.import.role-mapping."role-mapping"]`
-
+a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]] [.property-path]##`onecx.workspace.template.import.role-mapping."role-mapping"`##
 
 [.description]
 --
 Role mapping for the template import
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_IMPORT_ROLE_MAPPING__ROLE_MAPPING_+++[]
@@ -109,116 +38,186 @@ endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_IMPORT_ROLE_MAPPING__ROLE_MAPPING_+++`
 endif::add-copy-button-to-env-var[]
---|link:https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]
- 
+--
+|Map<String,String>
 |
 
-
-a| [[onecx-workspace-svc_onecx-workspace-token-verified]]`link:#onecx-workspace-svc_onecx-workspace-token-verified[onecx.workspace.token.verified]`
-
+a| [[onecx-workspace-svc_onecx-workspace-template-import-tenants]] [.property-path]##`onecx.workspace.template.import.tenants`##
 
 [.description]
 --
+Template import tenants
+
+
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_VERIFIED+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_IMPORT_TENANTS+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TOKEN_VERIFIED+++`
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_IMPORT_TENANTS+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
-|`false`
+--
+|list of string
+|`default`
 
-
-a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix]]`link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix[onecx.workspace.token.issuer.public-key-location.suffix]`
-
+a| [[onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping]] [.property-path]##`onecx.workspace.user.menu.mapping."mapping"`##
 
 [.description]
 --
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_SUFFIX+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_SUFFIX+++`
-endif::add-copy-button-to-env-var[]
---|string 
-|`/protocol/openid-connect/certs`
 
-
-a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled]]`link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled[onecx.workspace.token.issuer.public-key-location.enabled]`
-
-
-[.description]
---
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_ENABLED+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_ENABLED+++`
-endif::add-copy-button-to-env-var[]
---|boolean 
-|`false`
-
-
-a| [[onecx-workspace-svc_onecx-workspace-token-claim-separator]]`link:#onecx-workspace-svc_onecx-workspace-token-claim-separator[onecx.workspace.token.claim.separator]`
-
-
-[.description]
---
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_CLAIM_SEPARATOR+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TOKEN_CLAIM_SEPARATOR+++`
-endif::add-copy-button-to-env-var[]
---|string 
-|
-
-
-a| [[onecx-workspace-svc_onecx-workspace-token-claim-path]]`link:#onecx-workspace-svc_onecx-workspace-token-claim-path[onecx.workspace.token.claim.path]`
-
-
-[.description]
---
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_CLAIM_PATH+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TOKEN_CLAIM_PATH+++`
-endif::add-copy-button-to-env-var[]
---|string 
-|`realm_access/roles`
-
-
-a| [[onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping]]`link:#onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping[onecx.workspace.user.menu.mapping."mapping"]`
-
-
-[.description]
---
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_USER_MENU_MAPPING__MAPPING_+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
 Environment variable: `+++ONECX_WORKSPACE_USER_MENU_MAPPING__MAPPING_+++`
 endif::add-copy-button-to-env-var[]
---|link:https://docs.oracle.com/javase/8/docs/api/java/lang/String.html[String]
- 
+--
+|Map<String,String>
 |
 
-
-a| [[onecx-workspace-svc_tkit-legacy-enable-menu-auto-registration]]`link:#onecx-workspace-svc_tkit-legacy-enable-menu-auto-registration[tkit.legacy.enable-menu-auto-registration]`
-
+a| [[onecx-workspace-svc_onecx-workspace-token-verified]] [.property-path]##`onecx.workspace.token.verified`##
 
 [.description]
 --
-Enabled or disable menu auto registration.
 
 ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++TKIT_LEGACY_ENABLE_MENU_AUTO_REGISTRATION+++[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_VERIFIED+++[]
 endif::add-copy-button-to-env-var[]
 ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++TKIT_LEGACY_ENABLE_MENU_AUTO_REGISTRATION+++`
+Environment variable: `+++ONECX_WORKSPACE_TOKEN_VERIFIED+++`
 endif::add-copy-button-to-env-var[]
---|boolean 
+--
+|boolean
 |`false`
 
+a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix]] [.property-path]##`onecx.workspace.token.issuer.public-key-location.suffix`##
+
+[.description]
+--
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_SUFFIX+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_SUFFIX+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`/protocol/openid-connect/certs`
+
+a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled]] [.property-path]##`onecx.workspace.token.issuer.public-key-location.enabled`##
+
+[.description]
+--
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`false`
+
+a| [[onecx-workspace-svc_onecx-workspace-token-claim-separator]] [.property-path]##`onecx.workspace.token.claim.separator`##
+
+[.description]
+--
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_CLAIM_SEPARATOR+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TOKEN_CLAIM_SEPARATOR+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|
+
+a| [[onecx-workspace-svc_onecx-workspace-token-claim-path]] [.property-path]##`onecx.workspace.token.claim.path`##
+
+[.description]
+--
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_CLAIM_PATH+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TOKEN_CLAIM_PATH+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`realm_access/roles`
+
+a| [[onecx-workspace-svc_onecx-workspace-template-create-enabled]] [.property-path]##`onecx.workspace.template.create.enabled`##
+
+[.description]
+--
+Enabled or enable create template configuration.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`true`
+
+a| [[onecx-workspace-svc_onecx-workspace-template-create-resource]] [.property-path]##`onecx.workspace.template.create.resource`##
+
+[.description]
+--
+Create template resource.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_RESOURCE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_RESOURCE+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`template/workspace-create.json`
+
+a| [[onecx-workspace-svc_onecx-workspace-template-create-class-path-resource]] [.property-path]##`onecx.workspace.template.create.class-path-resource`##
+
+[.description]
+--
+Class-path resource
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_CLASS_PATH_RESOURCE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_CLASS_PATH_RESOURCE+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`true`
+
+a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]] [.property-path]##`onecx.workspace.template.create.role-mapping."role-mapping"`##
+
+[.description]
+--
+Role mapping for create template.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++`
+endif::add-copy-button-to-env-var[]
+--
+|Map<String,String>
+|
+
 |===
+
+
+:!summaryTableId:

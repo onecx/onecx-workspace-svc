@@ -13,21 +13,31 @@ import io.smallrye.config.WithName;
 
 @StaticInitSafe
 @ConfigDocFilename("onecx-workspace-svc.adoc")
-@ConfigMapping(prefix = "onecx.workspace.template.import")
+@ConfigMapping(prefix = "onecx.workspace")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
 public interface TemplateConfig {
 
     /**
-     * Role mapping for the template import
+     * Template import configuration.
+     *
+     * @return template import configuration.
      */
-    @WithName("role-mapping")
-    Map<String, String> roleMapping();
+    @WithName("template.import")
+    Import config();
 
-    /**
-     * Template import tenants
-     */
-    @WithName("tenants")
-    @WithDefault("default")
-    List<String> tenants();
+    interface Import {
 
+        /**
+         * Role mapping for the template import
+         */
+        @WithName("role-mapping")
+        Map<String, String> roleMapping();
+
+        /**
+         * Template import tenants
+         */
+        @WithName("tenants")
+        @WithDefault("default")
+        List<String> tenants();
+    }
 }

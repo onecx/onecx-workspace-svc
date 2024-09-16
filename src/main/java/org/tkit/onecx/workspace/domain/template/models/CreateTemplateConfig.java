@@ -15,34 +15,45 @@ import io.smallrye.config.WithName;
  */
 @StaticInitSafe
 @ConfigDocFilename("onecx-workspace-svc.adoc")
-@ConfigMapping(prefix = "onecx.workspace.template.create")
+@ConfigMapping(prefix = "onecx.workspace")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
 public interface CreateTemplateConfig {
 
     /**
-     * Enabled or enable create template configuration.
+     * Create template configuration.
+     *
+     * @return create template configuration.
      */
-    @WithName("enabled")
-    @WithDefault("true")
-    boolean enabled();
+    @WithName("template.create")
+    Create create();
 
-    /**
-     * Create template resource.
-     */
-    @WithName("resource")
-    @WithDefault("template/workspace-create.json")
-    String resource();
+    interface Create {
 
-    /**
-     * Class-path resource
-     */
-    @WithName("class-path-resource")
-    @WithDefault("true")
-    boolean classPathResource();
+        /**
+         * Enabled or enable create template configuration.
+         */
+        @WithName("enabled")
+        @WithDefault("true")
+        boolean enabled();
 
-    /**
-     * Role mapping for create template.
-     */
-    @WithName("role-mapping")
-    Map<String, String> roleMapping();
+        /**
+         * Create template resource.
+         */
+        @WithName("resource")
+        @WithDefault("template/workspace-create.json")
+        String resource();
+
+        /**
+         * Class-path resource
+         */
+        @WithName("class-path-resource")
+        @WithDefault("true")
+        boolean classPathResource();
+
+        /**
+         * Role mapping for create template.
+         */
+        @WithName("role-mapping")
+        Map<String, String> roleMapping();
+    }
 }

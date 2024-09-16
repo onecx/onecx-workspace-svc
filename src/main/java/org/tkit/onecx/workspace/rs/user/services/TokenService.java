@@ -36,13 +36,13 @@ public class TokenService {
             }
 
             var request = new TokenParserRequest(token)
-                    .verify(config.verified())
-                    .issuerEnabled(config.publicKeyEnabled())
-                    .issuerSuffix(config.publicKeyLocationSuffix());
+                    .verify(config.config().verified())
+                    .issuerEnabled(config.config().publicKeyEnabled())
+                    .issuerSuffix(config.config().publicKeyLocationSuffix());
 
             var permissionToken = tokenParserService.parseToken(request);
             var path = claimService.getClaimPath();
-            return TokenClaimUtility.findClaimStringList(permissionToken, path, config.claimSeparator().orElse(" "));
+            return TokenClaimUtility.findClaimStringList(permissionToken, path, config.config().claimSeparator().orElse(" "));
 
         } catch (Exception ex) {
             throw new TokenException("Error parsing permission token", ex);

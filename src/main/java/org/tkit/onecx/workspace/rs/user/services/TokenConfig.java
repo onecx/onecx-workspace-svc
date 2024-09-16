@@ -11,48 +11,52 @@ import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
 @StaticInitSafe
-@ConfigMapping(prefix = "onecx.workspace.token")
+@ConfigMapping(prefix = "onecx.workspace")
 @ConfigDocFilename("onecx-workspace-svc.adoc")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
 public interface TokenConfig {
 
     /**
+     * Token configuration.
      *
-     * @return verification status
+     * @return token configuration.
      */
-    @WithName("verified")
-    @WithDefault("false")
-    boolean verified();
+    @WithName("token")
+    Config config();
 
-    /**
-     *
-     * @return suffix of public key
-     */
-    @WithName("issuer.public-key-location.suffix")
-    @WithDefault("/protocol/openid-connect/certs")
-    String publicKeyLocationSuffix();
+    interface Config {
+        /**
+         * @return verification status
+         */
+        @WithName("verified")
+        @WithDefault("false")
+        boolean verified();
 
-    /**
-     *
-     * @return status if public key is enabled
-     */
-    @WithName("issuer.public-key-location.enabled")
-    @WithDefault("false")
-    boolean publicKeyEnabled();
+        /**
+         * @return suffix of public key
+         */
+        @WithName("issuer.public-key-location.suffix")
+        @WithDefault("/protocol/openid-connect/certs")
+        String publicKeyLocationSuffix();
 
-    /**
-     *
-     * @return separator
-     */
-    @WithName("claim.separator")
-    Optional<String> claimSeparator();
+        /**
+         * @return status if public key is enabled
+         */
+        @WithName("issuer.public-key-location.enabled")
+        @WithDefault("false")
+        boolean publicKeyEnabled();
 
-    /**
-     *
-     * @return claim path
-     */
-    @WithName("claim.path")
-    @WithDefault("realm_access/roles")
-    String claimPath();
+        /**
+         * @return separator
+         */
+        @WithName("claim.separator")
+        Optional<String> claimSeparator();
 
+        /**
+         * @return claim path
+         */
+        @WithName("claim.path")
+        @WithDefault("realm_access/roles")
+        String claimPath();
+    }
 }

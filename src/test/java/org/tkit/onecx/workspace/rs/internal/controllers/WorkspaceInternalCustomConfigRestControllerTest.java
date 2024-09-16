@@ -39,9 +39,11 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     @SuppressWarnings("java:S5976")
     void createWorkspaceMissingResourceTest() {
 
-        Mockito.when(templateConfig.resource()).thenReturn("template/missing-file.json");
-        Mockito.when(templateConfig.classPathResource()).thenReturn(true);
-        Mockito.when(templateConfig.enabled()).thenReturn(true);
+        var m = Mockito.mock(CreateTemplateConfig.Create.class);
+        Mockito.when(templateConfig.create()).thenReturn(m);
+        Mockito.when(m.resource()).thenReturn("template/missing-file.json");
+        Mockito.when(m.classPathResource()).thenReturn(true);
+        Mockito.when(m.enabled()).thenReturn(true);
 
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
@@ -66,9 +68,11 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     @SuppressWarnings("java:S5976")
     void createWorkspaceWrongFileTest() {
 
-        Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/missing-file.json");
-        Mockito.when(templateConfig.classPathResource()).thenReturn(false);
-        Mockito.when(templateConfig.enabled()).thenReturn(true);
+        var m = Mockito.mock(CreateTemplateConfig.Create.class);
+        Mockito.when(templateConfig.create()).thenReturn(m);
+        Mockito.when(m.resource()).thenReturn("./src/test/resources/template/missing-file.json");
+        Mockito.when(m.classPathResource()).thenReturn(false);
+        Mockito.when(m.enabled()).thenReturn(true);
 
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
@@ -94,9 +98,13 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     void createWorkspaceDisabledTest() {
 
         var tmp = config.unwrap(SmallRyeConfig.class).getConfigMapping(CreateTemplateConfig.class);
-        Mockito.when(templateConfig.resource()).thenReturn(tmp.resource());
-        Mockito.when(templateConfig.classPathResource()).thenReturn(tmp.classPathResource());
-        Mockito.when(templateConfig.enabled()).thenReturn(false);
+
+        var m = Mockito.mock(CreateTemplateConfig.Create.class);
+        Mockito.when(templateConfig.create()).thenReturn(m);
+
+        Mockito.when(m.resource()).thenReturn(tmp.create().resource());
+        Mockito.when(m.classPathResource()).thenReturn(tmp.create().classPathResource());
+        Mockito.when(m.enabled()).thenReturn(false);
 
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
@@ -213,10 +221,13 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     @SuppressWarnings("java:S5976")
     void createWorkspaceWrongJsonFormatTest() {
 
-        Mockito.when(templateConfig.resource())
+        var m = Mockito.mock(CreateTemplateConfig.Create.class);
+        Mockito.when(templateConfig.create()).thenReturn(m);
+
+        Mockito.when(m.resource())
                 .thenReturn("./src/test/resources/template/not-valid-workspace-create-test.json");
-        Mockito.when(templateConfig.classPathResource()).thenReturn(false);
-        Mockito.when(templateConfig.enabled()).thenReturn(true);
+        Mockito.when(m.classPathResource()).thenReturn(false);
+        Mockito.when(m.enabled()).thenReturn(true);
 
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
@@ -239,10 +250,12 @@ class WorkspaceInternalCustomConfigRestControllerTest extends AbstractTest {
     @Test
     @SuppressWarnings("java:S5961")
     void createWorkspaceFileTest() {
+        var m = Mockito.mock(CreateTemplateConfig.Create.class);
+        Mockito.when(templateConfig.create()).thenReturn(m);
 
-        Mockito.when(templateConfig.resource()).thenReturn("./src/test/resources/template/workspace-create-test.json");
-        Mockito.when(templateConfig.classPathResource()).thenReturn(false);
-        Mockito.when(templateConfig.enabled()).thenReturn(true);
+        Mockito.when(m.resource()).thenReturn("./src/test/resources/template/workspace-create-test.json");
+        Mockito.when(m.classPathResource()).thenReturn(false);
+        Mockito.when(m.enabled()).thenReturn(true);
 
         // create workspace
         var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
