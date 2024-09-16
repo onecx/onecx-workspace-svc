@@ -42,7 +42,7 @@ public class TemplateDataImportService implements DataImportService {
         log.info("Import template workspace from configuration {}", config);
         try {
 
-            List<String> tenants = templateConfig.tenants();
+            List<String> tenants = templateConfig.config().tenants();
             TemplateImportDI data = objectMapper.readValue(config.getData(), TemplateImportDI.class);
             importWorkspaces(tenants, data.getWorkspaces());
 
@@ -94,7 +94,8 @@ public class TemplateDataImportService implements DataImportService {
 
                 // update role name base on the role mapping configuration.
                 workspace.getRoles().forEach(
-                        role -> role.setName(templateConfig.roleMapping().getOrDefault(role.getName(), role.getName())));
+                        role -> role
+                                .setName(templateConfig.config().roleMapping().getOrDefault(role.getName(), role.getName())));
 
                 products.addAll(workspace.getProducts());
                 slots.addAll(workspace.getSlots());

@@ -68,7 +68,7 @@ public class PortalV1RestController implements V1MenuStructureApi {
         MenuRegistrationResponseDTO response = new MenuRegistrationResponseDTO();
         response.setApplicationId(appId);
         response.setRequestVersion(menuRegistrationRequestDTO.getRequestVersion());
-        if (!appConfig.enableMenuAutoRegistration()) {
+        if (!appConfig.legacy().enableMenuAutoRegistration()) {
             log.info("Auto registration of menu requests is disabled, ignoring request from {}", appId);
             response.setApplied(false);
             response.setNotice("TKITPORTAL10003 Menu registration request has been ignored");

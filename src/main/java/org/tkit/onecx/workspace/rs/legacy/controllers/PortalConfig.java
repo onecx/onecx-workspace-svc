@@ -11,13 +11,23 @@ import io.smallrye.config.WithName;
 @StaticInitSafe
 @ConfigDocFilename("onecx-workspace-svc.adoc")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
-@ConfigMapping(prefix = "tkit.legacy")
+@ConfigMapping(prefix = "onecx.workspace")
 public interface PortalConfig {
 
     /**
-     * Enabled or disable menu auto registration.
+     * Legacy configuration.
+     *
+     * @return legacy configuration.
      */
-    @WithName("enable-menu-auto-registration")
-    @WithDefault("false")
-    boolean enableMenuAutoRegistration();
+    @WithName("legacy")
+    Legacy legacy();
+
+    interface Legacy {
+        /**
+         * Enabled or disable menu auto registration.
+         */
+        @WithName("enable-menu-auto-registration")
+        @WithDefault("false")
+        boolean enableMenuAutoRegistration();
+    }
 }

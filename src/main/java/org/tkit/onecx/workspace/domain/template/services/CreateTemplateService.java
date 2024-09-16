@@ -33,7 +33,7 @@ public class CreateTemplateService {
     CreateTemplateMapper mapper;
 
     public WorkspaceCreateTemplate createTemplate(Workspace workspace) {
-        if (!config.enabled()) {
+        if (!config.create().enabled()) {
             return null;
         }
 
@@ -47,27 +47,28 @@ public class CreateTemplateService {
         List<Assignment> assignments = mapper.createAssignments(roles, menus, menuMap);
 
         // update role name base on the role mapping configuration.
-        roles.forEach(role -> role.setName(config.roleMapping().getOrDefault(role.getName(), role.getName())));
+        roles.forEach(role -> role.setName(config.create().roleMapping().getOrDefault(role.getName(), role.getName())));
 
         return new WorkspaceCreateTemplate(roles, slots, products, assignments, menus);
     }
 
     private WorkspaceCreateTemplateDTO loadTemplate() {
         try {
-            if (config.classPathResource()) {
-                var url = WorkspaceService.class.getClassLoader().getResource(config.resource());
+            if (config.create().classPathResource()) {
+                var url = WorkspaceService.class.getClassLoader().getResource(config.create().resource());
                 if (url == null) {
                     throw new FileNotFoundException(
-                            "Workspace template class-path resource does not found. resource: " + config.resource());
+                            "Workspace template class-path resource does not found. resource: " + config.create().resource());
                 }
                 try (InputStream in = WorkspaceService.class.getClassLoader()
-                        .getResourceAsStream(config.resource())) {
+                        .getResourceAsStream(config.create().resource())) {
                     return objectMapper.readValue(in, WorkspaceCreateTemplateDTO.class);
                 }
             } else {
-                var path = Paths.get(config.resource());
+                var path = Paths.get(config.create().resource());
                 if (!Files.exists(path)) {
-                    throw new FileNotFoundException("Workspace template file does not found. resource: " + config.resource());
+                    throw new FileNotFoundException(
+                            "Workspace template file does not found. resource: " + config.create().resource());
                 }
                 return objectMapper.readValue(path.toFile(), WorkspaceCreateTemplateDTO.class);
             }
