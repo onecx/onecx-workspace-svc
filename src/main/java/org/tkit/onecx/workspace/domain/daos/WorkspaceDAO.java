@@ -14,6 +14,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.Predicate;
 
 import org.tkit.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
+import org.tkit.onecx.workspace.domain.models.Product_;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
 import org.tkit.quarkus.jpa.daos.Page;
@@ -150,11 +151,17 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
             if (criteria.getNames() != null && !criteria.getNames().isEmpty()) {
                 predicates.add(workspaceTable.get(NAME).in(criteria.getNames()));
             }
-
+            if (criteria.getProductName() != null && !criteria.getProductName().isEmpty()) {
+                // cq.where(cb.equal(workspaceTable.get(PRODUCTS).get(Product_.PRODUCT_NAME), criteria.getProductName()));
+                var workspaceQuery = this.getEntityManager().createQuery(cq);
+                workspaceQuery.setHint(HINT_LOAD_GRAPH,
+                        this.getEntityManager().getEntityGraph(Workspace.WORKSPACE_PRODUCTS));
+                addSearchStringPredicate(predicates, cb, workspaceTable.get(PRODUCTS).get(Product_.PRODUCT_NAME),
+                        criteria.getProductName());
+            }
             if (!predicates.isEmpty()) {
                 cq.where(cb.and(predicates.toArray(new Predicate[0])));
             }
-
             cq.orderBy(cb.asc(workspaceTable.get(NAME)));
 
             return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
