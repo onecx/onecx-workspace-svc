@@ -95,7 +95,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .extract().as(WorkspacePageResultDTOV1.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(6);
+        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(2);
     }
 
     @Test
@@ -118,6 +118,7 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         criteria2.setThemeName("22-222");
         WorkspaceSearchCriteriaDTOV1 criteria3 = new WorkspaceSearchCriteriaDTOV1();
         criteria3.setThemeName("does-not-exists");
+        criteria3.setProductName("");
         WorkspaceSearchCriteriaDTOV1 emptyCriteria = new WorkspaceSearchCriteriaDTOV1();
 
         return Stream.of(

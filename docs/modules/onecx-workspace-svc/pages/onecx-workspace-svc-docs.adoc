@@ -12,7 +12,7 @@ quarkus.datasource.db-kind=postgresql
 quarkus.datasource.jdbc.max-size=30
 quarkus.datasource.jdbc.min-size=10
 quarkus.hibernate-orm.jdbc.timezone=UTC
-quarkus.hibernate-orm.log.sql=false
+quarkus.hibernate-orm.log.sql=true
 quarkus.http.auth.permission.health.paths=/q/*
 quarkus.http.auth.permission.health.policy=permit
 quarkus.http.auth.permission.legacy.paths=/1000kit-portal-server/*
@@ -79,4 +79,5 @@ app:
             defaultClientScopes: [ ocx-tn:read ]
 
 ----
+
 

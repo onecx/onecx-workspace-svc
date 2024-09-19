@@ -18,6 +18,8 @@ public class WorkspaceSearchCriteria implements Serializable {
 
     private String baseUrl;
 
+    private String productName;
+
     private Integer pageNumber = 0;
 
     private Integer pageSize = 100;
