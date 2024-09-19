@@ -152,7 +152,6 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
                 predicates.add(workspaceTable.get(NAME).in(criteria.getNames()));
             }
             if (criteria.getProductName() != null && !criteria.getProductName().isEmpty()) {
-                // cq.where(cb.equal(workspaceTable.get(PRODUCTS).get(Product_.PRODUCT_NAME), criteria.getProductName()));
                 var workspaceQuery = this.getEntityManager().createQuery(cq);
                 workspaceQuery.setHint(HINT_LOAD_GRAPH,
                         this.getEntityManager().getEntityGraph(Workspace.WORKSPACE_PRODUCTS));
