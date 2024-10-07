@@ -37,12 +37,12 @@ class UserMenuInternalControllerInterpolateTest extends AbstractTest {
                 .body(new UserWorkspaceMenuRequestDTO().token(accessToken))
                 .pathParam("workspaceName", workspaceName)
                 .post()
-                .then()
+                .then().log().all()
                 .statusCode(OK.getStatusCode())
                 .extract().body().as(UserWorkspaceMenuStructureDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getMenu().get(1).getChildren().get(0).getUrl()).isEqualTo("/company3/testItem1");
+        assertThat(data.getMenu().get(1).getChildren().get(1).getUrl()).isEqualTo("/company3/testItem1");
     }
 
 }
