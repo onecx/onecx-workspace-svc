@@ -60,16 +60,16 @@ public interface UserMenuMapper {
             String workspaceUrl) {
         Set<MenuItem> tmp = new HashSet<>(items);
         final var sub = new StringSubstitutor(System.getenv());
-        tmp.forEach(m -> {
-            var mr = mapping.get(m.getId());
-            var mUrl = m.getUrl();
+        tmp.forEach(rootItem -> {
+            var mr = mapping.get(rootItem.getId());
             if (mr == null || mr.stream().noneMatch(roles::contains)) {
-                items.remove(m);
+                items.remove(rootItem);
             } else {
-                if (mUrl != null) {
-                    sub.replace(mUrl);
+                if (rootItem.getChildren() != null && !rootItem.getChildren().isEmpty()) {
+                    filterChildren(rootItem, mapping, roles, workspaceUrl, sub);
+                } else {
+                    rootItem.setUrl(updateInternalUrl(workspaceUrl, rootItem.getUrl(), rootItem.isExternal(), sub));
                 }
-                filterChildren(m, mapping, roles, workspaceUrl, sub);
             }
         });
 
@@ -81,7 +81,7 @@ public interface UserMenuMapper {
         Set<MenuItem> items = new HashSet<>(menuItem.getChildren());
         items.forEach(child -> {
             var mr = mapping.get(child.getId());
-            if (mr != null && mr.stream().noneMatch(roles::contains)) {
+            if (mr == null || mr.stream().noneMatch(roles::contains)) {
                 menuItem.getChildren().remove(child);
             } else {
                 if (child.getChildren() != null && !child.getChildren().isEmpty()) {

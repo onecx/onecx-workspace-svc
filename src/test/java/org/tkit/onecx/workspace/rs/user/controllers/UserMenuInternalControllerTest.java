@@ -134,17 +134,13 @@ class UserMenuInternalControllerTest extends AbstractTest {
 
         String tmp = """
                 + [0] 4-1
-                  + [0] 4-1-1
-                  + [1] 4-1-2
                   + [2] 4-1-3
                 + [1] 4-2
-                  + [0] 4-2-1
-                  + [1] 4-2-2
                   + [2] 4-2-3
-                    + [0] 4-2-3-1
+                  + [3] 4-2-4
                 """;
         assertThat(output).isEqualTo(tmp);
-        assertThat(countMenuItems(data.getMenu())).isEqualTo(9);
+        assertThat(countMenuItems(data.getMenu())).isEqualTo(5);
         assertThat(data.getMenu().get(0).getUrl()).isEmpty();
         assertThat(data.getMenu().get(0).getChildren().get(0).getUrl()).contains("/company3");
 
@@ -169,7 +165,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         output = print(data.getMenu(), "");
         System.out.println(output);
         assertThat(output).isEqualTo(tmp);
-        assertThat(countMenuItems(data.getMenu())).isEqualTo(9);
+        assertThat(countMenuItems(data.getMenu())).isEqualTo(5);
     }
 
     @Test
@@ -200,13 +196,11 @@ class UserMenuInternalControllerTest extends AbstractTest {
 
         String tmp = """
                 + [1] 4-2
-                  + [0] 4-2-1
-                  + [1] 4-2-2
                   + [2] 4-2-3
-                    + [0] 4-2-3-1
+                  + [3] 4-2-4
                 """;
         assertThat(output).isEqualTo(tmp);
-        assertThat(countMenuItems(data.getMenu())).isEqualTo(5);
+        assertThat(countMenuItems(data.getMenu())).isEqualTo(3);
 
         // without bearer prefix
         accessToken = createAccessToken(USER_BOB);
@@ -229,7 +223,7 @@ class UserMenuInternalControllerTest extends AbstractTest {
         output = print(data.getMenu(), "");
         System.out.println(output);
         assertThat(output).isEqualTo(tmp);
-        assertThat(countMenuItems(data.getMenu())).isEqualTo(5);
+        assertThat(countMenuItems(data.getMenu())).isEqualTo(3);
     }
 
     @Test
@@ -260,18 +254,11 @@ class UserMenuInternalControllerTest extends AbstractTest {
 
         String tmp = """
                 + [0] 5-1
-                  + [0] 5-1-1
-                  + [1] 5-1-2
-                  + [2] 5-1-3
                 + [1] 5-2
-                  + [0] 5-2-1
-                  + [1] 5-2-2
-                  + [2] 5-2-3
-                    + [0] 5-2-3-1
                 + [2] 5-3
                 """;
         assertThat(output).isEqualTo(tmp);
-        assertThat(countMenuItems(data.getMenu())).isEqualTo(10);
+        assertThat(countMenuItems(data.getMenu())).isEqualTo(3);
     }
 
     private int countMenuItems(Collection<UserWorkspaceMenuItemDTO> menuItemDTOS) {
