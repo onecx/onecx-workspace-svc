@@ -72,6 +72,9 @@ public interface MenuItemMapper {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "parentId", ignore = true)
     @Mapping(target = "name", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "applicationId", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "url", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "key", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void update(UpdateMenuItemRequestDTO menuItemDetailsDto, @MappingTarget MenuItem entity);
 
     @Mapping(target = "removeI18nItem", ignore = true)
