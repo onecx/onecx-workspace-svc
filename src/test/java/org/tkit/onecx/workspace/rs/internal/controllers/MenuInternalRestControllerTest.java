@@ -605,6 +605,8 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(updatedData).isNotNull();
         assertThat(updatedData.getKey()).isEqualTo(request.getKey());
         assertThat(updatedData.getDescription()).isEqualTo(request.getDescription());
+        assertThat(updatedData.getScope()).isNull();
+        assertThat(updatedData.getBadge()).isNull();
 
         //Update second time and expect a BAD REQUEST because of wrong modificationCount
         request.setModificationCount(-1);
