@@ -9,3 +9,4 @@ jobs:
     secrets: inherit
     with:
       native: true
+      helmEventTargetRepository: onecx/onecx-workspace
