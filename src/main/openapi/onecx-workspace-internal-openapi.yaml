@@ -1100,6 +1100,8 @@ components:
           type: string
         themeName:
           type: string
+        productName:
+          type: string
         pageNumber:
           format: int32
           description: The number of page.
