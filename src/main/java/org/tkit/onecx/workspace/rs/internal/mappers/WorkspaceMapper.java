@@ -43,7 +43,6 @@ public interface WorkspaceMapper {
     @Mapping(target = "operator", ignore = true)
     void update(UpdateWorkspaceRequestDTO dto, @MappingTarget Workspace workspace);
 
-    @Mapping(target = "productName", ignore = true)
     @Mapping(target = "baseUrl", ignore = true)
     @Mapping(target = "names", ignore = true)
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTO dto);
