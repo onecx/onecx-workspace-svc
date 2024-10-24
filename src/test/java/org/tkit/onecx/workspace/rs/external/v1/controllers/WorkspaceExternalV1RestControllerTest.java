@@ -122,10 +122,10 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
         WorkspaceSearchCriteriaDTOV1 emptyCriteria = new WorkspaceSearchCriteriaDTOV1();
 
         return Stream.of(
-                arguments(criteria1, 3),
+                arguments(criteria1, 8),
                 arguments(criteria2, 0), // different tenant so will not find it
                 arguments(criteria3, 0),
-                arguments(emptyCriteria, 6));
+                arguments(emptyCriteria, 11));
     }
 
     @Test
@@ -320,6 +320,88 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .post("/load")
                 .then()
                 .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void loadWorkspaceByUrl_find_correct_with_similar_paths_Test() {
+
+        var requestDTOV1 = new WorkspaceLoadRequestDTOV1();
+
+        // test-sc
+        requestDTOV1.setPath("/test-sc");
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceWrapperDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getName()).isEqualTo("test-sc");
+
+        //test-scng
+        requestDTOV1.setPath("/test-scng");
+        dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceWrapperDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getName()).isEqualTo("test-scng");
+
+        // another test to match /de base path
+        requestDTOV1.setPath("/test-sc-ng");
+        dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceWrapperDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getName()).isEqualTo("test-sc-ng");
+
+        // another test to match /de base path
+        requestDTOV1.setPath("/test-sc/sub1");
+        dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceWrapperDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getName()).isEqualTo("test-sc-sub1");
+
+        // another test to match /de base path
+        requestDTOV1.setPath("/test-sc/sub1/sub2");
+        dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(requestDTOV1)
+                .post("/load")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceWrapperDTOV1.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getName()).isEqualTo("test-sc-sub1-sub2");
+
     }
 
 }
