@@ -63,7 +63,8 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
             var cq = cb.createQuery(Workspace.class);
             var root = cq.from(Workspace.class);
             cq.where(cb.like(cb.literal(url), cb.concat(root.get(BASE_URL), "%")));
-            return this.getEntityManager().createQuery(cq).getSingleResult();
+            cq.orderBy(cb.desc(cb.length(root.get(BASE_URL))));
+            return this.getEntityManager().createQuery(cq).setMaxResults(1).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         } catch (Exception ex) {
@@ -129,7 +130,9 @@ public class WorkspaceDAO extends AbstractDAO<Workspace> {
             workspaceQuery.setHint(HINT_LOAD_GRAPH,
                     this.getEntityManager().getEntityGraph(Workspace.WORKSPACE_PRODUCTS_SLOTS));
 
-            return this.getEntityManager().createQuery(cq).getSingleResult();
+            cq.orderBy(cb.desc(cb.length(root.get(BASE_URL))));
+
+            return this.getEntityManager().createQuery(cq).setMaxResults(1).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         } catch (Exception ex) {
