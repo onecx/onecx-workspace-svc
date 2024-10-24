@@ -322,7 +322,6 @@ class WorkspaceExternalV1RestControllerTest extends AbstractTest {
                 .statusCode(NOT_FOUND.getStatusCode());
     }
 
-    //new
     @Test
     void loadWorkspaceByUrl_find_correct_with_similar_paths_Test() {
 
