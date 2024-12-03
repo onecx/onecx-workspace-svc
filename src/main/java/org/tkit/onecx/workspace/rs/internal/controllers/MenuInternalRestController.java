@@ -1,8 +1,11 @@
 package org.tkit.onecx.workspace.rs.internal.controllers;
 
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toSet;
 import static org.jboss.resteasy.reactive.RestResponse.StatusCode.NOT_FOUND;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,8 +18,10 @@ import jakarta.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.workspace.domain.daos.AssignmentDAO;
 import org.tkit.onecx.workspace.domain.daos.MenuItemDAO;
 import org.tkit.onecx.workspace.domain.daos.WorkspaceDAO;
+import org.tkit.onecx.workspace.domain.models.AssignmentMenu;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.services.MenuService;
 import org.tkit.onecx.workspace.rs.internal.mappers.InternalExceptionMapper;
@@ -26,7 +31,9 @@ import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.workspace.rs.internal.MenuInternalApi;
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @LogService
 @ApplicationScoped
 @Transactional(Transactional.TxType.NOT_SUPPORTED)
@@ -49,6 +56,9 @@ public class MenuInternalRestController implements MenuInternalApi {
 
     @Inject
     MenuService menuService;
+
+    @Inject
+    AssignmentDAO assignmentDAO;
 
     @Override
     public Response createMenuItem(CreateMenuItemDTO menuItemDTO) {
@@ -107,7 +117,20 @@ public class MenuInternalRestController implements MenuInternalApi {
     public Response getMenuStructure(MenuStructureSearchCriteriaDTO menuStructureSearchCriteriaDTO) {
         var criteria = mapper.map(menuStructureSearchCriteriaDTO);
         var result = dao.loadAllMenuItemsByCriteria(criteria);
-        return Response.ok(mapper.mapTree(result)).build();
+        var workspace = workspaceDAO.findById(criteria.getWorkspaceId());
+        if (menuStructureSearchCriteriaDTO.getRoles().isEmpty()) {
+            return Response.ok(mapper.mapTree(result)).build();
+
+        }
+
+        List<AssignmentMenu> assignmentRecords = assignmentDAO
+                .findAssignmentMenuForWorkspace(menuStructureSearchCriteriaDTO.getWorkspaceId());
+        Map<String, Set<String>> mapping = assignmentRecords.stream()
+                .collect(Collectors.groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toSet())));
+        return Response
+                .ok(mapper.mapTreeByRoles(workspace, result, mapping, new HashSet<>(menuStructureSearchCriteriaDTO.getRoles())))
+                .build();
+
     }
 
     @Override

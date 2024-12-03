@@ -8,6 +8,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.tkit.quarkus.security.test.SecurityTestUtils.getKeycloakClientToken;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -288,6 +289,25 @@ class MenuInternalRestControllerTest extends AbstractTest {
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(5);
         assertThat(countMenuItems(data.getMenuItems())).isEqualTo(13);
+    }
+
+    @Test
+    void getMenuStructureForWorkspaceIdAndRolesTest() {
+        var criteria = new MenuStructureSearchCriteriaDTO().workspaceId("11-111").roles(List.of("n3", "n4"));
+
+        var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/tree")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().body().as(MenuItemStructureDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getMenuItems()).hasSize(3);
+        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(4);
     }
 
     private int countMenuItems(Collection<WorkspaceMenuItemDTO> menuItemDTOS) {

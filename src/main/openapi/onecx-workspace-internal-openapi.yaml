@@ -840,6 +840,10 @@ components:
       required:
         - workspaceId
       properties:
+        roles:
+          type: array
+          items:
+            type: string
         workspaceId:
           type: string
     MenuItemSearchCriteria:
