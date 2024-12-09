@@ -122,14 +122,10 @@ public class MenuInternalRestController implements MenuInternalApi {
         }
 
         List<AssignmentMenu> assignmentRecords = assignmentDAO
-                .findAssignmentMenuForWorkspace(menuStructureSearchCriteriaDTO.getWorkspaceId());
+                .findAssignmentMenuForWorkspaceAndRoles(menuStructureSearchCriteriaDTO.getWorkspaceId(),
+                        menuStructureSearchCriteriaDTO.getRoles());
         Map<String, Set<String>> mapping = assignmentRecords.stream()
                 .collect(Collectors.groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toSet())));
-        mapping.entrySet().removeIf(entry -> {
-            Set<String> roles = entry.getValue();
-            roles.removeIf(role -> !menuStructureSearchCriteriaDTO.getRoles().contains(role));
-            return roles.isEmpty();
-        });
         return Response
                 .ok(mapper.mapTreeByRoles(result, mapping))
                 .build();
