@@ -292,8 +292,9 @@ class MenuInternalRestControllerTest extends AbstractTest {
     }
 
     @Test
+    @WithDBData(value = "data/testdata-rolebased-menu.xml", deleteBeforeInsert = true, deleteAfterTest = true)
     void getMenuStructureForWorkspaceIdAndRolesTest() {
-        var criteria = new MenuStructureSearchCriteriaDTO().workspaceId("11-111").roles(List.of("n3", "n4"));
+        var criteria = new MenuStructureSearchCriteriaDTO().workspaceId("11-111").roles(List.of("role1"));
 
         var data = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -307,7 +308,39 @@ class MenuInternalRestControllerTest extends AbstractTest {
 
         assertThat(data).isNotNull();
         assertThat(data.getMenuItems()).hasSize(1);
-        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(6);
+        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(3);
+
+        criteria = new MenuStructureSearchCriteriaDTO().workspaceId("11-111").roles(List.of("role2"));
+
+        data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/tree")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().body().as(MenuItemStructureDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getMenuItems()).hasSize(0);
+        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(0);
+
+        criteria = new MenuStructureSearchCriteriaDTO().workspaceId("11-111").roles(List.of("role3"));
+
+        data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(criteria)
+                .post("/tree")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().body().as(MenuItemStructureDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getMenuItems()).hasSize(1);
+        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(2);
     }
 
     private int countMenuItems(Collection<WorkspaceMenuItemDTO> menuItemDTOS) {

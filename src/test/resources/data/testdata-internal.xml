@@ -67,8 +67,6 @@
 	<ASSIGNMENT guid="a12" optlock="0" menu_item_id="33-7" role_id="r14" tenant_id="tenant-100"/>
 	<ASSIGNMENT guid="a13" optlock="0" menu_item_id="33-8" role_id="r14" tenant_id="tenant-100"/>
 
-	<ASSIGNMENT guid="a14" optlock="0" menu_item_id="33-1" role_id="r13" tenant_id="tenant-100"/>
-
 	<ASSIGNMENT guid="200_a11" optlock="0" menu_item_id="55-2" role_id="r21" tenant_id="tenant-200"/>
 
 	<SLOT guid="s11" optlock="0" tenant_id="tenant-100" name="slot1" workspace_guid="11-111" />

@@ -152,6 +152,7 @@ public interface MenuItemMapper {
         List<MenuItem> filteredEntities = entities.stream()
                 .filter(menuItem -> assignments.containsKey(menuItem.getId()))
                 .toList();
+
         if (filteredEntities.isEmpty()) {
             dto.setMenuItems(new ArrayList<>());
             return dto;
@@ -160,13 +161,28 @@ public interface MenuItemMapper {
         var parentChildrenMap = filteredEntities.stream()
                 .collect(
                         Collectors.groupingBy(menuItem -> menuItem.getParent() == null ? "TOP" : menuItem.getParent().getId()));
-        List<MenuItem> topMenuItems = parentChildrenMap.get("TOP");
 
-        if (topMenuItems != null) {
-            dto.setMenuItems(topMenuItems.stream().map(this::mapTreeItem).toList());
+        List<WorkspaceMenuItemDTO> topMenuItems = parentChildrenMap.getOrDefault("TOP", new ArrayList<>()).stream()
+                .map(menuItem -> mapTreeItemWithChildren(menuItem, parentChildrenMap))
+                .collect(Collectors.toList());
+
+        dto.setMenuItems(topMenuItems);
+        return dto;
+    }
+
+    private WorkspaceMenuItemDTO mapTreeItemWithChildren(MenuItem menuItem, Map<String, List<MenuItem>> parentChildrenMap) {
+        WorkspaceMenuItemDTO dto = mapTreeItem(menuItem);
+
+        List<MenuItem> children = parentChildrenMap.get(menuItem.getId());
+        if (children != null) {
+            List<WorkspaceMenuItemDTO> childDTOs = children.stream()
+                    .map(child -> mapTreeItemWithChildren(child, parentChildrenMap))
+                    .collect(Collectors.toList());
+            dto.setChildren(childDTOs);
         } else {
-            dto.setMenuItems(new ArrayList<>());
+            dto.setChildren(new ArrayList<>());
         }
+
         return dto;
     }
 }
