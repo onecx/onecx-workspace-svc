@@ -164,7 +164,7 @@ public interface MenuItemMapper {
 
         List<WorkspaceMenuItemDTO> topMenuItems = parentChildrenMap.getOrDefault("TOP", new ArrayList<>()).stream()
                 .map(menuItem -> mapTreeItemWithChildren(menuItem, parentChildrenMap))
-                        .toList();
+                .toList();
 
         dto.setMenuItems(topMenuItems);
         return dto;
