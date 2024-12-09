@@ -306,8 +306,8 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .extract().body().as(MenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getMenuItems()).hasSize(3);
-        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(4);
+        assertThat(data.getMenuItems()).hasSize(1);
+        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(6);
     }
 
     private int countMenuItems(Collection<WorkspaceMenuItemDTO> menuItemDTOS) {

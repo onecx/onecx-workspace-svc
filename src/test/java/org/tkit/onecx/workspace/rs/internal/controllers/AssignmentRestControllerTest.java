@@ -145,8 +145,8 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .as(AssignmentPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(3);
-        assertThat(data.getStream()).isNotNull().hasSize(3);
+        assertThat(data.getTotalElements()).isEqualTo(4);
+        assertThat(data.getStream()).isNotNull().hasSize(4);
         assertThat(data.getStream().get(0).getId()).isNotNull();
 
         criteria.setWorkspaceId("11-111");
@@ -162,8 +162,8 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .as(AssignmentPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(3);
-        assertThat(data.getStream()).isNotNull().hasSize(3);
+        assertThat(data.getTotalElements()).isEqualTo(4);
+        assertThat(data.getStream()).isNotNull().hasSize(4);
 
         criteria.setMenuItemId(null);
         data = given()
@@ -178,8 +178,8 @@ class AssignmentRestControllerTest extends AbstractTest {
                 .as(AssignmentPageResultDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getTotalElements()).isEqualTo(3);
-        assertThat(data.getStream()).isNotNull().hasSize(3);
+        assertThat(data.getTotalElements()).isEqualTo(4);
+        assertThat(data.getStream()).isNotNull().hasSize(4);
 
         criteria.setMenuItemId("does-not-exists");
 

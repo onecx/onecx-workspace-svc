@@ -117,20 +117,19 @@ public class MenuInternalRestController implements MenuInternalApi {
     public Response getMenuStructure(MenuStructureSearchCriteriaDTO menuStructureSearchCriteriaDTO) {
         var criteria = mapper.map(menuStructureSearchCriteriaDTO);
         var result = dao.loadAllMenuItemsByCriteria(criteria);
-        var workspace = workspaceDAO.findById(criteria.getWorkspaceId());
         if (menuStructureSearchCriteriaDTO.getRoles().isEmpty()) {
             return Response.ok(mapper.mapTree(result)).build();
-
         }
 
         List<AssignmentMenu> assignmentRecords = assignmentDAO
                 .findAssignmentMenuForWorkspace(menuStructureSearchCriteriaDTO.getWorkspaceId());
         Map<String, Set<String>> mapping = assignmentRecords.stream()
                 .collect(Collectors.groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toSet())));
-        return Response
-                .ok(mapper.mapTreeByRoles(workspace, result, mapping, new HashSet<>(menuStructureSearchCriteriaDTO.getRoles())))
-                .build();
+        mapping.values().forEach(set -> set.removeIf(role -> !menuStructureSearchCriteriaDTO.getRoles().contains(role)));
 
+        return Response
+                .ok(mapper.mapTreeByRoles(result, mapping))
+                .build();
     }
 
     @Override
