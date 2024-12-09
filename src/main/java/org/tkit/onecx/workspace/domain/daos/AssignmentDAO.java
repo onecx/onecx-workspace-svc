@@ -53,6 +53,24 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         }
     }
 
+    public List<AssignmentMenu> findAssignmentMenuForWorkspaceAndRoles(String workspaceId, List<String> roleNames) {
+        try {
+            var cb = this.getEntityManager().getCriteriaBuilder();
+            var cq = cb.createQuery(AssignmentMenu.class);
+            var root = cq.from(Assignment.class);
+
+            cq.select(cb.construct(AssignmentMenu.class, root.get(Assignment_.MENU_ITEM_ID),
+                    root.get(Assignment_.ROLE).get(Role_.NAME)));
+            cq.where(
+                    cb.equal(root.get(Assignment_.ROLE).get(Role_.WORKSPACE_ID), workspaceId),
+                    root.get(Assignment_.ROLE).get(Role_.NAME).in(roleNames));
+
+            return this.getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception ex) {
+            throw new DAOException(ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_WORKSPACE_AND_ROLES, ex);
+        }
+    }
+
     // https://hibernate.atlassian.net/browse/HHH-16830#icft=HHH-16830
     @Override
     public Assignment findById(Object id) throws DAOException {
@@ -159,6 +177,6 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         ERROR_FIND_ASSIGNMENT_BY_CRITERIA,
 
         FIND_ENTITY_BY_ID_FAILED,
-
+        ERROR_FIND_ASSIGNMENT_BY_WORKSPACE_AND_ROLES,
     }
 }

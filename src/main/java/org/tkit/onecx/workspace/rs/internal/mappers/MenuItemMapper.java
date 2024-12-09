@@ -3,7 +3,6 @@ package org.tkit.onecx.workspace.rs.internal.mappers;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.apache.commons.text.StringSubstitutor;
 import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
 import org.tkit.onecx.workspace.domain.criteria.MenuItemSearchCriteria;
@@ -142,66 +141,48 @@ public interface MenuItemMapper {
         menuItem.setParent(parent);
     }
 
-    default MenuItemStructureDTO mapTreeByRoles(Workspace workspace, Collection<MenuItem> menuItems,
-            Map<String, Set<String>> mapping,
-            HashSet<String> roles) {
+    default MenuItemStructureDTO mapTreeByRoles(List<MenuItem> entities, Map<String, Set<String>> assignments) {
         MenuItemStructureDTO dto = new MenuItemStructureDTO();
 
-        if (menuItems.isEmpty()) {
-            return dto;
-        }
-        Set<MenuItem> items;
-
-        items = filterMenu(new HashSet<>(menuItems), mapping, roles, workspace.getBaseUrl());
-        if (items.isEmpty()) {
+        if (entities.isEmpty()) {
+            dto.setMenuItems(new ArrayList<>());
             return dto;
         }
 
-        return dto.menuItems(items.stream().map(this::mapTreeItem).toList());
+        List<MenuItem> filteredEntities = entities.stream()
+                .filter(menuItem -> assignments.containsKey(menuItem.getId()))
+                .toList();
+
+        if (filteredEntities.isEmpty()) {
+            dto.setMenuItems(new ArrayList<>());
+            return dto;
+        }
+
+        var parentChildrenMap = filteredEntities.stream()
+                .collect(
+                        Collectors.groupingBy(menuItem -> menuItem.getParent() == null ? "TOP" : menuItem.getParent().getId()));
+
+        List<WorkspaceMenuItemDTO> topMenuItems = parentChildrenMap.getOrDefault("TOP", new ArrayList<>()).stream()
+                .map(menuItem -> mapTreeItemWithChildren(menuItem, parentChildrenMap))
+                .toList();
+
+        dto.setMenuItems(topMenuItems);
+        return dto;
     }
 
-    default Set<MenuItem> filterMenu(Set<MenuItem> items, Map<String, Set<String>> mapping, Set<String> roles,
-            String workspaceUrl) {
-        Set<MenuItem> tmp = new HashSet<>(items);
-        final var sub = new StringSubstitutor(System.getenv());
-        tmp.forEach(rootItem -> {
-            var mr = mapping.get(rootItem.getId());
-            if (mr == null || mr.stream().noneMatch(roles::contains)) {
-                items.remove(rootItem);
-            } else {
-                if (rootItem.getChildren() != null && !rootItem.getChildren().isEmpty()) {
-                    filterChildren(rootItem, mapping, roles, workspaceUrl, sub);
-                } else {
-                    rootItem.setUrl(updateInternalUrl(workspaceUrl, rootItem.getUrl(), rootItem.isExternal(), sub));
-                }
-            }
-        });
+    private WorkspaceMenuItemDTO mapTreeItemWithChildren(MenuItem menuItem, Map<String, List<MenuItem>> parentChildrenMap) {
+        WorkspaceMenuItemDTO dto = mapTreeItem(menuItem);
 
-        return items;
-    }
-
-    default void filterChildren(MenuItem menuItem, Map<String, Set<String>> mapping, Set<String> roles,
-            String workspaceUrl, StringSubstitutor sub) {
-        Set<MenuItem> items = new HashSet<>(menuItem.getChildren());
-        items.forEach(child -> {
-            var mr = mapping.get(child.getId());
-            if (mr == null || mr.stream().noneMatch(roles::contains)) {
-                menuItem.getChildren().remove(child);
-            } else {
-                if (child.getChildren() != null && !child.getChildren().isEmpty()) {
-                    filterChildren(child, mapping, roles, workspaceUrl, sub);
-                } else {
-                    child.setUrl(updateInternalUrl(workspaceUrl, child.getUrl(), child.isExternal(), sub));
-                }
-            }
-        });
-    }
-
-    default String updateInternalUrl(String workspaceUrl, String menuItemUrl, Boolean isExternal, StringSubstitutor sub) {
-        if (Boolean.TRUE.equals(isExternal)) {
-            return sub.replace(menuItemUrl);
+        List<MenuItem> children = parentChildrenMap.get(menuItem.getId());
+        if (children != null) {
+            List<WorkspaceMenuItemDTO> childDTOs = children.stream()
+                    .map(child -> mapTreeItemWithChildren(child, parentChildrenMap))
+                    .toList();
+            dto.setChildren(childDTOs);
         } else {
-            return sub.replace(workspaceUrl + menuItemUrl);
+            dto.setChildren(new ArrayList<>());
         }
+
+        return dto;
     }
 }

@@ -44,7 +44,8 @@ class AssignmentDAOTest {
                 AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_CRITERIA);
         methodExceptionTests(() -> dao.findById(null),
                 AssignmentDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
-
+        methodExceptionTests(() -> dao.findAssignmentMenuForWorkspaceAndRoles(null, null),
+                AssignmentDAO.ErrorKeys.ERROR_FIND_ASSIGNMENT_BY_WORKSPACE_AND_ROLES);
     }
 
     void methodExceptionTests(Executable fn, Enum<?> key) {
