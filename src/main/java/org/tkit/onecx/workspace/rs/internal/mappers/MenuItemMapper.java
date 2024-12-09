@@ -164,7 +164,7 @@ public interface MenuItemMapper {
 
         List<WorkspaceMenuItemDTO> topMenuItems = parentChildrenMap.getOrDefault("TOP", new ArrayList<>()).stream()
                 .map(menuItem -> mapTreeItemWithChildren(menuItem, parentChildrenMap))
-                .collect(Collectors.toList());
+                        .toList();
 
         dto.setMenuItems(topMenuItems);
         return dto;
@@ -177,7 +177,7 @@ public interface MenuItemMapper {
         if (children != null) {
             List<WorkspaceMenuItemDTO> childDTOs = children.stream()
                     .map(child -> mapTreeItemWithChildren(child, parentChildrenMap))
-                    .collect(Collectors.toList());
+                    .toList();
             dto.setChildren(childDTOs);
         } else {
             dto.setChildren(new ArrayList<>());

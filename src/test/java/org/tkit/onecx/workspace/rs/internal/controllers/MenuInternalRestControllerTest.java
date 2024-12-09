@@ -323,8 +323,8 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .extract().body().as(MenuItemStructureDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getMenuItems()).hasSize(0);
-        assertThat(countMenuItems(data.getMenuItems())).isEqualTo(0);
+        assertThat(data.getMenuItems()).isEmpty();
+        assertThat(countMenuItems(data.getMenuItems())).isZero();
 
         criteria = new MenuStructureSearchCriteriaDTO().workspaceId("11-111").roles(List.of("role3"));
 
