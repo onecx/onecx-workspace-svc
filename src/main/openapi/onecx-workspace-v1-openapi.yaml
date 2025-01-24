@@ -283,6 +283,8 @@ components:
       properties:
         productName:
           type: string
+        displayName:
+          type: string
         baseUrl:
           type: string
         microfrontends:

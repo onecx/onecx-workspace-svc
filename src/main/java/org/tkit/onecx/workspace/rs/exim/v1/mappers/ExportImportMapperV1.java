@@ -346,6 +346,7 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "baseUrl", source = "productDTOV1.baseUrl")
+    @Mapping(target = "displayName", source = "productDTOV1.displayName")
     Product map(EximProductDTOV1 productDTOV1, Workspace workspace);
 
     @Mapping(target = "mfeId", source = "appId")
