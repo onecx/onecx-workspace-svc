@@ -938,6 +938,8 @@ components:
           type: string
         productName:
           type: string
+        displayName:
+          type: string
         baseUrl:
           type: string
         microfrontends:
@@ -1656,6 +1658,8 @@ components:
           type: string
         productName:
           type: string
+        displayName:
+          type: string
         baseUrl:
           type: string
         microfrontends:
@@ -1681,6 +1685,8 @@ components:
         modificationCount:
           format: int32
           type: integer
+        displayName:
+          type: string
         baseUrl:
           type: string
         microfrontends:
@@ -1714,6 +1720,8 @@ components:
         id:
           type: string
         productName:
+          type: string
+        displayName:
           type: string
         baseUrl:
           type: string
