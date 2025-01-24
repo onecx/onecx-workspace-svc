@@ -15,4 +15,5 @@
     <include relativeToChangelogFile="true" file="v1/2024-06-12-update-image-constraint.xml"/>
     <include relativeToChangelogFile="true" file="v1/2024-07-04-display-name-added.xml"/>
     <include relativeToChangelogFile="true" file="v1/2024-07-12-disabled-flag.xml"/>
+    <include relativeToChangelogFile="true" file="v1/2025-01-24-add-product-display-name.xml"/>
 </databaseChangeLog>

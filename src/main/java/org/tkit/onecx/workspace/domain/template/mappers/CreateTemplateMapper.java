@@ -62,6 +62,7 @@ public interface CreateTemplateMapper {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "workspace", source = "workspace")
     @Mapping(target = "baseUrl", source = "dto.baseUrl")
+    @Mapping(target = "displayName", source = "dto.displayName")
     @Mapping(target = "workspaceId", ignore = true)
     Product createProduct(ProductTemplateDTO dto, Workspace workspace);
 
