@@ -74,8 +74,7 @@ public class WorkspaceService {
     public void importWorkspace(List<Workspace> createWorkspaces, List<Image> createImages, List<Slot> createSlots,
             List<Product> createProducts, List<MenuItem> menuItems, List<Assignment> assignments) {
         imageDAO.deleteQueryByRefIds(createImages.stream()
-                .map(Image::getId)
-                .collect(Collectors.toList()));
+                .map(Image::getId).toList());
         imageDAO.create(createImages);
         workspaceDAO.create(createWorkspaces);
         productDAO.create(createProducts);
