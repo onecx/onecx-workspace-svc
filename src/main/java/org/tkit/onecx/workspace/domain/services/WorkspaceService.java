@@ -47,7 +47,7 @@ public class WorkspaceService {
         if (Boolean.TRUE.equals(workspace.getMandatory())) {
             return;
         }
-        imageDAO.deleteQueryByRefId(workspace.getId());
+        imageDAO.deleteQueryByRefId(workspace.getName());
         menuService.deleteAllMenuItemsForWorkspace(workspace.getId());
         workspaceDAO.delete(workspace);
     }
@@ -73,6 +73,8 @@ public class WorkspaceService {
     @Transactional
     public void importWorkspace(List<Workspace> createWorkspaces, List<Image> createImages, List<Slot> createSlots,
             List<Product> createProducts, List<MenuItem> menuItems, List<Assignment> assignments) {
+        imageDAO.deleteQueryByRefIds(createImages.stream()
+                .map(Image::getId).toList());
         imageDAO.create(createImages);
         workspaceDAO.create(createWorkspaces);
         productDAO.create(createProducts);
