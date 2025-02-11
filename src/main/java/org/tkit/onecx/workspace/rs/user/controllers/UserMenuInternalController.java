@@ -62,11 +62,8 @@ public class UserMenuInternalController implements UserMenuInternalApi {
         var roles = tokenService.getTokenRoles(userWorkspaceMenuRequestDTO.getToken());
         HashSet<String> menuKeys = new HashSet<>();
         if (!userWorkspaceMenuRequestDTO.getMenuKeys().isEmpty()) {
-            userWorkspaceMenuRequestDTO.getMenuKeys().forEach(s -> {
-                if (mappingConfig.menu().mapping().containsKey(s)) {
-                    menuKeys.add(mappingConfig.menu().mapping().get(s));
-                }
-            });
+            userWorkspaceMenuRequestDTO.getMenuKeys()
+                    .forEach(s -> menuKeys.add(mappingConfig.menu().mapping().getOrDefault(s, s)));
         }
 
         var workspace = workspaceDAO.findByName(workspaceName);
