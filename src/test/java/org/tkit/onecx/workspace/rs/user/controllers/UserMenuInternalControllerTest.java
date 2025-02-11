@@ -227,6 +227,30 @@ class UserMenuInternalControllerTest extends AbstractTest {
     }
 
     @Test
+    void getMenuStructureForUserIdByMenuKeyWithoutExistingConfigTest() {
+
+        var workspaceName = "test03";
+        var accessToken = createAccessTokenBearer(USER_BOB);
+        var idToken = createToken("org1");
+
+        var data = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .header(APM_HEADER_PARAM, idToken)
+                .body(new UserWorkspaceMenuRequestDTO().token(accessToken).menuKeys(List.of("not-existing")))
+                .pathParam("workspaceName", workspaceName)
+                .post()
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().body().as(UserWorkspaceMenuStructureDTO.class);
+
+        assertThat(data).isNotNull();
+        assertThat(data.getWorkspaceName()).isNotNull().isEqualTo(workspaceName);
+        assertThat(data.getMenu()).isEmpty();
+    }
+
+    @Test
     void getMenuStructureForUserIdOrg2Test() {
 
         var workspaceName = "test04";
