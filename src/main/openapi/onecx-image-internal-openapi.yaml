@@ -82,50 +82,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-    put:
-      security:
-        - oauth2: [ ocx-ws:all, ocx-ws:write ]
-      tags:
-        - imagesInternal
-      description: update Images
-      operationId: updateImage
-      parameters:
-        - in: header
-          name: Content-Length
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 110000
-        - name: refId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: refType
-          in: path
-          required: true
-          schema:
-            $ref: "#/components/schemas/RefType"
-      requestBody:
-        required: true
-        content:
-          image/*:
-            schema:
-              type: string
-              format: binary
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ImageInfo'
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
     delete:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
