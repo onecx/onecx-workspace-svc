@@ -101,18 +101,8 @@ paths:
           schema:
             $ref: "#/components/schemas/RefType"
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ImageInfo'
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
+        "204":
+          description: No content
 components:
   securitySchemes:
     oauth2:
