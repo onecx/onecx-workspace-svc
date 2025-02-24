@@ -55,34 +55,19 @@ public class ImagesInternalRestController implements ImagesInternalApi {
     }
 
     @Override
-    public Response updateImage(String refId, RefTypeDTO refType, byte[] body, Integer contentLength) {
-
-        Image image = imageDAO.findByRefIdAndRefType(refId, refType.toString());
-        if (image == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-
-        var contentType = httpHeaders.getMediaType();
-        contentType = new MediaType(contentType.getType(), contentType.getSubtype());
-
-        image.setLength(contentLength);
-        image.setMimeType(contentType.toString());
-        image.setImageData(body);
-
-        image = imageDAO.update(image);
-        return Response.ok(imageMapper.map(image)).build();
-    }
-
-    @Override
     public Response uploadImage(Integer contentLength, String refId, RefTypeDTO refType, byte[] body) {
+        Image image = imageDAO.findByRefIdAndRefType(refId, refType.toString());
 
         var contentType = httpHeaders.getMediaType();
         contentType = new MediaType(contentType.getType(), contentType.getSubtype());
-        var image = imageMapper.create(refId, refType.toString(), contentType.toString(), contentLength);
-        image.setLength(contentLength);
-        image.setImageData(body);
-        image = imageDAO.create(image);
 
+        if (image == null) {
+            image = imageMapper.create(refId, refType.toString(), contentType.toString(), contentLength, body);
+            image = imageDAO.create(image);
+        } else {
+            imageMapper.update(image, contentLength, contentType.toString(), body);
+            image = imageDAO.update(image);
+        }
         var imageInfoDTO = imageMapper.map(image);
         return Response.created(uriInfo.getAbsolutePathBuilder().path(imageInfoDTO.getId()).build())
                 .entity(imageInfoDTO)
