@@ -1171,6 +1171,9 @@ components:
           $ref: '#/components/schemas/WorkspaceAddress'
         disabled:
           type: boolean
+        mandatory:
+          type: boolean
+          default: false
     UpdateWorkspaceRequest:
       required:
         - name
@@ -1207,6 +1210,9 @@ components:
           $ref: '#/components/schemas/WorkspaceAddress'
         disabled:
           type: boolean
+        mandatory:
+          type: boolean
+          default: false
     Workspace:
       required:
         - name
@@ -1252,6 +1258,7 @@ components:
           $ref: '#/components/schemas/WorkspaceAddress'
         mandatory:
           type: boolean
+          default: false
         operator:
           type: boolean
         disabled:

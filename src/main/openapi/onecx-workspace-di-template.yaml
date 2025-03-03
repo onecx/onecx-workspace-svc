@@ -86,6 +86,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TemplateMenuItem'
+        mandatory:
+          type: boolean
+          default: false
     TemplateMenuItem:
       type: object
       properties:
