@@ -313,6 +313,7 @@ class SlotRestControllerTest extends AbstractTest {
                 .extract().as(SlotDTO.class);
 
         assertThat(dto.getModificationCount()).isLessThan(updatedSlot.getModificationCount());
+        assertThat(updatedSlot.getComponents()).hasSize(1);
     }
 
     @Test
