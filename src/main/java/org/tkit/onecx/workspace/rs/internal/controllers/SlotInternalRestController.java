@@ -99,7 +99,12 @@ public class SlotInternalRestController implements SlotInternalApi {
         }
 
         mapper.update(updateSlotRequestDTO, slot);
-        slot = slotService.update(slot, mapper.mapComponents(updateSlotRequestDTO.getComponents()));
+        if (slot.getComponents().isEmpty()) {
+            slot = slotService.updateWithoutComponents(slot, mapper.mapComponents(updateSlotRequestDTO.getComponents()));
+        } else {
+            slot = slotService.updateWithExistingComponents(slot, mapper.mapComponents(updateSlotRequestDTO.getComponents()));
+
+        }
         return Response.ok(mapper.map(slot)).build();
     }
 

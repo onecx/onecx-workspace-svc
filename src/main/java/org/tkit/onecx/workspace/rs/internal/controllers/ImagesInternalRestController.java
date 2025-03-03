@@ -14,7 +14,6 @@ import org.tkit.onecx.workspace.domain.daos.ImageDAO;
 import org.tkit.onecx.workspace.domain.models.Image;
 import org.tkit.onecx.workspace.rs.internal.mappers.ExceptionMapper;
 import org.tkit.onecx.workspace.rs.internal.mappers.ImageMapper;
-import org.tkit.quarkus.jpa.exceptions.ConstraintException;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.image.rs.internal.ImagesInternalApi;
@@ -79,11 +78,6 @@ public class ImagesInternalRestController implements ImagesInternalApi {
         imageDAO.deleteQueryByRefIdAndRefType(refId, refType);
 
         return Response.status(Response.Status.NO_CONTENT).build();
-    }
-
-    @ServerExceptionMapper
-    public RestResponse<ProblemDetailResponseDTO> exception(ConstraintException ex) {
-        return exceptionMapper.exception(ex);
     }
 
     @ServerExceptionMapper

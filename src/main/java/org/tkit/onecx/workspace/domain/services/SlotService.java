@@ -1,5 +1,6 @@
 package org.tkit.onecx.workspace.domain.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -17,9 +18,15 @@ public class SlotService {
     SlotDAO dao;
 
     @Transactional
-    public Slot update(Slot slot, List<Component> components) {
-        slot.setComponents(null);
+    public Slot updateWithExistingComponents(Slot slot, List<Component> components) {
+        slot.setComponents(new ArrayList<>());
         slot = dao.update(slot);
+        slot.setComponents(components);
+        return dao.update(slot);
+    }
+
+    @Transactional
+    public Slot updateWithoutComponents(Slot slot, List<Component> components) {
         slot.setComponents(components);
         return dao.update(slot);
     }
