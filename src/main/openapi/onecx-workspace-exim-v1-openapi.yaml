@@ -236,6 +236,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EximWorkspaceMenuItem'
+        mandatory:
+          type: boolean
+          default: false
     Images:
       type: object
       nullable: false

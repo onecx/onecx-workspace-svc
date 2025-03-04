@@ -71,7 +71,7 @@ class SlotRestControllerTest extends AbstractTest {
                 .body().as(WorkspaceSlotsDTO.class);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getSlots()).hasSize(4);
+        assertThat(dto.getSlots()).hasSize(5);
 
         // create Role without body
         var exception = given()
@@ -191,7 +191,7 @@ class SlotRestControllerTest extends AbstractTest {
                 .as(WorkspaceSlotsDTO.class);
 
         assertThat(data).isNotNull();
-        assertThat(data.getSlots()).isNotNull().hasSize(3);
+        assertThat(data.getSlots()).isNotNull().hasSize(4);
         assertThat(data.getSlots().get(0)).isNotNull();
         assertThat(data.getSlots().get(0).getComponents()).isNotNull().hasSize(3);
 
@@ -279,6 +279,41 @@ class SlotRestControllerTest extends AbstractTest {
         assertThat(dto.getComponents()).isNotNull().hasSize(1);
         assertThat(dto.getComponents().get(0)).returns("new_c2", from(SlotComponentDTO::getName));
 
+    }
+
+    @Test
+    void updateSlotComponentsIfNoneExistYes() {
+
+        // download slot
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).contentType(APPLICATION_JSON)
+                .when()
+                .get("s14")
+                .then().statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract()
+                .body().as(SlotDTO.class);
+
+        // update none existing Slot
+        var requestDto = new UpdateSlotRequestDTO();
+
+        requestDto.setName(dto.getName()); //keep same name to avoid update because of changed name
+        requestDto.setModificationCount(dto.getModificationCount());
+        requestDto.getComponents().add(new SlotComponentDTO().name("new_c2").productName("p1").appId("a1"));
+
+        // update Slot
+        var updatedSlot = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(requestDto)
+                .when()
+                .put("s14")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(SlotDTO.class);
+
+        assertThat(dto.getModificationCount()).isLessThan(updatedSlot.getModificationCount());
+        assertThat(updatedSlot.getComponents()).hasSize(1);
     }
 
     @Test

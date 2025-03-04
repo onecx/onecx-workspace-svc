@@ -18,9 +18,15 @@ public class SlotService {
     SlotDAO dao;
 
     @Transactional
-    public Slot update(Slot slot, List<Component> components) {
+    public Slot updateWithExistingComponents(Slot slot, List<Component> components) {
         slot.setComponents(new ArrayList<>());
         slot = dao.update(slot);
+        slot.setComponents(components);
+        return dao.update(slot);
+    }
+
+    @Transactional
+    public Slot updateWithoutComponents(Slot slot, List<Component> components) {
         slot.setComponents(components);
         return dao.update(slot);
     }

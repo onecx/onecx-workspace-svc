@@ -82,4 +82,6 @@
 	<SLOT guid="s13" optlock="0" tenant_id="tenant-100" name="slot3" workspace_guid="11-111" />
 	<SLOT_COMPONENTS index="0" slot_guid="s13" name="c6" product_name="p1" app_id="a1" />
 
+	<SLOT guid="s14" optlock="0" tenant_id="tenant-100" name="slot4" workspace_guid="11-111" />
+
 </dataset>
