@@ -1288,6 +1288,12 @@ components:
         disabled:
           type: boolean
           default: false
+        mandatory:
+          type: boolean
+          default: false
+        operator:
+          type: boolean
+          default: false
     WorkspaceAddress:
       type: object
       properties:
