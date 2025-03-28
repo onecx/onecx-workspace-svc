@@ -56,6 +56,13 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         assertThat(w.getImages()).isNotNull().isNotEmpty().hasSize(2);
         assertThat(w.getMenuItems()).isNotNull().isNotEmpty().hasSize(2);
+        //check correct sorting:
+        assertThat(w.getProducts()).isSortedAccordingTo(Comparator.comparing(EximProductDTOV1::getProductName));
+        assertThat(w.getSlots()).isSortedAccordingTo(Comparator.comparing(EximSlotDTOV1::getName));
+        w.getSlots().forEach(slot -> {
+            assertThat(slot.getComponents()).isSortedAccordingTo(Comparator.comparing(EximComponentDTOV1::getName));
+        });
+
     }
 
     @Test
