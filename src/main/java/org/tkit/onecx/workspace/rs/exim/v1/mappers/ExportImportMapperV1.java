@@ -63,6 +63,21 @@ public interface ExportImportMapperV1 {
         snapshot.setCreated(OffsetDateTime.now());
         snapshot.setId(UUID.randomUUID().toString());
         snapshot.setWorkspaces(map(workspaces, imagesMap, menus, roles));
+        return sortAscendingByNames(snapshot);
+    }
+
+    /**
+     * sorts products, slots and components ascending by their names
+     */
+    default WorkspaceSnapshotDTOV1 sortAscendingByNames(WorkspaceSnapshotDTOV1 snapshot) {
+        snapshot.getWorkspaces().forEach((s, eximWorkspaceDTOV1) -> {
+            eximWorkspaceDTOV1.getProducts().sort(Comparator.comparing(EximProductDTOV1::getProductName));
+            eximWorkspaceDTOV1.getSlots().sort(Comparator.comparing(EximSlotDTOV1::getName));
+
+            eximWorkspaceDTOV1.getSlots().forEach(slot -> {
+                slot.getComponents().sort(Comparator.comparing(EximComponentDTOV1::getName));
+            });
+        });
         return snapshot;
     }
 
