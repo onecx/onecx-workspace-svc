@@ -274,7 +274,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         var refId = "productMaxUpload";
 
-        byte[] body = new byte[110001];
+        byte[] body = new byte[1100001];
         new Random().nextBytes(body);
 
         var exception = given()
@@ -291,7 +291,7 @@ class ImagesInternalRestControllerTest extends AbstractTest {
 
         assertThat(exception.getErrorCode()).isEqualTo(CONSTRAINT_VIOLATIONS.name());
         assertThat(exception.getDetail()).isEqualTo(
-                "uploadImage.contentLength: must be less than or equal to 110000");
+                "uploadImage.contentLength: must be less than or equal to 1100000");
 
     }
 

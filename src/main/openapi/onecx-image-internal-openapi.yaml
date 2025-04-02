@@ -21,7 +21,7 @@ paths:
           required: true
           schema:
             minimum: 1
-            maximum: 110000
+            maximum: 1100000
             type: integer
         - name: refId
           in: path
