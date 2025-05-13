@@ -72,9 +72,8 @@ public interface ExportImportMapperV1 {
     default WorkspaceSnapshotDTOV1 sortAscendingByNames(WorkspaceSnapshotDTOV1 snapshot) {
         snapshot.getWorkspaces().forEach((s, eximWorkspaceDTOV1) -> {
             eximWorkspaceDTOV1.getProducts().sort(Comparator.comparing(EximProductDTOV1::getProductName));
-            eximWorkspaceDTOV1.getProducts().forEach(eximProductDTOV1 -> {
-                eximProductDTOV1.getMicrofrontends().sort(Comparator.comparing(EximMicrofrontendDTOV1::getAppId));
-            });
+            eximWorkspaceDTOV1.getProducts().forEach(eximProductDTOV1 -> eximProductDTOV1.getMicrofrontends()
+                    .sort(Comparator.comparing(EximMicrofrontendDTOV1::getAppId)));
             eximWorkspaceDTOV1.getSlots().sort(Comparator.comparing(EximSlotDTOV1::getName));
             eximWorkspaceDTOV1.getSlots()
                     .forEach(slot -> slot.getComponents().sort(Comparator.comparing(EximComponentDTOV1::getName)));
