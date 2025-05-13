@@ -53,7 +53,7 @@ public interface ExportImportMapperV1 {
     ImportMenuResponseDTOV1 create(String id, ImportResponseStatusDTOV1 status);
 
     default WorkspaceSnapshotDTOV1 create(Map<String, Workspace> workspaces, List<Image> images, Collection<MenuItem> menus,
-            Map<String, Set<String>> roles) {
+            Map<String, List<String>> roles) {
         if (workspaces == null) {
             return null;
         }
@@ -67,15 +67,22 @@ public interface ExportImportMapperV1 {
     }
 
     /**
-     * sorts products, slots and components ascending by their names
+     * sorts products, microfrontends, slots, components and roles ascending by their names
      */
     default WorkspaceSnapshotDTOV1 sortAscendingByNames(WorkspaceSnapshotDTOV1 snapshot) {
         snapshot.getWorkspaces().forEach((s, eximWorkspaceDTOV1) -> {
             eximWorkspaceDTOV1.getProducts().sort(Comparator.comparing(EximProductDTOV1::getProductName));
+            eximWorkspaceDTOV1.getProducts().forEach(eximProductDTOV1 -> {
+                eximProductDTOV1.getMicrofrontends().sort(Comparator.comparing(EximMicrofrontendDTOV1::getAppId));
+            });
             eximWorkspaceDTOV1.getSlots().sort(Comparator.comparing(EximSlotDTOV1::getName));
             eximWorkspaceDTOV1.getSlots()
                     .forEach(slot -> slot.getComponents().sort(Comparator.comparing(EximComponentDTOV1::getName)));
             eximWorkspaceDTOV1.getRoles().sort(Comparator.comparing(EximWorkspaceRoleDTOV1::getName));
+            if (eximWorkspaceDTOV1.getMenuItems() != null) {
+                eximWorkspaceDTOV1.getMenuItems().forEach(eximWorkspaceMenuItemDTOV1 -> eximWorkspaceMenuItemDTOV1
+                        .setRoles(eximWorkspaceMenuItemDTOV1.getRoles().stream().distinct().sorted().toList()));
+            }
         });
         return snapshot;
     }
@@ -93,7 +100,7 @@ public interface ExportImportMapperV1 {
     ImageDTOV1 createImage(Image image);
 
     default Map<String, EximWorkspaceDTOV1> map(Map<String, Workspace> data, Map<String, Map<String, ImageDTOV1>> images,
-            Collection<MenuItem> menus, Map<String, Set<String>> roles) {
+            Collection<MenuItem> menus, Map<String, List<String>> roles) {
         if (data == null) {
             return Map.of();
         }
@@ -199,7 +206,7 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "children", ignore = true)
     EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem);
 
-    default List<EximWorkspaceMenuItemDTOV1> children(Set<MenuItem> set, Map<String, Set<String>> roles) {
+    default List<EximWorkspaceMenuItemDTOV1> children(Set<MenuItem> set, Map<String, List<String>> roles) {
         if (set == null) {
             return List.of();
         }
@@ -210,7 +217,7 @@ public interface ExportImportMapperV1 {
         return list;
     }
 
-    default EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem, Map<String, Set<String>> roles) {
+    default EximWorkspaceMenuItemDTOV1 map(MenuItem menuItem, Map<String, List<String>> roles) {
         var menu = map(menuItem);
         if (menu == null) {
             return null;
@@ -256,7 +263,7 @@ public interface ExportImportMapperV1 {
     Assignment createAssignment(MenuItem menuItem, Role role);
 
     default List<Assignment> createAssignments(List<Role> roles, List<MenuItem> menus,
-            Map<String, Set<String>> menuMap) {
+            Map<String, List<String>> menuMap) {
         if (menus == null || menus.isEmpty()) {
             return List.of();
         }
@@ -273,7 +280,7 @@ public interface ExportImportMapperV1 {
         return assignments;
     }
 
-    default Map<String, Set<String>> recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace,
+    default Map<String, List<String>> recursiveMappingTreeStructure(List<EximWorkspaceMenuItemDTOV1> items, Workspace workspace,
             MenuItem parent,
             List<MenuItem> mappedItems) {
 
@@ -282,7 +289,7 @@ public interface ExportImportMapperV1 {
         }
 
         List<MenuItem> result = new ArrayList<>();
-        Map<String, Set<String>> roles = new HashMap<>();
+        Map<String, List<String>> roles = new HashMap<>();
 
         for (EximWorkspaceMenuItemDTOV1 item : items) {
             if (item != null) {
@@ -319,7 +326,7 @@ public interface ExportImportMapperV1 {
         }
     }
 
-    default MenuSnapshotDTOV1 mapTree(Collection<MenuItem> entities, Map<String, Set<String>> roles) {
+    default MenuSnapshotDTOV1 mapTree(Collection<MenuItem> entities, Map<String, List<String>> roles) {
         MenuSnapshotDTOV1 dto = new MenuSnapshotDTOV1();
         dto.setCreated(OffsetDateTime.now());
         dto.setId(UUID.randomUUID().toString());
