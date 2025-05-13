@@ -28,7 +28,7 @@ public interface TemplateMapper {
     Assignment createAssignment(MenuItem menuItem, Role role);
 
     default List<Assignment> createAssignments(List<Role> roles, List<MenuItem> menus,
-            Map<String, Set<String>> menuMap) {
+            Map<String, List<String>> menuMap) {
         if (menus == null || menus.isEmpty()) {
             return List.of();
         }
@@ -138,7 +138,7 @@ public interface TemplateMapper {
     @Mapping(target = "parentId", ignore = true)
     MenuItem createMenu(TemplateMenuItemDI dto);
 
-    default Map<String, Set<String>> recursiveMappingTreeStructure(List<TemplateMenuItemDI> items, Workspace workspace,
+    default Map<String, List<String>> recursiveMappingTreeStructure(List<TemplateMenuItemDI> items, Workspace workspace,
             MenuItem parent,
             List<MenuItem> mappedItems) {
 
@@ -147,7 +147,7 @@ public interface TemplateMapper {
         }
 
         List<MenuItem> result = new ArrayList<>();
-        Map<String, Set<String>> roles = new HashMap<>();
+        Map<String, List<String>> roles = new HashMap<>();
 
         for (TemplateMenuItemDI item : items) {
             if (item != null) {
