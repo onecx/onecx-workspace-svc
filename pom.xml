@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.tkit.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.72.4</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
