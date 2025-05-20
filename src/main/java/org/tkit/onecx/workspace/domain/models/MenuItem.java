@@ -3,6 +3,7 @@ package org.tkit.onecx.workspace.domain.models;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.REFRESH;
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 import java.util.HashMap;
@@ -95,7 +96,7 @@ public class MenuItem extends TraceableEntity {
     @OrderBy("position")
     private Set<MenuItem> children = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = EAGER)
     @MapKeyColumn(name = "LANGUAGE")
     @Column(name = "i18n")
     @CollectionTable(name = "MENU_ITEM_I18N")
