@@ -1,4 +1,3 @@
-:summaryTableId: onecx-workspace-svc
 [.configuration-legend]
 icon:lock[title=Fixed at build time] Configuration property fixed at build time - All other configuration properties are overridable at runtime
 [.configuration-reference.searchable, cols="80,.^10,.^10"]
@@ -9,6 +8,10 @@ h|Type
 h|Default
 
 a| [[onecx-workspace-svc_onecx-workspace-legacy-enable-menu-auto-registration]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-legacy-enable-menu-auto-registration[`onecx.workspace.legacy.enable-menu-auto-registration`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.legacy.enable-menu-auto-registration+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -26,6 +29,10 @@ endif::add-copy-button-to-env-var[]
 |`false`
 
 a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping[`onecx.workspace.template.import.role-mapping."role-mapping"`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.import.role-mapping."role-mapping"+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -43,6 +50,10 @@ endif::add-copy-button-to-env-var[]
 |
 
 a| [[onecx-workspace-svc_onecx-workspace-template-import-tenants]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-import-tenants[`onecx.workspace.template.import.tenants`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.import.tenants+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -60,9 +71,15 @@ endif::add-copy-button-to-env-var[]
 |`default`
 
 a| [[onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping[`onecx.workspace.user.menu.mapping."mapping"`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.user.menu.mapping."mapping"+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
+Menu mapping keys
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_USER_MENU_MAPPING__MAPPING_+++[]
@@ -75,9 +92,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a| [[onecx-workspace-svc_onecx-workspace-token-verified]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-verified[`onecx.workspace.token.verified`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.token.verified+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
+Verification status
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_VERIFIED+++[]
@@ -90,9 +113,15 @@ endif::add-copy-button-to-env-var[]
 |`false`
 
 a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix[`onecx.workspace.token.issuer.public-key-location.suffix`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.token.issuer.public-key-location.suffix+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
+Suffix of public key
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_SUFFIX+++[]
@@ -105,9 +134,15 @@ endif::add-copy-button-to-env-var[]
 |`/protocol/openid-connect/certs`
 
 a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled[`onecx.workspace.token.issuer.public-key-location.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.token.issuer.public-key-location.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
+Status if public key is enabled
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_ENABLED+++[]
@@ -120,9 +155,15 @@ endif::add-copy-button-to-env-var[]
 |`false`
 
 a| [[onecx-workspace-svc_onecx-workspace-token-claim-separator]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-claim-separator[`onecx.workspace.token.claim.separator`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.token.claim.separator+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
+Separator
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_CLAIM_SEPARATOR+++[]
@@ -135,9 +176,15 @@ endif::add-copy-button-to-env-var[]
 |
 
 a| [[onecx-workspace-svc_onecx-workspace-token-claim-path]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-claim-path[`onecx.workspace.token.claim.path`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.token.claim.path+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
+Claim path
+
 
 ifdef::add-copy-button-to-env-var[]
 Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TOKEN_CLAIM_PATH+++[]
@@ -150,6 +197,10 @@ endif::add-copy-button-to-env-var[]
 |`realm_access/roles`
 
 a| [[onecx-workspace-svc_onecx-workspace-template-create-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-enabled[`onecx.workspace.template.create.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.create.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -167,6 +218,10 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 a| [[onecx-workspace-svc_onecx-workspace-template-create-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-resource[`onecx.workspace.template.create.resource`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.create.resource+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -184,6 +239,10 @@ endif::add-copy-button-to-env-var[]
 |`template/workspace-create.json`
 
 a| [[onecx-workspace-svc_onecx-workspace-template-create-class-path-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-class-path-resource[`onecx.workspace.template.create.class-path-resource`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.create.class-path-resource+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -201,6 +260,10 @@ endif::add-copy-button-to-env-var[]
 |`true`
 
 a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping[`onecx.workspace.template.create.role-mapping."role-mapping"`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.create.role-mapping."role-mapping"+++[]
+endif::add-copy-button-to-config-props[]
+
 
 [.description]
 --
@@ -219,5 +282,3 @@ endif::add-copy-button-to-env-var[]
 
 |===
 
-
-:!summaryTableId:

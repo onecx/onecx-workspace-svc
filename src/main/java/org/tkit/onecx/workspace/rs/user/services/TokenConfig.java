@@ -26,34 +26,34 @@ public interface TokenConfig {
 
     interface Config {
         /**
-         * @return verification status
+         * Verification status
          */
         @WithName("verified")
         @WithDefault("false")
         boolean verified();
 
         /**
-         * @return suffix of public key
+         * Suffix of public key
          */
         @WithName("issuer.public-key-location.suffix")
         @WithDefault("/protocol/openid-connect/certs")
         String publicKeyLocationSuffix();
 
         /**
-         * @return status if public key is enabled
+         * Status if public key is enabled
          */
         @WithName("issuer.public-key-location.enabled")
         @WithDefault("false")
         boolean publicKeyEnabled();
 
         /**
-         * @return separator
+         * Separator
          */
         @WithName("claim.separator")
         Optional<String> claimSeparator();
 
         /**
-         * @return claim path
+         * Claim path
          */
         @WithName("claim.path")
         @WithDefault("realm_access/roles")

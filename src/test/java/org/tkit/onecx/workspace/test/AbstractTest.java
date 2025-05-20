@@ -51,6 +51,10 @@ public class AbstractTest {
 
     KeycloakTestClient keycloakClient = new KeycloakTestClient();
 
+    protected String getKeycloakClientToken(String clientId) {
+        return keycloakClient.getClientAccessToken(clientId);
+    }
+
     protected String createAccessTokenBearer(String user) {
         return "Bearer " + createAccessToken(user);
     }

@@ -18,14 +18,13 @@ public interface MenuMappingConfig {
     /**
      * User menu configuration.
      *
-     * @return user menu configuration.
      */
     @WithName("user.menu")
     Menu menu();
 
     interface Menu {
         /**
-         * @return menu mapping keys
+         * Menu mapping keys
          */
         @WithName("mapping")
         Map<String, String> mapping();

@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.tkit.onecx</groupId>
         <artifactId>onecx-quarkus3-parent</artifactId>
-        <version>0.72.4</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
@@ -38,10 +38,6 @@
         <dependency>
             <groupId>org.tkit.quarkus.lib</groupId>
             <artifactId>tkit-quarkus-rest</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.tkit.onecx.quarkus</groupId>
-            <artifactId>onecx-security</artifactId>
         </dependency>
 
         <!-- TENANT -->
