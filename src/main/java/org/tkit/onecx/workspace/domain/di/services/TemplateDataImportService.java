@@ -85,7 +85,7 @@ public class TemplateDataImportService implements DataImportService {
 
                 // create workspace menu items
                 List<MenuItem> items = new ArrayList<>();
-                Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(item.getMenuItems(), workspace, null,
+                Map<String, List<String>> menuRoles = mapper.recursiveMappingTreeStructure(item.getMenuItems(), workspace, null,
                         items);
 
                 // create assignments of menus and roles

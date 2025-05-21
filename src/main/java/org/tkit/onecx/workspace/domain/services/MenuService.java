@@ -32,7 +32,7 @@ public class MenuService {
     RoleDAO roleDAO;
 
     @Transactional(Transactional.TxType.SUPPORTS)
-    public ImportRequest importMenuItems(Workspace workspace, List<MenuItem> items, Map<String, Set<String>> menuRoles) {
+    public ImportRequest importMenuItems(Workspace workspace, List<MenuItem> items, Map<String, List<String>> menuRoles) {
 
         var roleNames = menuRoles.values().stream().flatMap(Collection::stream).collect(toSet());
         var existingRoles = roleDAO.findRolesByWorkspaceAndNames(workspace.getId(), roleNames);
