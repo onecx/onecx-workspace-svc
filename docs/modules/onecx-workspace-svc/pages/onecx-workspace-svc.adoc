@@ -7,27 +7,6 @@ h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a| [[onecx-workspace-svc_onecx-workspace-legacy-enable-menu-auto-registration]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-legacy-enable-menu-auto-registration[`onecx.workspace.legacy.enable-menu-auto-registration`]##
-ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++onecx.workspace.legacy.enable-menu-auto-registration+++[]
-endif::add-copy-button-to-config-props[]
-
-
-[.description]
---
-Enabled or disable menu auto registration.
-
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_LEGACY_ENABLE_MENU_AUTO_REGISTRATION+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_LEGACY_ENABLE_MENU_AUTO_REGISTRATION+++`
-endif::add-copy-button-to-env-var[]
---
-|boolean
-|`false`
-
 a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping[`onecx.workspace.template.import.role-mapping."role-mapping"`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.template.import.role-mapping."role-mapping"+++[]

@@ -226,18 +226,6 @@
                             <modelNameSuffix>DTO</modelNameSuffix>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>legacy</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>src/main/openapi/onecx-workspace-legacy-openapi.yaml</inputSpec>
-                            <apiPackage>gen.org.tkit.onecx.workspace.rs.legacy</apiPackage>
-                            <modelPackage>gen.org.tkit.onecx.workspace.rs.legacy.model</modelPackage>
-                            <modelNameSuffix>DTO</modelNameSuffix>
-                        </configuration>
-                    </execution>
                      <execution>
                         <id>v1</id>
                         <goals>
