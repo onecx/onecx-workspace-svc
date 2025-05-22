@@ -25,25 +25,6 @@ import org.tkit.quarkus.jpa.models.TraceableEntity_;
 @ApplicationScoped
 public class MenuItemDAO extends AbstractDAO<MenuItem> {
 
-    @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
-    public void deleteAllMenuItemsByWorkspaceAndAppId(String workspaceId, String appId) {
-        try {
-            var cb = this.getEntityManager().getCriteriaBuilder();
-            var cq = this.criteriaQuery();
-            var root = cq.from(MenuItem.class);
-
-            cq.where(cb.and(
-                    cb.equal(root.get(MenuItem_.WORKSPACE).get(TraceableEntity_.ID), workspaceId),
-                    cb.equal(root.get(MenuItem_.APPLICATION_ID), appId)));
-
-            var items = getEntityManager().createQuery(cq).getResultList();
-            delete(items);
-
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID, ex);
-        }
-    }
-
     /**
      * This method delete all menu items by workspace id.
      *
@@ -77,25 +58,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
             getEntityManager().createQuery(cq).executeUpdate();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_IDS, ex);
-        }
-    }
-
-    public MenuItem loadMenuItemByWorkspaceAndKey(String workspaceName, String itemKey) {
-
-        try {
-            var cb = getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(MenuItem.class);
-            var root = cq.from(MenuItem.class);
-
-            cq.where(cb.and(
-                    cb.equal(root.get(MenuItem_.WORKSPACE).get(Workspace_.NAME), workspaceName),
-                    cb.equal(root.get(MenuItem_.key), itemKey)));
-
-            return getEntityManager()
-                    .createQuery(cq)
-                    .getSingleResult();
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_LOAD_MENU_BY_ID_AND_KEY, ex);
         }
     }
 
@@ -263,7 +225,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
     public enum ErrorKeys {
 
         ERROR_UPDATE_MENU_ITEM,
-        ERROR_LOAD_MENU_BY_ID_AND_KEY,
         FIND_ENTITY_BY_ID_FAILED,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_IDS,
@@ -273,6 +234,5 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
 
         ERROR_LOAD_ALL_CHILDREN,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACES,
-        ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID,
     }
 }

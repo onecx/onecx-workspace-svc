@@ -27,8 +27,7 @@ class AfterStartDataImportTest extends AbstractTest {
 
     @Test
     void importDataFromFileTest() {
-        Stream<Workspace> result = workspaceDAO.findAll();
-        var resultList = result.toList();
+        var resultList = workspaceDAO.findAllAsList();
         assertThat(resultList).isNotNull().hasSize(1);
         var w = resultList.get(0);
         assertThat(w.getName()).isEqualTo("ADMIN");
@@ -43,7 +42,7 @@ class AfterStartDataImportTest extends AbstractTest {
 
         assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(3);
 
-        var assignments = assignmentDAO.findAll().toList();
+        var assignments = assignmentDAO.findAllAsList();
         assertThat(assignments).isNotNull().hasSize(7);
     }
 
