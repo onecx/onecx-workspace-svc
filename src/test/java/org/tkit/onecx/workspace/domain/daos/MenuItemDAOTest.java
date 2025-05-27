@@ -40,10 +40,6 @@ class MenuItemDAOTest {
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_CHILDREN);
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceId(null),
                 MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID);
-        methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceAndAppId(null, null),
-                MenuItemDAO.ErrorKeys.ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_NAME_AND_APP_ID);
-        methodExceptionTests(() -> dao.loadMenuItemByWorkspaceAndKey(null, null),
-                MenuItemDAO.ErrorKeys.ERROR_LOAD_MENU_BY_ID_AND_KEY);
         methodExceptionTests(() -> dao.findById(null),
                 MenuItemDAO.ErrorKeys.FIND_ENTITY_BY_ID_FAILED);
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceIds(null),

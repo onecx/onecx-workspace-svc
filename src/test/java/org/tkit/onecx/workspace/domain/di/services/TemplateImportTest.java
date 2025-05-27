@@ -45,7 +45,7 @@ class TemplateImportTest {
 
         assertThatThrownBy(() -> service.importData(config)).isInstanceOf(TemplateDataImportService.TemplateException.class);
 
-        List<Workspace> data = workspaceDAO.findAll().toList();
+        List<Workspace> data = workspaceDAO.findAllAsList();
         assertThat(data).isNotNull().hasSize(2);
 
     }
@@ -71,7 +71,7 @@ class TemplateImportTest {
 
         service.importData(config);
 
-        List<Workspace> data = workspaceDAO.findAll().toList();
+        List<Workspace> data = workspaceDAO.findAllAsList();
         assertThat(data).isNotNull().hasSize(2);
 
     }
@@ -101,7 +101,7 @@ class TemplateImportTest {
 
         service.importData(config);
 
-        List<Workspace> data = workspaceDAO.findAll().toList();
+        List<Workspace> data = workspaceDAO.findAllAsList();
         assertThat(data).isNotNull().hasSize(2);
 
     }
