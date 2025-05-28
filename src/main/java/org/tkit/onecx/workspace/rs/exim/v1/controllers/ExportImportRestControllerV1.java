@@ -69,8 +69,8 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         var menu = menuItemDAO.loadAllMenuItemsByCriteria(criteria);
 
         var ma = assignmentDAO.findAssignmentMenuForWorkspace(workspace.getId());
-        Map<String, Set<String>> roles = ma.stream()
-                .collect(groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toSet())));
+        Map<String, List<String>> roles = ma.stream()
+                .collect(groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toList())));
 
         return Response.ok(mapper.mapTree(menu, roles)).build();
     }
@@ -90,14 +90,14 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
         var images = imageDAO.findByRefIds(data.keySet());
 
         Collection<MenuItem> menus = List.of();
-        Map<String, Set<String>> roles = Map.of();
+        Map<String, List<String>> roles = Map.of();
         if (request.getIncludeMenus()) {
             var ids = data.values().stream().map(TraceableEntity::getId).collect(toSet());
             menus = menuItemDAO.loadAllMenuItemsByWorkspaces(ids);
 
             var ma = assignmentDAO.findAssignmentMenuForWorkspaces(ids);
             roles = ma.stream()
-                    .collect(groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toSet())));
+                    .collect(groupingBy(AssignmentMenu::menuItemId, mapping(AssignmentMenu::roleName, toList())));
         }
         return Response.ok(mapper.create(data, images, menus, roles)).build();
     }
@@ -115,7 +115,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
 
             // convert menu dto to menu item object
             List<MenuItem> items = new LinkedList<>();
-            Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(
+            Map<String, List<String>> menuRoles = mapper.recursiveMappingTreeStructure(
                     menuSnapshotDTOV1.getMenu().getMenuItems(),
                     workspace, null, items);
 
@@ -165,7 +165,7 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
             // create workspace menu items
             if (dto.getMenuItems() != null && !dto.getMenuItems().isEmpty()) {
                 List<MenuItem> mis = new ArrayList<>();
-                Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(dto.getMenuItems(), workspace, null,
+                Map<String, List<String>> menuRoles = mapper.recursiveMappingTreeStructure(dto.getMenuItems(), workspace, null,
                         mis);
 
                 // create assignments of menus and roles
@@ -218,7 +218,8 @@ class ExportImportRestControllerV1 implements WorkspaceExportImportApi {
                     // create workspace menu items
                     if (dto.getMenuItems() != null && !dto.getMenuItems().isEmpty()) {
                         List<MenuItem> mis = new ArrayList<>();
-                        Map<String, Set<String>> menuRoles = mapper.recursiveMappingTreeStructure(dto.getMenuItems(), workspace,
+                        Map<String, List<String>> menuRoles = mapper.recursiveMappingTreeStructure(dto.getMenuItems(),
+                                workspace,
                                 null,
                                 mis);
 

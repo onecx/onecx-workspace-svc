@@ -514,15 +514,16 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         // children of key2
         List<EximWorkspaceMenuItemDTOV1> children = new ArrayList<>();
-        children.add(new EximWorkspaceMenuItemDTOV1().key("key3").name("key3").position(10).roles(Set.of("role-i-2")));
+        children.add(new EximWorkspaceMenuItemDTOV1().key("key3").name("key3").position(10).roles(List.of("role-i-2")));
         children.add(new EximWorkspaceMenuItemDTOV1().key("key4").name("key4").position(20));
 
         // root menu
         List<EximWorkspaceMenuItemDTOV1> menuItems = new ArrayList<>();
         menuItems.add(
-                new EximWorkspaceMenuItemDTOV1().key("key1").name("key1").position(0).roles(Set.of("role-1-1", "role-i-2")));
+                new EximWorkspaceMenuItemDTOV1().key("key1").name("key1").position(0).roles(List.of("role-1-1", "role-i-2")));
         menuItems
-                .add(new EximWorkspaceMenuItemDTOV1().key("key2").name("key2").position(1).roles(Set.of("role-i-3", "role-i-2"))
+                .add(new EximWorkspaceMenuItemDTOV1().key("key2").name("key2").position(1)
+                        .roles(List.of("role-i-3", "role-i-2"))
                         .children(children));
 
         var snapshot = new MenuSnapshotDTOV1()
@@ -566,7 +567,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         var c2 = map.get("key2");
         assertThat(c2).isNotNull();
         assertThat(c2.getKey()).isEqualTo("key2");
-        assertThat(c2.getRoles()).isNotNull().isNotEmpty().hasSize(2).containsExactly("role-i-3", "role-i-2");
+        assertThat(c2.getRoles()).isNotNull().isNotEmpty().hasSize(2).containsExactly("role-i-2", "role-i-3");
         assertThat(c2.getChildren()).isNotNull().isNotEmpty().hasSize(2);
 
         map = c2.getChildren().stream().collect(Collectors.toMap(EximWorkspaceMenuItemDTOV1::getKey, x -> x));
@@ -587,15 +588,16 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
 
         // children of key2
         List<EximWorkspaceMenuItemDTOV1> children = new ArrayList<>();
-        children.add(new EximWorkspaceMenuItemDTOV1().key("key3").name("key3").position(10).roles(Set.of("role-i-2")));
+        children.add(new EximWorkspaceMenuItemDTOV1().key("key3").name("key3").position(10).roles(List.of("role-i-2")));
         children.add(new EximWorkspaceMenuItemDTOV1().key("key4").name("key4").position(20));
 
         // root menu
         List<EximWorkspaceMenuItemDTOV1> menuItems = new ArrayList<>();
         menuItems.add(
-                new EximWorkspaceMenuItemDTOV1().key("key1").name("key1").position(0).roles(Set.of("role-i-1", "role-i-2")));
+                new EximWorkspaceMenuItemDTOV1().key("key1").name("key1").position(0).roles(List.of("role-i-1", "role-i-2")));
         menuItems
-                .add(new EximWorkspaceMenuItemDTOV1().key("key2").name("key2").position(1).roles(Set.of("role-i-3", "role-i-2"))
+                .add(new EximWorkspaceMenuItemDTOV1().key("key2").name("key2").position(1)
+                        .roles(List.of("role-i-3", "role-i-2"))
                         .children(children));
 
         var snapshot = new MenuSnapshotDTOV1()

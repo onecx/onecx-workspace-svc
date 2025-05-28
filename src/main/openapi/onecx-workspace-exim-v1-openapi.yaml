@@ -365,7 +365,6 @@ components:
             type: string
         roles:
           type: array
-          uniqueItems: true
           items:
             type: string
         children:
