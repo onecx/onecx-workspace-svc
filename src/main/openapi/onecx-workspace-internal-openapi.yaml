@@ -982,7 +982,7 @@ components:
           format: int32
           description: The size of page
           default: 100
-          maximum: 1000
+          maximum: 3000
           type: integer
     AssignmentPageResult:
       type: object
