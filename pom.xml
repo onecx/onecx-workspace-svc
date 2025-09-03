@@ -208,7 +208,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-workspace-internal-openapi.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-workspace-internal.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.workspace.rs.internal</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.workspace.rs.internal.model</modelPackage>
                             <modelNameSuffix>DTO</modelNameSuffix>
@@ -220,7 +220,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-user-internal-openapi.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-user-internal.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.workspace.rs.user</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.workspace.rs.user.model</modelPackage>
                             <modelNameSuffix>DTO</modelNameSuffix>
@@ -232,7 +232,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-workspace-v1-openapi.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-workspace-v1.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.workspace.rs.external.v1</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.workspace.rs.external.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
@@ -271,7 +271,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-workspace-exim-v1-openapi.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-workspace-exim-v1.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.workspace.rs.exim.v1</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.workspace.rs.exim.v1.model</modelPackage>
                             <modelNameSuffix>DTOV1</modelNameSuffix>
@@ -283,7 +283,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/onecx-image-internal-openapi.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/onecx-image-internal.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.image.rs.internal</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.image.rs.internal.model</modelPackage>
                             <generateModelTests>true</generateModelTests>

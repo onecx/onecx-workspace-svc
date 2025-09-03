@@ -2,15 +2,24 @@
 openapi: 3.0.3
 info:
   title: onecx-workspace internal service
+  description:
+    This API provides endpoints for managing Workspaces, Menus, Products, Roles and Assignments.
   version: 1.0.0
 servers:
   - url: "http://onecx-workspace:8080"
 tags:
   - name: workspaceInternal
+    description: Managing Workspaces
   - name: menuInternal
+    description: Managing Menus
   - name: productInternal
+    description: Managing Products
+  - name: slotInternal
+    description: Managing Slots
   - name: roleInternal
+    description: Managing Roles
   - name: assignmentInternal
+    description: Managing Role-to-Workspace Assignments
 paths:
   /internal/workspaces/search:
     post:
@@ -28,7 +37,7 @@ paths:
               $ref: '#/components/schemas/WorkspaceSearchCriteria'
       responses:
         "200":
-          description: Corresponding workspaces
+          description: Workspace search results retrieved successfully
           content:
             application/json:
               schema:
@@ -45,7 +54,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceInternal
-      description: Create new workspace
+      description: Create a new workspace
       operationId: createWorkspace
       requestBody:
         required: true
@@ -55,7 +64,7 @@ paths:
               $ref: '#/components/schemas/CreateWorkspaceRequest'
       responses:
         "201":
-          description: New workspace created
+          description: Workspace created successfully
           headers:
             Location:
               required: true
@@ -78,44 +87,44 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - workspaceInternal
-      description: Return workspace by name
+      description: Find a specific Workspace by its name
       operationId: findWorkspaceByName
       parameters:
         - $ref: '#/components/parameters/name'
       responses:
         "200":
-          description: OK
+          description: Workspace retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspaceAbstract'
         "404":
-          description: Not found
+          description: Workspace not found
   /internal/workspaces/{id}:
     get:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - workspaceInternal
-      description: Return workspace by id
+      description: Get a workspace by its id
       operationId: getWorkspace
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "200":
-          description: OK
+          description: Workspace retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workspace'
         "404":
-          description: Not found
+          description: Workspace not found
     put:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceInternal
-      description: Update workspace by ID
+      description: Update a workspace by its id
       operationId: updateWorkspace
       parameters:
         - $ref: '#/components/parameters/id'
@@ -127,7 +136,7 @@ paths:
               $ref: '#/components/schemas/UpdateWorkspaceRequest'
       responses:
         200:
-          description: Workspaces updated
+          description: Workspaces updated successfully
           content:
             application/json:
               schema:
@@ -145,13 +154,13 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
       tags:
         - workspaceInternal
-      description: Delete workspace by ID
+      description: Delete a workspace by its id
       operationId: deleteWorkspace
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "204":
-          description: No Content
+          description: Workspace deleted successfully
         "400":
           description: Internal Server Error
           content:
@@ -164,13 +173,13 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
       tags:
         - menuInternal
-      description: Delete all menu items in workspace
+      description: Delete all menu items of a specific workspace by its id
       operationId: deleteAllMenuItemsForWorkspace
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "204":
-          description: No content
+          description: Menu items deleted successfully
         "400":
           description: Bad request
           content:
@@ -183,7 +192,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - slotInternal
-      description: Add a new slot to workspace
+      description: Add a new slot to a workspace
       operationId: createSlot
       requestBody:
         required: true
@@ -193,7 +202,7 @@ paths:
               $ref: '#/components/schemas/CreateSlotRequest'
       responses:
         "201":
-          description: OK
+          description: Slot created successfully
           content:
             application/json:
               schema:
@@ -212,13 +221,13 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - slotInternal
-      description: Get slots for workspace
+      description: Get slots for a specific workspace by its id
       operationId: getSlotsForWorkspace
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "200":
-          description: Corresponding menu items
+          description: Slots retrieved successfully
           content:
             application/json:
               schema:
@@ -235,33 +244,33 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - slotInternal
-      description: Retrieve slot detail info
+      description: Get a slot by its id
       operationId: getSlotById
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "200":
-          description: OK
+          description: Slot retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Slot'
         "404":
-          description: Not found
+          description: Slot not found
     delete:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
       tags:
         - slotInternal
-      description: Delete a slot
+      description: Delete a slot by its id
       operationId: deleteSlotById
       parameters:
         - $ref: '#/components/parameters/id'
       responses:
         "204":
-          description: OK
+          description: Slot deleted successfully
         "400":
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -271,7 +280,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - slotInternal
-      description: Update an existing slot
+      description: Update an existing slot by its id
       operationId: updateSlot
       parameters:
         - $ref: '#/components/parameters/id'
@@ -283,7 +292,7 @@ paths:
               $ref: '#/components/schemas/UpdateSlotRequest'
       responses:
         "200":
-          description: OK
+          description: Slot updated successfully
           content:
             application/json:
               schema:
@@ -295,14 +304,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
-          description: Menu item not found
+          description: Slot not found
   /internal/menuItems:
     post:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - menuInternal
-      description: Add a new menu item to workspace menu
+      description: Add a new menu item to a menu
       operationId: createMenuItem
       requestBody:
         required: true
@@ -312,7 +321,7 @@ paths:
               $ref: '#/components/schemas/CreateMenuItem'
       responses:
         "201":
-          description: OK
+          description: Menu item created successfully
           headers:
             Location:
               required: true
@@ -345,7 +354,7 @@ paths:
               $ref: '#/components/schemas/MenuItemSearchCriteria'
       responses:
         "200":
-          description: Corresponding menu items
+          description: Menu items search result retrieved successfully
           content:
             application/json:
               schema:
@@ -362,7 +371,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - menuInternal
-      description: Fetch the menuItems of the workspace in the tree structure
+      description: Fetch menu items of a workspace in the tree structure
       operationId: getMenuStructure
       requestBody:
         required: true
@@ -372,46 +381,46 @@ paths:
               $ref: '#/components/schemas/MenuStructureSearchCriteria'
       responses:
         "200":
-          description: OK
+          description: Menu items as tree structure retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MenuItemStructure'
         "404":
-          description: Not found
+          description: Menu items not found
   /internal/menuItems/{menuItemId}:
     get:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - menuInternal
-      description: Retrieve menu item detail info
+      description: Get a menu item by its id
       operationId: getMenuItemById
       parameters:
         - $ref: '#/components/parameters/menuItemId'
       responses:
         "200":
-          description: OK
+          description: Menu item retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MenuItem'
         "404":
-          description: Not found
+          description: Menu item not found
     delete:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
       tags:
         - menuInternal
-      description: Delete a menuItem by the workspace id and the menuItemId
+      description: Delete a menu item by its id
       operationId: deleteMenuItemById
       parameters:
         - $ref: '#/components/parameters/menuItemId'
       responses:
         "204":
-          description: OK
+          description: Menu item deleted successfully
         "400":
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -433,7 +442,7 @@ paths:
               $ref: '#/components/schemas/UpdateMenuItemRequest'
       responses:
         "200":
-          description: OK
+          description: Menu item updated successfully
           content:
             application/json:
               schema:
@@ -464,7 +473,7 @@ paths:
               $ref: '#/components/schemas/UpdateMenuItemParentRequest'
       responses:
         "200":
-          description: OK
+          description: Menu item parent updated successfully
           content:
             application/json:
               schema:
@@ -476,14 +485,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
-          description: Menu item not found
+          description: Menu item parent not found
   /internal/products:
     post:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - productInternal
-      description: Create/Register new product
+      description: Create/Register a new product
       operationId: createProduct
       requestBody:
         required: true
@@ -493,7 +502,7 @@ paths:
               $ref: '#/components/schemas/CreateProductRequest'
       responses:
         "201":
-          description: Product added
+          description: Product created/registered successfully
           headers:
             Location:
               required: true
@@ -526,7 +535,7 @@ paths:
               $ref: '#/components/schemas/ProductSearchCriteria'
       responses:
         "200":
-          description: Corresponding assignments
+          description: Product search results retrieved successfully
           content:
             application/json:
               schema:
@@ -543,13 +552,13 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - productInternal
-      description: Get a product by the productId
+      description: Get a product by the its id
       operationId: getProductById
       parameters:
         - $ref: '#/components/parameters/productId'
       responses:
         200:
-          description: Corresponding product
+          description: Product retrieved successfully
           content:
             application/json:
               schema:
@@ -561,15 +570,15 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
       tags:
         - productInternal
-      description: Delete a product by the productId
+      description: Delete a product by its id
       operationId: deleteProductById
       parameters:
         - $ref: '#/components/parameters/productId'
       responses:
         "204":
-          description: OK
+          description: Product deleted successfully
         "400":
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -579,7 +588,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - productInternal
-      description: Update product and MFEs
+      description: Update a product and MFEs by its id
       operationId: updateProductById
       parameters:
         - $ref: '#/components/parameters/productId'
@@ -591,7 +600,7 @@ paths:
               $ref: '#/components/schemas/UpdateProductRequest'
       responses:
         "200":
-          description: OK
+          description: Product updated successfully
           content:
             application/json:
               schema:
@@ -610,7 +619,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - roleInternal
-      description: Search for roles by search criteria
+      description: Search roles by search criteria
       operationId: searchRoles
       requestBody:
         required: true
@@ -620,7 +629,7 @@ paths:
               $ref: '#/components/schemas/RoleSearchCriteria'
       responses:
         "200":
-          description: Corresponding assignments
+          description: Role search results retrieved successfully
           content:
             application/json:
               schema:
@@ -637,7 +646,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - roleInternal
-      description: Create new role
+      description: Create a new role
       operationId: createRole
       requestBody:
         required: true
@@ -647,7 +656,7 @@ paths:
               $ref: '#/components/schemas/CreateRoleRequest'
       responses:
         "201":
-          description: New role created
+          description: Role created successfully
           headers:
             Location:
               required: true
@@ -670,13 +679,13 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - roleInternal
-      description: Retrieve workspace role
+      description: Retrieve a workspace role by its id
       operationId: getWorkspaceRole
       parameters:
         - $ref: '#/components/parameters/roleId'
       responses:
         200:
-          description: OK
+          description: Role retrieved successfully
           content:
             application/json:
               schema:
@@ -688,7 +697,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - roleInternal
-      description: Update workspace role
+      description: Update workspace role by its id
       operationId: updateWorkspaceRole
       parameters:
         - $ref: '#/components/parameters/roleId'
@@ -700,7 +709,7 @@ paths:
               $ref: '#/components/schemas/UpdateRoleRequest'
       responses:
         200:
-          description: OK
+          description: Role updated successfully
           content:
             application/json:
               schema:
@@ -712,21 +721,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         404:
-          description: Workspace role not found
+          description: Role not found
     delete:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
       tags:
         - roleInternal
-      description: Delete workspace role by ID
+      description: Delete a workspace role by its id
       operationId: deleteWorkspaceRole
       parameters:
         - $ref: '#/components/parameters/roleId'
       responses:
         204:
-          description: No Content
+          description: Role deleted successfully
         400:
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -747,7 +756,7 @@ paths:
               $ref: '#/components/schemas/AssignmentSearchCriteria'
       responses:
         "200":
-          description: Corresponding assignments
+          description: Assignment search results retrieved successfully
           content:
             application/json:
               schema:
@@ -764,7 +773,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - assignmentInternal
-      description: Create new Assignment
+      description: Create a new assignment
       operationId: createAssignment
       requestBody:
         required: true
@@ -774,7 +783,7 @@ paths:
               $ref: '#/components/schemas/CreateAssignmentRequest'
       responses:
         "201":
-          description: New workspace created
+          description: Assignment created successfully
           headers:
             Location:
               required: true
@@ -797,13 +806,13 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - assignmentInternal
-      description: Get assignment
+      description: Get a assignment by its id
       operationId: getAssignment
       parameters:
         - $ref: '#/components/parameters/assignmentId'
       responses:
         200:
-          description: Get assignment
+          description: Assignment retrieved successfully
           content:
             application/json:
               schema:
@@ -815,13 +824,13 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
       tags:
         - assignmentInternal
-      description: Delete assignment
+      description: Delete a assignment by its id
       operationId: deleteAssignment
       parameters:
         - $ref: '#/components/parameters/assignmentId'
       responses:
         204:
-          description: Assignment deleted
+          description: Assignment deleted successfully
 components:
   securitySchemes:
     oauth2:
