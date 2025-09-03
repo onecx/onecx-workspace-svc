@@ -1,12 +1,14 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-product-store image import from file during the start of the application
+  title: onecx-workspace internal image service
+  description: This API provides endpoints for managing Workspace images.
   version: 1.0.0
 servers:
-  - url: "http://onecx-product-store-svc:8080"
+  - url: "http://onecx-workspace:8080"
 tags:
   - name: imagesInternal
+    description: Managing Images
 paths:
   /internal/images/{refId}/{refType}:
     post:
@@ -14,7 +16,6 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - imagesInternal
-      description: Upload Images
       parameters:
         - in: header
           name: Content-Length
@@ -33,6 +34,7 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/RefType"
+      description: Upload an image by reference id and type
       operationId: uploadImage
       requestBody:
         required: true
@@ -43,7 +45,7 @@ paths:
               format: binary
       responses:
         "201":
-          description: CREATED
+          description: Image uploaded successfully
           content:
             application/json:
               schema:
@@ -55,7 +57,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:read ]
       tags:
         - imagesInternal
-      description: Get Image by id
+      description: Get an image by its reference id and type
       operationId: getImage
       parameters:
         - name: refId
@@ -70,7 +72,7 @@ paths:
             $ref: "#/components/schemas/RefType"
       responses:
         "200":
-          description: OK
+          description: Image retrieved successfully
           content:
             image/*:
               schema:
@@ -87,7 +89,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:delete ]
       tags:
         - imagesInternal
-      description: delete Image
+      description: Delete an image by its reference id and type
       operationId: deleteImage
       parameters:
         - name: refId
@@ -102,7 +104,7 @@ paths:
             $ref: "#/components/schemas/RefType"
       responses:
         "204":
-          description: No content
+          description: Image deleted successfully
 components:
   securitySchemes:
     oauth2:

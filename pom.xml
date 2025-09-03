@@ -166,7 +166,7 @@
                         <configuration>
                             <skipDocs>${skipDocs}</skipDocs>
                             <openApiFiles>
-                                <openApiFile>onecx-workspace-v1-openapi.yaml</openApiFile>
+                                <openApiFile>onecx-workspace-v1.yaml</openApiFile>
                             </openApiFiles>
                         </configuration>
                     </execution>

@@ -1,12 +1,14 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-workspace external service
+  title: onecx-workspace external service V1
+  description: This API provides endpoints to retrieve Workspaces
   version: 1.0.0
 servers:
   - url: "http://onecx-workspace:8080"
 tags:
   - name: workspaceExternal
+    description: Retrieve Workspaces
 paths:
   /v1/workspaces/byUrl:
     post:
@@ -14,7 +16,7 @@ paths:
         - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
-      description: search workspace by url
+      description: Search workspace by its url
       operationId: getWorkspaceByUrl
       deprecated: true
       requestBody:
@@ -24,20 +26,20 @@ paths:
               $ref: '#/components/schemas/GetWorkspaceByUrlRequest'
       responses:
         "200":
-          description: OK
+          description: Workspace retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Workspace'
         "404":
-          description: Not found
+          description: Workspace not found
   /v1/workspaces/load:
     post:
       security:
         - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
-      description: load workspace by request
+      description: Load workspace by request
       operationId: loadWorkspaceByRequest
       requestBody:
         content:
@@ -46,20 +48,20 @@ paths:
               $ref: '#/components/schemas/WorkspaceLoadRequest'
       responses:
         "200":
-          description: OK
+          description: Workspace retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspaceWrapper'
         "404":
-          description: Not found
+          description: Workspace not found
   /v1/workspaces/search:
     post:
       security:
         - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
-      description: search workspace abstracts by criteria
+      description: Search workspace abstracts by search criteria
       operationId: searchWorkspaces
       requestBody:
         content:
@@ -68,7 +70,7 @@ paths:
               $ref: '#/components/schemas/WorkspaceSearchCriteria'
       responses:
         "200":
-          description: OK
+          description: Workspace retrieved successfully
           content:
             application/json:
               schema:
@@ -79,13 +81,13 @@ paths:
         - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
-      description: get workspace by name
+      description: Get a workspace by its name
       operationId: getWorkspaceByName
       parameters:
         - $ref: '#/components/parameters/name'
       responses:
         "200":
-          description: OK
+          description: Workspace retrieved successfully
           content:
             application/json:
               schema:
@@ -96,19 +98,19 @@ paths:
         - oauth2: [ ocx-ws:read ]
       tags:
         - workspaceExternal
-      description: Load workspace references to a workspace
+      description: Load workspace products by its name
       operationId: loadWorkspaceByName
       parameters:
         - $ref: '#/components/parameters/name'
       responses:
         "200":
-          description: OK
+          description: Workspace products retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspaceLoad'
         "404":
-          description: Not found
+          description: Workspace not found
 components:
   securitySchemes:
     oauth2:

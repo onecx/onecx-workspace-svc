@@ -11,6 +11,7 @@ paths:
       security:
         - oauth2: [ ocx-ws:write ]
       operationId: createTemplateWorkspace
+      description: Create a workspace template
       requestBody:
         content:
           application/json:
@@ -18,7 +19,7 @@ paths:
               $ref: '#/components/schemas/WorkspaceCreate'
       responses:
         200:
-          description: ok
+          description: Template created successfully
 components:
   securitySchemes:
     oauth2:
