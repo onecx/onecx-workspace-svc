@@ -1,12 +1,14 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-workspace exim service
+  title: onecx-workspace exim service V1
+  description: This API provides endpoints for exporting and importing Workspaces and Menus.
   version: 1.0.0
 servers:
   - url: "http://onecx-workspace:8080"
 tags:
   - name: workspaceExportImport
+    description: Export and Import Workspaces and Menus
 paths:
   /exim/v1/workspace/export:
     post:
@@ -24,13 +26,13 @@ paths:
               $ref: '#/components/schemas/ExportWorkspacesRequest'
       responses:
         "200":
-          description: OK
+          description: Workspaces exported successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkspaceSnapshot'
         "404":
-          description: No workspaces found
+          description: Workspaces not found
   /exim/v1/workspace/import:
     post:
       security:
@@ -47,7 +49,7 @@ paths:
               $ref: '#/components/schemas/WorkspaceSnapshot'
       responses:
         "200":
-          description: Import result
+          description: Workspaces imported successfully
           content:
             application/json:
               schema:
@@ -64,7 +66,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceExportImport
-      description: Import workspaces
+      description: Import workspaces through operator
       operationId: importOperatorWorkspaces
       requestBody:
         required: true
@@ -74,7 +76,7 @@ paths:
               $ref: '#/components/schemas/WorkspaceSnapshot'
       responses:
         "200":
-          description: Import successfully workspaces
+          description: Workspaces imported successfully
         "400":
           description: Bad request
           content:
@@ -87,7 +89,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceExportImport
-      description: Export menu by workspace name
+      description: Export menu of a specific workspace by its name
       operationId: exportMenuByWorkspaceName
       parameters:
         - name: name
@@ -97,20 +99,20 @@ paths:
             type: string
       responses:
         "200":
-          description: OK
+          description: Menu exported successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MenuSnapshot'
         "404":
-          description: No menu found
+          description: Menu not found
   /exim/v1/workspace/{name}/menu/import:
     post:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - workspaceExportImport
-      description: Import menu
+      description: Import menu to a workspace by its name
       operationId: importMenu
       parameters:
         - name: name
@@ -126,7 +128,7 @@ paths:
               $ref: '#/components/schemas/MenuSnapshot'
       responses:
         "200":
-          description: Import result
+          description: Menu imported successfully
           content:
             application/json:
               schema:

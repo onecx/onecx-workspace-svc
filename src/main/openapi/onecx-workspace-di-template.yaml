@@ -11,6 +11,7 @@ paths:
       security:
         - oauth2: [ ocx-ws:write ]
       operationId: templateImport
+      description: Import a template
       requestBody:
         content:
           application/json:
@@ -18,7 +19,7 @@ paths:
               $ref: '#/components/schemas/TemplateImport'
       responses:
         200:
-          description: ok
+          description: Template imported successfully
 components:
   securitySchemes:
     oauth2:
