@@ -120,7 +120,7 @@ components:
   schemas:
     RefType:
       type: string
-      enum: [ logo, favicon ]
+      enum: [ logo,logo-small, favicon ]
     ImageInfo:
       type: object
       properties:
