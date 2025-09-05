@@ -34,6 +34,11 @@ paths:
           required: true
           schema:
             $ref: "#/components/schemas/RefType"
+        - name: mimeType
+          in: header
+          required: true
+          schema:
+            $ref: "#/components/schemas/MimeType"
       description: Upload an image by reference id and type
       operationId: uploadImage
       requestBody:
@@ -118,6 +123,9 @@ components:
             ocx-ws:write: Grants write access
             ocx-ws:delete: Grants access to delete operations
   schemas:
+    MimeType:
+      type: string
+      enum: [ "image/x-icon", "image/svg+xml", "image/png", "image/jpg", "image/jpeg" ]
     RefType:
       type: string
       enum: [ logo,logo-small, favicon ]
