@@ -17,6 +17,7 @@ import org.tkit.onecx.workspace.rs.internal.mappers.ImageMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
 import gen.org.tkit.onecx.image.rs.internal.ImagesInternalApi;
+import gen.org.tkit.onecx.image.rs.internal.model.MimeTypeDTO;
 import gen.org.tkit.onecx.image.rs.internal.model.RefTypeDTO;
 import gen.org.tkit.onecx.workspace.rs.internal.model.ProblemDetailResponseDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +37,6 @@ public class ImagesInternalRestController implements ImagesInternalApi {
     @Context
     UriInfo uriInfo;
 
-    @Context
-    HttpHeaders httpHeaders;
-
     @Inject
     ImageMapper imageMapper;
 
@@ -54,17 +52,14 @@ public class ImagesInternalRestController implements ImagesInternalApi {
     }
 
     @Override
-    public Response uploadImage(Integer contentLength, String refId, RefTypeDTO refType, byte[] body) {
+    public Response uploadImage(Integer contentLength, String refId, RefTypeDTO refType, MimeTypeDTO mimeType, byte[] body) {
         Image image = imageDAO.findByRefIdAndRefType(refId, refType.toString());
 
-        var contentType = httpHeaders.getMediaType();
-        contentType = new MediaType(contentType.getType(), contentType.getSubtype());
-
         if (image == null) {
-            image = imageMapper.create(refId, refType.toString(), contentType.toString(), contentLength, body);
+            image = imageMapper.create(refId, refType.toString(), mimeType.toString(), contentLength, body);
             image = imageDAO.create(image);
         } else {
-            imageMapper.update(image, contentLength, contentType.toString(), body);
+            imageMapper.update(image, contentLength, mimeType.toString(), body);
             image = imageDAO.update(image);
         }
         var imageInfoDTO = imageMapper.map(image);
