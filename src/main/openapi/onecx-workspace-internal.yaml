@@ -161,7 +161,7 @@ paths:
         "204":
           description: Workspace deleted successfully
         "400":
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:

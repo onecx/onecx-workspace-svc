@@ -278,6 +278,18 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>admin-v1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>src/main/openapi/onecx-workspace-admin-v1.yaml</inputSpec>
+                            <apiPackage>gen.org.tkit.onecx.workspace.rs.admin.v1</apiPackage>
+                            <modelPackage>gen.org.tkit.onecx.workspace.rs.admin.v1.model</modelPackage>
+                            <modelNameSuffix>DTOAdminV1</modelNameSuffix>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>onecx-image-internal</id>
                         <goals>
                             <goal>generate</goal>
