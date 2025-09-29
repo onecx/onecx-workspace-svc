@@ -184,6 +184,8 @@ components:
      type: string
     logoUrl:
      type: string
+    smallLogoUrl:
+     type: string
     address:
      $ref: '#/components/schemas/WorkspaceAddress'
     mandatory:
@@ -245,6 +247,8 @@ components:
     footerLabel:
      type: string
     logoUrl:
+     type: string
+    smallLogoUrl:
      type: string
     address:
      $ref: '#/components/schemas/WorkspaceAddress'
@@ -328,6 +332,8 @@ components:
      type: string
     logoUrl:
      type: string
+    smallLogoUrl:
+     type: string
     disabled:
      type: boolean
      default: false
@@ -364,6 +370,8 @@ components:
     footerLabel:
      type: string
     logoUrl:
+     type: string
+    smallLogoUrl:
      type: string
     address:
      $ref: '#/components/schemas/WorkspaceAddress'

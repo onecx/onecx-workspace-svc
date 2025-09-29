@@ -1175,6 +1175,8 @@ components:
           type: string
         logoUrl:
           type: string
+        smallLogoUrl:
+          type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
         disabled:
@@ -1213,6 +1215,8 @@ components:
         footerLabel:
           type: string
         logoUrl:
+          type: string
+        smallLogoUrl:
           type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
@@ -1262,6 +1266,8 @@ components:
           type: string
         logoUrl:
           type: string
+        smallLogoUrl:
+          type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
         mandatory:
@@ -1292,6 +1298,8 @@ components:
         baseUrl:
           type: string
         logoUrl:
+          type: string
+        smallLogoUrl:
           type: string
         disabled:
           type: boolean

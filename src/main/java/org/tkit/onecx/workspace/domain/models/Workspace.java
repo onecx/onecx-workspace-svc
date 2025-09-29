@@ -77,6 +77,9 @@ public class Workspace extends TraceableEntity {
     @Column(name = "LOGO_URL")
     private String logoUrl;
 
+    @Column(name = "SMALL_LOGO_URL")
+    private String smallLogoUrl;
+
     @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
     private List<Product> products;
 
