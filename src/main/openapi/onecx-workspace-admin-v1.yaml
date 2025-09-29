@@ -1,0 +1,421 @@
+---
+openapi: 3.0.3
+info:
+ title: onecx-workspace admin service V1
+ description: This API provides endpoints for managing Workspaces as an super-admin.
+ version: 1.0.0
+servers:
+ - url: "http://onecx-workspace:8080"
+tags:
+ - name: workspaceAdmin
+   description: Managing Workspaces as an Admin
+paths:
+ /admin/v1/workspaces/search:
+  post:
+   security:
+    - oauth2: [ ocx-ws:admin-read ]
+   tags:
+    - workspaceAdmin
+   description: Search for Workspaces by criteria
+   operationId: searchWorkspacesByCriteria
+   requestBody:
+    required: true
+    content:
+     application/json:
+      schema:
+       $ref: '#/components/schemas/WorkspaceSearchCriteria'
+   responses:
+    "200":
+     description: Workspace search results retrieved successfully
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/WorkspacePageResult'
+    "400":
+     description: Bad request
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/ProblemDetailResponse'
+ /admin/v1/workspaces:
+  post:
+   security:
+    - oauth2: [ ocx-ws:admin-write ]
+   tags:
+    - workspaceAdmin
+   description: Create a new workspace
+   operationId: createWorkspace
+   requestBody:
+    required: true
+    content:
+     application/json:
+      schema:
+       $ref: '#/components/schemas/CreateWorkspaceRequest'
+   responses:
+    "200":
+     description: Workspace created successfully
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/CreateWorkspaceResponse'
+    "400":
+     description: Bad request
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/ProblemDetailResponse'
+ /admin/v1/workspaces/{id}:
+  get:
+   security:
+    - oauth2: [ ocx-ws:admin-read ]
+   tags:
+    - workspaceAdmin
+   description: Get a workspace by its id
+   operationId: getWorkspaceById
+   parameters:
+    - $ref: '#/components/parameters/id'
+   responses:
+    "200":
+     description: Workspace retrieved successfully
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/Workspace'
+    "404":
+     description: Workspace not found
+  put:
+   security:
+    - oauth2: [ ocx-ws:admin-write ]
+   tags:
+    - workspaceAdmin
+   description: Update a workspace by its id
+   operationId: updateWorkspace
+   parameters:
+    - $ref: '#/components/parameters/id'
+   requestBody:
+    required: true
+    content:
+     application/json:
+      schema:
+       $ref: '#/components/schemas/UpdateWorkspaceRequest'
+   responses:
+    200:
+     description: Workspaces updated successfully
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/UpdateWorkspaceResponse'
+    "400":
+     description: Bad request
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/ProblemDetailResponse'
+    "404":
+     description: Workspace not found
+  delete:
+   security:
+    - oauth2: [ ocx-ws:admin-delete ]
+   tags:
+    - workspaceAdmin
+   description: Delete a workspace by its id
+   operationId: deleteWorkspace
+   parameters:
+    - $ref: '#/components/parameters/id'
+   responses:
+    "204":
+     description: Workspace deleted successfully
+    "400":
+     description: Bad request
+     content:
+      application/json:
+       schema:
+        $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+ securitySchemes:
+  oauth2:
+   type: oauth2
+   flows:
+    clientCredentials:
+     tokenUrl: https://oauth.simple.api/token
+     scopes:
+      ocx-ws:admin-read: Grants read access
+      ocx-ws:admin-write: Grants write access
+      ocx-ws:admin-delete: Grants delete access
+ schemas:
+  Workspace:
+   required:
+    - name
+    - displayName
+   type: object
+   properties:
+    id:
+     type: string
+    modificationCount:
+     format: int32
+     type: integer
+    creationDate:
+     $ref: '#/components/schemas/OffsetDateTime'
+    creationUser:
+     type: string
+    modificationDate:
+     $ref: '#/components/schemas/OffsetDateTime'
+    modificationUser:
+     type: string
+    name:
+     type: string
+    displayName:
+     type: string
+    description:
+     type: string
+    theme:
+     type: string
+    homePage:
+     type: string
+    baseUrl:
+     type: string
+    companyName:
+     type: string
+    phoneNumber:
+     type: string
+    rssFeedUrl:
+     type: string
+    footerLabel:
+     type: string
+    logoUrl:
+     type: string
+    address:
+     $ref: '#/components/schemas/WorkspaceAddress'
+    mandatory:
+     type: boolean
+     default: false
+    operator:
+     type: boolean
+    disabled:
+     type: boolean
+     default: false
+  WorkspaceAddress:
+   type: object
+   properties:
+    street:
+     type: string
+    streetNo:
+     type: string
+    city:
+     type: string
+    country:
+     type: string
+    postalCode:
+     type: string
+  UpdateWorkspaceRequest:
+   type: object
+   required:
+    - resource
+   properties:
+    resource:
+     $ref: '#/components/schemas/UpdateWorkspace'
+  UpdateWorkspace:
+   required:
+    - name
+    - displayName
+    - modificationCount
+   type: object
+   properties:
+    modificationCount:
+     format: int32
+     type: integer
+    name:
+     type: string
+    displayName:
+     type: string
+    description:
+     type: string
+    theme:
+     type: string
+    homePage:
+     type: string
+    baseUrl:
+     type: string
+    companyName:
+     type: string
+    phoneNumber:
+     type: string
+    rssFeedUrl:
+     type: string
+    footerLabel:
+     type: string
+    logoUrl:
+     type: string
+    address:
+     $ref: '#/components/schemas/WorkspaceAddress'
+    disabled:
+     type: boolean
+    mandatory:
+     type: boolean
+     default: false
+  UpdateWorkspaceResponse:
+   type: object
+   required:
+    - resource
+   properties:
+    resource:
+     $ref: '#/components/schemas/Workspace'
+  GetWorkspaceResponse:
+   type: object
+   required:
+    - resource
+   properties:
+    resource:
+     $ref: '#/components/schemas/Workspace'
+  WorkspaceSearchCriteria:
+   type: object
+   properties:
+    name:
+     type: string
+    themeName:
+     type: string
+    productName:
+     type: string
+    pageNumber:
+     format: int32
+     description: The number of page.
+     default: 0
+     type: integer
+    pageSize:
+     format: int32
+     description: The size of page
+     default: 100
+     maximum: 1000
+     type: integer
+  WorkspacePageResult:
+   type: object
+   properties:
+    totalElements:
+     format: int64
+     description: The total elements in the resource.
+     type: integer
+    number:
+     format: int32
+     type: integer
+    size:
+     format: int32
+     type: integer
+    totalPages:
+     format: int64
+     type: integer
+    stream:
+     type: array
+     items:
+      $ref: '#/components/schemas/WorkspaceAbstract'
+  WorkspaceAbstract:
+   required:
+    - name
+    - displayName
+    - id
+   type: object
+   properties:
+    id:
+     type: string
+    name:
+     type: string
+    displayName:
+     type: string
+    description:
+     type: string
+    theme:
+     type: string
+    baseUrl:
+     type: string
+    logoUrl:
+     type: string
+    disabled:
+     type: boolean
+     default: false
+    mandatory:
+     type: boolean
+     default: false
+    operator:
+     type: boolean
+     default: false
+  CreateWorkspaceRequest:
+   required:
+    - name
+    - displayName
+   type: object
+   properties:
+    name:
+     type: string
+    displayName:
+     type: string
+    description:
+     type: string
+    theme:
+     type: string
+    homePage:
+     type: string
+    baseUrl:
+     type: string
+    companyName:
+     type: string
+    phoneNumber:
+     type: string
+    rssFeedUrl:
+     type: string
+    footerLabel:
+     type: string
+    logoUrl:
+     type: string
+    address:
+     $ref: '#/components/schemas/WorkspaceAddress'
+    disabled:
+     type: boolean
+    mandatory:
+     type: boolean
+     default: false
+  CreateWorkspaceResponse:
+   type: object
+   required:
+    - resource
+   properties:
+    resource:
+     $ref: '#/components/schemas/Workspace'
+  ProblemDetailResponse:
+   type: object
+   properties:
+    errorCode:
+     type: string
+    detail:
+     type: string
+    params:
+     type: array
+     items:
+      $ref: '#/components/schemas/ProblemDetailParam'
+    invalidParams:
+     type: array
+     items:
+      $ref: '#/components/schemas/ProblemDetailInvalidParam'
+  ProblemDetailParam:
+   type: object
+   properties:
+    key:
+     type: string
+    value:
+     type: string
+  ProblemDetailInvalidParam:
+   type: object
+   properties:
+    name:
+     type: string
+    message:
+     type: string
+  OffsetDateTime:
+   format: date-time
+   type: string
+   example: 2022-03-10T12:15:50-04:00
+ parameters:
+  id:
+   in: path
+   name: id
+   required: true
+   schema:
+    type: string
