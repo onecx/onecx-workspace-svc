@@ -136,6 +136,10 @@ components:
           type: string
         theme:
           type: string
+        logoUrl:
+          type: string
+        smallLogoUrl:
+          type: string
         products:
           type: array
           items:
