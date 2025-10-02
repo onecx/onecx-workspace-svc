@@ -194,4 +194,19 @@ public interface CreateTemplateMapper {
     @Mapping(target = "modificationUser", ignore = true)
     @Mapping(target = "parentId", ignore = true)
     MenuItem map(MenuItemTemplateDTO dto);
+
+    default String mapTarget(TargetTemplateDTO targetDTO) {
+        if (targetDTO != null) {
+            return targetDTO.toString();
+        }
+        return "_self";
+    }
+
+    default TargetTemplateDTO mapTarget(String value) {
+        try {
+            return TargetTemplateDTO.fromValue(value);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return TargetTemplateDTO._SELF;
+        }
+    }
 }

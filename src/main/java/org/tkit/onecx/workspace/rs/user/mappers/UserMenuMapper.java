@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
 
+import gen.org.tkit.onecx.workspace.rs.user.model.TargetDTO;
 import gen.org.tkit.onecx.workspace.rs.user.model.UserWorkspaceMenuItemDTO;
 import gen.org.tkit.onecx.workspace.rs.user.model.UserWorkspaceMenuStructureDTO;
 
@@ -91,5 +92,20 @@ public interface UserMenuMapper {
                 }
             }
         });
+    }
+
+    default String mapTarget(TargetDTO targetDTO) {
+        if (targetDTO != null) {
+            return targetDTO.toString();
+        }
+        return "_self";
+    }
+
+    default TargetDTO mapTarget(String value) {
+        try {
+            return TargetDTO.fromValue(value);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return TargetDTO._SELF;
+        }
     }
 }

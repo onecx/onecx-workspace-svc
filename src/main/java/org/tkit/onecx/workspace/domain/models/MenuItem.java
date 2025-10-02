@@ -85,6 +85,9 @@ public class MenuItem extends TraceableEntity {
     @Column(name = "EXTERNAL")
     private boolean external;
 
+    @Column(name = "TARGET")
+    private String target;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "PARENT")
     private MenuItem parent;

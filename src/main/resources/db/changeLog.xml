@@ -17,5 +17,5 @@
     <include relativeToChangelogFile="true" file="v1/2024-07-12-disabled-flag.xml"/>
     <include relativeToChangelogFile="true" file="v1/2025-01-24-add-product-display-name.xml"/>
     <include relativeToChangelogFile="true" file="v1/2025-09-29-add-small-logo-url.xml"/>
-
+    <include relativeToChangelogFile="true" file="v1/2025-10-02-add-menu-item-target-attr.xml"/>
 </databaseChangeLog>

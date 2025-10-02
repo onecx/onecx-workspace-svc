@@ -114,6 +114,8 @@ components:
           type: integer
         external:
           type: boolean
+        target:
+          $ref: '#/components/schemas/Target'
         i18n:
           type: object
           additionalProperties:
@@ -186,3 +188,8 @@ components:
           type: string
         basePath:
           type: string
+    Target:
+      type: string
+      enum:
+        - _self
+        - _blank

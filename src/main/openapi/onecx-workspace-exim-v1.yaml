@@ -363,6 +363,8 @@ components:
           $ref: '#/components/schemas/EximScope'
         external:
           type: boolean
+        target:
+          $ref: '#/components/schemas/EximTarget'
         i18n:
           type: object
           additionalProperties:
@@ -381,6 +383,11 @@ components:
         - APP
         - PAGE
       type: string
+    EximTarget:
+      type: string
+      enum:
+        - _self
+        - _blank
     ExportWorkspacesRequest:
       type: object
       required:

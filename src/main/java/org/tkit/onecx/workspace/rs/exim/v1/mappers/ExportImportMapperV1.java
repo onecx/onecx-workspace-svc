@@ -9,6 +9,7 @@ import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
+import gen.org.tkit.onecx.workspace.rs.exim.v1.model.EximTargetDTOV1;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ExportImportMapperV1 {
@@ -393,5 +394,20 @@ public interface ExportImportMapperV1 {
 
     static String imageId(String refId, String refType) {
         return refId + "#" + refType;
+    }
+
+    default String mapTarget(EximTargetDTOV1 targetDTO) {
+        if (targetDTO != null) {
+            return targetDTO.toString();
+        }
+        return "_self";
+    }
+
+    default EximTargetDTOV1 mapTarget(String value) {
+        try {
+            return EximTargetDTOV1.fromValue(value);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return EximTargetDTOV1._SELF;
+        }
     }
 }

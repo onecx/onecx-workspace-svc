@@ -190,7 +190,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .get(uri)
                 .then().statusCode(OK.getStatusCode())
                 .extract().as(MenuItemDTO.class);
-
+        System.out.println("THE CREATED TARGET: " + dto.getTarget());
         assertThat(dto).isNotNull();
         assertThat(dto.getName()).isEqualTo(menuItem.getName());
         assertThat(dto.getDescription()).isEqualTo(menuItem.getDescription());

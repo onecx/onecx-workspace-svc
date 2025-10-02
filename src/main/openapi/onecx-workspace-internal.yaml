@@ -1380,6 +1380,8 @@ components:
           $ref: '#/components/schemas/Scope'
         external:
           type: boolean
+        target:
+          $ref: '#/components/schemas/Target'
         parentItemId:
           type: string
         i18n:
@@ -1436,6 +1438,8 @@ components:
           $ref: '#/components/schemas/Scope'
         external:
           type: boolean
+        target:
+          $ref: '#/components/schemas/Target'
         parentItemId:
           type: string
         i18n:
@@ -1481,6 +1485,8 @@ components:
           $ref: '#/components/schemas/Scope'
         external:
           type: boolean
+        target:
+          $ref: '#/components/schemas/Target'
         parentItemId:
           type: string
     MenuItem:
@@ -1522,6 +1528,8 @@ components:
           $ref: '#/components/schemas/Scope'
         external:
           type: boolean
+        target:
+          $ref: '#/components/schemas/Target'
         parentItemId:
           type: string
         i18n:
@@ -1631,6 +1639,8 @@ components:
           $ref: '#/components/schemas/Scope'
         external:
           type: boolean
+        target:
+          $ref: '#/components/schemas/Target'
         parentItemId:
           type: string
         i18n:
@@ -1643,6 +1653,11 @@ components:
         - APP
         - PAGE
       type: string
+    Target:
+      type: string
+      enum:
+        - _self
+        - _blank
     ProblemDetailResponse:
       type: object
       properties:
