@@ -183,4 +183,20 @@ public interface TemplateMapper {
             }
         }
     }
+
+    default String mapTarget(TargetDI targetDTO) {
+        if (targetDTO != null) {
+            return targetDTO.toString();
+        }
+        return "_self";
+    }
+
+    default TargetDI mapTarget(String value) {
+        try {
+            return TargetDI.fromValue(value);
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return TargetDI._SELF;
+        }
+    }
+
 }
