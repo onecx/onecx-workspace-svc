@@ -42,7 +42,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(dto.getWorkspaces()).isNotNull().hasSize(2);
         var w = dto.getWorkspaces().get("test01");
         assertThat(w).isNotNull();
-        assertThat(w.getName()).isEqualTo("test01");
+        assertThat(w.getDisplayName()).isEqualTo("test01");
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(3)
                 .contains(new EximWorkspaceRoleDTOV1().name("role-1-2").description("d1"));
@@ -83,7 +83,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(dto.getWorkspaces()).isNotNull().hasSize(2);
         var w = dto.getWorkspaces().get("test01");
         assertThat(w).isNotNull();
-        assertThat(w.getName()).isEqualTo("test01");
+        assertThat(w.getDisplayName()).isEqualTo("test01");
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(3)
                 .contains(new EximWorkspaceRoleDTOV1().name("role-1-2").description("d1"));
@@ -187,7 +187,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .baseUrl("/someurl")
-                .name("testWorkspace")
+                .displayName("testWorkspace")
                 .disabled(true)
                 .roles(roles)
                 .menuItems(menuItems)
@@ -227,7 +227,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
         var w = dto.getWorkspaces().get("testWorkspace");
         assertThat(w).isNotNull();
-        assertThat(w.getName()).isEqualTo("testWorkspace");
+        assertThat(w.getDisplayName()).isEqualTo("testWorkspace");
         assertThat(w.getDisabled()).isTrue();
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
@@ -252,7 +252,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
                 .baseUrl("/someurl")
                 .menuItems(List.of())
-                .name("testWorkspace")
+                .displayName("testWorkspace")
                 .roles(roles);
 
         workspace.setImages(null);
@@ -290,7 +290,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
         var w = dto.getWorkspaces().get("testWorkspace");
         assertThat(w).isNotNull();
-        assertThat(w.getName()).isEqualTo("testWorkspace");
+        assertThat(w.getDisplayName()).isEqualTo("testWorkspace");
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
                 .containsExactly(
@@ -310,7 +310,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
                 .baseUrl("/someurl")
                 .menuItems(null)
-                .name("testWorkspace")
+                .displayName("testWorkspace")
                 .roles(roles);
 
         workspace.setImages(null);
@@ -348,7 +348,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
         var w = dto.getWorkspaces().get("testWorkspace");
         assertThat(w).isNotNull();
-        assertThat(w.getName()).isEqualTo("testWorkspace");
+        assertThat(w.getDisplayName()).isEqualTo("testWorkspace");
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
                 .containsExactly(
@@ -362,7 +362,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
         workspace.setBaseUrl("/company01");
-        workspace.setName("test01");
+        workspace.setDisplayName("test01");
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("test01", workspace);
         snapshot.setWorkspaces(map);
@@ -386,7 +386,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         WorkspaceSnapshotDTOV1 snapshot = new WorkspaceSnapshotDTOV1();
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1();
         workspace.setBaseUrl("/company01");
-        workspace.setName("test01");
+        workspace.setDisplayName("test01");
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("test01", workspace);
         map.put("test", null);
@@ -779,7 +779,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .baseUrl("/someurl")
-                .name("testWorkspace")
+                .displayName("testWorkspace")
                 .roles(roles)
                 .menuItems(null)
                 .products(products)
@@ -814,7 +814,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
         var w = dto.getWorkspaces().get("test01");
         assertThat(w).isNotNull();
-        assertThat(w.getName()).isEqualTo("test01");
+        assertThat(w.getDisplayName()).isEqualTo("testWorkspace");
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
                 .containsExactly(
@@ -884,7 +884,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .baseUrl("/someurl")
-                .name("testWorkspace")
+                .displayName("testWorkspace")
                 .roles(roles)
                 .products(products)
                 .menuItems(menuItems)
@@ -919,7 +919,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
         var w = dto.getWorkspaces().get("new_test_workspace");
         assertThat(w).isNotNull();
-        assertThat(w.getName()).isEqualTo("new_test_workspace");
+        assertThat(w.getDisplayName()).isEqualTo("testWorkspace");
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
                 .containsExactly(
@@ -946,7 +946,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .baseUrl("/someurl")
-                .name("testWorkspace")
+                .displayName("testWorkspace")
                 .roles(roles);
 
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
@@ -978,7 +978,7 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
         assertThat(dto.getWorkspaces()).isNotNull().isNotEmpty();
         var w = dto.getWorkspaces().get("new_test_workspace");
         assertThat(w).isNotNull();
-        assertThat(w.getName()).isEqualTo("new_test_workspace");
+        assertThat(w.getDisplayName()).isEqualTo("testWorkspace");
 
         assertThat(w.getRoles()).isNotNull().isNotEmpty().hasSize(2)
                 .containsExactly(

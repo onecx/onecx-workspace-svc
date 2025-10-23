@@ -153,7 +153,8 @@ public class MenuInternalRestController implements MenuInternalApi {
 
         mapper.update(menuItemDTO, menuItem);
         var changeParent = updateMenuItemParent(menuItem, menuItemDTO.getParentItemId());
-        menuItem = dao.updateMenuItem(menuItem, oldParentId, oldPosition, newParentId, newPosition, changeParent);
+        menuItem = dao.updateMenuItemAndNormalizePositions(menuItem, oldParentId, oldPosition, newParentId, newPosition,
+                changeParent);
 
         return Response.ok(mapper.map(menuItem)).build();
     }
@@ -216,7 +217,8 @@ public class MenuInternalRestController implements MenuInternalApi {
 
         menuItem = mapper.update(menuItem, updateMenuItemParentRequestDTO);
         var changeParent = updateMenuItemParent(menuItem, updateMenuItemParentRequestDTO.getParentItemId());
-        menuItem = dao.updateMenuItem(menuItem, oldParentId, oldPosition, newParentId, newPosition, changeParent);
+        menuItem = dao.updateMenuItemAndNormalizePositions(menuItem, oldParentId, oldPosition, newParentId, newPosition,
+                changeParent);
 
         return Response.ok(mapper.map(menuItem)).build();
     }
