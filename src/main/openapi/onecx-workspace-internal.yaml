@@ -460,7 +460,7 @@ paths:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
       tags:
         - menuInternal
-      description: Update an existing menu item parent
+      description: Update an existing menu items parent and position
       operationId: updateMenuItemParent
       parameters:
         - $ref: '#/components/parameters/menuItemId'

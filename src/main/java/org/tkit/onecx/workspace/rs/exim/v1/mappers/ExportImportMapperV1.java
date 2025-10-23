@@ -119,6 +119,7 @@ public interface ExportImportMapperV1 {
         return map;
     }
 
+    @Mapping(target = "name", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "modificationDate", ignore = true)

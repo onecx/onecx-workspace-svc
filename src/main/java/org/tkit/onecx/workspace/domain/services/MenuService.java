@@ -97,6 +97,9 @@ public class MenuService {
         }
         assignmentDAO.deleteAllByMenuId(childIds);
         dao.deleteQueryByIds(childIds);
+        if (menuItem != null) {
+            dao.normalizePositions(menuItem.getParentId(), menuItem.getWorkspaceId());
+        }
     }
 
     private List<Object> children(MenuItem menuItem) {

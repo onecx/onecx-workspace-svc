@@ -9,6 +9,7 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
@@ -21,6 +22,8 @@ import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
+
+import io.quarkus.logging.Log;
 
 @ApplicationScoped
 public class MenuItemDAO extends AbstractDAO<MenuItem> {
@@ -154,30 +157,41 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
     }
 
     @Transactional(value = Transactional.TxType.REQUIRED, rollbackOn = DAOException.class)
+    public MenuItem updateMenuItemAndNormalizePositions(MenuItem menuItem, String oldParentId, int oldPosition,
+            String newParentId,
+            int newPosition, boolean changeParent) {
+        var updatedItem = this.updateMenuItem(menuItem, oldParentId, oldPosition, newParentId, newPosition, changeParent);
+
+        if (changeParent) {
+            normalizePositions(oldParentId, updatedItem.getWorkspaceId());
+            normalizePositions(newParentId, updatedItem.getWorkspaceId());
+        } else {
+            normalizePositions(newParentId, updatedItem.getWorkspaceId());
+        }
+
+        return this.findById(updatedItem.getId());
+    }
+
     public MenuItem updateMenuItem(MenuItem menuItem, String oldParentId, int oldPosition, String newParentId,
             int newPosition, boolean changeParent) {
         try {
-            // update children position in old parent
             if (changeParent) {
-                updatePosition(menuItem.getId(), oldParentId, oldPosition, -1);
+                updatePosition(menuItem.getId(), oldParentId, oldPosition, oldPosition + 1);
             }
 
-            // update children position in new parent
             if (changeParent || newPosition != oldPosition) {
-
-                // check position,
                 int count = countChildren(newParentId);
 
-                // over the last position
-                if (count > newPosition) {
-                    updatePosition(menuItem.getId(), newParentId, newPosition, 1);
-                } else if (count < newPosition) {
+                if (newPosition > count) {
                     newPosition = count;
-                    menuItem.setPosition(newPosition);
                 }
+
+                updatePosition(menuItem.getId(), newParentId, oldPosition, newPosition);
             }
 
-            // update menu item
+            menuItem.setParentId(newParentId);
+            menuItem.setPosition(newPosition);
+
             return this.update(menuItem);
         } catch (OptimisticLockException oe) {
             throw oe;
@@ -200,26 +214,93 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         return result.intValue();
     }
 
-    private void updatePosition(String menuId, String parentId, int position, int sum) {
+    private void updatePosition(String menuId, String parentId, int position, int newPosition) {
         var cb = getEntityManager().getCriteriaBuilder();
         var uq = this.updateQuery();
         var root = uq.from(MenuItem.class);
 
         List<Predicate> predicates = new ArrayList<>();
-        predicates.add(cb.greaterThanOrEqualTo(root.get(MenuItem_.POSITION), position));
         predicates.add(cb.notEqual(root.get(TraceableEntity_.ID), menuId));
+
         if (parentId == null) {
             predicates.add(cb.isNull(root.get(MenuItem_.PARENT_ID)));
         } else {
             predicates.add(cb.equal(root.get(MenuItem_.PARENT_ID), parentId));
         }
 
-        uq.set(MenuItem_.POSITION, cb.sum(root.get(MenuItem_.POSITION), sum))
+        Expression<Integer> positionExpr = root.get(MenuItem_.POSITION);
+
+        int direction;
+        if (position < newPosition) {
+            predicates.add(cb.greaterThan(positionExpr, position));
+            predicates.add(cb.lessThanOrEqualTo(positionExpr, newPosition));
+            direction = -1;
+        } else if (position > newPosition) {
+            predicates.add(cb.greaterThanOrEqualTo(positionExpr, newPosition));
+            predicates.add(cb.lessThan(positionExpr, position));
+            direction = 1;
+        } else {
+            return;
+        }
+
+        uq.set(MenuItem_.POSITION, cb.sum(positionExpr, direction))
                 .set(AbstractTraceableEntity_.MODIFICATION_COUNT,
                         cb.sum(root.get(AbstractTraceableEntity_.MODIFICATION_COUNT), 1))
                 .where(cb.and(predicates.toArray(new Predicate[0])));
 
         this.getEntityManager().createQuery(uq).executeUpdate();
+    }
+
+    //    @Transactional
+    public void normalizePositions(String parentId, String workspaceId) {
+        List<MenuItem> children;
+
+        if (parentId == null) {
+            children = findChildrenWithoutParentOrderedByPosition(workspaceId);
+        } else {
+            children = findChildrenOrderedByPosition(parentId, workspaceId);
+        }
+
+        for (int i = 0; i < children.size(); i++) {
+            MenuItem child = children.get(i);
+            if (child.getPosition() != i) {
+                child.setPosition(i);
+                update(child);
+            }
+        }
+
+        System.out.println("Normalized positions for parentId=" + parentId);
+        Log.info("Normalized positions for parentId=" + parentId);
+        for (MenuItem child : children) {
+            System.out.println(" → " + child.getId() + ": " + child.getPosition());
+        }
+
+    }
+
+    public List<MenuItem> findChildrenOrderedByPosition(String parentId, String workspaceId) {
+        var cb = getEntityManager().getCriteriaBuilder();
+        var cq = cb.createQuery(MenuItem.class);
+        var root = cq.from(MenuItem.class);
+
+        cq.select(root)
+                .where(cb.and(cb.isNull(root.get(MenuItem_.PARENT_ID)),
+                        cb.equal(root.get(MenuItem_.WORKSPACE_ID), workspaceId)))
+                .orderBy(cb.asc(root.get(MenuItem_.POSITION)));
+
+        return getEntityManager().createQuery(cq).getResultList();
+    }
+
+    public List<MenuItem> findChildrenWithoutParentOrderedByPosition(String workspaceId) {
+        var cb = getEntityManager().getCriteriaBuilder();
+        var cq = cb.createQuery(MenuItem.class);
+        var root = cq.from(MenuItem.class);
+
+        cq.select(root)
+                .where(cb.and(cb.isNull(root.get(MenuItem_.PARENT_ID)),
+                        cb.equal(root.get(MenuItem_.WORKSPACE_ID), workspaceId)))
+                .orderBy(cb.asc(root.get(MenuItem_.POSITION)));
+
+        return getEntityManager().createQuery(cq).getResultList();
     }
 
     public enum ErrorKeys {
