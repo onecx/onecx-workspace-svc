@@ -31,7 +31,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
         return Stream.of(
                 arguments(3, 3),
                 arguments(30, 3),
-                arguments(1, 1));
+                arguments(1, 2));
     }
 
     @ParameterizedTest

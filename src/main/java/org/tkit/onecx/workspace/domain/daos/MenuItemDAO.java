@@ -23,8 +23,6 @@ import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
 
-import io.quarkus.logging.Log;
-
 @ApplicationScoped
 public class MenuItemDAO extends AbstractDAO<MenuItem> {
 
@@ -251,7 +249,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         this.getEntityManager().createQuery(uq).executeUpdate();
     }
 
-    //    @Transactional
     public void normalizePositions(String parentId, String workspaceId) {
         List<MenuItem> children;
 
@@ -268,13 +265,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
                 update(child);
             }
         }
-
-        System.out.println("Normalized positions for parentId=" + parentId);
-        Log.info("Normalized positions for parentId=" + parentId);
-        for (MenuItem child : children) {
-            System.out.println(" → " + child.getId() + ": " + child.getPosition());
-        }
-
     }
 
     public List<MenuItem> findChildrenOrderedByPosition(String parentId, String workspaceId) {
@@ -283,7 +273,7 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         var root = cq.from(MenuItem.class);
 
         cq.select(root)
-                .where(cb.and(cb.isNull(root.get(MenuItem_.PARENT_ID)),
+                .where(cb.and(cb.equal(root.get(MenuItem_.PARENT_ID), parentId),
                         cb.equal(root.get(MenuItem_.WORKSPACE_ID), workspaceId)))
                 .orderBy(cb.asc(root.get(MenuItem_.POSITION)));
 
