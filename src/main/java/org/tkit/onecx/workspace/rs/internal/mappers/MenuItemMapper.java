@@ -5,10 +5,8 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
-import org.tkit.onecx.workspace.domain.criteria.MenuItemSearchCriteria;
 import org.tkit.onecx.workspace.domain.models.MenuItem;
 import org.tkit.onecx.workspace.domain.models.Workspace;
-import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
@@ -16,15 +14,7 @@ import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface MenuItemMapper {
 
-    @Mapping(target = "removeStreamItem", ignore = true)
-    MenuItemPageResultDTO mapPage(PageResult<MenuItem> page);
-
-    @Mapping(target = "parentItemId", source = "parentId")
-    MenuItemResultDTO mapPageItem(MenuItem item);
-
     MenuItemLoadCriteria map(MenuStructureSearchCriteriaDTO dto);
-
-    MenuItemSearchCriteria map(MenuItemSearchCriteriaDTO dto);
 
     default MenuItem update(MenuItem menu, UpdateMenuItemParentRequestDTO dto) {
         menu.setModificationCount(dto.getModificationCount());

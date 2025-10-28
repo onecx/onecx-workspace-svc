@@ -26,42 +26,8 @@ import io.quarkus.test.junit.QuarkusTest;
 class MenuInternalRestControllerTenantTest extends AbstractTest {
 
     @Test
-    void getMenuItemsForWorkspaceIdTest() {
-
-        var criteria = new MenuItemSearchCriteriaDTO()
-                .workspaceId("11-222");
-
-        var dto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("org1"))
-                .body(criteria)
-                .post("search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(6);
-
-        dto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("org3"))
-                .body(criteria)
-                .post("search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isEmpty();
-    }
-
-    @Test
     void deleteMenuItemByIdTest() {
+
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
@@ -72,22 +38,23 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        var criteria = new MenuItemSearchCriteriaDTO()
-                .workspaceId("11-222");
-
-        var dto = given()
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_PARAM, createToken("org3"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("org1"))
-                .body(criteria)
-                .post("search")
+                .get("/33-13")
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
+                .statusCode(NOT_FOUND.getStatusCode());
 
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(6);
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_PARAM, createToken("org1"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/33-13")
+                .then()
+                .statusCode(OK.getStatusCode());
 
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -99,23 +66,19 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        dto = given()
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("org1"))
-                .body(criteria)
-                .post("search")
+                .get("/33-13")
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(6);
+                .statusCode(NOT_FOUND.getStatusCode());
     }
 
     @Test
     void deleteAllMenuItemsForWorkspaceTest() {
+
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
@@ -126,22 +89,14 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        var criteria = new MenuItemSearchCriteriaDTO()
-                .workspaceId("11-222");
-
-        var dto = given()
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("org1"))
-                .body(criteria)
-                .post("search")
+                .get("/44-1")
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty();
+                .statusCode(OK.getStatusCode());
 
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -153,19 +108,15 @@ class MenuInternalRestControllerTenantTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        dto = given()
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
+                .header(APM_HEADER_PARAM, createToken("org1"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .header(APM_HEADER_PARAM, createToken("org1"))
-                .body(criteria)
-                .post("search")
+                .get("/44-1")
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
+                .statusCode(NOT_FOUND.getStatusCode());
 
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isEmpty();
     }
 
     @Test

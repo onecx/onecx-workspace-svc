@@ -6,6 +6,8 @@ import static jakarta.ws.rs.core.Response.Status.CREATED;
 import static jakarta.ws.rs.core.Response.Status.OK;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -118,17 +120,26 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(new MenuItemSearchCriteriaDTO().workspaceId(responseDto.getId()))
-                .post("/internal/menuItems/search")
+                .body(new MenuStructureSearchCriteriaDTO().workspaceId(responseDto.getId()))
+                .post("/internal/menuItems/tree")
                 .then()
                 .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
+                .extract().as(MenuItemStructureDTO.class);
 
         assertThat(menuResponse).isNotNull();
-        assertThat(menuResponse.getStream()).isNotNull().isNotEmpty().hasSize(17);
-        var parents = menuResponse.getStream().stream().filter(x -> x.getParentItemId() == null).toList();
+
+        List<WorkspaceMenuItemDTO> allItems = new ArrayList<>();
+        for (WorkspaceMenuItemDTO item : menuResponse.getMenuItems()) {
+            allItems.add(item);
+            if (item.getChildren() != null) {
+                allItems.addAll(item.getChildren());
+            }
+        }
+
+        assertThat(allItems).isNotNull().isNotEmpty().hasSize(12);
+        var parents = menuResponse.getMenuItems().stream().filter(x -> x.getParentItemId() == null).toList();
         assertThat(parents).isNotNull().isNotEmpty().hasSize(3);
-        var parentNames = parents.stream().map(MenuItemResultDTO::getName).toList();
+        var parentNames = parents.stream().map(WorkspaceMenuItemDTO::getName).toList();
         assertThat(parentNames).containsOnly("Footer Menu", "User Profile Menu", "Main Menu");
 
         var assignmentResponse = given()

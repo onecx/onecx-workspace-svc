@@ -26,12 +26,6 @@ public class MenuItemLogParam implements LogParam {
 
                 item(10, MenuStructureSearchCriteriaDTO.class,
                         x -> MenuStructureSearchCriteriaDTO.class.getSimpleName() + "["
-                                + ((MenuStructureSearchCriteriaDTO) x).getWorkspaceId() + "]"),
-
-                item(10, MenuItemSearchCriteriaDTO.class, x -> {
-                    MenuItemSearchCriteriaDTO d = (MenuItemSearchCriteriaDTO) x;
-                    return MenuItemSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + "," + d.getPageSize()
-                            + "]";
-                }));
+                                + ((MenuStructureSearchCriteriaDTO) x).getWorkspaceId() + "]"));
     }
 }
