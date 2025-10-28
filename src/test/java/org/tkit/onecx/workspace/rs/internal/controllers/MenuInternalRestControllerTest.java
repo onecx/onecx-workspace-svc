@@ -33,54 +33,16 @@ import io.quarkus.test.junit.QuarkusTest;
 class MenuInternalRestControllerTest extends AbstractTest {
 
     @Test
-    void getMenuItemsForWorkspaceIdTest() {
-        var criteria = new MenuItemSearchCriteriaDTO()
-                .workspaceId("11-111");
-
-        var dto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(13);
-
-        criteria.setWorkspaceId("       ");
-        dto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(19);
-
-        criteria.setWorkspaceId(null);
-        dto = given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .when()
-                .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("search")
-                .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(19);
-    }
-
-    @Test
     void deleteMenuItemByIdTest() {
+
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/33-13")
+                .then()
+                .statusCode(OK.getStatusCode());
+
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
@@ -90,25 +52,26 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        var criteria = new MenuItemSearchCriteriaDTO()
-                .workspaceId("11-111");
-
-        var dto = given()
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("search")
+                .get("/33-13")
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(12);
+                .statusCode(NOT_FOUND.getStatusCode());
     }
 
     @Test
     void deleteMenuItemByIdWhenChildrenExistTest() {
+
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/33-1")
+                .then()
+                .statusCode(OK.getStatusCode());
+
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
@@ -118,25 +81,26 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        var criteria = new MenuItemSearchCriteriaDTO()
-                .workspaceId("11-111");
-
-        var dto = given()
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("search")
+                .get("/33-1")
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isNotEmpty().hasSize(7);
+                .statusCode(NOT_FOUND.getStatusCode());
     }
 
     @Test
     void deleteAllMenuItemsForWorkspaceTest() {
+
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/33-13")
+                .then()
+                .statusCode(OK.getStatusCode());
+
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
@@ -146,21 +110,13 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(NO_CONTENT.getStatusCode());
 
-        var criteria = new MenuItemSearchCriteriaDTO()
-                .workspaceId("11-111");
-
-        var dto = given()
+        given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
                 .when()
                 .contentType(APPLICATION_JSON)
-                .body(criteria)
-                .post("search")
+                .get("/33-13")
                 .then()
-                .statusCode(OK.getStatusCode())
-                .extract().as(MenuItemPageResultDTO.class);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getStream()).isNotNull().isEmpty();
+                .statusCode(NOT_FOUND.getStatusCode());
     }
 
     @Test
@@ -384,7 +340,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "does-not-exists")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(NOT_FOUND.getStatusCode());
 
         var error = given()
@@ -393,7 +349,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "44-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
@@ -410,7 +366,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "44-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
@@ -426,7 +382,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "44-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
@@ -442,7 +398,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "44-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
@@ -458,7 +414,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "44-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
 
@@ -487,7 +443,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "44-6")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(OK.getStatusCode())
                 .extract().as(MenuItemDTO.class);
 
@@ -502,7 +458,7 @@ class MenuInternalRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "44-6")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(OK.getStatusCode());
     }
 

@@ -52,7 +52,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "4-2-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(OK.getStatusCode());
 
         var dto = printWorkspace();
@@ -82,7 +82,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "4-3")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(OK.getStatusCode());
     }
 
@@ -101,7 +101,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "4-1-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(OK.getStatusCode());
     }
 
@@ -122,7 +122,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "4-2-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(OK.getStatusCode());
 
         var dto = printWorkspace();
@@ -150,7 +150,7 @@ class MenuInternalRestControllerParentChangeTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .body(request)
                 .pathParam("menuItemId", "4-2-2")
-                .put("{menuItemId}/parentItemId")
+                .put("{menuItemId}/reorder")
                 .then().statusCode(BAD_REQUEST.getStatusCode());
     }
 

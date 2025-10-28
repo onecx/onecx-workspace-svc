@@ -34,8 +34,6 @@ class MenuItemDAOTest {
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA);
         methodExceptionTests(() -> dao.loadAllMenuItemsByWorkspaces(null),
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACES);
-        methodExceptionTests(() -> dao.findByCriteria(null),
-                MenuItemDAO.ErrorKeys.ERROR_FIND_MENU_ITEMS_BY_CRITERIA);
         methodExceptionTests(() -> dao.loadAllChildren(null),
                 MenuItemDAO.ErrorKeys.ERROR_LOAD_ALL_CHILDREN);
         methodExceptionTests(() -> dao.deleteAllMenuItemsByWorkspaceId(null),

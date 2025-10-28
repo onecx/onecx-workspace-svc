@@ -14,11 +14,8 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 
 import org.tkit.onecx.workspace.domain.criteria.MenuItemLoadCriteria;
-import org.tkit.onecx.workspace.domain.criteria.MenuItemSearchCriteria;
 import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.jpa.daos.AbstractDAO;
-import org.tkit.quarkus.jpa.daos.Page;
-import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.jpa.exceptions.DAOException;
 import org.tkit.quarkus.jpa.models.AbstractTraceableEntity_;
 import org.tkit.quarkus.jpa.models.TraceableEntity_;
@@ -94,28 +91,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
                     .getResultList();
         } catch (Exception ex) {
             throw new DAOException(ErrorKeys.ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACES, ex);
-        }
-    }
-
-    public PageResult<MenuItem> findByCriteria(MenuItemSearchCriteria criteria) {
-        try {
-            var cb = getEntityManager().getCriteriaBuilder();
-            var cq = cb.createQuery(MenuItem.class);
-            var root = cq.from(MenuItem.class);
-
-            List<Predicate> predicates = new ArrayList<>();
-            if (criteria.getWorkspaceId() != null && !criteria.getWorkspaceId().isBlank()) {
-                predicates.add(cb.equal(root.get(MenuItem_.WORKSPACE_ID), criteria.getWorkspaceId()));
-            }
-
-            if (!predicates.isEmpty()) {
-                cq.where(cb.and(predicates.toArray(new Predicate[] {})));
-            }
-            cq.orderBy(cb.desc(root.get(AbstractTraceableEntity_.CREATION_DATE)));
-
-            return createPageQuery(cq, Page.of(criteria.getPageNumber(), criteria.getPageSize())).getPageResult();
-        } catch (Exception ex) {
-            throw new DAOException(ErrorKeys.ERROR_FIND_MENU_ITEMS_BY_CRITERIA, ex);
         }
     }
 
@@ -300,9 +275,6 @@ public class MenuItemDAO extends AbstractDAO<MenuItem> {
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_ID,
         ERROR_DELETE_ALL_MENU_ITEMS_BY_WORKSPACE_IDS,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_CRITERIA,
-
-        ERROR_FIND_MENU_ITEMS_BY_CRITERIA,
-
         ERROR_LOAD_ALL_CHILDREN,
         ERROR_LOAD_ALL_MENU_ITEMS_BY_WORKSPACES,
     }

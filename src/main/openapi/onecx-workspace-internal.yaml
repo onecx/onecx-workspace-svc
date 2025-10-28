@@ -337,33 +337,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /internal/menuItems/search:
-    post:
-      security:
-        - oauth2: [ ocx-ws:all, ocx-ws:read ]
-      tags:
-        - menuInternal
-      description: Search for menu items by search criteria
-      operationId: searchMenuItemsByCriteria
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MenuItemSearchCriteria'
-      responses:
-        "200":
-          description: Menu items search result retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MenuItemPageResult'
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
   /internal/menuItems/tree:
     post:
       security:
@@ -454,7 +427,7 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
           description: Menu item not found
-  /internal/menuItems/{menuItemId}/parentItemId:
+  /internal/menuItems/{menuItemId}/reorder:
     put:
       security:
         - oauth2: [ ocx-ws:all, ocx-ws:write ]
@@ -854,42 +827,6 @@ components:
             type: string
         workspaceId:
           type: string
-    MenuItemSearchCriteria:
-      type: object
-      properties:
-        workspaceId:
-          type: string
-        pageNumber:
-          format: int32
-          description: The number of page.
-          default: 0
-          type: integer
-        pageSize:
-          format: int32
-          description: The size of page
-          default: 100
-          maximum: 1000
-          type: integer
-    MenuItemPageResult:
-      type: object
-      properties:
-        totalElements:
-          format: int64
-          description: The total elements in the resource.
-          type: integer
-        number:
-          format: int32
-          type: integer
-        size:
-          format: int32
-          type: integer
-        totalPages:
-          format: int64
-          type: integer
-        stream:
-          type: array
-          items:
-            $ref: '#/components/schemas/MenuItemResult'
     ProductSearchCriteria:
       type: object
       properties:
@@ -1336,8 +1273,6 @@ components:
         - menuItems
         - workspaceId
       properties:
-        workspaceId:
-          type: string
         menuItems:
           type: array
           minItems: 1
@@ -1446,49 +1381,6 @@ components:
           type: object
           additionalProperties:
             type: string
-    MenuItemResult:
-      type: object
-      required:
-        - modificationCount
-      properties:
-        modificationCount:
-          format: int32
-          type: integer
-        creationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        creationUser:
-          type: string
-        modificationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        modificationUser:
-          type: string
-        id:
-          type: string
-        key:
-          type: string
-        name:
-          type: string
-        description:
-          type: string
-        url:
-          type: string
-        applicationId:
-          type: string
-        disabled:
-          type: boolean
-        position:
-          format: int32
-          type: integer
-        badge:
-          type: string
-        scope:
-          $ref: '#/components/schemas/Scope'
-        external:
-          type: boolean
-        target:
-          $ref: '#/components/schemas/Target'
-        parentItemId:
-          type: string
     MenuItem:
       type: object
       required:

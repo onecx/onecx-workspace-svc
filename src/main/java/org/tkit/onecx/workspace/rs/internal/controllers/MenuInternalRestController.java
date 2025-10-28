@@ -132,13 +132,6 @@ public class MenuInternalRestController implements MenuInternalApi {
     }
 
     @Override
-    public Response searchMenuItemsByCriteria(MenuItemSearchCriteriaDTO menuItemSearchCriteriaDTO) {
-        var criteria = mapper.map(menuItemSearchCriteriaDTO);
-        var result = dao.findByCriteria(criteria);
-        return Response.ok(mapper.mapPage(result)).build();
-    }
-
-    @Override
     public Response updateMenuItem(String menuItemId, UpdateMenuItemRequestDTO menuItemDTO) {
 
         var menuItem = dao.loadAllChildren(menuItemId);
