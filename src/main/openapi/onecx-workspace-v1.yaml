@@ -307,6 +307,8 @@ components:
           type: string
         basePath:
           type: string
+        exposedModule:
+          type: string
     WorkspaceLoadRequest:
       type: object
       required:

@@ -188,6 +188,8 @@ components:
           type: string
         basePath:
           type: string
+        exposedModule:
+          type: string
     Target:
       type: string
       enum:
