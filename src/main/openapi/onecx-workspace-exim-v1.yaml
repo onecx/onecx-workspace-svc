@@ -296,6 +296,8 @@ components:
           type: string
         basePath:
           type: string
+        exposedModule:
+          type: string
     EximWorkspaceRole:
       type: object
       properties:

@@ -30,4 +30,7 @@ public class Microfrontend implements Serializable {
     @Column(name = "PRODUCT_GUID", insertable = false, updatable = false)
     private String productId;
 
+    @Column(name = "EXPOSED_MODULE")
+    private String exposedModule;
+
 }
