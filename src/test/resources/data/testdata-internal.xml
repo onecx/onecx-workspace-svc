@@ -70,7 +70,7 @@
 	<ASSIGNMENT guid="200_a11" optlock="0" menu_item_id="55-2" role_id="r21" tenant_id="tenant-200"/>
 
 	<SLOT guid="s11" optlock="0" tenant_id="tenant-100" name="slot1" workspace_guid="11-111" />
-	<SLOT_COMPONENTS index="0" slot_guid="s11" name="c1" product_name="p1" app_id="a1"/>
+	<SLOT_COMPONENTS index="0" slot_guid="s11" name="c1" product_name="onecx-core" app_id="a1"/>
 	<SLOT_COMPONENTS index="1" slot_guid="s11" name="c2" product_name="p1" app_id="a1"/>
 	<SLOT_COMPONENTS index="2" slot_guid="s11" name="c3" product_name="p1" app_id="a1"/>
 
