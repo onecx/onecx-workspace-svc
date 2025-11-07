@@ -19,6 +19,8 @@ public interface ProductMapper {
     @Mapping(target = "removeStreamItem", ignore = true)
     ProductPageResultDTO mapPage(PageResult<Product> page);
 
+    @Mapping(target = "slots", ignore = true)
+    @Mapping(target = "removeSlotsItem", ignore = true)
     @Mapping(target = "removeMicrofrontendsItem", ignore = true)
     ProductResultDTO mapResult(Product product);
 

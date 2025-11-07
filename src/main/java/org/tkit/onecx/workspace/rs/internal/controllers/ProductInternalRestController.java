@@ -85,7 +85,7 @@ public class ProductInternalRestController implements ProductInternalApi {
     public Response searchProducts(ProductSearchCriteriaDTO productSearchCriteriaDTO) {
         var criteria = mapper.map(productSearchCriteriaDTO);
         var result = productService.findByCriteria(criteria);
-        return Response.ok(mapper.mapPage(result)).build();
+        return Response.ok(result).build();
     }
 
     @Override

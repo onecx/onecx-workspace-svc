@@ -891,6 +891,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Microfrontend'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slot'
     RoleSearchCriteria:
       type: object
       properties:
