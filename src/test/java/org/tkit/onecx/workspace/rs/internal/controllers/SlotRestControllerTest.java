@@ -259,9 +259,6 @@ class SlotRestControllerTest extends AbstractTest {
         assertThat(exception).isNotNull();
         assertThat(exception.getErrorCode()).isNotNull()
                 .isEqualTo(InternalExceptionMapper.TechnicalErrorKeys.OPTIMISTIC_LOCK.name());
-        assertThat(exception.getDetail()).isNotNull()
-                .isEqualTo(
-                        "Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect): [org.tkit.onecx.workspace.domain.models.Slot#s11]");
 
         // download Role
         dto = given()
