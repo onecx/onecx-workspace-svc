@@ -5,7 +5,6 @@ import java.util.Map;
 import io.quarkus.runtime.annotations.ConfigDocFilename;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
-import io.quarkus.runtime.annotations.StaticInitSafe;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
@@ -13,7 +12,6 @@ import io.smallrye.config.WithName;
 /**
  * Workspace template config.
  */
-@StaticInitSafe
 @ConfigDocFilename("onecx-workspace-svc.adoc")
 @ConfigMapping(prefix = "onecx.workspace")
 @ConfigRoot(phase = ConfigPhase.RUN_TIME)
