@@ -47,7 +47,91 @@ Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_IMPORT_TENANTS+++`
 endif::add-copy-button-to-env-var[]
 --
 |list of string
-|`default`
+|`+++default+++`
+
+a| [[onecx-workspace-svc_onecx-workspace-template-create-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-enabled[`onecx.workspace.template.create.enabled`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.create.enabled+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Enabled or enable create template configuration.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ENABLED+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ENABLED+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`+++true+++`
+
+a| [[onecx-workspace-svc_onecx-workspace-template-create-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-resource[`onecx.workspace.template.create.resource`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.create.resource+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Create template resource.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_RESOURCE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_RESOURCE+++`
+endif::add-copy-button-to-env-var[]
+--
+|string
+|`+++template/workspace-create.json+++`
+
+a| [[onecx-workspace-svc_onecx-workspace-template-create-class-path-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-class-path-resource[`onecx.workspace.template.create.class-path-resource`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.create.class-path-resource+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Class-path resource
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_CLASS_PATH_RESOURCE+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_CLASS_PATH_RESOURCE+++`
+endif::add-copy-button-to-env-var[]
+--
+|boolean
+|`+++true+++`
+
+a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping[`onecx.workspace.template.create.role-mapping."role-mapping"`]##
+ifdef::add-copy-button-to-config-props[]
+config_property_copy_button:+++onecx.workspace.template.create.role-mapping."role-mapping"+++[]
+endif::add-copy-button-to-config-props[]
+
+
+[.description]
+--
+Role mapping for create template.
+
+
+ifdef::add-copy-button-to-env-var[]
+Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++[]
+endif::add-copy-button-to-env-var[]
+ifndef::add-copy-button-to-env-var[]
+Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++`
+endif::add-copy-button-to-env-var[]
+--
+|Map<String,String>
+|
 
 a| [[onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping[`onecx.workspace.user.menu.mapping."mapping"`]##
 ifdef::add-copy-button-to-config-props[]
@@ -89,7 +173,7 @@ Environment variable: `+++ONECX_WORKSPACE_TOKEN_VERIFIED+++`
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`false`
+|`+++false+++`
 
 a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix[`onecx.workspace.token.issuer.public-key-location.suffix`]##
 ifdef::add-copy-button-to-config-props[]
@@ -110,7 +194,7 @@ Environment variable: `+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_SUFFI
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`/protocol/openid-connect/certs`
+|`+++/protocol/openid-connect/certs+++`
 
 a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled[`onecx.workspace.token.issuer.public-key-location.enabled`]##
 ifdef::add-copy-button-to-config-props[]
@@ -131,7 +215,7 @@ Environment variable: `+++ONECX_WORKSPACE_TOKEN_ISSUER_PUBLIC_KEY_LOCATION_ENABL
 endif::add-copy-button-to-env-var[]
 --
 |boolean
-|`false`
+|`+++false+++`
 
 a| [[onecx-workspace-svc_onecx-workspace-token-claim-separator]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-claim-separator[`onecx.workspace.token.claim.separator`]##
 ifdef::add-copy-button-to-config-props[]
@@ -173,91 +257,7 @@ Environment variable: `+++ONECX_WORKSPACE_TOKEN_CLAIM_PATH+++`
 endif::add-copy-button-to-env-var[]
 --
 |string
-|`realm_access/roles`
-
-a| [[onecx-workspace-svc_onecx-workspace-template-create-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-enabled[`onecx.workspace.template.create.enabled`]##
-ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++onecx.workspace.template.create.enabled+++[]
-endif::add-copy-button-to-config-props[]
-
-
-[.description]
---
-Enabled or enable create template configuration.
-
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ENABLED+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ENABLED+++`
-endif::add-copy-button-to-env-var[]
---
-|boolean
-|`true`
-
-a| [[onecx-workspace-svc_onecx-workspace-template-create-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-resource[`onecx.workspace.template.create.resource`]##
-ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++onecx.workspace.template.create.resource+++[]
-endif::add-copy-button-to-config-props[]
-
-
-[.description]
---
-Create template resource.
-
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_RESOURCE+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_RESOURCE+++`
-endif::add-copy-button-to-env-var[]
---
-|string
-|`template/workspace-create.json`
-
-a| [[onecx-workspace-svc_onecx-workspace-template-create-class-path-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-class-path-resource[`onecx.workspace.template.create.class-path-resource`]##
-ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++onecx.workspace.template.create.class-path-resource+++[]
-endif::add-copy-button-to-config-props[]
-
-
-[.description]
---
-Class-path resource
-
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_CLASS_PATH_RESOURCE+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_CLASS_PATH_RESOURCE+++`
-endif::add-copy-button-to-env-var[]
---
-|boolean
-|`true`
-
-a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping[`onecx.workspace.template.create.role-mapping."role-mapping"`]##
-ifdef::add-copy-button-to-config-props[]
-config_property_copy_button:+++onecx.workspace.template.create.role-mapping."role-mapping"+++[]
-endif::add-copy-button-to-config-props[]
-
-
-[.description]
---
-Role mapping for create template.
-
-
-ifdef::add-copy-button-to-env-var[]
-Environment variable: env_var_with_copy_button:+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++[]
-endif::add-copy-button-to-env-var[]
-ifndef::add-copy-button-to-env-var[]
-Environment variable: `+++ONECX_WORKSPACE_TEMPLATE_CREATE_ROLE_MAPPING__ROLE_MAPPING_+++`
-endif::add-copy-button-to-env-var[]
---
-|Map<String,String>
-|
+|`+++realm_access/roles+++`
 
 |===
 
