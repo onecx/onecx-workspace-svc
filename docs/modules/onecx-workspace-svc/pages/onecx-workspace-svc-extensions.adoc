@@ -154,22 +154,4 @@ h| Version
 
 
 
-|===c[Link]
-| 3.20.2.1
-
-
-
-|===curity
-
-| 
-| 
-| 0.34.0
-
-| tkit-quarkus-oidc-health
-
-| 
-| 
-| 2.40.0
-
-
 |===
