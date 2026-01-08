@@ -1,4 +1,4 @@
-FROM ghcr.io/onecx/docker-quarkus-jvm:0.26.0
+FROM ghcr.io/onecx/docker-quarkus-jvm:0.27.0
 
 COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
 COPY --chown=185 target/quarkus-app/*.jar /deployments/
