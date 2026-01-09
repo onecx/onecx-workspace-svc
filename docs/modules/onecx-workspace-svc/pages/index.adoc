@@ -1,10 +1,9 @@
 include::onecx-workspace-svc-attributes.adoc[opts=optional]
 
-== onecx-workspace-svc
+= OneCX Workspace Backend Service
 
-include::docs.adoc[opts=optional]
 
-=== Configuration
+== Configuration
 include::onecx-workspace-svc.adoc[opts=optional]
 
 include::onecx-workspace-svc-docs.adoc[opts=optional]
