@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>onecx-workspace-svc</artifactId>
+    <name>OneCX Workspace Backend Service</name>
     <version>999-SNAPSHOT</version>
 
     <dependencies>
