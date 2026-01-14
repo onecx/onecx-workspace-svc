@@ -1,6 +1,7 @@
 package org.tkit.onecx.workspace.rs.internal.mappers;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.mapstruct.Mapper;
@@ -20,7 +21,9 @@ public interface SlotMapper {
     SlotDTO map(Slot data);
 
     default WorkspaceSlotsDTO create(List<Slot> slots) {
-        return new WorkspaceSlotsDTO().slots(map(slots));
+        var mappedSlots = map(slots);
+        mappedSlots.sort(Comparator.comparing(SlotDTO::getName));
+        return new WorkspaceSlotsDTO().slots(mappedSlots);
     }
 
     List<SlotDTO> map(List<Slot> data);
