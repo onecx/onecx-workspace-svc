@@ -97,4 +97,7 @@ public class Workspace extends TraceableEntity {
      */
     @Column(name = "DISABLED")
     private Boolean disabled;
+
+    @Column(name = "TITLE")
+    private String title;
 }
