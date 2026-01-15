@@ -241,6 +241,8 @@ components:
         mandatory:
           type: boolean
           default: false
+        title:
+          type: string
     Images:
       type: object
       nullable: false

@@ -148,6 +148,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WorkspaceWrapperSlot'
+        title:
+          type: string
     WorkspaceWrapperSlot:
       type: object
       properties:
@@ -218,6 +220,8 @@ components:
             type: string
         address:
           $ref: '#/components/schemas/WorkspaceAddress'
+        title:
+          type: string
     WorkspaceAddress:
       type: object
       properties:
@@ -263,6 +267,8 @@ components:
         theme:
           type: string
         description:
+          type: string
+        title:
           type: string
     WorkspaceSearchCriteria:
       type: object

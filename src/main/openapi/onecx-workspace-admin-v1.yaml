@@ -196,6 +196,8 @@ components:
     disabled:
      type: boolean
      default: false
+    title:
+     type: string
   WorkspaceAddress:
    type: object
    properties:
@@ -257,6 +259,8 @@ components:
     mandatory:
      type: boolean
      default: false
+    title:
+     type: string
   UpdateWorkspaceResponse:
    type: object
    required:
@@ -343,6 +347,8 @@ components:
     operator:
      type: boolean
      default: false
+    title:
+     type: string
   CreateWorkspaceRequest:
    required:
     - name
@@ -380,6 +386,8 @@ components:
     mandatory:
      type: boolean
      default: false
+    title:
+     type: string
   CreateWorkspaceResponse:
    type: object
    required:

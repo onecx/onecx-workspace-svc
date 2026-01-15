@@ -92,6 +92,8 @@ components:
         mandatory:
           type: boolean
           default: false
+        title:
+          type: string
     TemplateMenuItem:
       type: object
       properties:

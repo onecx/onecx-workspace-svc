@@ -1121,6 +1121,8 @@ components:
         mandatory:
           type: boolean
           default: false
+        title:
+          type: string
     UpdateWorkspaceRequest:
       required:
         - name
@@ -1162,6 +1164,8 @@ components:
         mandatory:
           type: boolean
           default: false
+        title:
+          type: string
     Workspace:
       required:
         - name
@@ -1215,6 +1219,8 @@ components:
         disabled:
           type: boolean
           default: false
+        title:
+          type: string
     WorkspaceAbstract:
       required:
         - name
@@ -1247,6 +1253,8 @@ components:
         operator:
           type: boolean
           default: false
+        title:
+          type: string
     WorkspaceAddress:
       type: object
       properties:
