@@ -1,8 +1,11 @@
 package org.tkit.onecx.workspace.domain.models;
 
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.*;
 
@@ -97,4 +100,13 @@ public class Workspace extends TraceableEntity {
      */
     @Column(name = "DISABLED")
     private Boolean disabled;
+
+    /**
+     * Workspace translations of attributes
+     */
+    @ElementCollection(fetch = EAGER)
+    @MapKeyClass(WorkspaceTranslationKey.class)
+    @Column(name = "i18n")
+    @CollectionTable(name = "WORKSPACE_I18N", joinColumns = @JoinColumn(name = "WORKSPACE_GUID"))
+    private Map<WorkspaceTranslationKey, String> i18n = new HashMap<>();
 }
