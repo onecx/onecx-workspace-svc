@@ -29,6 +29,7 @@ public interface WorkspaceAdminMapperV1 {
     @Mapping(target = "creationUser", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
     @Mapping(target = "controlTraceabilityManual", ignore = true)
+    @Mapping(target = "i18n", ignore = true)
     Workspace create(CreateWorkspaceRequestDTOAdminV1 dto);
 
     @Mapping(target = "tenantId", ignore = true)
@@ -44,6 +45,7 @@ public interface WorkspaceAdminMapperV1 {
     @Mapping(target = "modificationCount", source = "modificationCount")
     @Mapping(target = "slots", ignore = true)
     @Mapping(target = "operator", ignore = true)
+    @Mapping(target = "i18n", ignore = true)
     void update(UpdateWorkspaceDTOAdminV1 dto, @MappingTarget Workspace workspace);
 
     @Mapping(target = "baseUrl", ignore = true)
@@ -53,6 +55,12 @@ public interface WorkspaceAdminMapperV1 {
     @Mapping(target = "removeStreamItem", ignore = true)
     WorkspacePageResultDTO mapPageResult(PageResult<Workspace> page);
 
+    @Mapping(target = "i18n", ignore = true)
+    @Mapping(target = "removeI18nItem", ignore = true)
+    WorkspaceAbstractDTO mapAbstract(Workspace workspace);
+
+    @Mapping(target = "i18n", ignore = true)
+    @Mapping(target = "removeI18nItem", ignore = true)
     WorkspaceDTO map(Workspace data);
 
 }

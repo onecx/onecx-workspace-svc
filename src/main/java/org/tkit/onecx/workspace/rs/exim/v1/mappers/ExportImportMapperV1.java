@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.models.*;
+import org.tkit.onecx.workspace.rs.common.mappers.WorkspaceTranslationKeyMapper;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
 import gen.org.tkit.onecx.workspace.rs.exim.v1.model.EximTargetDTOV1;
 
-@Mapper(uses = { OffsetDateTimeMapper.class })
+@Mapper(uses = { OffsetDateTimeMapper.class, WorkspaceTranslationKeyMapper.class })
 public interface ExportImportMapperV1 {
 
     default List<Image> createImages(String workspaceName, Map<String, ImageDTOV1> images) {
@@ -132,6 +133,7 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "slots", ignore = true)
     @Mapping(target = "operator", ignore = true)
+    @Mapping(target = "i18n", source = "i18n", qualifiedByName = "toEntityI18n")
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
 
     @Mapping(target = "modificationCount", ignore = true)
@@ -171,6 +173,8 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "menuItems", ignore = true)
     @Mapping(target = "removeMenuItemsItem", ignore = true)
+    @Mapping(target = "removeI18nItem", ignore = true)
+    @Mapping(target = "i18n", source = "i18n", qualifiedByName = "toDtoI18n")
     EximWorkspaceDTOV1 map(Workspace workspace);
 
     @Mapping(target = "removeComponentsItem", ignore = true)

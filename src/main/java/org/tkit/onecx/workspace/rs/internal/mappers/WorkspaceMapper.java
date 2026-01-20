@@ -3,12 +3,13 @@ package org.tkit.onecx.workspace.rs.internal.mappers;
 import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.criteria.WorkspaceSearchCriteria;
 import org.tkit.onecx.workspace.domain.models.Workspace;
+import org.tkit.onecx.workspace.rs.common.mappers.WorkspaceTranslationKeyMapper;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 
-@Mapper(uses = { OffsetDateTimeMapper.class })
+@Mapper(uses = { OffsetDateTimeMapper.class, WorkspaceTranslationKeyMapper.class })
 public interface WorkspaceMapper {
 
     @Mapping(target = "creationDate", ignore = true)
@@ -24,6 +25,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "slots", ignore = true)
     @Mapping(target = "operator", ignore = true)
+    @Mapping(target = "i18n", source = "i18n", qualifiedByName = "toEntityI18n")
     Workspace create(CreateWorkspaceRequestDTO dto);
 
     @Mapping(target = "tenantId", ignore = true)
@@ -39,6 +41,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "modificationCount", source = "modificationCount")
     @Mapping(target = "slots", ignore = true)
     @Mapping(target = "operator", ignore = true)
+    @Mapping(target = "i18n", source = "i18n", qualifiedByName = "toEntityI18n")
     void update(UpdateWorkspaceRequestDTO dto, @MappingTarget Workspace workspace);
 
     @Mapping(target = "baseUrl", ignore = true)
@@ -48,6 +51,12 @@ public interface WorkspaceMapper {
     @Mapping(target = "removeStreamItem", ignore = true)
     WorkspacePageResultDTO mapPageResult(PageResult<Workspace> page);
 
+    @Mapping(target = "i18n", source = "i18n", qualifiedByName = "toDtoI18n")
+    @Mapping(target = "removeI18nItem", ignore = true)
+    WorkspaceAbstractDTO mapAbstract(Workspace workspace);
+
+    @Mapping(target = "i18n", source = "i18n", qualifiedByName = "toDtoI18n")
+    @Mapping(target = "removeI18nItem", ignore = true)
     WorkspaceDTO map(Workspace data);
 
 }
