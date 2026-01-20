@@ -241,6 +241,12 @@ components:
         mandatory:
           type: boolean
           default: false
+        i18n:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
     Images:
       type: object
       nullable: false
