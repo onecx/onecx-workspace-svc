@@ -1,6 +1,5 @@
 package org.tkit.onecx.workspace.domain.models;
 
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 import java.util.HashMap;
@@ -104,9 +103,15 @@ public class Workspace extends TraceableEntity {
     /**
      * Workspace translations of attributes
      */
-    @ElementCollection(fetch = EAGER)
+    @ElementCollection(fetch = LAZY)
     @MapKeyClass(WorkspaceTranslationKey.class)
     @Column(name = "i18n")
-    @CollectionTable(name = "WORKSPACE_I18N", joinColumns = @JoinColumn(name = "WORKSPACE_GUID"))
+    @CollectionTable(name = "WORKSPACE_I18N", joinColumns = {
+            @JoinColumn(name = "WORKSPACE_GUID", nullable = false)
+    }, indexes = {
+            @Index(columnList = "WORKSPACE_GUID", name = "WORKSPACE_I18N_WORKSPACE_IDX")
+    }, uniqueConstraints = {
+            @UniqueConstraint(columnNames = { "WORKSPACE_GUID", "LANGUAGE", "FIELD_KEY" }, name = "WORKSPACE_I18N_PKEY")
+    }, foreignKey = @ForeignKey(name = "WORKSPACE_I18N_WORKSPACE_GUID"))
     private Map<WorkspaceTranslationKey, String> i18n = new HashMap<>();
 }
