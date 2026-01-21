@@ -10,8 +10,10 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.CreateWorkspaceRequestDTOAdminV1;
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.UpdateWorkspaceDTOAdminV1;
+import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspaceAbstractDTOAdminV1;
+import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspaceDTOAdminV1;
+import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspacePageResultDTOAdminV1;
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspaceSearchCriteriaDTOAdminV1;
-import gen.org.tkit.onecx.workspace.rs.internal.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface WorkspaceAdminMapperV1 {
@@ -53,14 +55,10 @@ public interface WorkspaceAdminMapperV1 {
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTOAdminV1 dto);
 
     @Mapping(target = "removeStreamItem", ignore = true)
-    WorkspacePageResultDTO mapPageResult(PageResult<Workspace> page);
+    WorkspacePageResultDTOAdminV1 mapPageResult(PageResult<Workspace> page);
 
-    @Mapping(target = "i18n", ignore = true)
-    @Mapping(target = "removeI18nItem", ignore = true)
-    WorkspaceAbstractDTO mapAbstract(Workspace workspace);
+    WorkspaceAbstractDTOAdminV1 mapAbstract(Workspace workspace);
 
-    @Mapping(target = "i18n", ignore = true)
-    @Mapping(target = "removeI18nItem", ignore = true)
-    WorkspaceDTO map(Workspace data);
+    WorkspaceDTOAdminV1 map(Workspace data);
 
 }
