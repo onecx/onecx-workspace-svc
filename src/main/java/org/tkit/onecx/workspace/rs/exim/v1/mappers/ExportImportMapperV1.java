@@ -6,13 +6,12 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 import org.tkit.onecx.workspace.domain.models.*;
-import org.tkit.onecx.workspace.rs.common.mappers.WorkspaceTranslationKeyMapper;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
 import gen.org.tkit.onecx.workspace.rs.exim.v1.model.EximTargetDTOV1;
 
-@Mapper(uses = { OffsetDateTimeMapper.class, WorkspaceTranslationKeyMapper.class })
+@Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ExportImportMapperV1 {
 
     default List<Image> createImages(String workspaceName, Map<String, ImageDTOV1> images) {
@@ -133,7 +132,6 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "slots", ignore = true)
     @Mapping(target = "operator", ignore = true)
-    @Mapping(target = "i18n", source = "i18n", qualifiedByName = "toEntityI18n")
     Workspace create(EximWorkspaceDTOV1 workspaceDTO);
 
     @Mapping(target = "modificationCount", ignore = true)
@@ -174,7 +172,6 @@ public interface ExportImportMapperV1 {
     @Mapping(target = "menuItems", ignore = true)
     @Mapping(target = "removeMenuItemsItem", ignore = true)
     @Mapping(target = "removeI18nItem", ignore = true)
-    @Mapping(target = "i18n", source = "i18n", qualifiedByName = "toDtoI18n")
     EximWorkspaceDTOV1 map(Workspace workspace);
 
     @Mapping(target = "removeComponentsItem", ignore = true)
@@ -235,6 +232,50 @@ public interface ExportImportMapperV1 {
 
         menu.setChildren(children(menuItem.getChildren(), roles));
         return menu;
+    }
+
+    default Map<WorkspaceTranslationKey, String> mapToEntityI18n(Map<String, Map<String, String>> apiModel) {
+        if (apiModel == null || apiModel.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<WorkspaceTranslationKey, String> result = new HashMap<>();
+
+        apiModel.forEach((language, fieldKeyI18nMap) -> {
+            if (fieldKeyI18nMap != null) {
+                fieldKeyI18nMap.forEach((fieldKey, i18n) -> {
+                    if (fieldKey != null && i18n != null) {
+                        WorkspaceTranslationKey workspaceTranslationKey = new WorkspaceTranslationKey();
+                        workspaceTranslationKey.setLanguage(language);
+                        workspaceTranslationKey.setFieldKey(fieldKey);
+
+                        result.put(workspaceTranslationKey, i18n);
+                    }
+                });
+            }
+        });
+
+        return result;
+    }
+
+    default Map<String, Map<String, String>> mapToDtoI18n(Map<WorkspaceTranslationKey, String> entity) {
+        if (entity == null || entity.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<String, Map<String, String>> result = new HashMap<>();
+
+        entity.forEach(((workspaceTranslationKey, i18n) -> {
+            if (workspaceTranslationKey != null) {
+                String language = workspaceTranslationKey.getLanguage();
+                String fieldKey = workspaceTranslationKey.getFieldKey();
+                if (language != null && fieldKey != null) {
+                    result.computeIfAbsent(language, l -> new HashMap<>()).put(fieldKey, i18n);
+                }
+            }
+        }));
+
+        return result;
     }
 
     @Mapping(target = "id", ignore = true)
