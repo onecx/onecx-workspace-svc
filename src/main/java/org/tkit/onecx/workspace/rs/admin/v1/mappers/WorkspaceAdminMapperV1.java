@@ -10,7 +10,6 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.CreateWorkspaceRequestDTOAdminV1;
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.UpdateWorkspaceDTOAdminV1;
-import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspaceAbstractDTOAdminV1;
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspaceDTOAdminV1;
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspacePageResultDTOAdminV1;
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspaceSearchCriteriaDTOAdminV1;
@@ -56,8 +55,6 @@ public interface WorkspaceAdminMapperV1 {
 
     @Mapping(target = "removeStreamItem", ignore = true)
     WorkspacePageResultDTOAdminV1 mapPageResult(PageResult<Workspace> page);
-
-    WorkspaceAbstractDTOAdminV1 mapAbstract(Workspace workspace);
 
     WorkspaceDTOAdminV1 map(Workspace data);
 
