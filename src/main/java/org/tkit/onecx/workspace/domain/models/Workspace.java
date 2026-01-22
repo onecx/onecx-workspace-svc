@@ -106,12 +106,10 @@ public class Workspace extends TraceableEntity {
     @ElementCollection(fetch = LAZY)
     @MapKeyClass(WorkspaceTranslationKey.class)
     @Column(name = "i18n")
-    @CollectionTable(name = "WORKSPACE_I18N", joinColumns = {
-            @JoinColumn(name = "WORKSPACE_GUID", nullable = false)
-    }, indexes = {
+    @CollectionTable(name = "WORKSPACE_I18N", indexes = {
             @Index(columnList = "WORKSPACE_GUID", name = "WORKSPACE_I18N_WORKSPACE_IDX")
     }, uniqueConstraints = {
             @UniqueConstraint(columnNames = { "WORKSPACE_GUID", "LANGUAGE", "FIELD_KEY" }, name = "WORKSPACE_I18N_PKEY")
-    }, foreignKey = @ForeignKey(name = "WORKSPACE_I18N_WORKSPACE_GUID"))
+    })
     private Map<WorkspaceTranslationKey, String> i18n = new HashMap<>();
 }

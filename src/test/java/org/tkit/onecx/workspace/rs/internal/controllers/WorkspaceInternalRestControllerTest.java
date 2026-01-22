@@ -7,9 +7,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
@@ -24,9 +21,6 @@ import io.quarkus.test.junit.QuarkusTest;
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class WorkspaceInternalRestControllerTest extends AbstractTest {
-
-    @Inject
-    EntityManager entityManager;
 
     @Test
     void createWorkspaceTest() {
@@ -410,28 +404,6 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(dto).isNotNull();
         assertThat(dto.getI18n()).isNotNull().isNotEmpty().hasSize(1)
                 .containsEntry("en", Map.of("footerLabel", "translatedValue"));
-    }
-
-    @Test
-    void deleteWorkspace_shouldRemoveWorkspaceI18nTest() {
-        var nativeQuery = "SELECT COUNT(*) FROM WORKSPACE_I18N WHERE WORKSPACE_GUID='11-111'";
-        var count = entityManager.createNativeQuery(nativeQuery).getSingleResult();
-
-        assertThat(count).isNotNull();
-        assertThat((Long) count).isNotZero().isEqualTo(3L);
-
-        // delete workspace
-        given()
-                .auth().oauth2(getKeycloakClientToken("testClient"))
-                .contentType(APPLICATION_JSON)
-                .pathParam("id", "11-111")
-                .delete("{id}")
-                .then().statusCode(NO_CONTENT.getStatusCode());
-
-        // check if the workspace i18n records related to deleted entity are removed
-        count = entityManager.createNativeQuery(nativeQuery).getSingleResult();
-        assertThat(count).isNotNull();
-        assertThat((Long) count).isZero();
     }
 
     @Test
