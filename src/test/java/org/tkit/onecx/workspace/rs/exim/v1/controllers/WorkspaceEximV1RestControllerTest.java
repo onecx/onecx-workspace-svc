@@ -62,6 +62,12 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
             assertThat(slot.getComponents()).isSortedAccordingTo(Comparator.comparing(EximComponentDTOV1::getName));
         });
 
+        //check correct export of translations i18n
+        //Map<String, Map<String, String>>: language -> field_key -> i18n
+        assertThat(w.getI18n()).isNotNull().isNotEmpty().hasSize(2)
+                .containsEntry("en",
+                        Map.of("displayName", "EN_translated_displayName", "footerLabel", "EN_translated_footerLabel"))
+                .containsEntry("de", Map.of("displayName", "DE_translated_displayName"));
     }
 
     @Test
@@ -183,6 +189,15 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .baseUrl("/productBase")
                 .microfrontends(microFrontends));
 
+        //Map<String, Map<String, String>>: language -> field_key -> i18n
+        Map<String, Map<String, String>> translatedValuesI18n = new HashMap<>();
+        Map<String, String> fieldKeyI18nMap = new HashMap<>();
+        var language = "en";
+        var fieldKey = "footerLabel";
+        var i18n = "EN_translated_footerLabel";
+        fieldKeyI18nMap.put(fieldKey, i18n);
+        translatedValuesI18n.put(language, fieldKeyI18nMap);
+
         EximWorkspaceDTOV1 workspace = new EximWorkspaceDTOV1()
                 .putImagesItem("logo", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
                 .putImagesItem("logo2", new ImageDTOV1().imageData(new byte[] { 1, 2, 3 }).mimeType("image/*"))
@@ -192,7 +207,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                 .roles(roles)
                 .menuItems(menuItems)
                 .products(products)
-                .slots(slots);
+                .slots(slots)
+                .i18n(translatedValuesI18n);
 
         Map<String, EximWorkspaceDTOV1> map = new HashMap<>();
         map.put("testWorkspace", workspace);
@@ -239,6 +255,8 @@ class WorkspaceEximV1RestControllerTest extends AbstractTest {
                         .microfrontends(List.of(new EximMicrofrontendDTOV1().appId("app1").basePath("/app1"))));
 
         assertThat(w.getSlots()).isNotNull().isNotEmpty().hasSize(2);
+
+        assertThat(w.getI18n()).isNotNull().isNotEmpty().hasSize(1).containsEntry(language, fieldKeyI18nMap);
     }
 
     @Test

@@ -5,6 +5,11 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
+
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
@@ -19,6 +24,9 @@ import io.quarkus.test.junit.QuarkusTest;
 @WithDBData(value = "data/testdata-internal.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
 @GenerateKeycloakClient(clientName = "testClient", scopes = { "ocx-ws:all", "ocx-ws:read", "ocx-ws:write", "ocx-ws:delete" })
 class WorkspaceInternalRestControllerTest extends AbstractTest {
+
+    @Inject
+    EntityManager entityManager;
 
     @Test
     void createWorkspaceTest() {
@@ -376,6 +384,108 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .then()
                 .statusCode(BAD_REQUEST.getStatusCode())
                 .extract().as(ProblemDetailResponseDTO.class);
+    }
+
+    @Test
+    void createWorkspace_shouldCreateWorkspaceI18nTest() {
+        // create workspace with i18n
+        // Map<String, Map<String, String>>: language -> field_key -> i18n
+        var createWorkspaceDTO = new CreateWorkspaceRequestDTO();
+        createWorkspaceDTO
+                .name("Workspace1")
+                .displayName("Workspace1")
+                .baseUrl("/work1")
+                .i18n(Map.of("en", Map.of("footerLabel", "translatedValue")));
+
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .when()
+                .contentType(APPLICATION_JSON)
+                .body(createWorkspaceDTO)
+                .post()
+                .then()
+                .statusCode(CREATED.getStatusCode())
+                .extract().as(WorkspaceDTO.class);
+
+        assertThat(dto).isNotNull();
+        assertThat(dto.getI18n()).isNotNull().isNotEmpty().hasSize(1)
+                .containsEntry("en", Map.of("footerLabel", "translatedValue"));
+    }
+
+    @Test
+    void deleteWorkspace_shouldRemoveWorkspaceI18nTest() {
+        var nativeQuery = "SELECT COUNT(*) FROM WORKSPACE_I18N WHERE WORKSPACE_GUID='11-111'";
+        var count = entityManager.createNativeQuery(nativeQuery).getSingleResult();
+
+        assertThat(count).isNotNull();
+        assertThat((Long) count).isNotZero().isEqualTo(3L);
+
+        // delete workspace
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .delete("{id}")
+                .then().statusCode(NO_CONTENT.getStatusCode());
+
+        // check if the workspace i18n records related to deleted entity are removed
+        count = entityManager.createNativeQuery(nativeQuery).getSingleResult();
+        assertThat(count).isNotNull();
+        assertThat((Long) count).isZero();
+    }
+
+    @Test
+    void getWorkspace_shouldGetWorkspaceI18nTest() {
+        var dto = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-111")
+                .get("{id}")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTO.class);
+
+        // check i18n translations
+        // Map<String, Map<String, String>>: language -> field_key -> i18n
+        assertThat(dto).isNotNull();
+        assertThat(dto.getI18n()).isNotNull().isNotEmpty().hasSize(2)
+                .containsEntry("en",
+                        Map.of("displayName", "EN_translated_displayName", "footerLabel", "EN_translated_footerLabel"))
+                .containsEntry("de", Map.of("displayName", "DE_translated_displayName"));
+    }
+
+    @Test
+    void updateWorkspace_shouldUpdateWorkspaceI18nTest() {
+        var response = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
+                .contentType(APPLICATION_JSON)
+                .pathParam("id", "11-222")
+                .get("{id}")
+                .then().statusCode(OK.getStatusCode())
+                .extract().as(WorkspaceDTO.class);
+        assertThat(response.getI18n()).isNotNull().isNotEmpty().hasSize(1)
+                .containsEntry("en", Map.of("footerLabel", "EN_translated_footerLabel"));
+
+        response.setDisplayName("DisplayName");
+        response.setI18n(Map.of(
+                "en", Map.of("footerLabel", "Updated_translation"),
+                "de", Map.of("description", "Added_description_translation")));
+
+        var updatedWorkspace = given()
+                .auth().oauth2(getKeycloakClientToken("testClient")).when()
+                .contentType(APPLICATION_JSON)
+                .body(response)
+                .pathParam("id", "11-222")
+                .put("{id}")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(WorkspaceDTO.class);
+
+        assertThat(updatedWorkspace).isNotNull();
+        assertThat(updatedWorkspace.getI18n()).isNotNull().isNotEmpty().hasSize(2)
+                .containsEntry("en", Map.of("footerLabel", "Updated_translation"))
+                .containsEntry("de", Map.of("description", "Added_description_translation"));
     }
 
 }

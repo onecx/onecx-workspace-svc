@@ -7,6 +7,10 @@
 	<WORKSPACE guid="11-222" optlock="10" company_name="Company2" theme="11-111" description="Company2 Test" home_page="main_page" name="test02" phone_number="3856382" rss_feed_url="url.com" city="Berlin" country="Germany" base_url="/company2" postalcode="12-345" street="Unter den Linden" streetno="23" tenant_id="tenant-100" mandatory="true" disabled="false"/>
 	<WORKSPACE guid="22-111" optlock="0" company_name="Company3" theme="11-111" description="Company3 Test" home_page="main_page" name="test03" phone_number="123456789" rss_feed_url="url.com" city="Stuttgart" country="Germany" base_url="/company3" postalcode="45-341" street="Wilhelmstrasse" streetno="15" tenant_id="tenant-200" disabled="false"/>
 
+	<WORKSPACE_I18N workspace_guid="11-111" language="en" field_key="displayName" i18n="EN_translated_displayName"/>
+	<WORKSPACE_I18N workspace_guid="11-111" language="en" field_key="footerLabel" i18n="EN_translated_footerLabel"/>
+	<WORKSPACE_I18N workspace_guid="11-111" language="de" field_key="displayName" i18n="DE_translated_displayName"/>
+	<WORKSPACE_I18N workspace_guid="11-222" language="en" field_key="footerLabel" i18n="EN_translated_footerLabel"/>
 
 	<!-- MENU_ITEM -->
 	<MENU_ITEM guid="33-1" optlock="0" disabled="FALSE" key="PORTAL_MAIN_MENU" name="Main Menu" external="FALSE"  pos="0" scope="WORKSPACE" url=""  workspace="11-111" application_id="" target="_blank" tenant_id="tenant-100"/>
