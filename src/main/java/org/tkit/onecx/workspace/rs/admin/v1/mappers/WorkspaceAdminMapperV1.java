@@ -8,14 +8,12 @@ import org.tkit.onecx.workspace.domain.models.Workspace;
 import org.tkit.quarkus.jpa.daos.PageResult;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.workspace.rs.admin.v1.model.CreateWorkspaceRequestDTOAdminV1;
-import gen.org.tkit.onecx.workspace.rs.admin.v1.model.UpdateWorkspaceDTOAdminV1;
-import gen.org.tkit.onecx.workspace.rs.admin.v1.model.WorkspaceSearchCriteriaDTOAdminV1;
-import gen.org.tkit.onecx.workspace.rs.internal.model.*;
+import gen.org.tkit.onecx.workspace.rs.admin.v1.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface WorkspaceAdminMapperV1 {
 
+    @Mapping(target = "i18n", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "slots", ignore = true)
     @Mapping(target = "roles", ignore = true)
@@ -31,6 +29,7 @@ public interface WorkspaceAdminMapperV1 {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     Workspace create(CreateWorkspaceRequestDTOAdminV1 dto);
 
+    @Mapping(target = "i18n", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "products", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
@@ -51,8 +50,8 @@ public interface WorkspaceAdminMapperV1 {
     WorkspaceSearchCriteria map(WorkspaceSearchCriteriaDTOAdminV1 dto);
 
     @Mapping(target = "removeStreamItem", ignore = true)
-    WorkspacePageResultDTO mapPageResult(PageResult<Workspace> page);
+    WorkspacePageResultDTOAdminV1 mapPageResult(PageResult<Workspace> page);
 
-    WorkspaceDTO map(Workspace data);
+    WorkspaceDTOAdminV1 map(Workspace data);
 
 }

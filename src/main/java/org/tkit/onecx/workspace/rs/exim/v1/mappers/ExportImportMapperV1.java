@@ -9,7 +9,6 @@ import org.tkit.onecx.workspace.domain.models.*;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.workspace.rs.exim.v1.model.*;
-import gen.org.tkit.onecx.workspace.rs.exim.v1.model.EximTargetDTOV1;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface ExportImportMapperV1 {
@@ -164,6 +163,7 @@ public interface ExportImportMapperV1 {
     ImportWorkspaceResponseDTOV1 create(WorkspaceSnapshotDTOV1 request,
             Map<String, ImportResponseStatusDTOV1> workspaces);
 
+    @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeProductsItem", ignore = true)
     @Mapping(target = "removeRolesItem", ignore = true)
     @Mapping(target = "removeSlotsItem", ignore = true)
