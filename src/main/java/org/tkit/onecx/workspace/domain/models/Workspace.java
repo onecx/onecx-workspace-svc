@@ -2,11 +2,15 @@ package org.tkit.onecx.workspace.domain.models;
 
 import static jakarta.persistence.FetchType.LAZY;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.*;
 
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.TenantId;
+import org.hibernate.type.SqlTypes;
 import org.tkit.quarkus.jpa.models.TraceableEntity;
 
 import lombok.Getter;
@@ -79,6 +83,10 @@ public class Workspace extends TraceableEntity {
 
     @Column(name = "SMALL_LOGO_URL")
     private String smallLogoUrl;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "I18N", columnDefinition = "jsonb")
+    private Map<String, Map<String, String>> i18n = new HashMap<>();
 
     @OneToMany(mappedBy = "workspace", fetch = LAZY, cascade = { CascadeType.REMOVE })
     private List<Product> products;

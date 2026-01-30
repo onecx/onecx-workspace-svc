@@ -5,6 +5,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
@@ -29,7 +31,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
                 .name("Workspace1")
                 .displayName("Workspace1")
                 .companyName("Company1")
-                .baseUrl("/work1");
+                .baseUrl("/work1")
+                .i18n(Map.of("en", Map.of("footerLabel", "translatedValue")));
 
         var dto = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -46,7 +49,8 @@ class WorkspaceInternalRestControllerTest extends AbstractTest {
         assertThat(dto.getDisplayName()).isNotNull().isEqualTo(createWorkspaceDTO.getDisplayName());
         assertThat(dto.getCompanyName()).isNotNull().isEqualTo(createWorkspaceDTO.getCompanyName());
         assertThat(dto.getBaseUrl()).isNotNull().isEqualTo(createWorkspaceDTO.getBaseUrl());
-
+        assertThat(dto.getI18n()).isNotNull().isNotEmpty().hasSize(1)
+                .containsEntry("en", Map.of("footerLabel", "translatedValue"));
         // create without body
         var exception = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
