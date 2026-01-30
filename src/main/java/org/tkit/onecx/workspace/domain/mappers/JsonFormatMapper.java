@@ -26,7 +26,7 @@ public class JsonFormatMapper implements FormatMapper {
             return objectMapper.readValue(charSequence.toString(),
                     objectMapper.getTypeFactory().constructType(javaType.getJavaType()));
         } catch (Exception e) {
-            throw new RuntimeException("Error deserializing JSON", e);
+            return null;
         }
     }
 
@@ -38,7 +38,7 @@ public class JsonFormatMapper implements FormatMapper {
         try {
             return objectMapper.writeValueAsString(t);
         } catch (Exception e) {
-            throw new RuntimeException("Error serializing to JSON", e);
+            return "{}";
         }
     }
 }
