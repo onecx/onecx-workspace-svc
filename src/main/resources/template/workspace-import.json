@@ -8,11 +8,11 @@
       "roles": [
         {
           "name": "onecx-admin",
-          "description": "OneCX Admin - do all - default tenant"
+          "description": "OneCX Administration"
         },
         {
           "name": "onecx-user",
-          "description": "OneCX Read only - default tenant"
+          "description": "OneCX Read only"
         }
       ],
       "products": [
@@ -97,7 +97,7 @@
           "roles": [ "onecx-admin", "onecx-user" ],
           "children": [
             {
-              "key": "CORE_WELCOME",
+              "key": "ONECX_WELCOME",
               "name": "Welcome Page",
               "url": "/welcome",
               "applicationId": "portal-welcome-ui",
@@ -114,7 +114,7 @@
           "roles": [ "onecx-admin", "onecx-user" ],
           "children": [
             {
-              "key": "PERSONAL_INFO",
+              "key": "ONECX_PERSONAL_INFO",
               "name": "Personal Info",
               "url": "/user",
               "applicationId": "personal-info",
@@ -126,7 +126,7 @@
               }
             },
             {
-              "key": "ACCOUNT_SETTINGS",
+              "key": "ONECX_ACCOUNT_SETTINGS",
               "name": "Account Settings",
               "url": "/user/account",
               "applicationId": "account-settings",
@@ -134,7 +134,7 @@
               "badge": "cog"
             },
             {
-              "key": "CHANGE_PASSWORD",
+              "key": "ONECX_CHANGE_PASSWORD",
               "name": "Change Password",
               "applicationId": "change-password",
               "position": 2,
@@ -150,7 +150,7 @@
           "roles": [ "onecx-admin", "onecx-user" ],
           "children": [
             {
-              "key": "FOOTER_CONTACT",
+              "key": "ONECX_FOOTER_CONTACT",
               "name": "Contact",
               "url": "/contact",
               "position": 0,
@@ -160,7 +160,7 @@
               }
             },
             {
-              "key": "FOOTER_IMPRINT",
+              "key": "ONECX_FOOTER_IMPRINT",
               "name": "Impressum",
               "url": "/imprint",
               "position": 1,

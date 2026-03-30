@@ -92,12 +92,18 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .as(WorkspaceSlotsDTO.class);
 
         assertThat(slotsResponse).isNotNull();
-        assertThat(slotsResponse.getSlots()).isNotNull().hasSize(3);
+        assertThat(slotsResponse.getSlots()).isNotNull().hasSize(14);
 
         assertThat(slotsResponse.getSlots().get(0)).isNotNull();
         var slotMap = slotsResponse.getSlots().stream().collect(Collectors.toMap(SlotDTO::getName, x -> x));
-        assertThat(slotMap).containsOnlyKeys("onecx-shell-vertical-menu", "onecx-shell-header-right",
-                "onecx-shell-horizontal-menu");
+        assertThat(slotMap).containsOnlyKeys(
+                "onecx-avatar-image",
+                "onecx-iam-user-permissions", "onecx-iam-user-roles", "onecx-permission-iam-user-roles",
+                "onecx-shell-extensions", "onecx-shell-vertical-menu", "onecx-shell-header-right",
+                "onecx-shell-horizontal-menu",
+                "onecx-product-data", "onecx-theme-data", "onecx-workspace-data",
+                "onecx-user-profile-admin-view-permissions", "onecx-user-profile-change-password",
+                "onecx-user-profile-permissions");
 
         var productsResponse = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
@@ -110,11 +116,14 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .extract().as(ProductPageResultDTO.class);
 
         assertThat(productsResponse).isNotNull();
-        assertThat(productsResponse.getStream()).isNotNull().isNotEmpty().hasSize(8);
+        assertThat(productsResponse.getStream()).isNotNull().isNotEmpty().hasSize(11);
 
         var productName = productsResponse.getStream().stream().map(ProductResultDTO::getProductName).toList();
-        assertThat(productName).containsOnly("onecx-user-profile", "onecx-workspace", "onecx-shell", "onecx-welcome",
-                "onecx-permission", "onecx-tenant", "onecx-theme", "onecx-product-store");
+        assertThat(productName).containsOnly(
+                "onecx-help", "onecx-iam",
+                "onecx-parameter", "onecx-permission", "onecx-product-store",
+                "onecx-shell", "onecx-tenant", "onecx-theme",
+                "onecx-user-profile", "onecx-workspace", "onecx-welcome");
 
         var menuResponse = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
