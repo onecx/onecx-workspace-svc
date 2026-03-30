@@ -5,7 +5,7 @@
       "components": [
         {
           "productName": "onecx-user-profile",
-          "appId": "onecx-user-profile-ui",
+          "mfeId": "onecx-user-profile-ui",
           "name": "./OneCXAvatarImageComponent"
         }
       ]
@@ -15,7 +15,7 @@
       "components": [
         {
           "productName": "onecx-permission",
-          "appId": "onecx-permission-ui",
+          "mfeId": "onecx-permission-ui",
           "name": "./OneCXUserRolesPermissionsComponent"
         }
       ]
@@ -25,7 +25,7 @@
       "components": [
         {
           "productName": "onecx-iam",
-          "appId": "onecx-iam-ui",
+          "mfeId": "onecx-iam-ui",
           "name": "./OneCXIamUserRolesComponent"
         }
       ]
@@ -35,7 +35,7 @@
       "components": [
         {
           "productName": "onecx-iam",
-          "appId": "onecx-iam-ui",
+          "mfeId": "onecx-iam-ui",
           "name": "./OneCXIamUserRolesComponent"
         }
       ]
@@ -45,7 +45,7 @@
       "components": [
         {
           "productName": "onecx-product-store",
-          "appId": "onecx-product-store-ui",
+          "mfeId": "onecx-product-store-ui",
           "name": "./OneCXProductDataComponent"
         }
       ]
@@ -55,7 +55,7 @@
       "components": [
         {
           "productName": "onecx-shell",
-          "appId": "onecx-shell-ui",
+          "mfeId": "onecx-shell-ui",
           "name": "./OneCXShellToastComponent"
         }
       ]
@@ -65,12 +65,12 @@
       "components": [
         {
           "productName": "onecx-workspace",
-          "appId": "onecx-workspace-ui",
+          "mfeId": "onecx-workspace-ui",
           "name": "./OneCXUserSidebarMenuComponent"
         },
         {
           "productName": "onecx-workspace",
-          "appId": "onecx-workspace-ui",
+          "mfeId": "onecx-workspace-ui",
           "name": "./OneCXVerticalMainMenuComponent"
         }
       ]
@@ -80,7 +80,7 @@
       "components": [
         {
           "productName": "onecx-help",
-          "appId": "onecx-help-ui",
+          "mfeId": "onecx-help-ui",
           "name": "./OneCXShowHelpComponent"
         }
       ]
@@ -90,7 +90,7 @@
       "components": [
         {
           "productName": "onecx-workspace",
-          "appId": "onecx-workspace-ui",
+          "mfeId": "onecx-workspace-ui",
           "name": "./OneCXHorizontalMainMenuComponent"
         }
       ]
@@ -100,7 +100,7 @@
       "components": [
         {
           "productName": "onecx-theme",
-          "appId": "onecx-theme-ui",
+          "mfeId": "onecx-theme-ui",
           "name": "./OneCXThemeDataComponent"
         }
       ]
@@ -110,7 +110,7 @@
       "components": [
         {
           "productName": "onecx-permission",
-          "appId": "onecx-permission-ui",
+          "mfeId": "onecx-permission-ui",
           "name": "./OneCXUserRolesPermissionsComponent"
         }
       ]
@@ -120,7 +120,7 @@
       "components": [
         {
           "productName": "onecx-iam",
-          "appId": "onecx-iam-ui",
+          "mfeId": "onecx-iam-ui",
           "name": "./OneCXChangePasswordComponent"
         }
       ]
@@ -130,7 +130,7 @@
       "components": [
         {
           "productName": "onecx-permission",
-          "appId": "onecx-permission-ui",
+          "mfeId": "onecx-permission-ui",
           "name": "./OneCXUserRolesPermissionsComponent"
         }
       ]
@@ -140,7 +140,7 @@
       "components": [
         {
           "productName": "onecx-workspace",
-          "appId": "onecx-workspace-ui",
+          "mfeId": "onecx-workspace-ui",
           "name": "./OneCXWorkspaceDataComponent"
         }
       ]
@@ -162,7 +162,7 @@
       "baseUrl": "/help",
       "microfrontends": [
         {
-          "appId": "onecx-help-ui",
+          "mfeId": "onecx-help-ui",
           "basePath": "/"
         }
       ]
@@ -172,7 +172,7 @@
       "baseUrl": "/iam",
       "microfrontends": [
         {
-          "appId": "onecx-iam-ui",
+          "mfeId": "onecx-iam-ui",
           "basePath": "/"
         }
       ]
@@ -182,7 +182,7 @@
       "baseUrl": "/parameter",
       "microfrontends": [
         {
-          "appId": "onecx-parameter-ui",
+          "mfeId": "onecx-parameter-ui",
           "basePath": "/"
         }
       ]
