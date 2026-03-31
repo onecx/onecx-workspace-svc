@@ -92,18 +92,20 @@ class WorkspaceInternalCreateRestControllerTest extends AbstractTest {
                 .as(WorkspaceSlotsDTO.class);
 
         assertThat(slotsResponse).isNotNull();
-        assertThat(slotsResponse.getSlots()).isNotNull().hasSize(14);
+        assertThat(slotsResponse.getSlots()).isNotNull().hasSize(20);
 
         assertThat(slotsResponse.getSlots().get(0)).isNotNull();
         var slotMap = slotsResponse.getSlots().stream().collect(Collectors.toMap(SlotDTO::getName, x -> x));
         assertThat(slotMap).containsOnlyKeys(
                 "onecx-avatar-image",
                 "onecx-iam-user-permissions", "onecx-iam-user-roles", "onecx-permission-iam-user-roles",
-                "onecx-shell-extensions", "onecx-shell-vertical-menu", "onecx-shell-header-right",
-                "onecx-shell-horizontal-menu",
+                "onecx-shell-extensions",
+                "onecx-shell-header.start", "onecx-shell-header.center", "onecx-shell-header.end",
+                "onecx-shell-body-start.start", "onecx-shell-body-start.center",
+                "onecx-shell-body-header.center", "onecx-shell-body-footer.start", "onecx-shell-body-footer.end",
                 "onecx-product-data", "onecx-theme-data", "onecx-workspace-data",
                 "onecx-user-profile-admin-view-permissions", "onecx-user-profile-change-password",
-                "onecx-user-profile-permissions");
+                "onecx-user-profile-permissions", "onecx-welcome-list-active");
 
         var productsResponse = given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))
