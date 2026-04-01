@@ -228,7 +228,7 @@
     },
     {
       "name": "onecx-user",
-      "description": "OneCX Read only"
+      "description": "OneCX read only"
     }
   ],
   "products": [
@@ -238,7 +238,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-help-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXHelpModule"
         }
       ]
     },
@@ -248,7 +249,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-iam-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXIamModule"
         }
       ]
     },
@@ -258,7 +260,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-parameter-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXParameterModule"
         }
       ]
     },
@@ -268,7 +271,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-permission-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXPermissionModule"
         }
       ]
     },
@@ -278,7 +282,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-product-store-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXProductStoreModule"
         }
       ]
     },
@@ -293,7 +298,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-tenant-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXTenantModule"
         }
       ]
     },
@@ -303,7 +309,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-theme-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXThemeModule"
         }
       ]
     },
@@ -313,7 +320,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-user-profile-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXUserProfileModule"
         }
       ]
     },
@@ -323,7 +331,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-welcome-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXWelcomeModule"
         }
       ]
     },
@@ -333,7 +342,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-workspace-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXWorkspaceModule"
         }
       ]
     }
