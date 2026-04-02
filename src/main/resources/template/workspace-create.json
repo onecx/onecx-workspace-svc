@@ -5,7 +5,7 @@
       "components": [
         {
           "productName": "onecx-user-profile",
-          "mfeId": "onecx-user-profile-ui",
+          "appId": "onecx-user-profile-ui",
           "name": "./OneCXAvatarImageComponent"
         }
       ]
@@ -15,7 +15,7 @@
       "components": [
         {
           "productName": "onecx-permission",
-          "mfeId": "onecx-permission-ui",
+          "appId": "onecx-permission-ui",
           "name": "./OneCXUserRolesPermissionsComponent"
         }
       ]
@@ -25,7 +25,7 @@
       "components": [
         {
           "productName": "onecx-iam",
-          "mfeId": "onecx-iam-ui",
+          "appId": "onecx-iam-ui",
           "name": "./OneCXIamUserRolesComponent"
         }
       ]
@@ -35,7 +35,7 @@
       "components": [
         {
           "productName": "onecx-iam",
-          "mfeId": "onecx-iam-ui",
+          "appId": "onecx-iam-ui",
           "name": "./OneCXIamUserRolesComponent"
         }
       ]
@@ -45,7 +45,7 @@
       "components": [
         {
           "productName": "onecx-product-store",
-          "mfeId": "onecx-product-store-ui",
+          "appId": "onecx-product-store-ui",
           "name": "./OneCXProductDataComponent"
         }
       ]
@@ -55,43 +55,108 @@
       "components": [
         {
           "productName": "onecx-shell",
-          "mfeId": "onecx-shell-ui",
+          "appId": "onecx-shell-ui",
           "name": "./OneCXShellToastComponent"
         }
       ]
     },
     {
-      "name": "onecx-shell-vertical-menu",
+      "name": "onecx-shell-header.start",
       "components": [
         {
           "productName": "onecx-workspace",
-          "mfeId": "onecx-workspace-ui",
-          "name": "./OneCXUserSidebarMenuComponent"
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXCurrentWorkspaceLogoComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-shell-header.center",
+      "components": [
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXHorizontalMainMenuComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-shell-header.end",
+      "components": [
+        {
+          "productName": "onecx-help",
+          "appId": "onecx-help-ui",
+          "name": "./OneCXHelpItemEditorComponent"
+        },
+        {
+          "productName": "onecx-help",
+          "appId": "onecx-help-ui",
+          "name": "./OneCXShowHelpComponent"
         },
         {
           "productName": "onecx-workspace",
-          "mfeId": "onecx-workspace-ui",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXUserAvatarMenuComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-shell-body-start.start",
+      "components": [
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXSlimUserMenuComponent"
+        },
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXUserSidebarMenuComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-shell-body-start.center",
+      "components": [
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXSlimVerticalMainMenuComponent"
+        },
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
           "name": "./OneCXVerticalMainMenuComponent"
         }
       ]
     },
     {
-      "name": "onecx-shell-header-right",
+      "name": "onecx-shell-body-header.center",
       "components": [
         {
-          "productName": "onecx-help",
-          "mfeId": "onecx-help-ui",
-          "name": "./OneCXShowHelpComponent"
+          "productName": "onecx-announcement",
+          "appId": "onecx-announcement-ui",
+          "name": "./OneCXAnnouncementBannerComponent"
         }
       ]
     },
     {
-      "name": "onecx-shell-horizontal-menu",
+      "name": "onecx-shell-body-footer.start",
       "components": [
         {
           "productName": "onecx-workspace",
-          "mfeId": "onecx-workspace-ui",
-          "name": "./OneCXHorizontalMainMenuComponent"
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXFooterMenuComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-shell-body-footer.end",
+      "components": [
+        {
+          "productName": "onecx-workspace",
+          "appId": "onecx-workspace-ui",
+          "name": "./OneCXVersionInfoComponent"
         }
       ]
     },
@@ -100,18 +165,8 @@
       "components": [
         {
           "productName": "onecx-theme",
-          "mfeId": "onecx-theme-ui",
+          "appId": "onecx-theme-ui",
           "name": "./OneCXThemeDataComponent"
-        }
-      ]
-    },
-    {
-      "name": "onecx-user-profile-admin-view-permissions",
-      "components": [
-        {
-          "productName": "onecx-permission",
-          "mfeId": "onecx-permission-ui",
-          "name": "./OneCXUserRolesPermissionsComponent"
         }
       ]
     },
@@ -120,7 +175,7 @@
       "components": [
         {
           "productName": "onecx-iam",
-          "mfeId": "onecx-iam-ui",
+          "appId": "onecx-iam-ui",
           "name": "./OneCXChangePasswordComponent"
         }
       ]
@@ -130,8 +185,28 @@
       "components": [
         {
           "productName": "onecx-permission",
-          "mfeId": "onecx-permission-ui",
+          "appId": "onecx-permission-ui",
           "name": "./OneCXUserRolesPermissionsComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-user-profile-admin-view-permissions",
+      "components": [
+        {
+          "productName": "onecx-permission",
+          "appId": "onecx-permission-ui",
+          "name": "./OneCXUserRolesPermissionsComponent"
+        }
+      ]
+    },
+    {
+      "name": "onecx-welcome-list-active",
+      "components": [
+        {
+          "productName": "onecx-announcement",
+          "appId": "onecx-announcement-ui",
+          "name": "./OneCXAnnouncementListActiveComponent"
         }
       ]
     },
@@ -140,7 +215,7 @@
       "components": [
         {
           "productName": "onecx-workspace",
-          "mfeId": "onecx-workspace-ui",
+          "appId": "onecx-workspace-ui",
           "name": "./OneCXWorkspaceDataComponent"
         }
       ]
@@ -153,7 +228,7 @@
     },
     {
       "name": "onecx-user",
-      "description": "OneCX Read only"
+      "description": "OneCX read only"
     }
   ],
   "products": [
@@ -163,7 +238,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-help-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXHelpModule"
         }
       ]
     },
@@ -173,7 +249,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-iam-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXIamModule"
         }
       ]
     },
@@ -183,7 +260,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-parameter-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXParameterModule"
         }
       ]
     },
@@ -193,7 +271,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-permission-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXPermissionModule"
         }
       ]
     },
@@ -203,7 +282,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-product-store-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXProductStoreModule"
         }
       ]
     },
@@ -218,7 +298,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-tenant-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXTenantModule"
         }
       ]
     },
@@ -228,7 +309,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-theme-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXThemeModule"
         }
       ]
     },
@@ -238,7 +320,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-user-profile-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXUserProfileModule"
         }
       ]
     },
@@ -248,7 +331,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-welcome-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXWelcomeModule"
         }
       ]
     },
@@ -258,7 +342,8 @@
       "microfrontends": [
         {
           "mfeId": "onecx-workspace-ui",
-          "basePath": "/"
+          "basePath": "/",
+          "exposedModule": "./OneCXWorkspaceModule"
         }
       ]
     }
