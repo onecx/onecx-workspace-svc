@@ -140,6 +140,12 @@ components:
           type: string
         smallLogoUrl:
           type: string
+        i18n:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: string
         products:
           type: array
           items:
