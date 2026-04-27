@@ -52,6 +52,7 @@ public interface WorkspaceMapper {
     @Mapping(target = "removeProductsItem", ignore = true)
     WorkspaceLoadDTOV1 load(Workspace workspace);
 
+    @Mapping(target = "removeI18nItem", ignore = true)
     @Mapping(target = "removeProductsItem", ignore = true)
     @Mapping(target = "removeSlotsItem", ignore = true)
     WorkspaceWrapperDTOV1 loadWrapper(Workspace workspace);

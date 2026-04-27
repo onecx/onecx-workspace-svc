@@ -226,7 +226,7 @@ public interface ExportImportMapperV1 {
 
         var r = roles.get(menuItem.getId());
         if (r != null) {
-            menu.setRoles(r);
+            menu.setRoles(r.stream().sorted().toList());
         }
 
         menu.setChildren(children(menuItem.getChildren(), roles));
