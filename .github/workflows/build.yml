@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    uses: onecx/ci-quarkus/.github/workflows/build.yml@v1
+    uses: onecx/ci-quarkus/.github/workflows/build.yml@v2
     secrets: inherit
     with:
       native: true    
