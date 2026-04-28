@@ -8,5 +8,5 @@ on:
 
 jobs:
   pr:
-    uses: onecx/ci-quarkus/.github/workflows/quarkus-pr-sonar.yml@v1
+    uses: onecx/ci-quarkus/.github/workflows/quarkus-pr-sonar.yml@v2
     secrets: inherit

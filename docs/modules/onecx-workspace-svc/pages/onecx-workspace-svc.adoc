@@ -7,7 +7,7 @@ h|[.header-title]##Configuration property##
 h|Type
 h|Default
 
-a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping[`onecx.workspace.template.import.role-mapping."role-mapping"`]##
+a| [[onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-import-role-mapping-role-mapping[`+++onecx.workspace.template.import.role-mapping."role-mapping"+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.template.import.role-mapping."role-mapping"+++[]
 endif::add-copy-button-to-config-props[]
@@ -28,7 +28,7 @@ endif::add-copy-button-to-env-var[]
 |Map<String,String>
 |
 
-a| [[onecx-workspace-svc_onecx-workspace-template-import-tenants]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-import-tenants[`onecx.workspace.template.import.tenants`]##
+a| [[onecx-workspace-svc_onecx-workspace-template-import-tenants]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-import-tenants[`+++onecx.workspace.template.import.tenants+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.template.import.tenants+++[]
 endif::add-copy-button-to-config-props[]
@@ -49,7 +49,7 @@ endif::add-copy-button-to-env-var[]
 |list of string
 |`+++default+++`
 
-a| [[onecx-workspace-svc_onecx-workspace-template-create-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-enabled[`onecx.workspace.template.create.enabled`]##
+a| [[onecx-workspace-svc_onecx-workspace-template-create-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-enabled[`+++onecx.workspace.template.create.enabled+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.template.create.enabled+++[]
 endif::add-copy-button-to-config-props[]
@@ -70,7 +70,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++true+++`
 
-a| [[onecx-workspace-svc_onecx-workspace-template-create-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-resource[`onecx.workspace.template.create.resource`]##
+a| [[onecx-workspace-svc_onecx-workspace-template-create-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-resource[`+++onecx.workspace.template.create.resource+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.template.create.resource+++[]
 endif::add-copy-button-to-config-props[]
@@ -91,7 +91,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++template/workspace-create.json+++`
 
-a| [[onecx-workspace-svc_onecx-workspace-template-create-class-path-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-class-path-resource[`onecx.workspace.template.create.class-path-resource`]##
+a| [[onecx-workspace-svc_onecx-workspace-template-create-class-path-resource]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-class-path-resource[`+++onecx.workspace.template.create.class-path-resource+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.template.create.class-path-resource+++[]
 endif::add-copy-button-to-config-props[]
@@ -112,7 +112,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++true+++`
 
-a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping[`onecx.workspace.template.create.role-mapping."role-mapping"`]##
+a| [[onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-template-create-role-mapping-role-mapping[`+++onecx.workspace.template.create.role-mapping."role-mapping"+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.template.create.role-mapping."role-mapping"+++[]
 endif::add-copy-button-to-config-props[]
@@ -133,7 +133,7 @@ endif::add-copy-button-to-env-var[]
 |Map<String,String>
 |
 
-a| [[onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping[`onecx.workspace.user.menu.mapping."mapping"`]##
+a| [[onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-user-menu-mapping-mapping[`+++onecx.workspace.user.menu.mapping."mapping"+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.user.menu.mapping."mapping"+++[]
 endif::add-copy-button-to-config-props[]
@@ -154,7 +154,7 @@ endif::add-copy-button-to-env-var[]
 |Map<String,String>
 |
 
-a| [[onecx-workspace-svc_onecx-workspace-token-verified]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-verified[`onecx.workspace.token.verified`]##
+a| [[onecx-workspace-svc_onecx-workspace-token-verified]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-verified[`+++onecx.workspace.token.verified+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.token.verified+++[]
 endif::add-copy-button-to-config-props[]
@@ -175,7 +175,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++false+++`
 
-a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix[`onecx.workspace.token.issuer.public-key-location.suffix`]##
+a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-suffix[`+++onecx.workspace.token.issuer.public-key-location.suffix+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.token.issuer.public-key-location.suffix+++[]
 endif::add-copy-button-to-config-props[]
@@ -196,7 +196,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |`+++/protocol/openid-connect/certs+++`
 
-a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled[`onecx.workspace.token.issuer.public-key-location.enabled`]##
+a| [[onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-issuer-public-key-location-enabled[`+++onecx.workspace.token.issuer.public-key-location.enabled+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.token.issuer.public-key-location.enabled+++[]
 endif::add-copy-button-to-config-props[]
@@ -217,7 +217,7 @@ endif::add-copy-button-to-env-var[]
 |boolean
 |`+++false+++`
 
-a| [[onecx-workspace-svc_onecx-workspace-token-claim-separator]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-claim-separator[`onecx.workspace.token.claim.separator`]##
+a| [[onecx-workspace-svc_onecx-workspace-token-claim-separator]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-claim-separator[`+++onecx.workspace.token.claim.separator+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.token.claim.separator+++[]
 endif::add-copy-button-to-config-props[]
@@ -238,7 +238,7 @@ endif::add-copy-button-to-env-var[]
 |string
 |
 
-a| [[onecx-workspace-svc_onecx-workspace-token-claim-path]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-claim-path[`onecx.workspace.token.claim.path`]##
+a| [[onecx-workspace-svc_onecx-workspace-token-claim-path]] [.property-path]##link:#onecx-workspace-svc_onecx-workspace-token-claim-path[`+++onecx.workspace.token.claim.path+++`]##
 ifdef::add-copy-button-to-config-props[]
 config_property_copy_button:+++onecx.workspace.token.claim.path+++[]
 endif::add-copy-button-to-config-props[]

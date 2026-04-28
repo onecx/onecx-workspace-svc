@@ -1,16 +1,18 @@
 package org.tkit.onecx.workspace.rs.admin.v1.controllers;
 
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static jakarta.ws.rs.core.Response.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationFeature;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.tkit.onecx.workspace.test.AbstractTest;
 import org.tkit.quarkus.security.test.GenerateKeycloakClient;
 import org.tkit.quarkus.test.WithDBData;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import gen.org.tkit.onecx.workspace.rs.admin.v1.model.*;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -23,7 +25,13 @@ import io.quarkus.test.junit.QuarkusTest;
         "ocx-ws:admin-delete" })
 class WorkspaceAdminRestControllerV1Test extends AbstractTest {
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    static ObjectMapper objectMapper = new ObjectMapper();
+
+    static {
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     @Test
     void createWorkspaceTest() {
@@ -214,7 +222,6 @@ class WorkspaceAdminRestControllerV1Test extends AbstractTest {
 
     @Test
     void updateWorkspaceTest() {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         var response = given()
                 .auth().oauth2(getKeycloakClientToken("testClient")).when()
@@ -313,7 +320,6 @@ class WorkspaceAdminRestControllerV1Test extends AbstractTest {
 
     @Test
     void modificationCountTest() {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         var updatedResponse = given()
                 .auth().oauth2(getKeycloakClientToken("testClient")).when()
