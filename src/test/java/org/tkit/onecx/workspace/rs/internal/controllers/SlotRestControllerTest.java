@@ -170,6 +170,7 @@ class SlotRestControllerTest extends AbstractTest {
                 .as(WorkspaceSlotsDTO.class);
 
         assertThat(workspaceSlots.getSlots())
+                .isNotEmpty()
                 .extracting(SlotDTO::getName)
                 .doesNotContain("slot-upsert");
     }
@@ -237,6 +238,7 @@ class SlotRestControllerTest extends AbstractTest {
                 .as(WorkspaceSlotsDTO.class);
 
         assertThat(workspaceSlots.getSlots())
+                .isNotEmpty()
                 .extracting(SlotDTO::getName)
                 .doesNotContain("slot4");
     }
