@@ -101,6 +101,149 @@ class SlotRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void addOrUpdateSlotTest() {
+        // create new slot and assign components in one call
+        var createRequest = new UpdateSlotRequestDTO();
+        createRequest.setName("slot-upsert");
+        createRequest.setComponents(List.of(
+                new SlotComponentDTO().name("u1").productName("p1").appId("a1"),
+                new SlotComponentDTO().name("u2").productName("p1").appId("a1")));
+
+        var created = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(createRequest)
+                .when()
+                .put("/workspace/11-111")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .as(SlotDTO.class);
+
+        assertThat(created).isNotNull();
+        assertThat(created.getId()).isNotNull();
+        assertThat(created.getName()).isEqualTo("slot-upsert");
+        assertThat(created.getComponents()).hasSize(2);
+
+        // update the same slot and re-assign components in one call
+        var updateRequest = new UpdateSlotRequestDTO();
+        updateRequest.setName("slot-upsert");
+        updateRequest.setComponents(List.of(new SlotComponentDTO().name("u3").productName("p2").appId("a2")));
+
+        var updated = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(updateRequest)
+                .when()
+                .put("/workspace/11-111")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .as(SlotDTO.class);
+
+        assertThat(updated).isNotNull();
+        assertThat(updated.getId()).isEqualTo(created.getId());
+        assertThat(updated.getComponents()).hasSize(1);
+        assertThat(updated.getComponents().get(0)).returns("u3", from(SlotComponentDTO::getName));
+
+        // remove all components, slot should be deleted in the same call
+        var deleteRequest = new UpdateSlotRequestDTO();
+        deleteRequest.setName("slot-upsert");
+        deleteRequest.setComponents(List.of());
+
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(deleteRequest)
+                .when()
+                .put("/workspace/11-111")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        var workspaceSlots = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .get("/workspace/11-111")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .as(WorkspaceSlotsDTO.class);
+
+        assertThat(workspaceSlots.getSlots())
+                .isNotEmpty()
+                .extracting(SlotDTO::getName)
+                .doesNotContain("slot-upsert");
+    }
+
+    @Test
+    void addOrUpdateSlotWorkspaceNotFoundTest() {
+        var request = new UpdateSlotRequestDTO();
+        request.setName("slot-upsert");
+        request.setComponents(List.of(new SlotComponentDTO().name("u1").productName("p1").appId("a1")));
+
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .when()
+                .put("/workspace/does-not-exists")
+                .then()
+                .statusCode(NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    void addOrUpdateExistingEmptySlotAndDeleteWithNullComponentsTest() {
+        // slot4 exists in seed data and has no components -> should use updateWithoutComponents path
+        var updateRequest = new UpdateSlotRequestDTO();
+        updateRequest.setName("slot4");
+        updateRequest.setComponents(List.of(new SlotComponentDTO().name("u-empty").productName("p1").appId("a1")));
+
+        var updated = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(updateRequest)
+                .when()
+                .put("/workspace/11-111")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .as(SlotDTO.class);
+
+        assertThat(updated).isNotNull();
+        assertThat(updated.getName()).isEqualTo("slot4");
+        assertThat(updated.getComponents()).hasSize(1);
+        assertThat(updated.getComponents().get(0)).returns("u-empty", from(SlotComponentDTO::getName));
+
+        // null components should trigger delete branch for existing slot
+        var deleteRequest = new UpdateSlotRequestDTO();
+        deleteRequest.setName("slot4");
+        deleteRequest.setComponents(null);
+
+        given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .body(deleteRequest)
+                .when()
+                .put("/workspace/11-111")
+                .then()
+                .statusCode(NO_CONTENT.getStatusCode());
+
+        var workspaceSlots = given()
+                .auth().oauth2(getKeycloakClientToken("testClient"))
+                .contentType(APPLICATION_JSON)
+                .get("/workspace/11-111")
+                .then()
+                .statusCode(OK.getStatusCode())
+                .extract()
+                .as(WorkspaceSlotsDTO.class);
+
+        assertThat(workspaceSlots.getSlots())
+                .isNotEmpty()
+                .extracting(SlotDTO::getName)
+                .doesNotContain("slot4");
+    }
+
+    @Test
     void getNotFoundSlot() {
         given()
                 .auth().oauth2(getKeycloakClientToken("testClient"))

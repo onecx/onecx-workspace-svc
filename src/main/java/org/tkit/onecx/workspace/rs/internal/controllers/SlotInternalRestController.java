@@ -49,6 +49,20 @@ public class SlotInternalRestController implements SlotInternalApi {
     SlotService slotService;
 
     @Override
+    public Response addOrUpdateSlot(String id, UpdateSlotRequestDTO updateSlotRequestDTO) {
+        var workspace = workspaceDAO.findById(id);
+        if (workspace == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        var updatedSlot = slotService.createOrUpdateSlot(workspace, updateSlotRequestDTO);
+
+        if (updatedSlot == null) {
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+        return Response.ok(mapper.map(updatedSlot)).build();
+    }
+
+    @Override
     public Response createSlot(CreateSlotRequestDTO createSlotRequestDTO) {
         var workspace = workspaceDAO.findById(createSlotRequestDTO.getWorkspaceId());
         if (workspace == null) {

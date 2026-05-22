@@ -55,6 +55,24 @@ public interface SlotMapper {
         return slot;
     }
 
+    default Slot create(UpdateSlotRequestDTO updateSlotRequestDTO, Workspace workspace) {
+        var slot = mapUpdate(updateSlotRequestDTO);
+        slot.setWorkspace(workspace);
+        return slot;
+    }
+
+    @Mapping(target = "workspaceId", ignore = true)
+    @Mapping(target = "workspace", ignore = true)
+    @Mapping(target = "tenantId", ignore = true)
+    @Mapping(target = "persisted", ignore = true)
+    @Mapping(target = "modificationUser", ignore = true)
+    @Mapping(target = "modificationDate", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "creationUser", ignore = true)
+    @Mapping(target = "creationDate", ignore = true)
+    @Mapping(target = "controlTraceabilityManual", ignore = true)
+    Slot mapUpdate(UpdateSlotRequestDTO updateSlotRequestDTO);
+
     @Mapping(target = "workspaceId", ignore = true)
     @Mapping(target = "workspace", ignore = true)
     @Mapping(target = "tenantId", ignore = true)
@@ -68,4 +86,5 @@ public interface SlotMapper {
     @Mapping(target = "controlTraceabilityManual", ignore = true)
     @Mapping(target = "components", ignore = true)
     Slot map(CreateSlotDTO createSlotDTO);
+
 }
