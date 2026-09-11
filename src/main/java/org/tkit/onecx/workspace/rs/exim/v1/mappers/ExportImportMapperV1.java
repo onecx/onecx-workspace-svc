@@ -75,8 +75,6 @@ public interface ExportImportMapperV1 {
             eximWorkspaceDTOV1.getProducts().forEach(eximProductDTOV1 -> eximProductDTOV1.getMicrofrontends()
                     .sort(Comparator.comparing(EximMicrofrontendDTOV1::getAppId)));
             eximWorkspaceDTOV1.getSlots().sort(Comparator.comparing(EximSlotDTOV1::getName));
-            eximWorkspaceDTOV1.getSlots()
-                    .forEach(slot -> slot.getComponents().sort(Comparator.comparing(EximComponentDTOV1::getName)));
             eximWorkspaceDTOV1.getRoles().sort(Comparator.comparing(EximWorkspaceRoleDTOV1::getName));
             if (eximWorkspaceDTOV1.getMenuItems() != null) {
                 eximWorkspaceDTOV1.getMenuItems().forEach(eximWorkspaceMenuItemDTOV1 -> eximWorkspaceMenuItemDTOV1
