@@ -29,4 +29,10 @@
 	<!-- ROOT 4-4 -->
 	<MENU_ITEM guid="4-4" optlock="0" disabled="FALSE" key="key44" name="name1" external="FALSE"  pos="3" scope="WORKSPACE" url=""  workspace="4" application_id="" tenant_id="tenant-100"/>
 
+	<PRODUCT />
+	<ROLE />
+	<MICROFRONTEND />
+	<ASSIGNMENT />
+	<SLOT />
+	<SLOT_COMPONENTS />
 </dataset>

@@ -21,7 +21,7 @@ import gen.org.tkit.onecx.workspace.template.di.model.TemplateWorkspaceDI;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@WithDBData(value = "data/test-import.xml", deleteBeforeInsert = true, deleteAfterTest = true, rinseAndRepeat = true)
+@WithDBData(value = "data/test-import.xml", deleteBeforeInsert = true, rinseAndRepeat = true)
 class TemplateImportTest {
 
     @Inject
